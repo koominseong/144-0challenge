@@ -126,6 +126,12 @@ def select_players():
     if len(selected) != 3:
         return "반드시 3명 선택해야 함"
 
+    used_players = session.get("used_players", [])
+
+    for player_id in selected:
+        if player_id in used_players:
+            return "이미 사용한 선수입니다"
+
     session["selected_players"] = selected
 
     return redirect("/assign")
@@ -155,12 +161,9 @@ def assign():
 def assign_player():
 
     player_id = request.form["player_id"]
-
     position = request.form["position"]
 
-    players = load_team(
-        session["current_team"]
-    )
+    players = load_team(session["current_team"])
 
     player = next(
         p for p in players
@@ -169,15 +172,55 @@ def assign_player():
 
     lineup = session["lineup"]
 
-    if position in lineup:
-        return "이미 사용 중인 포지션"
-
     if position not in player["positions"]:
         return "배치 불가"
 
-    lineup[position] = player
+    if position == "SP":
+
+        if len(lineup["SP"]) >= 3:
+            return "SP 가득 참"
+
+        lineup["SP"].append(player)
+
+    elif position == "RP":
+
+        if len(lineup["RP"]) >= 3:
+            return "RP 가득 참"
+
+        lineup["RP"].append(player)
+
+    else:
+
+        if lineup[position] is not None:
+            return "이미 사용 중인 포지션"
+
+        lineup[position] = player
 
     session["lineup"] = lineup
+
+    used_players = session["used_players"]
+
+    if player_id not in used_players:
+        used_players.append(player_id)
+
+    session["used_players"] = used_players
+
+    session.modified = True
+
+    filled = (
+        len(lineup["SP"])
+        + len(lineup["RP"])
+    )
+
+    for pos in [
+        "C","1B","2B","3B","SS",
+        "LF","CF","RF","DH"
+    ]:
+        if lineup[pos]:
+            filled += 1
+
+    if filled >= 15:
+        return redirect("/result")
 
     return redirect("/assign")
 
@@ -187,10 +230,20 @@ def result():
 
     lineup = session["lineup"]
 
-    total_war = sum(
-        player["war"]
-        for player in lineup.values()
-    )
+    total_war = 0
+
+    for player in lineup["SP"]:
+        total_war += player["war"]
+
+    for player in lineup["RP"]:
+        total_war += player["war"]
+
+    for pos in [
+        "C","1B","2B","3B","SS",
+        "LF","CF","RF","DH"
+    ]:
+        if lineup[pos]:
+            total_war += lineup[pos]["war"]
 
     return render_template(
         "result.html",
