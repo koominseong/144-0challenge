@@ -1,1 +1,218 @@
-
+[
+  {
+    "id": "park_yongtaek_2012",
+    "name": "박용택",
+    "year": 2012,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["LF", "DH"],
+    "war": 6.5
+  },
+  {
+    "id": "lee_byungkyu_2010",
+    "name": "이병규",
+    "year": 2010,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["RF"],
+    "war": 4.5
+  },
+  {
+    "id": "lee_jinyoung_2013",
+    "name": "이진영",
+    "year": 2013,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["RF", "LF"],
+    "war": 4.0
+  },
+  {
+    "id": "lee_daehyung_2010",
+    "name": "이대형",
+    "year": 2010,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["CF"],
+    "war": 5.5
+  },
+  {
+    "id": "chae_eunseong_2019",
+    "name": "채은성",
+    "year": 2019,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["1B", "RF"],
+    "war": 4.8
+  },
+  {
+    "id": "oh_jihwan_2019",
+    "name": "오지환",
+    "year": 2019,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SS"],
+    "war": 5.5
+  },
+  {
+    "id": "jung_juhyun_2017",
+    "name": "정주현",
+    "year": 2017,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["2B"],
+    "war": 3.0
+  },
+  {
+    "id": "son_juin_2013",
+    "name": "손주인",
+    "year": 2013,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["2B"],
+    "war": 4.2
+  },
+  {
+    "id": "kim_yongui_2016",
+    "name": "김용의",
+    "year": 2016,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["LF", "CF", "RF"],
+    "war": 2.8
+  },
+  {
+    "id": "jung_sunghoon_2013",
+    "name": "정성훈",
+    "year": 2013,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["1B"],
+    "war": 5.0
+  },
+  {
+    "id": "cho_insung_2010",
+    "name": "조인성",
+    "year": 2010,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["C"],
+    "war": 5.8
+  },
+  {
+    "id": "yoo_kangnam_2018",
+    "name": "유강남",
+    "year": 2018,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["C"],
+    "war": 3.7
+  },
+  {
+    "id": "kim_minseong_2019",
+    "name": "김민성",
+    "year": 2019,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["3B"],
+    "war": 3.5
+  },
+  {
+    "id": "park_kyungsoo_2011",
+    "name": "박경수",
+    "year": 2011,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["2B"],
+    "war": 3.5
+  },
+  {
+    "id": "bong_joonggeun_2011",
+    "name": "봉중근",
+    "year": 2011,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["RP"],
+    "war": 4.5
+  },
+  {
+    "id": "lee_donghyun_2013",
+    "name": "이동현",
+    "year": 2013,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["RP"],
+    "war": 4.0
+  },
+  {
+    "id": "shin_jungrak_2016",
+    "name": "신정락",
+    "year": 2016,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP", "RP"],
+    "war": 3.0
+  },
+  {
+    "id": "jung_chanheon_2019",
+    "name": "정찬헌",
+    "year": 2019,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 3.8
+  },
+  {
+    "id": "ryu_jaegook_2013",
+    "name": "류제국",
+    "year": 2013,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 5.0
+  },
+  {
+    "id": "woo_gyumin_2013",
+    "name": "우규민",
+    "year": 2013,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "henry_sosa_2014",
+    "name": "헨리 소사",
+    "year": 2014,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 5.0
+  },
+  {
+    "id": "david_huff_2016",
+    "name": "데이비드 허프",
+    "year": 2016,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 4.5
+  },
+  {
+    "id": "casey_kelly_2019",
+    "name": "케이시 켈리",
+    "year": 2019,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "lim_chan규_2019",
+    "name": "임찬규",
+    "year": 2019,
+    "team": "LG",
+    "era": "2010s",
+    "positions": ["SP"],
+    "war": 3.5
+  }
+]
