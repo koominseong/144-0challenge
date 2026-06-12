@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Draft</title>
 
+<style>
+
+body{
+    font-family:sans-serif;
+    max-width:1200px;
+    margin:auto;
+}
+
+.player-card{
+    border:1px solid #ccc;
+    padding:10px;
+    margin:10px 0;
+}
+
+.disabled{
+    opacity:0.4;
+}
+
+.lineup-box{
+    border:1px solid black;
+    padding:10px;
+    margin-bottom:20px;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>{{ era }} / {{ team }}</h1>
+
+<p>
+드래프트 진행도:
+{{ drafted_count }} / {{ roster_size }}
+</p>
+
+<hr>
+
+<h2>리롤</h2>
+
+{% if not era_reroll_used %}
+<a href="/reroll-era">
+<button>시대 리롤</button>
+</a>
+{% else %}
+<button disabled>시대 리롤 사용 완료</button>
+{% endif %}
+
+{% if not team_reroll_used %}
+<a href="/reroll-team">
+<button>팀 리롤</button>
+</a>
+{% else %}
+<button disabled>팀 리롤 사용 완료</button>
+{% endif %}
+
+<hr>
+
+<div class="lineup-box">
+
+<h2>현재 라인업</h2>
+
+{% for pos, player in lineup.items() %}
+
+<p>
+
+<b>{{ pos }}</b>
+
+:
+
+{% if player %}
+{{ player.name }}
+{% else %}
+-
+{% endif %}
+
+</p>
+
+{% endfor %}
+
+</div>
+
+<form method="POST" action="/choose">
+
+<h2>선수 선택 (정확히 3명)</h2>
+
+{% for player in players %}
+
+<div class="player-card {% if player._already_drafted %}disabled{% endif %}">
+
+{% if not player._already_drafted %}
+<input
+type="checkbox"
+name="player_ids"
+value="{{ player.id }}">
+{% endif %}
+
+<b>{{ player.name }}</b>
+
+{% if player.year %}
+({{ player.year }})
+{% endif %}
+
+<br>
+
+포지션:
+
+{{ player.positions|join(', ') }}
+
+{% if player.war %}
+<br>
+WAR:
+{{ player.war }}
+{% endif %}
+
+{% if player._already_drafted %}
+<br>
+<b>이미 선택됨</b>
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+<button type="submit">
+선수 3명 선택
+</button>
+
+</form>
+
+</body>
+</html>
