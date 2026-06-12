@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>포지션 배치</title>
 
+<style>
+
+.player-box{
+    border:1px solid #ccc;
+    padding:15px;
+    margin:15px 0;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>포지션 배치</h1>
+
+<p>
+
+{{ era }}
+
+/
+
+{{ team }}
+
+</p>
+
+<form method="POST" action="/commit">
+
+{% for player in players %}
+
+<div class="player-box">
+
+<h3>
+
+{{ player.name }}
+
+{% if player.year %}
+({{ player.year }})
+{% endif %}
+
+</h3>
+
+<p>
+
+가능 포지션:
+
+{{ player.positions|join(', ') }}
+
+</p>
+
+<select name="slot_{{ player.id }}" required>
+
+<option value="">
+선택
+</option>
+
+{% for slot in player._eligible_slots %}
+
+<option value="{{ slot }}">
+{{ slot }}
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+{% endfor %}
+
+<button type="submit">
+배치 완료
+</button>
+
+</form>
+
+</body>
+</html>
