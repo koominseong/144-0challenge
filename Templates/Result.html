@@ -1,50 +1,16 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>결과</title>
-</head>
-<body>
+<h1>게임 종료</h1>
 
-<h1>144-0 Challenge 완료</h1>
+<h2>Total WAR : {{ total_war }}</h2>
 
-<hr>
+{% for pos, player in lineup.items() %}
 
-{% for pos, player in lineup %}
+<div>
 
-<p>
-
-<b>{{ pos }}</b>
-
-:
-
-{% if player %}
-
-{{ player.name }}
-
-{% if player.year %}
-({{ player.year }})
-{% endif %}
-
+{{ pos }}
 -
+{{ player.name }}
+(WAR {{ player.war }})
 
-{{ player.team }}
-
-{% endif %}
-
-</p>
+</div>
 
 {% endfor %}
-
-<hr>
-
-<a href="/start">
-
-<button>
-다시 시작
-</button>
-
-</a>
-
-</body>
-</html>
