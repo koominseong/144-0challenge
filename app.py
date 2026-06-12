@@ -52,7 +52,21 @@ def start():
 
     session["used_teams"] = []
 
-    session["lineup"] = {}
+    session["lineup"] = {
+    "SP": [],
+    "RP": [],
+    "C": None,
+    "1B": None,
+    "2B": None,
+    "3B": None,
+    "SS": None,
+    "LF": None,
+    "CF": None,
+    "RF": None,
+    "DH": None
+     }
+
+    session["used_players"] = []
 
     session["team_reroll"] = 1
 
