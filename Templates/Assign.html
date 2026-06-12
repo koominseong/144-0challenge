@@ -1,0 +1,30 @@
+<h1>포지션 배치</h1>
+
+{% for p in players %}
+
+<h3>{{ p.name }}</h3>
+
+<form action="/assign_player" method="post">
+
+<input
+type="hidden"
+name="player_id"
+value="{{ p.id }}">
+
+<select name="position">
+
+{% for pos in p.positions %}
+<option value="{{ pos }}">
+{{ pos }}
+</option>
+{% endfor %}
+
+</select>
+
+<button type="submit">
+배치
+</button>
+
+</form>
+
+{% endfor %}
