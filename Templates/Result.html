@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>결과</title>
+</head>
+<body>
 
+<h1>144-0 Challenge 완료</h1>
+
+<hr>
+
+{% for pos, player in lineup %}
+
+<p>
+
+<b>{{ pos }}</b>
+
+:
+
+{% if player %}
+
+{{ player.name }}
+
+{% if player.year %}
+({{ player.year }})
+{% endif %}
+
+-
+
+{{ player.team }}
+
+{% endif %}
+
+</p>
+
+{% endfor %}
+
+<hr>
+
+<a href="/start">
+
+<button>
+다시 시작
+</button>
+
+</a>
+
+</body>
+</html>
