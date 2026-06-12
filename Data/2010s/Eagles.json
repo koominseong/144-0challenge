@@ -1,0 +1,177 @@
+[
+  {
+    "id": "kim_taekyun_2016",
+    "name": "김태균",
+    "year": 2016,
+    "positions": ["1B", "DH"],
+    "war": 7.0
+  },
+  {
+    "id": "jung_geunwoo_2016",
+    "name": "정근우",
+    "year": 2016,
+    "positions": ["2B"],
+    "war": 6.5
+  },
+  {
+    "id": "lee_yongkyu_2016",
+    "name": "이용규",
+    "year": 2016,
+    "positions": ["CF", "RF"],
+    "war": 5.5
+  },
+  {
+    "id": "song_eunbeom_2015",
+    "name": "송은범",
+    "year": 2015,
+    "positions": ["SP", "RP"],
+    "war": 4.0
+  },
+  {
+    "id": "jung_wooram_2018",
+    "name": "정우람",
+    "year": 2018,
+    "positions": ["RP"],
+    "war": 5.5
+  },
+  {
+    "id": "jang_minseok_2018",
+    "name": "장민석",
+    "year": 2018,
+    "positions": ["RF", "CF"],
+    "war": 3.0
+  },
+  {
+    "id": "lee_sungyeol_2018",
+    "name": "이성열",
+    "year": 2018,
+    "positions": ["LF", "1B"],
+    "war": 4.0
+  },
+  {
+    "id": "choi_jinhang_2018",
+    "name": "최진행",
+    "year": 2018,
+    "positions": ["LF", "DH"],
+    "war": 3.5
+  },
+  {
+    "id": "jared_hoying_2018",
+    "name": "제라드 호잉",
+    "year": 2018,
+    "positions": ["RF", "CF"],
+    "war": 6.0
+  },
+  {
+    "id": "ha_juseok_2018",
+    "name": "하주석",
+    "year": 2018,
+    "positions": ["SS"],
+    "war": 4.0
+  },
+  {
+    "id": "jung_eunwon_2019",
+    "name": "정은원",
+    "year": 2019,
+    "positions": ["2B"],
+    "war": 5.0
+  },
+  {
+    "id": "song_kwangmin_2016",
+    "name": "송광민",
+    "year": 2016,
+    "positions": ["3B"],
+    "war": 4.5
+  },
+  {
+    "id": "kim_hoiyeon_2018",
+    "name": "김회성",
+    "year": 2018,
+    "positions": ["3B", "1B"],
+    "war": 2.5
+  },
+  {
+    "id": "cho_inseong_2013",
+    "name": "조인성",
+    "year": 2013,
+    "positions": ["C"],
+    "war": 3.0
+  },
+  {
+    "id": "jung_beommoh_2018",
+    "name": "정범모",
+    "year": 2018,
+    "positions": ["C"],
+    "war": 2.5
+  },
+  {
+    "id": "lee_sungyeol_2017",
+    "name": "이성열",
+    "year": 2017,
+    "positions": ["1B", "LF"],
+    "war": 3.5
+  },
+  {
+    "id": "ryu_hyunjin_2012",
+    "name": "류현진",
+    "year": 2012,
+    "positions": ["SP"],
+    "war": 10.0
+  },
+  {
+    "id": "an_youngmyung_2011",
+    "name": "안영명",
+    "year": 2011,
+    "positions": ["SP", "RP"],
+    "war": 5.0
+  },
+  {
+    "id": "warwick_saupold_2019",
+    "name": "워윅 서폴드",
+    "year": 2019,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "chad_bell_2019",
+    "name": "채드 벨",
+    "year": 2019,
+    "positions": ["SP"],
+    "war": 4.5
+  },
+  {
+    "id": "kim_minwoo_2019",
+    "name": "김민우",
+    "year": 2019,
+    "positions": ["SP"],
+    "war": 3.0
+  },
+  {
+    "id": "park_jungjin_2011",
+    "name": "박정진",
+    "year": 2011,
+    "positions": ["RP"],
+    "war": 4.5
+  },
+  {
+    "id": "kwon_hyuk_2015",
+    "name": "권혁",
+    "year": 2015,
+    "positions": ["RP"],
+    "war": 5.0
+  },
+  {
+    "id": "song_changsik_2012",
+    "name": "송창식",
+    "year": 2012,
+    "positions": ["RP"],
+    "war": 3.5
+  },
+  {
+    "id": "jung_wooram_2017",
+    "name": "정우람",
+    "year": 2017,
+    "positions": ["RP"],
+    "war": 5.0
+  }
+]
