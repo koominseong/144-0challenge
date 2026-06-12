@@ -1,0 +1,177 @@
+[
+  {
+    "id": "lee_jaewon_2018",
+    "name": "이재원",
+    "year": 2018,
+    "positions": ["C"],
+    "war": 5.5
+  },
+  {
+    "id": "park_kyungwan_2010",
+    "name": "박경완",
+    "year": 2010,
+    "positions": ["C"],
+    "war": 3.5
+  },
+  {
+    "id": "park_jungkwon_2010",
+    "name": "박정권",
+    "year": 2010,
+    "positions": ["1B"],
+    "war": 5.0
+  },
+  {
+    "id": "jamie_romak_2018",
+    "name": "제이미 로맥",
+    "year": 2018,
+    "positions": ["1B", "DH"],
+    "war": 6.5
+  },
+  {
+    "id": "choi_jeong_2017",
+    "name": "최정",
+    "year": 2017,
+    "positions": ["3B"],
+    "war": 8.5
+  },
+  {
+    "id": "kim_sunghyun_2012",
+    "name": "김성현",
+    "year": 2012,
+    "positions": ["2B", "SS"],
+    "war": 4.0
+  },
+  {
+    "id": "najuil_2010",
+    "name": "나주환",
+    "year": 2010,
+    "positions": ["SS"],
+    "war": 4.0
+  },
+  {
+    "id": "park_jinman_2011",
+    "name": "박진만",
+    "year": 2011,
+    "positions": ["SS"],
+    "war": 3.0
+  },
+  {
+    "id": "jung_geunwoo_2010",
+    "name": "정근우",
+    "year": 2010,
+    "positions": ["2B"],
+    "war": 7.0
+  },
+  {
+    "id": "choi_junghoon_2012",
+    "name": "최정용",
+    "year": 2012,
+    "positions": ["2B", "3B"],
+    "war": 2.5
+  },
+  {
+    "id": "kim_kangmin_2010",
+    "name": "김강민",
+    "year": 2010,
+    "positions": ["CF"],
+    "war": 5.5
+  },
+  {
+    "id": "park_jaehong_2010",
+    "name": "박재홍",
+    "year": 2010,
+    "positions": ["RF"],
+    "war": 3.0
+  },
+  {
+    "id": "jung_uiyoon_2016",
+    "name": "정의윤",
+    "year": 2016,
+    "positions": ["LF", "RF", "DH"],
+    "war": 4.5
+  },
+  {
+    "id": "han_dongmin_2018",
+    "name": "한동민",
+    "year": 2018,
+    "positions": ["RF", "LF"],
+    "war": 6.0
+  },
+  {
+    "id": "roh_soogwang_2018",
+    "name": "노수광",
+    "year": 2018,
+    "positions": ["CF", "LF"],
+    "war": 3.5
+  },
+  {
+    "id": "choi_jihoon_2019",
+    "name": "최지훈",
+    "year": 2019,
+    "positions": ["CF"],
+    "war": 2.0
+  },
+  {
+    "id": "kim_kwanghyun_2010",
+    "name": "김광현",
+    "year": 2010,
+    "positions": ["SP"],
+    "war": 8.5
+  },
+  {
+    "id": "merrill_kelly_2018",
+    "name": "메릴 켈리",
+    "year": 2018,
+    "positions": ["SP"],
+    "war": 7.0
+  },
+  {
+    "id": "angel_sanchez_2018",
+    "name": "앙헬 산체스",
+    "year": 2018,
+    "positions": ["SP"],
+    "war": 5.0
+  },
+  {
+    "id": "gary_glover_2010",
+    "name": "게리 글로버",
+    "year": 2010,
+    "positions": ["SP"],
+    "war": 4.5
+  },
+  {
+    "id": "song_eunbeom_2010",
+    "name": "송은범",
+    "year": 2010,
+    "positions": ["SP", "RP"],
+    "war": 5.0
+  },
+  {
+    "id": "jung_wooram_2012",
+    "name": "정우람",
+    "year": 2012,
+    "positions": ["RP"],
+    "war": 5.5
+  },
+  {
+    "id": "park_heesoo_2012",
+    "name": "박희수",
+    "year": 2012,
+    "positions": ["RP"],
+    "war": 4.5
+  },
+  {
+    "id": "jeong_daehyun_2010",
+    "name": "정대현",
+    "year": 2010,
+    "positions": ["RP"],
+    "war": 5.0
+  },
+  {
+    "id": "seo_jinyong_2019",
+    "name": "서진용",
+    "year": 2019,
+    "positions": ["RP"],
+    "war": 2.5
+  }
+]
