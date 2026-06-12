@@ -1,0 +1,24 @@
+<h1>{{ team }}</h1>
+
+<form action="/select" method="post">
+
+{% for p in players %}
+
+<div>
+<input type="checkbox"
+name="players"
+value="{{ p.id }}">
+
+{{ p.name }}
+({{ p.year }})
+WAR {{ p.war }}
+
+</div>
+
+{% endfor %}
+
+<button type="submit">
+3명 선택
+</button>
+
+</form>
