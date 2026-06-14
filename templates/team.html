@@ -4,7 +4,7 @@
 
 {% for p in players %}
 
-<label>
+<div>
 <input type="checkbox"
        name="players"
        value="{{ p.id }}">
@@ -12,7 +12,7 @@
 {{ p.name }}
 [{{ p.positions | join(', ') }}]
 
-</label>
+</div>
 
 {% endfor %}
 
