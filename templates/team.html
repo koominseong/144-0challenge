@@ -4,16 +4,15 @@
 
 {% for p in players %}
 
-<div>
+<label>
 <input type="checkbox"
-name="players"
-value="{{ p.id }}">
+       name="players"
+       value="{{ p.id }}">
 
 {{ p.name }}
-({{ p.year }})
-WAR {{ p.war }}
+[{{ p.positions | join(', ') }}]
 
-</div>
+</label>
 
 {% endfor %}
 
