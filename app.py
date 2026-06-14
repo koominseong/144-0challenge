@@ -261,10 +261,26 @@ def result():
         if lineup[pos]:
             total_war += lineup[pos]["war"]
 
+    if total_war >= 90:
+        grade = "S"
+
+    elif total_war >= 80:
+        grade = "A"
+
+    elif total_war >= 70:
+        grade = "B"
+
+    elif total_war >= 60:
+        grade = "C"
+
+    else:
+        grade = "D"
+
     return render_template(
         "result.html",
         lineup=lineup,
-        total_war=round(total_war, 1)
+        total_war=round(total_war, 1),
+        grade=grade
     )
 
 
