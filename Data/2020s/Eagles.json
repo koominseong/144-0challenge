@@ -1,1 +1,177 @@
-
+[
+  {
+    "id": "noh_sihwan_2023",
+    "name": "노시환",
+    "year": 2023,
+    "positions": ["3B"],
+    "war": 7.5
+  },
+  {
+    "id": "noh_sihwan_2024",
+    "name": "노시환",
+    "year": 2024,
+    "positions": ["3B"],
+    "war": 5.0
+  },
+  {
+    "id": "chae_eunseong_2023",
+    "name": "채은성",
+    "year": 2023,
+    "positions": ["1B"],
+    "war": 4.5
+  },
+  {
+    "id": "chae_eunseong_2024",
+    "name": "채은성",
+    "year": 2024,
+    "positions": ["1B"],
+    "war": 3.5
+  },
+  {
+    "id": "jung_eunwon_2021",
+    "name": "정은원",
+    "year": 2021,
+    "positions": ["2B"],
+    "war": 6.0
+  },
+  {
+    "id": "moon_hyunbin_2024",
+    "name": "문현빈",
+    "year": 2024,
+    "positions": ["2B", "LF"],
+    "war": 4.5
+  },
+  {
+    "id": "ha_juseok_2020",
+    "name": "하주석",
+    "year": 2020,
+    "positions": ["SS"],
+    "war": 4.0
+  },
+  {
+    "id": "sim_woojun_2025",
+    "name": "심우준",
+    "year": 2025,
+    "positions": ["SS"],
+    "war": 3.5
+  },
+  {
+    "id": "choi_jaehoon_2021",
+    "name": "최재훈",
+    "year": 2021,
+    "positions": ["C"],
+    "war": 4.0
+  },
+  {
+    "id": "choi_jaehoon_2024",
+    "name": "최재훈",
+    "year": 2024,
+    "positions": ["C"],
+    "war": 2.5
+  },
+  {
+    "id": "lee_jinyoung_2024",
+    "name": "이진영",
+    "year": 2024,
+    "positions": ["RF", "LF"],
+    "war": 3.5
+  },
+  {
+    "id": "roh_siyoung_2024",
+    "name": "노수광",
+    "year": 2024,
+    "positions": ["CF"],
+    "war": 2.5
+  },
+  {
+    "id": "lee_dowoon_2020",
+    "name": "이도윤",
+    "year": 2024,
+    "positions": ["SS", "2B"],
+    "war": 3.0
+  },
+  {
+    "id": "kim_taeyeon_2024",
+    "name": "김태연",
+    "year": 2024,
+    "positions": ["LF", "RF", "DH"],
+    "war": 3.5
+  },
+  {
+    "id": "yonathan_peraza_2024",
+    "name": "요나단 페라자",
+    "year": 2024,
+    "positions": ["CF", "RF"],
+    "war": 4.5
+  },
+  {
+    "id": "brian_ocgrady_2023",
+    "name": "브라이언 오그레디",
+    "year": 2023,
+    "positions": ["LF", "RF"],
+    "war": 3.0
+  },
+  {
+    "id": "ryu_hyunjin_2024",
+    "name": "류현진",
+    "year": 2024,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "felix_pena_2022",
+    "name": "펠릭스 페냐",
+    "year": 2022,
+    "positions": ["SP"],
+    "war": 5.0
+  },
+  {
+    "id": "ricardo_sanchez_2020",
+    "name": "리카르도 산체스",
+    "year": 2020,
+    "positions": ["SP"],
+    "war": 4.0
+  },
+  {
+    "id": "moon_dongju_2024",
+    "name": "문동주",
+    "year": 2024,
+    "positions": ["SP"],
+    "war": 4.5
+  },
+  {
+    "id": "eom_sangbaek_2024",
+    "name": "엄상백",
+    "year": 2024,
+    "positions": ["SP"],
+    "war": 4.0
+  },
+  {
+    "id": "park_sangwon_2023",
+    "name": "박상원",
+    "year": 2023,
+    "positions": ["RP"],
+    "war": 3.5
+  },
+  {
+    "id": "joo_hyeonsang_2024",
+    "name": "주현상",
+    "year": 2024,
+    "positions": ["RP"],
+    "war": 3.5
+  },
+  {
+    "id": "kim_seohyun_2024",
+    "name": "김서현",
+    "year": 2024,
+    "positions": ["RP"],
+    "war": 3.0
+  },
+  {
+    "id": "kang_jaemin_2024",
+    "name": "강재민",
+    "year": 2024,
+    "positions": ["RP"],
+    "war": 3.0
+  }
+]
