@@ -134,6 +134,20 @@ body{
 
 <h1>{{ team_name }}</h1>
 
+<p>
+팀 리롤 남음 : {{ rerolls }}
+</p>
+
+{% if rerolls > 0 %}
+<a href="/team_reroll">
+    <button type="button">
+        🔄 팀 리롤
+    </button>
+</a>
+{% endif %}
+
+<br><br>
+
 <button onclick="toggleDarkMode()">
 🌙 다크모드
 </button>
