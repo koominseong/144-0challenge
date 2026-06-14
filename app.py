@@ -74,7 +74,10 @@ def start(era):
 
     session.clear()
 
-    session["era"] = era
+    era = session.get("era")
+    
+    if not era:
+        return redirect("/")
 
     session["assigned_this_round"] = 0
 
