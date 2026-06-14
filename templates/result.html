@@ -1,16 +1,167 @@
-<h1>게임 종료</h1>
+<!DOCTYPE html>
+<html>
 
-<h2>Total WAR : {{ total_war }}</h2>
+<head>
+<meta charset="utf-8">
 
-{% for pos, player in lineup.items() %}
+<title>게임 결과</title>
 
-<div>
+<style>
 
-{{ pos }}
--
-{{ player.name }}
-(WAR {{ player.war }})
+body{
+    font-family:Arial,sans-serif;
+    margin:30px;
+    background:#f5f5f5;
+}
+
+.header{
+    text-align:center;
+}
+
+.total-war{
+    font-size:40px;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.result-table{
+
+    width:700px;
+    margin:auto;
+
+    border-collapse:collapse;
+
+    background:white;
+}
+
+.result-table th,
+.result-table td{
+
+    border:1px solid #ddd;
+
+    padding:10px;
+
+    text-align:center;
+}
+
+.result-table th{
+    background:#1976d2;
+    color:white;
+}
+
+.player-card{
+
+    width:250px;
+
+    margin:30px auto;
+
+    background:white;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>
+🏆 게임 종료
+</h1>
+
+<h2>
+등급 : {{ grade }}
+</h2>
+  
+<div class="total-war">
+WAR {{ total_war }}
+</div>
 
 </div>
 
+<br>
+
+<table class="result-table">
+
+<tr>
+<th>포지션</th>
+<th>선수</th>
+<th>WAR</th>
+</tr>
+
+{% for player in lineup["SP"] %}
+<tr>
+<td>SP</td>
+<td>{{ player.name }}</td>
+<td>{{ player.war }}</td>
+</tr>
 {% endfor %}
+
+{% for player in lineup["RP"] %}
+<tr>
+<td>RP</td>
+<td>{{ player.name }}</td>
+<td>{{ player.war }}</td>
+</tr>
+{% endfor %}
+
+{% for pos in [
+"C","1B","2B","3B","SS",
+"LF","CF","RF","DH"
+] %}
+
+{% if lineup[pos] %}
+
+<tr>
+<td>{{ pos }}</td>
+<td>{{ lineup[pos].name }}</td>
+<td>{{ lineup[pos].war }}</td>
+</tr>
+
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<div class="player-card">
+
+<h3>라인업 완성도</h3>
+
+<p>
+채운 포지션 :
+{{ lineup["SP"]|length + lineup["RP"]|length }}
+/ 6 투수
+</p>
+
+<p>
+야수 :
+9 / 9
+</p>
+
+</div>
+
+<br>
+
+<div style="text-align:center">
+
+<a href="/">
+<button style="padding:10px 20px;font-size:18px;">
+다시 플레이
+</button>
+</a>
+
+</div>
+
+</body>
+
+</html>
