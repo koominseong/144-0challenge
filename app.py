@@ -162,10 +162,13 @@ def assign():
 @app.route("/assign_player", methods=["POST"])
 def assign_player():
 
-    session["assigned_this_round"] += 1
-
     player_id = request.form["player_id"]
     position = request.form["position"]
+
+    used_players = session["used_players"]
+
+    if player_id in used_players:
+        return "이미 배치한 선수"
 
     players = load_team(session["current_team"])
 
@@ -200,9 +203,10 @@ def assign_player():
 
         lineup[position] = player
 
-    session["lineup"] = lineup
+    # 이번 라운드 배치 수 증가
+    session["assigned_this_round"] += 1
 
-    used_players = session["used_players"]
+    session["lineup"] = lineup
 
     if player_id not in used_players:
         used_players.append(player_id)
@@ -211,14 +215,12 @@ def assign_player():
 
     session.modified = True
 
-    filled = (
-        len(lineup["SP"])
-        + len(lineup["RP"])
-    )
+    # 게임 종료 체크
+    filled = len(lineup["SP"]) + len(lineup["RP"])
 
     for pos in [
-        "C","1B","2B","3B","SS",
-        "LF","CF","RF","DH"
+        "C", "1B", "2B", "3B", "SS",
+        "LF", "CF", "RF", "DH"
     ]:
         if lineup[pos]:
             filled += 1
@@ -226,12 +228,12 @@ def assign_player():
     if filled >= 15:
         return redirect("/result")
 
+    # 이번 팀에서 3명 다 배치했으면 다음 팀
     if session["assigned_this_round"] >= 3:
         session["assigned_this_round"] = 0
         return redirect("/next")
 
     return redirect("/assign")
-
 
 @app.route("/result")
 def result():
