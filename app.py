@@ -48,9 +48,9 @@ def load_team(team):
 @app.route("/")
 def start():
 
-    session["assigned_this_round"] = 0
-
     session.clear()
+
+    session["assigned_this_round"] = 0
 
     session["used_teams"] = []
 
