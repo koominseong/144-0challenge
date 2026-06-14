@@ -55,29 +55,20 @@ def load_team(team):
 
     era = session.get("era")
 
-    # 🔥 ALL TIME 모드
+    # 🔥 ALL TIME 처리
     if era == "all_time":
 
-        all_eras = ["2010s", "2020s"]
+        # 2010s / 2020s 둘 중 랜덤 선택
+        era = random.choice(["2010s", "2020s"])
 
-        chosen_era = random.choice(all_eras)
-
-        path = os.path.join(
-            "Data",
-            chosen_era,
-            f"{team}.json"
-        )
-
-    else:
-        path = os.path.join(
-            "Data",
-            era,
-            f"{team}.json"
-        )
+    path = os.path.join(
+        "Data",
+        era,
+        f"{team}.json"
+    )
 
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
-
 
 @app.route("/")
 @app.route("/")
