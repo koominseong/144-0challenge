@@ -7,8 +7,9 @@ app = Flask(__name__)
 app.secret_key = "kbo1440"
 
 def get_team_names():
+    era = session.get("era", "2010s")
 
-    if session["era"] == "2010s":
+    if era == "2010s":
         return {
             "Bears": "두산 베어스",
             "LG": "LG 트윈스",
@@ -74,10 +75,7 @@ def start(era):
 
     session.clear()
 
-    era = session.get("era")
-    
-    if not era:
-        return redirect("/")
+    session["era"] = era 
 
     session["assigned_this_round"] = 0
 
