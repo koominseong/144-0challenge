@@ -1,11 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+
+<title>144-0 Challenge</title>
+
+<style>
+
+body{
+    font-family: Arial;
+    margin:20px;
+}
+
+.player-table{
+    width:70%;
+    border-collapse:collapse;
+}
+
+.player-table th,
+.player-table td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+.player-table th{
+    background:#f5f5f5;
+}
+
+.player-table tr:hover{
+    background:#e8f4ff;
+}
+
+.sidebar{
+    position:fixed;
+    top:20px;
+    right:20px;
+
+    width:320px;
+
+    background:white;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+.field{
+    position:relative;
+
+    width:300px;
+    height:450px;
+
+    margin:auto;
+}
+
+.player{
+    position:absolute;
+
+    width:90px;
+
+    background:#eee;
+
+    border-radius:8px;
+
+    padding:5px;
+
+    text-align:center;
+
+    font-size:12px;
+}
+
+.filled{
+    background:#4caf50;
+    color:white;
+    font-weight:bold;
+}
+
+.diamond{
+
+    position:absolute;
+
+    width:140px;
+    height:140px;
+
+    border:3px solid black;
+
+    transform:rotate(45deg);
+
+    left:80px;
+    top:120px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>{{ team_name }}</h1>
+
 <form action="/select" method="post">
 
 <table class="player-table">
 
 <tr>
-    <th>선택</th>
-    <th>선수</th>
-    <th>포지션</th>
+<th>선택</th>
+<th>선수</th>
+<th>포지션</th>
 </tr>
 
 {% for p in players %}
@@ -39,26 +146,88 @@ value="{{ p.id }}">
 
 </form>
 
-<style>
+<div class="sidebar">
 
-.player-table{
-    width:100%;
-    border-collapse:collapse;
-}
+<h3>현재 라인업</h3>
 
-.player-table th,
-.player-table td{
-    border:1px solid #ccc;
-    padding:8px;
-    text-align:center;
-}
+<div class="field">
 
-.player-table th{
-    background:#f5f5f5;
-}
+<div class="diamond"></div>
 
-.player-table tr:hover{
-    background:#e8f4ff;
-}
+<div class="player {% if lineup['CF'] %}filled{% endif %}" style="top:0;left:105px;">
+CF<br>{{ lineup["CF"].name if lineup["CF"] else "-" }}
+</div>
 
-</style>
+<div class="player {% if lineup['LF'] %}filled{% endif %}" style="top:50px;left:0;">
+LF<br>{{ lineup["LF"].name if lineup["LF"] else "-" }}
+</div>
+
+<div class="player {% if lineup['RF'] %}filled{% endif %}" style="top:50px;right:0;">
+RF<br>{{ lineup["RF"].name if lineup["RF"] else "-" }}
+</div>
+
+<div class="player {% if lineup['SS'] %}filled{% endif %}" style="top:140px;left:45px;">
+SS<br>{{ lineup["SS"].name if lineup["SS"] else "-" }}
+</div>
+
+<div class="player {% if lineup['2B'] %}filled{% endif %}" style="top:140px;right:45px;">
+2B<br>{{ lineup["2B"].name if lineup["2B"] else "-" }}
+</div>
+
+<div class="player {% if lineup['3B'] %}filled{% endif %}" style="top:230px;left:0;">
+3B<br>{{ lineup["3B"].name if lineup["3B"] else "-" }}
+</div>
+
+<div class="player {% if lineup['1B'] %}filled{% endif %}" style="top:230px;right:0;">
+1B<br>{{ lineup["1B"].name if lineup["1B"] else "-" }}
+</div>
+
+<div class="player {% if lineup['DH'] %}filled{% endif %}" style="top:300px;left:105px;">
+DH<br>{{ lineup["DH"].name if lineup["DH"] else "-" }}
+</div>
+
+<div class="player {% if lineup['C'] %}filled{% endif %}" style="top:380px;left:105px;">
+C<br>{{ lineup["C"].name if lineup["C"] else "-" }}
+</div>
+
+<div class="player" style="top:120px;left:-100px;">
+SP1<br>
+{{ lineup["SP"][0].name if lineup["SP"]|length > 0 else "-" }}
+</div>
+
+<div class="player" style="top:200px;left:-100px;">
+SP2<br>
+{{ lineup["SP"][1].name if lineup["SP"]|length > 1 else "-" }}
+</div>
+
+<div class="player" style="top:280px;left:-100px;">
+SP3<br>
+{{ lineup["SP"][2].name if lineup["SP"]|length > 2 else "-" }}
+</div>
+
+<div class="player" style="top:120px;right:-100px;">
+RP1<br>
+{{ lineup["RP"][0].name if lineup["RP"]|length > 0 else "-" }}
+</div>
+
+<div class="player" style="top:200px;right:-100px;">
+RP2<br>
+{{ lineup["RP"][1].name if lineup["RP"]|length > 1 else "-" }}
+</div>
+
+<div class="player" style="top:280px;right:-100px;">
+RP3<br>
+{{ lineup["RP"][2].name if lineup["RP"]|length > 2 else "-" }}
+</div>
+
+</div>
+
+<hr>
+
+<p>팀 리롤 : {{ rerolls }}</p>
+<p>사용 팀 : {{ session["used_teams"]|length }}/10</p>
+
+</div>
+
+</body>
+</html>
