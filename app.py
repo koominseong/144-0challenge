@@ -6,18 +6,34 @@ import random
 app = Flask(__name__)
 app.secret_key = "kbo1440"
 
-TEAM_NAMES = {
-    "Bears": "두산 베어스",
-    "LG": "LG 트윈스",
-    "Lions": "삼성 라이온즈",
-    "Tigers": "KIA 타이거즈",
-    "Eagles": "한화 이글스",
-    "Wyverns": "SK 와이번스",
-    "Giants": "롯데 자이언츠",
-    "Wiz": "KT 위즈",
-    "Dinos": "NC 다이노스",
-    "Heroes": "넥센 히어로즈"
-}
+def get_team_names():
+
+    if session["era"] == "2010s":
+        return {
+            "Bears": "두산 베어스",
+            "LG": "LG 트윈스",
+            "Lions": "삼성 라이온즈",
+            "Tigers": "KIA 타이거즈",
+            "Eagles": "한화 이글스",
+            "Wyverns": "SK 와이번스",
+            "Giants": "롯데 자이언츠",
+            "Wiz": "KT 위즈",
+            "Dinos": "NC 다이노스",
+            "Heroes": "넥센 히어로즈"
+        }
+
+    return {
+        "Bears": "두산 베어스",
+        "LG": "LG 트윈스",
+        "Lions": "삼성 라이온즈",
+        "Tigers": "KIA 타이거즈",
+        "Eagles": "한화 이글스",
+        "Landers": "SSG 랜더스",
+        "Giants": "롯데 자이언츠",
+        "Wiz": "KT 위즈",
+        "Dinos": "NC 다이노스",
+        "Heroes": "키움 히어로즈"
+    }
 
 POSITIONS = [
     "SP", "SP", "SP",
@@ -35,9 +51,12 @@ POSITIONS = [
 
 
 def load_team(team):
+
+    era = session["era"]
+
     path = os.path.join(
         "Data",
-        "2010s",
+        era,
         f"{team}.json"
     )
 
@@ -46,9 +65,16 @@ def load_team(team):
 
 
 @app.route("/")
-def start():
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/start/<era>")
+def start(era):
 
     session.clear()
+
+    session["era"] = era
 
     session["assigned_this_round"] = 0
 
@@ -78,9 +104,11 @@ def start():
 @app.route("/next")
 def next_team():
 
+    team_names = get_team_names()
+
     available = [
         team
-        for team in TEAM_NAMES.keys()
+        for team in team_names.keys()
         if team not in session["used_teams"]
     ]
 
@@ -97,7 +125,7 @@ def next_team():
 
     return render_template(
         "team.html",
-        team_name=TEAM_NAMES[team],
+        team_name=team_names[team],
         team_key=team,
         players=players,
         lineup=session["lineup"],
