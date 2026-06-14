@@ -53,13 +53,27 @@ POSITIONS = [
 
 def load_team(team):
 
-    era = session.get("era", "2010s")
+    era = session.get("era")
 
-    path = os.path.join(
-        "Data",
-        era,
-        f"{team}.json"
-    )
+    # 🔥 ALL TIME 모드
+    if era == "all_time":
+
+        all_eras = ["2010s", "2020s"]
+
+        chosen_era = random.choice(all_eras)
+
+        path = os.path.join(
+            "Data",
+            chosen_era,
+            f"{team}.json"
+        )
+
+    else:
+        path = os.path.join(
+            "Data",
+            era,
+            f"{team}.json"
+        )
 
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
