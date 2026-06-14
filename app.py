@@ -7,16 +7,16 @@ app = Flask(__name__)
 app.secret_key = "kbo1440"
 
 TEAM_NAMES = {
-    "bears": "두산 베어스",
-    "twins": "LG 트윈스",
-    "lions": "삼성 라이온즈",
-    "tigers": "KIA 타이거즈",
-    "eagles": "한화 이글스",
-    "wyverns": "SK 와이번스",
-    "giants": "롯데 자이언츠",
-    "wiz": "KT 위즈",
-    "dinos": "NC 다이노스",
-    "heroes": "넥센 히어로즈"
+    "Bears": "두산 베어스",
+    "LG": "LG 트윈스",
+    "Lions": "삼성 라이온즈",
+    "Tigers": "KIA 타이거즈",
+    "Eagles": "한화 이글스",
+    "Wyverns": "SK 와이번스",
+    "Giants": "롯데 자이언츠",
+    "Wiz": "KT 위즈",
+    "Dinos": "NC 다이노스",
+    "Heroes": "넥센 히어로즈"
 }
 
 POSITIONS = [
@@ -36,7 +36,7 @@ POSITIONS = [
 
 def load_team(team):
     path = os.path.join(
-        "data",
+        "Data",
         "2010s",
         f"{team}.json"
     )
