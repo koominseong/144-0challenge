@@ -146,10 +146,16 @@ def assign():
         session["current_team"]
     )
 
+    used_players = session.get(
+        "used_players",
+        []
+    )
+
     selected_players = [
         p
         for p in players
         if p["id"] in session["selected_players"]
+        and p["id"] not in used_players
     ]
 
     return render_template(
