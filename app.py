@@ -48,6 +48,8 @@ def load_team(team):
 @app.route("/")
 def start():
 
+    session["assigned_this_round"] = 0
+
     session.clear()
 
     session["used_teams"] = []
@@ -160,6 +162,8 @@ def assign():
 @app.route("/assign_player", methods=["POST"])
 def assign_player():
 
+    session["assigned_this_round"] += 1
+
     player_id = request.form["player_id"]
     position = request.form["position"]
 
@@ -221,6 +225,10 @@ def assign_player():
 
     if filled >= 15:
         return redirect("/result")
+
+    if session["assigned_this_round"] >= 3:
+        session["assigned_this_round"] = 0
+        return redirect("/next")
 
     return redirect("/assign")
 
