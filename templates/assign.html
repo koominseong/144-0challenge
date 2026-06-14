@@ -2,7 +2,16 @@
 
 {% for p in players %}
 
-<h3>{{ p.name }}</h3>
+<div style="border:1px solid #ccc;padding:10px;margin:10px;">
+
+<h3>
+{{ p.name }}
+</h3>
+
+<p>
+가능 포지션 :
+{{ p.positions | join(", ") }}
+</p>
 
 <form action="/assign_player" method="post">
 
@@ -27,4 +36,10 @@ value="{{ p.id }}">
 
 </form>
 
+</div>
+
 {% endfor %}
+
+<a href="/next">
+다음 팀으로
+</a>
