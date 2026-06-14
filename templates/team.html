@@ -147,6 +147,7 @@ body{
 <tr>
     <th>선택</th>
     <th>선수</th>
+    <th>연도</th>
     <th>포지션</th>
 </tr>
 
@@ -160,14 +161,14 @@ name="players"
 value="{{ p.id }}">
 </td>
 
-<td>
-{{ p.name }}
-</td>
+<td>{{ p.name }}</td>
+
+<td>{{ p.year }}</td>
 
 <td>
 {{ p.positions | join(", ") }}
 </td>
-
+    
 </tr>
 {% endfor %}
 
