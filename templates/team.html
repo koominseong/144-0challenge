@@ -1,23 +1,64 @@
-<h1>{{ team }}</h1>
-
 <form action="/select" method="post">
 
+<table class="player-table">
+
+<tr>
+    <th>선택</th>
+    <th>선수</th>
+    <th>포지션</th>
+</tr>
+
 {% for p in players %}
+<tr>
 
-<div>
-<input type="checkbox"
-       name="players"
-       value="{{ p.id }}">
+<td>
+<input
+type="checkbox"
+name="players"
+value="{{ p.id }}">
+</td>
 
+<td>
 {{ p.name }}
-[{{ p.positions | join(', ') }}]
+</td>
 
-</div>
+<td>
+{{ p.positions | join(", ") }}
+</td>
 
+</tr>
 {% endfor %}
 
+</table>
+
+<br>
+
 <button type="submit">
-3명 선택
+선수 3명 선택
 </button>
 
 </form>
+
+<style>
+
+.player-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.player-table th,
+.player-table td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+.player-table th{
+    background:#f5f5f5;
+}
+
+.player-table tr:hover{
+    background:#e8f4ff;
+}
+
+</style>
