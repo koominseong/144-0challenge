@@ -53,7 +53,7 @@ POSITIONS = [
 
 def load_team(team):
 
-    era = session["era"]
+    era = session.get("era", "2010s")
 
     path = os.path.join(
         "Data",
@@ -104,6 +104,9 @@ def start(era):
 
 @app.route("/next")
 def next_team():
+
+    if "era" not in session:
+        return redirect("/")
 
     team_names = get_team_names()
 
