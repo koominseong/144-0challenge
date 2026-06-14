@@ -1,1 +1,177 @@
-
+[
+  {
+    "id": "hong_changki_2021",
+    "name": "홍창기",
+    "year": 2021,
+    "positions": ["RF", "CF"],
+    "war": 7.5
+  },
+  {
+    "id": "hong_changki_2023",
+    "name": "홍창기",
+    "year": 2023,
+    "positions": ["RF"],
+    "war": 6.8
+  },
+  {
+    "id": "oh_jihwan_2023",
+    "name": "오지환",
+    "year": 2023,
+    "positions": ["SS"],
+    "war": 5.5
+  },
+  {
+    "id": "moon_boyeong_2023",
+    "name": "문보경",
+    "year": 2023,
+    "positions": ["3B", "1B"],
+    "war": 5.2
+  },
+  {
+    "id": "moon_boyeong_2024",
+    "name": "문보경",
+    "year": 2024,
+    "positions": ["3B"],
+    "war": 5.8
+  },
+  {
+    "id": "park_haemin_2021",
+    "name": "박해민",
+    "year": 2021,
+    "positions": ["CF"],
+    "war": 4.8
+  },
+  {
+    "id": "park_haemin_2022",
+    "name": "박해민",
+    "year": 2022,
+    "positions": ["CF"],
+    "war": 4.3
+  },
+  {
+    "id": "kim_hyunsoo_2020",
+    "name": "김현수",
+    "year": 2020,
+    "positions": ["LF", "1B"],
+    "war": 6.0
+  },
+  {
+    "id": "kim_hyunsoo_2022",
+    "name": "김현수",
+    "year": 2022,
+    "positions": ["LF"],
+    "war": 5.4
+  },
+  {
+    "id": "chae_euntae_2020",
+    "name": "채은성",
+    "year": 2020,
+    "positions": ["1B", "RF"],
+    "war": 4.5
+  },
+  {
+    "id": "austin_dean_2023",
+    "name": "오스틴 딘",
+    "year": 2023,
+    "positions": ["1B"],
+    "war": 6.2
+  },
+  {
+    "id": "austin_dean_2024",
+    "name": "오스틴 딘",
+    "year": 2024,
+    "positions": ["1B"],
+    "war": 7.0
+  },
+  {
+    "id": "park_dongwon_2023",
+    "name": "박동원",
+    "year": 2023,
+    "positions": ["C"],
+    "war": 4.5
+  },
+  {
+    "id": "yoo_gangnam_2021",
+    "name": "유강남",
+    "year": 2021,
+    "positions": ["C"],
+    "war": 3.8
+  },
+  {
+    "id": "shin_minjae_2024",
+    "name": "신민재",
+    "year": 2024,
+    "positions": ["2B"],
+    "war": 4.7
+  },
+  {
+    "id": "seo_geonchang_2020",
+    "name": "서건창",
+    "year": 2020,
+    "positions": ["2B"],
+    "war": 4.0
+  },
+  {
+    "id": "lee_jaewon_2020",
+    "name": "이재원",
+    "year": 2020,
+    "positions": ["RF", "LF"],
+    "war": 3.0
+  },
+  {
+    "id": "moon_sungju_2022",
+    "name": "문성주",
+    "year": 2022,
+    "positions": ["LF", "RF"],
+    "war": 3.7
+  },
+  {
+    "id": "lim_chankyoo_2023",
+    "name": "임찬규",
+    "year": 2023,
+    "positions": ["SP"],
+    "war": 4.8
+  },
+  {
+    "id": "casey_kelly_2023",
+    "name": "케이시 켈리",
+    "year": 2023,
+    "positions": ["SP"],
+    "war": 5.0
+  },
+  {
+    "id": "adam_plutko_2022",
+    "name": "아담 플럿코",
+    "year": 2022,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "yoo_youngchan_2024",
+    "name": "유영찬",
+    "year": 2024,
+    "positions": ["RP"],
+    "war": 3.5
+  },
+  {
+    "id": "go_wooseok_2023",
+    "name": "고우석",
+    "year": 2023,
+    "positions": ["RP"],
+    "war": 4.0
+  },
+  {
+    "id": "jung_wooyoung_2021",
+    "name": "정우영",
+    "year": 2021,
+    "positions": ["RP"],
+    "war": 4.2
+  },
+  {
+    "id": "ham_deokju_2023",
+    "name": "함덕주",
+    "year": 2023,
+    "positions": ["RP"],
+    "war": 3.0
+  }
+]
