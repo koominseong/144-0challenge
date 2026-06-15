@@ -55,7 +55,7 @@ def load_team(team):
 
     era = session.get("era")
 
-    if session["era"] == "all_time":
+    if era == "all_time":
         era = random.choice(["2010s", "2020s"])
 
     path = os.path.join(
