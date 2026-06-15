@@ -15,7 +15,6 @@
 }
 
 body{
-    margin:0;
     height:100vh;
     display:flex;
     justify-content:center;
@@ -44,7 +43,7 @@ body{
     word-break:keep-all;
 }
 
-/* ✨ 빛나는 애니메이션 */
+/* ✨ TEAM 글로우 */
 @keyframes glow {
     0% {
         text-shadow: 0 0 5px #60a5fa, 0 0 10px #60a5fa;
@@ -64,6 +63,36 @@ body{
     animation: glow 0.8s ease-in-out infinite;
 }
 
+/* 🔥 ALL TIME ERA 효과 */
+.era{
+    font-size:60px;
+    font-weight:bold;
+    margin-bottom:20px;
+    opacity:0;
+}
+
+@keyframes eraGlow {
+    0% {
+        opacity:0;
+        transform: scale(0.5);
+        text-shadow:none;
+    }
+    50% {
+        opacity:1;
+        transform: scale(1.3);
+        text-shadow: 0 0 30px #f97316, 0 0 60px #a855f7;
+    }
+    100% {
+        opacity:1;
+        transform: scale(1.1);
+        text-shadow: 0 0 30px #60a5fa;
+    }
+}
+
+.era.show {
+    animation: eraGlow 1s ease-in-out forwards;
+}
+
 /* 📱 모바일 */
 @media (max-width: 768px){
 
@@ -73,6 +102,10 @@ body{
 
     .team{
         font-size:34px;
+    }
+
+    .era{
+        font-size:40px;
     }
 }
 
@@ -86,6 +119,10 @@ body{
     .loading{
         font-size:14px;
     }
+
+    .era{
+        font-size:32px;
+    }
 }
 
 </style>
@@ -94,11 +131,22 @@ body{
 <body>
 
 <div class="box">
+
     <div class="loading">팀 선택 중...</div>
+
+    <!-- 🔥 ALL TIME 전용 -->
+    <div class="era" id="eraText"></div>
+
     <div class="team" id="team">두산 베어스</div>
+
 </div>
 
 <script>
+
+const era = "{{ era }}";
+
+const eraText = document.getElementById("eraText");
+const teamBox = document.getElementById("team");
 
 const teams = [
     "두산 베어스",
@@ -114,28 +162,55 @@ const teams = [
 ];
 
 let i = 0;
-const teamBox = document.getElementById("team");
 
-// 🔄 빠르게 팀 바뀌는 효과
+// 🔄 팀 회전 효과
 const interval = setInterval(() => {
     teamBox.innerText = teams[i % teams.length];
     i++;
-}, 80);
+}, 70);
 
-// 🎯 최종 확정
-setTimeout(() => {
-    clearInterval(interval);
 
-    teamBox.innerText = "{{ team_name }}";
-
-    // ✨ 빛나는 효과 시작
-    teamBox.classList.add("glow");
+// 💥 ALL TIME 모드
+if (era === "all_time") {
 
     setTimeout(() => {
-        window.location.href = "/team_view";
-    }, 1200);
 
-}, 2000);
+        clearInterval(interval);
+
+        // 🔥 ERA 등장
+        eraText.innerText = "ALL TIME ERA";
+        eraText.classList.add("show");
+
+        setTimeout(() => {
+
+            teamBox.innerText = "{{ team_name }}";
+            teamBox.classList.add("glow");
+
+            setTimeout(() => {
+                window.location.href = "/team_view";
+            }, 1200);
+
+        }, 1200);
+
+    }, 1500);
+
+
+// ⚡ 일반 모드
+} else {
+
+    setTimeout(() => {
+
+        clearInterval(interval);
+
+        teamBox.innerText = "{{ team_name }}";
+        teamBox.classList.add("glow");
+
+        setTimeout(() => {
+            window.location.href = "/team_view";
+        }, 1200);
+
+    }, 2000);
+}
 
 </script>
 
