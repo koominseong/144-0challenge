@@ -70,7 +70,7 @@ def load_team(team):
     era = session.get("era")
 
     if era == "all_time":
-        era = random.choice(["2010s", "2020s", "2000s"])
+        era = session["actual_era"]
 
     path = os.path.join(
         "Data",
@@ -90,8 +90,13 @@ def start(era):
 
     session.clear()
 
-    session["era"] = era 
+    if era == "all_time":
+        session["actual_era"] = random.choice(
+            ["2000s", "2010s", "2020s"]
+        )
 
+    session["era"] = era
+    
     session["assigned_this_round"] = 0
 
     session["used_teams"] = []
@@ -116,6 +121,12 @@ def start(era):
 
     return redirect("/next")
 
+def get_team_names():
+
+    era = session.get("era", "2010s")
+
+    if era == "all_time":
+        era = session["actual_era"]
 
 @app.route("/next")
 def next_team():
@@ -144,6 +155,7 @@ def next_team():
         final_team=team,
         team_name=team_names[team],
         era=session["era"]
+        actual_era=session.get("actual_era")
     )
 
 @app.route("/team_view")
