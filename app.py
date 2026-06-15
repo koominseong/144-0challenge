@@ -159,7 +159,7 @@ def next_team():
         "loading.html",
         team_name=team_names[team],
         era=session["era"],
-        actual_era=session["actual_era"]
+        actual_era=session.get("actual_era")
     )
 
 @app.route("/team_view")
