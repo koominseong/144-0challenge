@@ -43,7 +43,6 @@ body{
     word-break:keep-all;
 }
 
-/* ✨ TEAM 글로우 */
 @keyframes glow {
     0% {
         text-shadow: 0 0 5px #60a5fa, 0 0 10px #60a5fa;
@@ -63,38 +62,36 @@ body{
     animation: glow 0.8s ease-in-out infinite;
 }
 
-/* 🔥 ALL TIME ERA 효과 */
 .era{
     font-size:60px;
     font-weight:bold;
-    margin-bottom:20px;
+    margin-bottom:30px;
     opacity:0;
 }
 
 @keyframes eraGlow {
     0% {
         opacity:0;
-        transform: scale(0.5);
+        transform:scale(0.5);
         text-shadow:none;
     }
     50% {
         opacity:1;
-        transform: scale(1.3);
-        text-shadow: 0 0 30px #f97316, 0 0 60px #a855f7;
+        transform:scale(1.3);
+        text-shadow:0 0 30px #f97316, 0 0 60px #a855f7;
     }
     100% {
         opacity:1;
-        transform: scale(1.1);
-        text-shadow: 0 0 30px #60a5fa;
+        transform:scale(1.1);
+        text-shadow:0 0 30px #60a5fa;
     }
 }
 
-.era.show {
-    animation: eraGlow 1s ease-in-out forwards;
+.era.show{
+    animation:eraGlow 1s ease-in-out forwards;
 }
 
-/* 📱 모바일 */
-@media (max-width: 768px){
+@media (max-width:768px){
 
     .loading{
         font-size:16px;
@@ -109,8 +106,7 @@ body{
     }
 }
 
-/* 📱 초소형 */
-@media (max-width: 400px){
+@media (max-width:400px){
 
     .team{
         font-size:28px;
@@ -134,7 +130,6 @@ body{
 
     <div class="loading">팀 선택 중...</div>
 
-    <!-- 🔥 ALL TIME 전용 -->
     <div class="era" id="eraText"></div>
 
     <div class="team" id="team">두산 베어스</div>
@@ -144,6 +139,7 @@ body{
 <script>
 
 const era = "{{ era }}";
+const actualEra = "{{ actual_era }}";
 
 const eraText = document.getElementById("eraText");
 const teamBox = document.getElementById("team");
@@ -163,22 +159,32 @@ const teams = [
 
 let i = 0;
 
-// 🔄 팀 회전 효과
 const interval = setInterval(() => {
+
     teamBox.innerText = teams[i % teams.length];
     i++;
+
 }, 70);
 
-
-// 💥 ALL TIME 모드
 if (era === "all_time") {
 
     setTimeout(() => {
 
         clearInterval(interval);
 
-        // 🔥 ERA 등장
-        eraText.innerText = "ALL TIME ERA";
+        let eraLabel = "";
+
+        if (actualEra === "2000s") {
+            eraLabel = "2000년대";
+        }
+        else if (actualEra === "2010s") {
+            eraLabel = "2010년대";
+        }
+        else {
+            eraLabel = "2020년대";
+        }
+
+        eraText.innerText = eraLabel;
         eraText.classList.add("show");
 
         setTimeout(() => {
@@ -194,9 +200,8 @@ if (era === "all_time") {
 
     }, 1500);
 
-
-// ⚡ 일반 모드
-} else {
+}
+else {
 
     setTimeout(() => {
 
@@ -210,6 +215,7 @@ if (era === "all_time") {
         }, 1200);
 
     }, 2000);
+
 }
 
 </script>
