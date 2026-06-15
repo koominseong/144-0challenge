@@ -128,8 +128,7 @@ def next_team():
     team_names = get_team_names()
 
     available = [
-        team
-        for team in team_names.keys()
+        team for team in team_names.keys()
         if team not in session["used_teams"]
     ]
 
@@ -139,15 +138,24 @@ def next_team():
     team = random.choice(available)
 
     session["current_team"] = team
-
     session["used_teams"].append(team)
 
-    players = load_team(team)
+    # 👉 여기서 바로 team.html 말고 loading으로
+    return render_template(
+        "loading.html",
+        final_team=team,
+        team_name=team_names[team]
+    )
+
+@app.route("/team_view")
+def team_view():
+
+    players = load_team(session["current_team"])
 
     return render_template(
         "team.html",
-        team_name=team_names[team],
-        team_key=team,
+        team_name=get_team_names()[session["current_team"]],
+        team_key=session["current_team"],
         players=players,
         lineup=session["lineup"],
         rerolls=session["team_reroll"]
