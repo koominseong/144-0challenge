@@ -19,9 +19,7 @@ def get_team_names():
             "Eagles": "한화 이글스",
             "Wyverns": "SK 와이번스",
             "Giants": "롯데 자이언츠",
-            "Wiz": "KT 위즈",
-            "Dinos": "NC 다이노스",
-            "Heroes": "현대 유니콘스"
+            "Unicorns": "현대 유니콘스"
         }
 
     if era == "2010s":
@@ -72,7 +70,7 @@ def load_team(team):
     era = session.get("era")
 
     if era == "all_time":
-        era = random.choice(["2010s", "2020s"])
+        era = random.choice(["2010s", "2020s", "2000s"])
 
     path = os.path.join(
         "Data",
