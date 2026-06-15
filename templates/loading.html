@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading...</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    font-family:sans-serif;
+}
+
+.box{
+    text-align:center;
+}
+
+.team{
+    font-size:50px;
+    margin-top:20px;
+    font-weight:bold;
+    color:#60a5fa;
+    transition:0.2s;
+}
+
+.loading{
+    font-size:20px;
+    color:#94a3b8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <div class="loading">팀 선택 중...</div>
+    <div class="team" id="team">두산 베어스</div>
+</div>
+
+<script>
+
+const teams = [
+    "두산 베어스",
+    "LG 트윈스",
+    "삼성 라이온즈",
+    "KIA 타이거즈",
+    "한화 이글스",
+    "SSG 랜더스",
+    "롯데 자이언츠",
+    "KT 위즈",
+    "NC 다이노스",
+    "키움 히어로즈"
+];
+
+let i = 0;
+
+const teamBox = document.getElementById("team");
+
+// 🔥 팀 돌아가는 효과
+const interval = setInterval(() => {
+    teamBox.innerText = teams[i % teams.length];
+    i++;
+}, 80);
+
+// 🔥 2초 후 확정
+setTimeout(() => {
+    clearInterval(interval);
+
+    // 최종 팀 보여주고 이동
+    teamBox.innerText = "{{ team_name }}";
+
+    setTimeout(() => {
+        window.location.href = "/team_view";
+    }, 800);
+
+}, 2000);
+
+</script>
+
+</body>
+</html>
