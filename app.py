@@ -117,12 +117,6 @@ def start(era):
 
     return redirect("/next")
 
-def get_team_names():
-
-    era = session.get("era", "2010s")
-
-    if era == "all_time":
-        era = session["actual_era"]
 
 @app.route("/next")
 def next_team():
