@@ -1,0 +1,177 @@
+[
+  {
+    "id": "park_jaehong_2000",
+    "name": "박재홍",
+    "year": 2000,
+    "positions": ["CF", "RF"],
+    "war": 9.0
+  },
+  {
+    "id": "shim_jeongsu_2003",
+    "name": "심정수",
+    "year": 2003,
+    "positions": ["RF", "LF"],
+    "war": 10.0
+  },
+  {
+    "id": "park_kyungwan_2000",
+    "name": "박경완",
+    "year": 2000,
+    "positions": ["C"],
+    "war": 8.5
+  },
+  {
+    "id": "park_jinman_2004",
+    "name": "박진만",
+    "year": 2004,
+    "positions": ["SS"],
+    "war": 7.5
+  },
+  {
+    "id": "lee_soongyong_2003",
+    "name": "이숭용",
+    "year": 2003,
+    "positions": ["1B", "DH"],
+    "war": 7.0
+  },
+  {
+    "id": "park_jongho_2001",
+    "name": "박종호",
+    "year": 2001,
+    "positions": ["2B"],
+    "war": 7.0
+  },
+  {
+    "id": "jung_sunghoon_2003",
+    "name": "정성훈",
+    "year": 2003,
+    "positions": ["3B"],
+    "war": 6.5
+  },
+  {
+    "id": "song_jiman_2000",
+    "name": "송지만",
+    "year": 2000,
+    "positions": ["RF", "CF"],
+    "war": 6.5
+  },
+  {
+    "id": "jeon_junho_2000",
+    "name": "전준호",
+    "year": 2000,
+    "positions": ["LF", "CF"],
+    "war": 6.0
+  },
+  {
+    "id": "cliff_brumbaugh_2004",
+    "name": "클리프 브룸바",
+    "year": 2004,
+    "positions": ["LF", "DH"],
+    "war": 7.5
+  },
+  {
+    "id": "jason_phillips_2001",
+    "name": "제이슨 필립스",
+    "year": 2001,
+    "positions": ["1B"],
+    "war": 6.0
+  },
+  {
+    "id": "kim_dongsoo_2003",
+    "name": "김동수",
+    "year": 2003,
+    "positions": ["C"],
+    "war": 5.0
+  },
+  {
+    "id": "lee_taekgeun_2004",
+    "name": "이택근",
+    "year": 2004,
+    "positions": ["CF", "RF"],
+    "war": 5.0
+  },
+  {
+    "id": "lim_seondong_2000",
+    "name": "임선동",
+    "year": 2000,
+    "positions": ["SP"],
+    "war": 8.0
+  },
+  {
+    "id": "kim_sookyung_2000",
+    "name": "김수경",
+    "year": 2000,
+    "positions": ["SP"],
+    "war": 8.0
+  },
+  {
+    "id": "jung_mintae_2003",
+    "name": "정민태",
+    "year": 2003,
+    "positions": ["SP"],
+    "war": 7.5
+  },
+  {
+    "id": "oh_jaeyoung_2004",
+    "name": "오재영",
+    "year": 2004,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "ma_ilyoung_2000",
+    "name": "마일영",
+    "year": 2000,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "cho_yongjoon_2001",
+    "name": "조용준",
+    "year": 2001,
+    "positions": ["RP"],
+    "war": 6.5
+  },
+  {
+    "id": "wee_jaeyoung_2000",
+    "name": "위재영",
+    "year": 2000,
+    "positions": ["RP"],
+    "war": 5.5
+  },
+  {
+    "id": "kang_byoungsik_2004",
+    "name": "강병식",
+    "year": 2004,
+    "positions": ["RP"],
+    "war": 4.5
+  },
+  {
+    "id": "park_junsoo_2003",
+    "name": "박준수",
+    "year": 2003,
+    "positions": ["RP"],
+    "war": 4.0
+  },
+  {
+    "id": "chae_byungyong_2002",
+    "name": "채병용",
+    "year": 2002,
+    "positions": ["SP"],
+    "war": 4.0
+  },
+  {
+    "id": "kang_gwanghoe_2004",
+    "name": "강광회",
+    "year": 2004,
+    "positions": ["C"],
+    "war": 3.5
+  },
+  {
+    "id": "jung_sunghyun_2004",
+    "name": "정성현",
+    "year": 2004,
+    "positions": ["RP"],
+    "war": 4.5
+  }
+]
