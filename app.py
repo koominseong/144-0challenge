@@ -59,7 +59,7 @@ def load_team(team):
     if era == "all_time":
 
         # 2010s / 2020s 둘 중 랜덤 선택
-        era = random.choice(["2010s", "2020s"])
+        era = random.choice("2010s", "2020s")
 
     path = os.path.join(
         "Data",
@@ -69,8 +69,7 @@ def load_team(team):
 
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
-
-@app.route("/")
+ 
 @app.route("/")
 def home():
     return render_template("index.html")
