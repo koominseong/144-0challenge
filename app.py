@@ -142,7 +142,7 @@ def next_team():
     return render_template(
         "loading.html",
         final_team=team,
-        team_name=team_names[team]
+        team_name=team_names[team],
         era=session["era"]
     )
 
