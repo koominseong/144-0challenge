@@ -112,7 +112,7 @@ def start(era):
 
     session["used_players"] = []
 
-    session["team_reroll"] = 1
+    session["team_reroll"] = 2
 
     return redirect("/next")
 
