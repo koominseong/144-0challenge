@@ -145,6 +145,7 @@ def next_team():
         "loading.html",
         final_team=team,
         team_name=team_names[team]
+        era=session["era"]
     )
 
 @app.route("/team_view")
