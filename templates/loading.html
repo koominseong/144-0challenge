@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Loading...</title>
 
 <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -20,19 +27,45 @@ body{
 
 .box{
     text-align:center;
-}
-
-.team{
-    font-size:50px;
-    margin-top:20px;
-    font-weight:bold;
-    color:#60a5fa;
-    transition:0.2s;
+    padding:20px;
 }
 
 .loading{
     font-size:20px;
     color:#94a3b8;
+    margin-bottom:20px;
+}
+
+.team{
+    font-size:52px;
+    font-weight:bold;
+    color:#60a5fa;
+    transition:0.2s;
+    word-break:keep-all;
+}
+
+/* 📱 모바일 대응 */
+@media (max-width: 768px){
+
+    .loading{
+        font-size:16px;
+    }
+
+    .team{
+        font-size:34px;
+    }
+}
+
+/* 📱 초소형 */
+@media (max-width: 400px){
+
+    .team{
+        font-size:28px;
+    }
+
+    .loading{
+        font-size:14px;
+    }
 }
 
 </style>
@@ -61,10 +94,9 @@ const teams = [
 ];
 
 let i = 0;
-
 const teamBox = document.getElementById("team");
 
-// 🔥 팀 돌아가는 효과
+// 🔥 빠르게 팀 바뀌는 효과
 const interval = setInterval(() => {
     teamBox.innerText = teams[i % teams.length];
     i++;
@@ -74,7 +106,6 @@ const interval = setInterval(() => {
 setTimeout(() => {
     clearInterval(interval);
 
-    // 최종 팀 보여주고 이동
     teamBox.innerText = "{{ team_name }}";
 
     setTimeout(() => {
