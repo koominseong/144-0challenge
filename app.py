@@ -7,7 +7,22 @@ app = Flask(__name__)
 app.secret_key = "kbo1440"
 
 def get_team_names():
+
     era = session.get("era", "2010s")
+
+    if era == "2000s":
+        return {
+            "Bears": "두산 베어스",
+            "LG": "LG 트윈스",
+            "Lions": "삼성 라이온즈",
+            "Tigers": "KIA 타이거즈",
+            "Eagles": "한화 이글스",
+            "Wyverns": "SK 와이번스",
+            "Giants": "롯데 자이언츠",
+            "Wiz": "KT 위즈",
+            "Dinos": "NC 다이노스",
+            "Heroes": "현대 유니콘스"
+        }
 
     if era == "2010s":
         return {
@@ -23,6 +38,7 @@ def get_team_names():
             "Heroes": "넥센 히어로즈"
         }
 
+    # 2020s / all_time 기본
     return {
         "Bears": "두산 베어스",
         "LG": "LG 트윈스",
