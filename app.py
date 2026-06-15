@@ -8,7 +8,7 @@ app.secret_key = "kbo1440"
 
 def get_team_names():
 
-    era = session.get("era", "2010s")
+    era = session.get("actual_era", session.get("era", "2010s"))
 
     if era == "2000s":
         return {
@@ -36,7 +36,6 @@ def get_team_names():
             "Heroes": "넥센 히어로즈"
         }
 
-    # 2020s / all_time 기본
     return {
         "Bears": "두산 베어스",
         "LG": "LG 트윈스",
@@ -67,10 +66,7 @@ POSITIONS = [
 
 def load_team(team):
 
-    era = session.get("era")
-
-    if era == "all_time":
-        era = session["actual_era"]
+    era = session.get("actual_era", session["era"])
 
     path = os.path.join(
         "Data",
@@ -134,6 +130,16 @@ def next_team():
     if "era" not in session:
         return redirect("/")
 
+    if session["era"] == "all_time":
+
+        session["actual_era"] = random.choice(
+            ["2000s", "2010s", "2020s"]
+        )
+
+    else:
+
+        session["actual_era"] = session["era"]
+
     team_names = get_team_names()
 
     available = [
@@ -149,13 +155,11 @@ def next_team():
     session["current_team"] = team
     session["used_teams"].append(team)
 
-    # 👉 여기서 바로 team.html 말고 loading으로
     return render_template(
         "loading.html",
-        final_team=team,
         team_name=team_names[team],
-        era=session["era"]
-        actual_era=session.get("actual_era")
+        era=session["era"],
+        actual_era=session["actual_era"]
     )
 
 @app.route("/team_view")
