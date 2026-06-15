@@ -1,0 +1,177 @@
+[
+  {
+    "id": "lee_byungkyu_1999",
+    "name": "이병규",
+    "year": 2000,
+    "positions": ["RF", "CF"],
+    "war": 7.5
+  },
+  {
+    "id": "park_yongtaik_2009",
+    "name": "박용택",
+    "year": 2009,
+    "positions": ["LF", "DH"],
+    "war": 8.0
+  },
+  {
+    "id": "lee_jinyoung_2004",
+    "name": "이진영",
+    "year": 2004,
+    "positions": ["RF", "CF"],
+    "war": 6.0
+  },
+  {
+    "id": "cho_insung_2003",
+    "name": "조인성",
+    "year": 2003,
+    "positions": ["C"],
+    "war": 5.5
+  },
+  {
+    "id": "kim_jaehyun_2000",
+    "name": "김재현",
+    "year": 2000,
+    "positions": ["LF", "RF"],
+    "war": 6.5
+  },
+  {
+    "id": "seo_yongbin_2000",
+    "name": "서용빈",
+    "year": 2000,
+    "positions": ["1B"],
+    "war": 5.0
+  },
+  {
+    "id": "lee_jongbeom_2001",
+    "name": "이종범",
+    "year": 2001,
+    "positions": ["SS", "CF"],
+    "war": 6.0
+  },
+  {
+    "id": "kwon_yongkwan_2003",
+    "name": "권용관",
+    "year": 2003,
+    "positions": ["SS"],
+    "war": 4.0
+  },
+  {
+    "id": "park_kyungsoo_2009",
+    "name": "박경수",
+    "year": 2009,
+    "positions": ["2B"],
+    "war": 5.5
+  },
+  {
+    "id": "ahn_chihoong_2009",
+    "name": "안치용",
+    "year": 2009,
+    "positions": ["RF", "LF"],
+    "war": 4.5
+  },
+  {
+    "id": "lee_taekgeun_2007",
+    "name": "이택근",
+    "year": 2007,
+    "positions": ["CF", "RF"],
+    "war": 5.5
+  },
+  {
+    "id": "choi_dongsoo_2003",
+    "name": "최동수",
+    "year": 2003,
+    "positions": ["1B", "3B"],
+    "war": 5.0
+  },
+  {
+    "id": "park_heungsik_2000",
+    "name": "박흥식",
+    "year": 2000,
+    "positions": ["3B"],
+    "war": 3.5
+  },
+  {
+    "id": "park_myunghwan_2000",
+    "name": "박명환",
+    "year": 2000,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "lee_seungho_2000",
+    "name": "이승호",
+    "year": 2000,
+    "positions": ["SP"],
+    "war": 5.0
+  },
+  {
+    "id": "jang_moonseok_2001",
+    "name": "장문석",
+    "year": 2001,
+    "positions": ["SP"],
+    "war": 4.5
+  },
+  {
+    "id": "shim_soochang_2007",
+    "name": "심수창",
+    "year": 2007,
+    "positions": ["SP"],
+    "war": 4.5
+  },
+  {
+    "id": "bong_joongkeun_2009",
+    "name": "봉중근",
+    "year": 2009,
+    "positions": ["SP", "RP"],
+    "war": 5.5
+  },
+  {
+    "id": "woo_kyuhmin_2009",
+    "name": "우규민",
+    "year": 2009,
+    "positions": ["RP"],
+    "war": 4.0
+  },
+  {
+    "id": "lee_donghyun_2009",
+    "name": "이동현",
+    "year": 2009,
+    "positions": ["RP"],
+    "war": 4.5
+  },
+  {
+    "id": "jung_jaebok_2007",
+    "name": "정재복",
+    "year": 2007,
+    "positions": ["RP"],
+    "war": 3.5
+  },
+  {
+    "id": "shin_yoonho_2000",
+    "name": "신윤호",
+    "year": 2000,
+    "positions": ["RP"],
+    "war": 3.5
+  },
+  {
+    "id": "kim_yongsu_2000",
+    "name": "김용수",
+    "year": 2000,
+    "positions": ["RP"],
+    "war": 3.0
+  },
+  {
+    "id": "park_byeongho_2009",
+    "name": "박병호",
+    "year": 2009,
+    "positions": ["1B"],
+    "war": 2.5
+  },
+  {
+    "id": "jung_seonghoon_2009",
+    "name": "정성훈",
+    "year": 2009,
+    "positions": ["3B", "1B"],
+    "war": 4.5
+  }
+]
