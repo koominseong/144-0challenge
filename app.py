@@ -55,11 +55,8 @@ def load_team(team):
 
     era = session.get("era")
 
-    # 🔥 ALL TIME 처리
-    if era == "all_time":
-
-        # 2010s / 2020s 둘 중 랜덤 선택
-        era = random.choice("2010s", "2020s")
+    if session["era"] == "all_time":
+        era = random.choice(["2010s", "2020s"])
 
     path = os.path.join(
         "Data",
