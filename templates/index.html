@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 
+<!-- 📱 모바일 대응 필수 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>144-0 Challenge</title>
 
 <style>
@@ -186,6 +189,52 @@ h1{
     color:#94a3b8;
 
     line-height:1.8;
+}
+
+/* 📱 모바일 대응 */
+@media (max-width: 768px) {
+
+    h1{
+        font-size: 42px;
+    }
+
+    .subtitle{
+        font-size: 16px;
+    }
+
+    .card{
+        padding: 20px;
+    }
+
+    .era-buttons{
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .era-btn button{
+        width: 80vw;
+        max-width: 280px;
+        height: 60px;
+        font-size: 20px;
+    }
+
+    .info{
+        font-size: 14px;
+    }
+}
+
+/* 📱 초소형 폰 대응 */
+@media (max-width: 400px) {
+
+    h1{
+        font-size: 34px;
+    }
+
+    .era-btn button{
+        font-size: 18px;
+        height: 55px;
+    }
 }
 
 </style>
