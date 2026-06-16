@@ -3,70 +3,63 @@
     "id": "lee_jongbeom_2003",
     "name": "이종범",
     "year": 2003,
-    "positions": ["CF", "RF"],
+    "positions": ["SS","DH"],
     "war": 7.5
   },
   {
     "id": "kim_sanghyun_2009",
     "name": "김상현",
     "year": 2009,
-    "positions": ["3B"],
+    "positions": ["3B","DH"],
     "war": 8.5
   },
   {
     "id": "choi_heeseop_2009",
     "name": "최희섭",
     "year": 2009,
-    "positions": ["1B"],
+    "positions": ["1B","DH"],
     "war": 6.5
   },
   {
     "id": "kim_sanghoon_2009",
     "name": "김상훈",
     "year": 2009,
-    "positions": ["C"],
+    "positions": ["C","DH"],
     "war": 5.0
   },
   {
     "id": "hong_sewan_2003",
     "name": "홍세완",
     "year": 2003,
-    "positions": ["SS", "2B"],
+    "positions": ["SS", "2B","DH"],
     "war": 6.0
   },
   {
     "id": "jang_seongho_2002",
     "name": "장성호",
     "year": 2002,
-    "positions": ["1B", "LF"],
+    "positions": ["1B", "LF","DH"],
     "war": 7.0
   },
   {
     "id": "lee_hyuntaeg_2004",
     "name": "이현태",
     "year": 2004,
-    "positions": ["2B"],
+    "positions": ["2B","DH"],
     "war": 4.5
-  },
-  {
-    "id": "lee_changjin_2009",
-    "name": "이창진",
-    "year": 2009,
-    "positions": ["OF"],
-    "war": 3.5
   },
   {
     "id": "na_jiwan_2009",
     "name": "나지완",
     "year": 2009,
-    "positions": ["RF", "LF"],
+    "positions": ["RF", "LF","DH"],
     "war": 5.5
   },
   {
     "id": "lee_bumho_2009",
     "name": "이범호",
     "year": 2009,
-    "positions": ["3B"],
+    "positions": ["3B","DH"],
     "war": 6.5
   },
   {
@@ -143,7 +136,7 @@
     "id": "jung_sunghoon_2002",
     "name": "정성훈",
     "year": 2002,
-    "positions": ["3B"],
+    "positions": ["3B","DH"],
     "war": 5.5
   },
   {
@@ -157,14 +150,14 @@
     "id": "choi_kyunghwan_2000",
     "name": "최경환",
     "year": 2000,
-    "positions": ["2B"],
+    "positions": ["2B","DH"],
     "war": 4.5
   },
   {
     "id": "shin_dongju_2001",
     "name": "신동주",
     "year": 2001,
-    "positions": ["OF"],
+    "positions": ["LF","CF","RF"],
     "war": 4.0
   },
   {
