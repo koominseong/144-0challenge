@@ -4,7 +4,7 @@
     "name": "박재홍",
     "year": 2000,
     "positions": ["CF", "RF"],
-    "war": 9.0
+    "war": 5.26
   },
   {
     "id": "shim_jeongsu_2003",
@@ -18,7 +18,7 @@
     "name": "박경완",
     "year": 2000,
     "positions": ["C"],
-    "war": 8.5
+    "war": 7.29
   },
   {
     "id": "park_jinman_2004",
@@ -173,5 +173,13 @@
     "year": 2004,
     "positions": ["RP"],
     "war": 4.5
-  }
+  },
+  {
+    "id": "park_jongho_2000",
+    "name": "박종호",
+    "year": 2000,
+    "positions": ["2B"],
+    "war": 7.06
+  },
+
 ]
