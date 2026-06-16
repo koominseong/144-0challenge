@@ -340,22 +340,36 @@ def result():
         total_war += player["war"]
 
     for pos in [
-        "C","1B","2B","3B","SS",
-        "LF","CF","RF","DH"
+        "C", "1B", "2B", "3B", "SS",
+        "LF", "CF", "RF", "DH"
     ]:
         if lineup[pos]:
             total_war += lineup[pos]["war"]
 
-    if total_war >= 90:
+    # 승패 환산
+    wins = round(total_war * 1.25)
+
+    if wins > 144:
+        wins = 144
+
+    losses = 144 - wins
+
+    record = f"{wins}-{losses}"
+
+    # 등급
+    if wins >= 140:
+        grade = "SS"
+
+    elif wins >= 130:
         grade = "S"
 
-    elif total_war >= 80:
+    elif wins >= 115:
         grade = "A"
 
-    elif total_war >= 70:
+    elif wins >= 100:
         grade = "B"
 
-    elif total_war >= 60:
+    elif wins >= 85:
         grade = "C"
 
     else:
@@ -365,9 +379,11 @@ def result():
         "result.html",
         lineup=lineup,
         total_war=round(total_war, 1),
+        wins=wins,
+        losses=losses,
+        record=record,
         grade=grade
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)
