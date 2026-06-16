@@ -251,6 +251,28 @@ def assign_player():
 
     lineup = session["lineup"]
 
+    # 같은 이름 선수 중복 방지
+    existing_names = set()
+
+    for p in lineup["SP"]:
+        existing_names.add(p["name"])
+
+    for p in lineup["RP"]:
+        existing_names.add(p["name"])
+
+    for pos in [
+        "C", "1B", "2B", "3B", "SS",
+        "LF", "CF", "RF", "DH"
+    ]:
+        if lineup[pos]:
+            existing_names.add(
+                lineup[pos]["name"]
+            )
+
+    if player["name"] in existing_names:
+        return "동일 이름 선수는 중복 배치할 수 없습니다"
+
+    # DH는 누구나 가능
     if position != "DH" and position not in player["positions"]:
         return "배치 불가"
 
@@ -275,7 +297,6 @@ def assign_player():
 
         lineup[position] = player
 
-    # 이번 라운드 배치 수 증가
     session["assigned_this_round"] += 1
 
     session["lineup"] = lineup
@@ -287,7 +308,6 @@ def assign_player():
 
     session.modified = True
 
-    # 게임 종료 체크
     filled = len(lineup["SP"]) + len(lineup["RP"])
 
     for pos in [
@@ -300,13 +320,12 @@ def assign_player():
     if filled >= 15:
         return redirect("/result")
 
-    # 이번 팀에서 3명 다 배치했으면 다음 팀
     if session["assigned_this_round"] >= 3:
         session["assigned_this_round"] = 0
         return redirect("/next")
 
     return redirect("/assign")
-
+    
 @app.route("/result")
 def result():
 
