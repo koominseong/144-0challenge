@@ -251,7 +251,7 @@ def assign_player():
 
     lineup = session["lineup"]
 
-    if position not in player["positions"]:
+    if position != "DH" and position not in player["positions"]:
         return "배치 불가"
 
     if position == "SP":
