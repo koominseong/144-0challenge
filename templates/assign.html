@@ -1,98 +1,240 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>포지션 배치</title>
 
 <style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-    font-family: Arial, sans-serif;
-    margin:20px;
+    font-family:'Pretendard', sans-serif;
+    background:#f4f6f9;
+    color:#222;
+    padding:20px;
+    transition:0.3s;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+h1{
+    font-size:32px;
+}
+
+.dark-btn{
+    border:none;
+    background:#1e293b;
+    color:white;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.dark-btn:hover{
+    opacity:0.9;
 }
 
 .player-card{
-    border:1px solid #ccc;
-    border-radius:10px;
-    padding:15px;
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    transition:0.2s;
+}
+
+.player-card:hover{
+    transform:translateY(-2px);
+}
+
+.player-name{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.player-info{
+    color:#666;
     margin-bottom:15px;
 }
 
-button{
-    padding:5px 10px;
+.form-row{
+    display:flex;
+    gap:10px;
 }
 
+select{
+    flex:1;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+.assign-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.assign-btn:hover{
+    background:#1d4ed8;
+}
+
+/* 다크모드 */
+
 .dark{
-    background:#121212;
+    background:#0f172a;
     color:white;
 }
 
 .dark .player-card{
-    background:#222;
-    border-color:#444;
+    background:#1e293b;
+    color:white;
+}
+
+.dark .player-info{
+    color:#cbd5e1;
+}
+
+.dark select{
+    background:#334155;
+    color:white;
+    border:1px solid #475569;
+}
+
+.dark .dark-btn{
+    background:#475569;
+}
+
+@media(max-width:600px){
+
+    .header{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .form-row{
+        flex-direction:column;
+    }
+
+    .assign-btn{
+        width:100%;
+    }
+
+    h1{
+        font-size:26px;
+    }
 }
 
 </style>
-
 </head>
 
 <body>
 
-<h1>포지션 배치</h1>
+<div class="container">
 
-<button onclick="toggleDarkMode()">
-🌙 다크모드
-</button>
+    <div class="header">
+        <h1>⚾ 포지션 배치</h1>
 
-<br><br>
+        <button
+            class="dark-btn"
+            onclick="toggleDarkMode()">
+            🌙 다크모드
+        </button>
+    </div>
 
-{% for p in players %}
+    {% for p in players %}
 
-<div class="player-card">
+    <div class="player-card">
 
-<h3>
-{{ p.name }}
-({{ p.year }})
-</h3>
+        <div class="player-name">
+            {{ p.name }} ({{ p.year }})
+        </div>
 
-<p>
-가능 포지션 :
-{{ p.positions | join(", ") }}
-</p>
+        <div class="player-info">
+            WAR {{ p.war }} |
+            가능 포지션 :
+            {{ p.positions | join(", ") }}
+        </div>
 
-<form action="/assign_player" method="post">
+        <form action="/assign_player" method="post">
 
-<input
-type="hidden"
-name="player_id"
-value="{{ p.id }}">
+            <input
+                type="hidden"
+                name="player_id"
+                value="{{ p.id }}">
 
-<select name="position">
+            <div class="form-row">
 
-{% for pos in p.positions %}
-<option value="{{ pos }}">
-{{ pos }}
-</option>
-{% endfor %}
+                <select name="position">
 
-</select>
+                    {% for pos in p.positions %}
+                    <option value="{{ pos }}">
+                        {{ pos }}
+                    </option>
+                    {% endfor %}
 
-<button type="submit">
-배치
-</button>
+                    {% if "DH" not in p.positions %}
+                    <option value="DH">
+                        DH
+                    </option>
+                    {% endif %}
 
-</form>
+                </select>
+
+                <button
+                    class="assign-btn"
+                    type="submit">
+                    배치하기
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    {% endfor %}
 
 </div>
-
-{% endfor %}
 
 <script>
 
 function toggleDarkMode(){
+
     document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "darkmode",
+        document.body.classList.contains("dark")
+    );
+}
+
+if(localStorage.getItem("darkmode") === "true"){
+    document.body.classList.add("dark");
 }
 
 </script>
