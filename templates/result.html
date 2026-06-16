@@ -1,46 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>게임 결과</title>
 
 <style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
     font-family:Arial,sans-serif;
-    margin:30px;
-    background:#f5f5f5;
+    background:#f4f7fb;
+    padding:30px 15px;
 }
 
 .header{
     text-align:center;
+    margin-bottom:30px;
+}
+
+.grade{
+    font-size:42px;
+    font-weight:bold;
+    margin:15px 0;
+}
+
+.record{
+    font-size:52px;
+    font-weight:bold;
+    color:#1565c0;
+    margin:15px 0;
 }
 
 .total-war{
-    font-size:40px;
-    font-weight:bold;
-    color:#1565c0;
+    font-size:24px;
+    color:#666;
 }
 
 .result-table{
-
-    width:700px;
+    width:100%;
+    max-width:800px;
     margin:auto;
-
     border-collapse:collapse;
-
     background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
 }
 
 .result-table th,
 .result-table td{
-
     border:1px solid #ddd;
-
-    padding:10px;
-
+    padding:12px;
     text-align:center;
 }
 
@@ -50,43 +68,165 @@ body{
 }
 
 .player-card{
-
-    width:250px;
-
+    max-width:400px;
     margin:30px auto;
-
     background:white;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+}
 
+.player-card h3{
+    margin-bottom:10px;
+}
+
+.player-card p{
+    margin:8px 0;
+}
+
+.btn-wrap{
+    text-align:center;
+    margin-top:30px;
+}
+
+.play-btn{
+    padding:12px 24px;
+    font-size:18px;
+    border:none;
     border-radius:10px;
+    background:#1976d2;
+    color:white;
+    cursor:pointer;
+}
 
-    padding:15px;
+.play-btn:hover{
+    opacity:0.9;
+}
 
-    box-shadow:0 2px 8px rgba(0,0,0,.2);
+/* =======================
+   SS 등급 전용 효과
+======================= */
+
+.ss-title{
+    font-size:70px;
+    font-weight:900;
+    background:linear-gradient(
+        90deg,
+        #ffd700,
+        #ffffff,
+        #ff6b00,
+        #ffd700
+    );
+    background-size:400% 400%;
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    animation:
+        rainbow 3s linear infinite,
+        pulse 1.2s ease-in-out infinite;
+}
+
+.ss-record{
+    font-size:70px;
+    font-weight:bold;
+    color:#ffd700;
+
+    text-shadow:
+        0 0 10px #ffd700,
+        0 0 20px #ffd700,
+        0 0 40px #ff9900;
+
+    animation:pulse 1s infinite;
+}
+
+@keyframes rainbow{
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    100%{
+        background-position:100% 50%;
+    }
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.08);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+.ss-bg{
+
+    background:
+    radial-gradient(circle at top,
+    #fff3b0,
+    #f4f7fb 50%);
+}
+
+.sparkle{
+
+    font-size:28px;
+
+    animation:
+    pulse 1s infinite;
+
+    margin-bottom:10px;
 }
 
 </style>
 
 </head>
 
-<body>
+<body class="{% if wins >= 140 %}ss-bg{% endif %}">
 
 <div class="header">
+
+{% if wins >= 140 %}
+
+<div class="sparkle">
+✨ 👑 LEGEND TEAM 👑 ✨
+</div>
+
+<h1 class="ss-title">
+SS
+</h1>
+
+<div class="ss-record">
+{{ record }}
+</div>
+
+{% else %}
 
 <h1>
 🏆 게임 종료
 </h1>
 
-<h2>
-등급 : {{ grade }}
+<h2 class="grade">
+{{ grade }}
 </h2>
-  
+
+<div class="record">
+{{ record }}
+</div>
+
+{% endif %}
+
 <div class="total-war">
-WAR {{ total_war }}
+총 WAR {{ total_war }}
 </div>
 
 </div>
-
-<br>
 
 <table class="result-table">
 
@@ -118,29 +258,25 @@ WAR {{ total_war }}
 ] %}
 
 {% if lineup[pos] %}
-
 <tr>
 <td>{{ pos }}</td>
 <td>{{ lineup[pos].name }}</td>
 <td>{{ lineup[pos].war }}</td>
 </tr>
-
 {% endif %}
 
 {% endfor %}
 
 </table>
 
-<br>
-
 <div class="player-card">
 
 <h3>라인업 완성도</h3>
 
 <p>
-채운 포지션 :
+투수 :
 {{ lineup["SP"]|length + lineup["RP"]|length }}
-/ 6 투수
+/ 6
 </p>
 
 <p>
@@ -150,12 +286,10 @@ WAR {{ total_war }}
 
 </div>
 
-<br>
-
-<div style="text-align:center">
+<div class="btn-wrap">
 
 <a href="/">
-<button style="padding:10px 20px;font-size:18px;">
+<button class="play-btn">
 다시 플레이
 </button>
 </a>
@@ -163,5 +297,4 @@ WAR {{ total_war }}
 </div>
 
 </body>
-
 </html>
