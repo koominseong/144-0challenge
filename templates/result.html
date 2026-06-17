@@ -44,6 +44,32 @@ body{
     color:#666;
 }
 
+.save-box{
+    margin-top:20px;
+}
+
+.save-input{
+    padding:10px;
+    width:220px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+}
+
+.save-btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    background:#1976d2;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.save-btn:hover{
+    opacity:0.9;
+}
+
 .result-table{
     width:100%;
     max-width:800px;
@@ -103,13 +129,12 @@ body{
     opacity:0.9;
 }
 
-/* =======================
-   SS 등급 전용 효과
-======================= */
+/* SS 전용 */
 
 .ss-title{
     font-size:70px;
     font-weight:900;
+
     background:linear-gradient(
         90deg,
         #ffd700,
@@ -117,6 +142,7 @@ body{
         #ff6b00,
         #ffd700
     );
+
     background-size:400% 400%;
 
     -webkit-background-clip:text;
@@ -130,6 +156,7 @@ body{
 .ss-record{
     font-size:70px;
     font-weight:bold;
+
     color:#ffd700;
 
     text-shadow:
@@ -140,48 +167,40 @@ body{
     animation:pulse 1s infinite;
 }
 
-@keyframes rainbow{
+.ss-bg{
+    background:
+    radial-gradient(
+        circle at top,
+        #fff3b0,
+        #f4f7fb 50%
+    );
+}
 
+.sparkle{
+    font-size:28px;
+    margin-bottom:10px;
+    animation:pulse 1s infinite;
+}
+
+@keyframes rainbow{
     0%{
         background-position:0% 50%;
     }
-
     100%{
         background-position:100% 50%;
     }
 }
 
 @keyframes pulse{
-
     0%{
         transform:scale(1);
     }
-
     50%{
         transform:scale(1.08);
     }
-
     100%{
         transform:scale(1);
     }
-}
-
-.ss-bg{
-
-    background:
-    radial-gradient(circle at top,
-    #fff3b0,
-    #f4f7fb 50%);
-}
-
-.sparkle{
-
-    font-size:28px;
-
-    animation:
-    pulse 1s infinite;
-
-    margin-bottom:10px;
 }
 
 </style>
@@ -224,6 +243,34 @@ SS
 
 <div class="total-war">
 총 WAR {{ total_war }}
+</div>
+
+<div class="save-box">
+
+{% if wins >= 140 %}
+<h3 style="margin-bottom:10px;">
+🏆 LEGEND 등록
+</h3>
+{% endif %}
+
+<form action="/save_record" method="post">
+
+<input
+type="text"
+name="name"
+maxlength="20"
+placeholder="닉네임 입력"
+required
+class="save-input">
+
+<button
+type="submit"
+class="save-btn">
+💾 기록 저장
+</button>
+
+</form>
+
 </div>
 
 </div>
@@ -287,6 +334,12 @@ SS
 </div>
 
 <div class="btn-wrap">
+
+<a href="/ranking">
+<button class="play-btn">
+🏆 랭킹 보기
+</button>
+</a>
 
 <a href="/">
 <button class="play-btn">
