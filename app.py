@@ -77,6 +77,40 @@ def load_team(team):
 
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+def save_record(name, wins, losses, grade):
+
+    record_file = "records.json"
+
+    try:
+        with open(record_file, "r", encoding="utf-8") as f:
+            records = json.load(f)
+
+    except:
+        records = []
+
+    records.append({
+        "name": name,
+        "wins": wins,
+        "losses": losses,
+        "grade": grade,
+        "date": datetime.now().strftime("%Y-%m-%d")
+    })
+
+    records.sort(
+        key=lambda x: x["wins"],
+        reverse=True
+    )
+
+    records = records[:100]
+
+    with open(record_file, "w", encoding="utf-8") as f:
+        json.dump(
+            records,
+            f,
+            ensure_ascii=False,
+            indent=2
+        )
  
 @app.route("/")
 def home():
