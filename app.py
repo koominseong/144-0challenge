@@ -409,6 +409,10 @@ def result():
 
     record = f"{wins}-{losses}"
 
+    session["final_wins"] = wins
+    session["final_losses"] = losses
+    session["final_grade"] = grade
+
     # 등급
     if wins >= 140:
         grade = "SS"
@@ -436,6 +440,40 @@ def result():
         losses=losses,
         record=record,
         grade=grade
+    )
+
+@app.route("/save_record", methods=["POST"])
+def save_record_route():
+
+    name = request.form["name"]
+
+    save_record(
+        name,
+        session["final_wins"],
+        session["final_losses"],
+        session["final_grade"]
+    )
+
+    return redirect("/ranking")
+
+@app.route("/ranking")
+def ranking():
+
+    try:
+        with open(
+            "records.json",
+            "r",
+            encoding="utf-8"
+        ) as f:
+
+            records = json.load(f)
+
+    except:
+        records = []
+
+    return render_template(
+        "ranking.html",
+        records=records
     )
 
 if __name__ == "__main__":
