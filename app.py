@@ -389,7 +389,7 @@ def assign_player():
             filled += 1
 
     if filled >= 15:
-        return redirect("/result")
+        return redirect("/result_loading")
 
     if session["assigned_this_round"] >= 3:
         session["assigned_this_round"] = 0
@@ -459,6 +459,36 @@ def result():
         losses=losses,
         record=record,
         grade=grade
+    )
+
+@app.route("/result_loading")
+def result_loading():
+
+    lineup = session["lineup"]
+
+    total_war = 0
+
+    for player in lineup["SP"]:
+        total_war += player["war"]
+
+    for player in lineup["RP"]:
+        total_war += player["war"]
+
+    for pos in [
+        "C","1B","2B","3B","SS",
+        "LF","CF","RF","DH"
+    ]:
+        if lineup[pos]:
+            total_war += lineup[pos]["war"]
+
+    wins = round(total_war * 1.25)
+
+    if wins > 144:
+        wins = 144
+
+    return render_template(
+        "result_loading.html",
+        wins=wins
     )
 
 @app.route("/save_record", methods=["POST"])
