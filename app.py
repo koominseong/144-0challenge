@@ -313,18 +313,16 @@ def assign_player():
         return redirect("/team_view")
 
     if position == "DH":
-
-    if (
-        "SP" in player["positions"]
-        or
-        "RP" in player["positions"]
-    ):
-        session["error"] = "투수는 DH에 배치할 수 없습니다."
-        return redirect("/team_view")
-
-    elif position not in player["positions"]:
-        session["error"] = "배치 불가한 포지션입니다."
-        return redirect("/team_view")
+        if (
+            "SP" in player["positions"]
+            or
+            "RP" in player["positions"]
+        ):
+            session["error"] = "투수는 DH에 배치할 수 없습니다."
+            return redirect("/team_view")
+        elif position not in player["positions"]:
+            session["error"] = "배치 불가한 포지션입니다."
+            return redirect("/team_view")
 
     if position == "SP":
 
