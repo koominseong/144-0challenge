@@ -329,7 +329,7 @@ def assign_player():
     if position == "SP":
 
         if len(lineup["SP"]) >= 3:
-            session["error"] = "선발투수 자리가 가득 찼습니다.
+            session["error"] = "선발투수 자리가 가득 찼습니다."
             return redirect("/team_view")
 
         lineup["SP"].append(player)
