@@ -280,14 +280,12 @@ class="save-btn">
 <tr>
 <th>포지션</th>
 <th>선수</th>
-<th>WAR</th>
 </tr>
 
 {% for player in lineup["SP"] %}
 <tr>
 <td>SP</td>
 <td>{{ player.name }}</td>
-<td>{{ player.war }}</td>
 </tr>
 {% endfor %}
 
@@ -295,7 +293,6 @@ class="save-btn">
 <tr>
 <td>RP</td>
 <td>{{ player.name }}</td>
-<td>{{ player.war }}</td>
 </tr>
 {% endfor %}
 
@@ -308,7 +305,6 @@ class="save-btn">
 <tr>
 <td>{{ pos }}</td>
 <td>{{ lineup[pos].name }}</td>
-<td>{{ lineup[pos].war }}</td>
 </tr>
 {% endif %}
 
