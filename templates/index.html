@@ -3,8 +3,6 @@
 
 <head>
 <meta charset="UTF-8">
-
-<!-- 📱 모바일 대응 필수 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>144-0 Challenge</title>
@@ -174,6 +172,18 @@ h1{
     color:white;
 }
 
+.btnRanking{
+
+    background:
+    linear-gradient(
+    135deg,
+    #ffd700,
+    #ff9800
+    );
+
+    color:black;
+}
+
 .era-btn button:hover{
 
     transform:translateY(-5px);
@@ -191,49 +201,88 @@ h1{
     line-height:1.8;
 }
 
-/* 📱 모바일 대응 */
-@media (max-width: 768px) {
+.ranking-wrap{
+
+    margin-top:35px;
+}
+
+.ranking-wrap button{
+
+    width:300px;
+    height:65px;
+
+    border:none;
+
+    border-radius:15px;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.ranking-wrap button:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.4);
+}
+
+/* 모바일 */
+
+@media (max-width:768px){
 
     h1{
-        font-size: 42px;
+        font-size:42px;
     }
 
     .subtitle{
-        font-size: 16px;
+        font-size:16px;
     }
 
     .card{
-        padding: 20px;
+        padding:20px;
     }
 
     .era-buttons{
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
+        flex-direction:column;
+        align-items:center;
+        gap:15px;
     }
 
     .era-btn button{
-        width: 80vw;
-        max-width: 280px;
-        height: 60px;
-        font-size: 20px;
+        width:80vw;
+        max-width:280px;
+        height:60px;
+        font-size:20px;
+    }
+
+    .ranking-wrap button{
+        width:80vw;
+        max-width:280px;
+        height:60px;
+        font-size:20px;
     }
 
     .info{
-        font-size: 14px;
+        font-size:14px;
     }
 }
 
-/* 📱 초소형 폰 대응 */
-@media (max-width: 400px) {
+@media (max-width:400px){
 
     h1{
-        font-size: 34px;
+        font-size:34px;
     }
 
-    .era-btn button{
-        font-size: 18px;
-        height: 55px;
+    .era-btn button,
+    .ranking-wrap button{
+        font-size:18px;
+        height:55px;
     }
 }
 
@@ -270,7 +319,17 @@ KBO 역대 최고의 드림팀을 만들어라
 </a>
 
 <a class="era-btn" href="/start/all_time">
-    <button class="btnAll">ALL TIME</button>
+    <button class="btnAll">🔥 ALL TIME</button>
+</a>
+
+</div>
+
+<div class="ranking-wrap">
+
+<a href="/ranking">
+    <button class="btnRanking">
+        🏆 명예의 전당
+    </button>
 </a>
 
 </div>
@@ -279,8 +338,10 @@ KBO 역대 최고의 드림팀을 만들어라
 
 <p>• 각 팀에서 3명의 선수 선택</p>
 <p>• 총 15인 로스터 완성</p>
-<p>• 최고의 WAR 조합을 만들어 S등급에 도전</p>
-<p>• 팀 리롤 1회 제공</p>
+<p>• 승수 = WAR × 1.25</p>
+<p>• 최대 144승까지 가능</p>
+<p>• 팀 리롤 2회 제공</p>
+<p>• 랭킹에 기록 저장 가능</p>
 
 </div>
 
@@ -289,5 +350,4 @@ KBO 역대 최고의 드림팀을 만들어라
 </div>
 
 </body>
-
 </html>
