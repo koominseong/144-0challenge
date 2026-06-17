@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect
 import os
 import json
 import random
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "kbo1440"
@@ -161,13 +162,16 @@ def team_view():
 
     players = load_team(session["current_team"])
 
+    error = session.pop("error", None)
+
     return render_template(
         "team.html",
         team_name=get_team_names()[session["current_team"]],
         team_key=session["current_team"],
         players=players,
         lineup=session["lineup"],
-        rerolls=session["team_reroll"]
+        rerolls=session["team_reroll"],
+        error=error
     )
 
 
@@ -240,7 +244,8 @@ def assign_player():
     used_players = session["used_players"]
 
     if player_id in used_players:
-        return "이미 배치한 선수"
+        session["error"] = "이미 배치한 선수입니다."
+        return redirect("/team_view")
 
     players = load_team(session["current_team"])
 
@@ -270,30 +275,44 @@ def assign_player():
             )
 
     if player["name"] in existing_names:
-        return "동일 이름 선수는 중복 배치할 수 없습니다"
+        session["error"] = "동일 이름 선수는 중복 배치할 수 없습니다."
+        return redirect("/team_view")
 
-    # DH는 누구나 가능
-    if position != "DH" and position not in player["positions"]:
-        return "배치 불가"
+    if position == "DH":
+
+    if (
+        "SP" in player["positions"]
+        or
+        "RP" in player["positions"]
+    ):
+        session["error"] = "투수는 DH에 배치할 수 없습니다."
+        return redirect("/team_view")
+
+    elif position not in player["positions"]:
+        session["error"] = "배치 불가한 포지션입니다."
+        return redirect("/team_view")
 
     if position == "SP":
 
         if len(lineup["SP"]) >= 3:
-            return "SP 가득 참"
+            session["error"] = "선발투수 자리가 가득 찼습니다.
+            return redirect("/team_view")
 
         lineup["SP"].append(player)
 
     elif position == "RP":
 
         if len(lineup["RP"]) >= 3:
-            return "RP 가득 참"
-
+            session["error"] = "불펜 자리가 가득 찼습니다.
+            return redirect("/team_view")
+        
         lineup["RP"].append(player)
 
     else:
 
         if lineup[position] is not None:
-            return "이미 사용 중인 포지션"
+            session["error"] = "이미 사용 중인 포지션입니다."
+            return redirect("/team_view")
 
         lineup[position] = player
 
