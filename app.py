@@ -337,7 +337,7 @@ def assign_player():
     elif position == "RP":
 
         if len(lineup["RP"]) >= 3:
-            session["error"] = "불펜 자리가 가득 찼습니다.
+            session["error"] = "불펜 자리가 가득 찼습니다."
             return redirect("/team_view")
         
         lineup["RP"].append(player)
