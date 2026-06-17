@@ -134,6 +134,19 @@ body{
 
 <h1>{{ team_name }}</h1>
 
+{% if error %}
+<div style="
+background:#ef4444;
+color:white;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+font-weight:bold;
+">
+{{ error }}
+</div>
+{% endif %}
+
 <p>
 팀 리롤 남음 : {{ rerolls }}
 </p>
