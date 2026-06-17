@@ -80,13 +80,17 @@ def load_team(team):
 
 def save_record(name, wins, losses, grade):
 
+    print("SAVE RECORD CALLED")
+    print(name, wins, losses, grade)
+
     record_file = "records.json"
 
     try:
         with open(record_file, "r", encoding="utf-8") as f:
             records = json.load(f)
 
-    except:
+    except Exception as e:
+        print("LOAD ERROR:", e)
         records = []
 
     records.append({
@@ -111,6 +115,8 @@ def save_record(name, wins, losses, grade):
             ensure_ascii=False,
             indent=2
         )
+
+    print("RECORD SAVED:", len(records))
  
 @app.route("/")
 def home():
@@ -444,7 +450,12 @@ def result():
 @app.route("/save_record", methods=["POST"])
 def save_record_route():
 
-    name = request.form["name"]
+    print("SAVE_RECORD ROUTE")
+
+    name = request.form.get("name", "").strip()
+
+    if not name:
+        return "이름을 입력하세요."
 
     save_record(
         name,
@@ -454,7 +465,7 @@ def save_record_route():
     )
 
     return redirect("/ranking")
-
+    
 @app.route("/ranking")
 def ranking():
 
@@ -467,13 +478,18 @@ def ranking():
 
             records = json.load(f)
 
-    except:
+        print("LOADED RECORDS:", len(records))
+
+    except Exception as e:
+
+        print("RANKING ERROR:", e)
+
         records = []
 
     return render_template(
         "ranking.html",
         records=records
     )
-
+    
 if __name__ == "__main__":
     app.run(debug=True)
