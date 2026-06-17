@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🏆 명예의 전당</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b
+    );
+    color:white;
+    min-height:100vh;
+    padding:30px 15px;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    font-size:52px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#94a3b8;
+    font-size:18px;
+}
+
+.ranking-box{
+
+    max-width:1000px;
+    margin:auto;
+
+    background:rgba(255,255,255,.06);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 0 30px rgba(0,0,0,.4);
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+th{
+
+    background:#2563eb;
+
+    padding:15px;
+
+    font-size:18px;
+}
+
+td{
+
+    padding:14px;
+
+    text-align:center;
+
+    border-bottom:
+    1px solid rgba(255,255,255,.08);
+}
+
+tr:hover{
+    background:
+    rgba(255,255,255,.05);
+}
+
+.rank1{
+
+    background:
+    rgba(255,215,0,.15);
+}
+
+.rank2{
+
+    background:
+    rgba(192,192,192,.15);
+}
+
+.rank3{
+
+    background:
+    rgba(205,127,50,.15);
+}
+
+.medal{
+    font-size:28px;
+}
+
+.ss{
+    color:#ffd700;
+    font-weight:bold;
+}
+
+.s{
+    color:#ff9800;
+    font-weight:bold;
+}
+
+.a{
+    color:#4caf50;
+    font-weight:bold;
+}
+
+.b{
+    color:#42a5f5;
+    font-weight:bold;
+}
+
+.c{
+    color:#bdbdbd;
+}
+
+.d{
+    color:#ef5350;
+}
+
+.btn-wrap{
+    text-align:center;
+    margin-top:30px;
+}
+
+.btn{
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+.empty{
+
+    text-align:center;
+
+    padding:50px;
+
+    color:#94a3b8;
+}
+
+@media(max-width:700px){
+
+    th,td{
+        font-size:13px;
+        padding:10px;
+    }
+
+    .header h1{
+        font-size:36px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>
+🏆 명예의 전당
+</h1>
+
+<div class="subtitle">
+KBO 144-0 Challenge 역대 랭킹
+</div>
+
+</div>
+
+<div class="ranking-box">
+
+{% if records %}
+
+<table>
+
+<tr>
+<th>순위</th>
+<th>닉네임</th>
+<th>기록</th>
+<th>등급</th>
+<th>날짜</th>
+</tr>
+
+{% for r in records %}
+
+<tr
+class="
+{% if loop.index == 1 %}rank1{% endif %}
+{% if loop.index == 2 %}rank2{% endif %}
+{% if loop.index == 3 %}rank3{% endif %}
+">
+
+<td>
+
+{% if loop.index == 1 %}
+<span class="medal">🥇</span>
+
+{% elif loop.index == 2 %}
+<span class="medal">🥈</span>
+
+{% elif loop.index == 3 %}
+<span class="medal">🥉</span>
+
+{% else %}
+#{{ loop.index }}
+{% endif %}
+
+</td>
+
+<td>
+<b>{{ r.name }}</b>
+</td>
+
+<td>
+{{ r.wins }}-{{ r.losses }}
+</td>
+
+<td>
+
+<span class="
+{% if r.grade == 'SS' %}ss{% endif %}
+{% if r.grade == 'S' %}s{% endif %}
+{% if r.grade == 'A' %}a{% endif %}
+{% if r.grade == 'B' %}b{% endif %}
+{% if r.grade == 'C' %}c{% endif %}
+{% if r.grade == 'D' %}d{% endif %}
+">
+{{ r.grade }}
+</span>
+
+</td>
+
+<td>
+{{ r.date }}
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<div class="empty">
+
+<h2>
+기록이 없습니다
+</h2>
+
+<br>
+
+<p>
+첫 번째 LEGEND가 되어보세요.
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="btn-wrap">
+
+<a href="/">
+<button class="btn">
+🎮 다시 플레이
+</button>
+</a>
+
+</div>
+
+</body>
+</html>
