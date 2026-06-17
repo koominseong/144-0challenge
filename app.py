@@ -407,10 +407,7 @@ def result():
 
     record = f"{wins}-{losses}"
 
-    session["final_wins"] = wins
-    session["final_losses"] = losses
-    session["final_grade"] = grade
-
+    
     # 등급
     if wins >= 140:
         grade = "SS"
@@ -429,6 +426,10 @@ def result():
 
     else:
         grade = "D"
+
+    session["final_wins"] = wins
+    session["final_losses"] = losses
+    session["final_grade"] = grade
 
     return render_template(
         "result.html",
