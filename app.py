@@ -80,16 +80,25 @@ def load_team(team):
 
 def save_record(name, wins, losses, grade):
 
+    record_file = os.path.join(
+        os.path.dirname(__file__),
+        "records.json"
+    )
+
     print("SAVE RECORD CALLED")
     print(name, wins, losses, grade)
 
-    record_file = "records.json"
-
     try:
-        with open(record_file, "r", encoding="utf-8") as f:
+        with open(
+            record_file,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
             records = json.load(f)
 
     except Exception as e:
+
         print("LOAD ERROR:", e)
         records = []
 
@@ -108,7 +117,12 @@ def save_record(name, wins, losses, grade):
 
     records = records[:100]
 
-    with open(record_file, "w", encoding="utf-8") as f:
+    with open(
+        record_file,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
         json.dump(
             records,
             f,
@@ -117,7 +131,7 @@ def save_record(name, wins, losses, grade):
         )
 
     print("RECORD SAVED:", len(records))
- 
+    
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -450,9 +464,18 @@ def result():
 @app.route("/save_record", methods=["POST"])
 def save_record_route():
 
-    print("SAVE_RECORD ROUTE")
+    print("===== SAVE START =====")
 
-    name = request.form.get("name", "").strip()
+    print("FORM:", request.form)
+
+    print("WINS:", session.get("final_wins"))
+    print("LOSSES:", session.get("final_losses"))
+    print("GRADE:", session.get("final_grade"))
+
+    name = request.form.get(
+        "name",
+        ""
+    ).strip()
 
     if not name:
         return "이름을 입력하세요."
@@ -464,25 +487,39 @@ def save_record_route():
         session["final_grade"]
     )
 
+    print("===== SAVE END =====")
+
     return redirect("/ranking")
     
 @app.route("/ranking")
 def ranking():
 
+    record_file = os.path.join(
+        os.path.dirname(__file__),
+        "records.json"
+    )
+
     try:
+
         with open(
-            "records.json",
+            record_file,
             "r",
             encoding="utf-8"
         ) as f:
 
             records = json.load(f)
 
-        print("LOADED RECORDS:", len(records))
+        print(
+            "LOADED RECORDS:",
+            len(records)
+        )
 
     except Exception as e:
 
-        print("RANKING ERROR:", e)
+        print(
+            "RANKING ERROR:",
+            e
+        )
 
         records = []
 
