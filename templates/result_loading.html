@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>시즌 시뮬레이션</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+
+    font-family:'Segoe UI',sans-serif;
+
+    background:
+    radial-gradient(
+        circle at center,
+        #1e3a8a 0%,
+        #0f172a 50%,
+        #020617 100%
+    );
+
+    color:white;
+}
+
+.bg-glow{
+
+    position:absolute;
+
+    width:800px;
+    height:800px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        circle,
+        rgba(59,130,246,.25),
+        transparent 70%
+    );
+
+    animation:
+    glow 4s infinite alternate;
+}
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    text-align:center;
+
+    width:90%;
+    max-width:700px;
+}
+
+.ball{
+
+    font-size:90px;
+
+    margin-bottom:25px;
+
+    animation:
+    spin 2.5s linear infinite;
+}
+
+.title{
+
+    font-size:52px;
+    font-weight:900;
+
+    margin-bottom:20px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #60a5fa,
+        #22d3ee,
+        #60a5fa
+    );
+
+    background-size:300% 300%;
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    animation:
+    shine 3s linear infinite;
+}
+
+.subtitle{
+
+    font-size:20px;
+
+    color:#cbd5e1;
+
+    margin-bottom:40px;
+}
+
+.counter{
+
+    font-size:160px;
+
+    font-weight:900;
+
+    color:#38bdf8;
+
+    text-shadow:
+        0 0 20px #38bdf8,
+        0 0 40px #38bdf8,
+        0 0 80px #38bdf8;
+
+    margin-bottom:20px;
+}
+
+.wins-text{
+
+    font-size:28px;
+
+    color:#e2e8f0;
+
+    margin-bottom:35px;
+}
+
+.progress-wrap{
+
+    width:100%;
+
+    max-width:500px;
+
+    margin:auto;
+}
+
+.progress{
+
+    height:18px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:
+    rgba(255,255,255,.08);
+
+    border:
+    1px solid rgba(255,255,255,.1);
+}
+
+.bar{
+
+    width:0%;
+
+    height:100%;
+
+    border-radius:20px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #38bdf8,
+        #22d3ee,
+        #38bdf8
+    );
+
+    background-size:200%;
+
+    animation:
+    shine 2s linear infinite;
+}
+
+.loading{
+
+    margin-top:25px;
+
+    color:#94a3b8;
+
+    font-size:18px;
+
+    letter-spacing:2px;
+}
+
+.dots::after{
+
+    content:"";
+
+    animation:dots 1.5s infinite;
+}
+
+@keyframes spin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes glow{
+
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.2);
+    }
+}
+
+@keyframes shine{
+
+    0%{
+        background-position:0%;
+    }
+
+    100%{
+        background-position:200%;
+    }
+}
+
+@keyframes dots{
+
+    0%{
+        content:"";
+    }
+
+    33%{
+        content:".";
+    }
+
+    66%{
+        content:"..";
+    }
+
+    100%{
+        content:"...";
+    }
+}
+
+@media(max-width:768px){
+
+    .ball{
+        font-size:70px;
+    }
+
+    .title{
+        font-size:36px;
+    }
+
+    .counter{
+        font-size:90px;
+    }
+
+    .wins-text{
+        font-size:22px;
+    }
+
+    .subtitle{
+        font-size:17px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="container">
+
+<div class="ball">
+⚾
+</div>
+
+<div class="title">
+144-0 CHALLENGE
+</div>
+
+<div class="subtitle">
+드림팀 시즌 시뮬레이션
+</div>
+
+<div
+class="counter"
+id="counter">
+0
+</div>
+
+<div class="wins-text">
+예상 승수 계산 중
+</div>
+
+<div class="progress-wrap">
+
+<div class="progress">
+
+<div
+class="bar"
+id="bar">
+</div>
+
+</div>
+
+</div>
+
+<div class="loading">
+SIMULATING<span class="dots"></span>
+</div>
+
+</div>
+
+<script>
+
+const target = {{ wins }};
+
+let current = 0;
+
+const counter =
+document.getElementById(
+"counter"
+);
+
+const bar =
+document.getElementById(
+"bar"
+);
+
+function animate(){
+
+    if(current >= target){
+
+        counter.innerText =
+        target;
+
+        bar.style.width =
+        "100%";
+
+        setTimeout(()=>{
+
+            location.href =
+            "/result";
+
+        },1800);
+
+        return;
+    }
+
+    const diff =
+    target - current;
+
+    const step =
+    Math.max(
+        1,
+        Math.ceil(diff / 12)
+    );
+
+    current += step;
+
+    if(current > target){
+        current = target;
+    }
+
+    counter.innerText =
+    current;
+
+    bar.style.width =
+    (
+        current /
+        target *
+        100
+    ) + "%";
+
+    setTimeout(
+        animate,
+        110
+    );
+}
+
+animate();
+
+</script>
+
+</body>
+
+</html>
