@@ -5,11 +5,11 @@ import random
 from datetime import datetime
 from supabase import create_client
 
+print("URL =", SUPABASE_URL)
+print("KEY EXISTS =", bool(SUPABASE_KEY))
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-print("SUPABASE_URL =", SUPABASE_URL)
-print("SUPABASE_KEY EXISTS =", bool(SUPABASE_KEY))
 
 supabase = create_client(
     SUPABASE_URL,
