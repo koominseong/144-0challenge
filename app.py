@@ -202,11 +202,15 @@ def team_view():
 @app.route("/team_reroll")
 def team_reroll():
 
+    if session["assigned_this_round"] > 0:
+        session["error"] = "선수를 배치한 후에는 리롤할 수 없습니다."
+        return redirect("/team_view")
+
     if session["team_reroll"] <= 0:
         return redirect("/next")
 
     session["team_reroll"] -= 1
-    
+
     session["used_teams"].remove(
         session["current_team"]
     )
