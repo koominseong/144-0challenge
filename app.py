@@ -209,52 +209,6 @@ def team_reroll():
 
     return redirect("/next")
 
-
-@app.route("/select", methods=["POST"])
-def select_players():
-
-    selected = request.form.getlist("players")
-
-    if len(selected) != 3:
-        return "반드시 3명 선택해야 함"
-
-    used_players = session.get("used_players", [])
-
-    for player_id in selected:
-        if player_id in used_players:
-            return "이미 사용한 선수입니다"
-
-    session["selected_players"] = selected
-
-    return redirect("/assign")
-
-
-@app.route("/assign")
-def assign():
-
-    players = load_team(
-        session["current_team"]
-    )
-
-    used_players = session.get(
-        "used_players",
-        []
-    )
-
-    selected_players = [
-        p
-        for p in players
-        if p["id"] in session["selected_players"]
-        and p["id"] not in used_players
-    ]
-
-    return render_template(
-        "assign.html",
-        players=selected_players,
-        lineup=session["lineup"]
-    )
-
-
 @app.route("/assign_player", methods=["POST"])
 def assign_player():
 
@@ -362,7 +316,7 @@ def assign_player():
         session["allow_next"] = True
         return redirect("/next")
 
-    return redirect("/assign")
+    return redirect("/team_view")
     
 @app.route("/result")
 def result():
