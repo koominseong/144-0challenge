@@ -2,58 +2,58 @@
   {
     "id": "lee_seungyeop_2003",
     "name": "이승엽",
-    "year": 2003,
-    "positions": ["1B", "DH"],
-    "war": 11.0
+    "year": 2002,
+    "positions": ["1B"],
+    "war": 9.7
   },
   {
     "id": "yang_joonhyuk_2003",
     "name": "양준혁",
-    "year": 2003,
-    "positions": ["LF", "DH"],
-    "war": 8.0
+    "year": 2007,
+    "positions": ["LF", "1B"],
+    "war": 7.9
   },
   {
     "id": "park_hanyi_2004",
     "name": "박한이",
     "year": 2004,
     "positions": ["RF", "CF"],
-    "war": 7.0
+    "war": 6.6
   },
   {
     "id": "shim_jeongsu_2003",
     "name": "심정수",
-    "year": 2003,
+    "year": 2007,
     "positions": ["RF", "LF"],
-    "war": 8.0
+    "war": 6.0
   },
   {
     "id": "jin_gapyong_2008",
     "name": "진갑용",
-    "year": 2008,
+    "year": 2002,
     "positions": ["C"],
-    "war": 6.0
+    "war": 4.8
   },
   {
     "id": "park_jinseok_2004",
     "name": "박진만",
-    "year": 2004,
+    "year": 2007,
     "positions": ["SS"],
-    "war": 6.0
+    "war": 6.8
   },
   {
     "id": "jo_dongchan_2009",
     "name": "조동찬",
-    "year": 2009,
+    "year": 2005,
     "positions": ["3B"],
-    "war": 5.5
+    "war": 3.1
   },
   {
     "id": "park_seokmin_2009",
     "name": "박석민",
-    "year": 2009,
+    "year": 2008,
     "positions": ["3B"],
-    "war": 5.5
+    "war": 4.7
   },
   {
     "id": "kang_bonggyu_2008",
