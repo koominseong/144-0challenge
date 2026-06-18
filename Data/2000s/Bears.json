@@ -4,140 +4,140 @@
     "name": "김동주",
     "year": 2007,
     "positions": ["3B"],
-    "war": 8.0
+    "war": 7.6
   },
   {
     "id": "kim_hyunsoo_2008",
     "name": "김현수",
     "year": 2008,
     "positions": ["LF"],
-    "war": 7.5
+    "war": 8.2
   },
   {
     "id": "hong_sungheun_2008",
     "name": "홍성흔",
-    "year": 2008,
-    "positions": ["C", "DH"],
-    "war": 7.0
+    "year": 2004,
+    "positions": ["C"],
+    "war": 6.9
   },
   {
     "id": "lee_jongwook_2007",
     "name": "이종욱",
     "year": 2007,
     "positions": ["CF"],
-    "war": 6.5
+    "war": 5.6
   },
   {
     "id": "go_youngmin_2008",
     "name": "고영민",
-    "year": 2008,
+    "year": 2007,
     "positions": ["2B"],
-    "war": 6.5
+    "war": 4.9
   },
   {
     "id": "son_siheon_2008",
     "name": "손시헌",
-    "year": 2008,
+    "year": 2005,
     "positions": ["SS"],
-    "war": 5.5
+    "war": 3.8
   },
   {
     "id": "jung_soogeun_2001",
     "name": "정수근",
     "year": 2001,
     "positions": ["CF", "RF"],
-    "war": 5.5
+    "war": 4.9
   },
   {
     "id": "woods_2003",
     "name": "타이론 우즈",
-    "year": 2003,
+    "year": 2000,
     "positions": ["1B"],
     "war": 6.0
   },
   {
     "id": "choi_joonseok_2009",
-    "name": "최준석",
-    "year": 2009,
-    "positions": ["1B", "DH"],
-    "war": 5.5
+    "name": "이재우",
+    "year": 2005,
+    "positions": ["RP"],
+    "war": 5.3
   },
   {
     "id": "shim_jeongsu_2004",
     "name": "심정수",
-    "year": 2004,
-    "positions": ["RF"],
-    "war": 6.0
+    "year": 2000,
+    "positions": ["RF","LF"],
+    "war": 5.1
   },
   {
     "id": "chae_sangbyeong_2008",
-    "name": "채상병",
-    "year": 2008,
-    "positions": ["C"],
-    "war": 4.5
+    "name": "김상현",
+    "year": 2009,
+    "positions": ["SP"],
+    "war": 2.3
   },
   {
     "id": "daniel_rios_2007",
     "name": "다니엘 리오스",
     "year": 2007,
     "positions": ["SP"],
-    "war": 9.0
+    "war": 9.4
   },
   {
     "id": "park_myunghwan_2005",
     "name": "박명환",
-    "year": 2005,
+    "year": 2002,
     "positions": ["SP"],
-    "war": 7.0
+    "war": 4.3
   },
   {
     "id": "matt_randel_2005",
-    "name": "맷 랜들",
-    "year": 2005,
+    "name": "게리 레스",
+    "year": 2004,
     "positions": ["SP"],
-    "war": 6.0
+    "war": 7.2
   },
   {
     "id": "kim_sunwoo_2009",
-    "name": "김선우",
-    "year": 2009,
+    "name": "사토시 이리키",
+    "year": 2003,
     "positions": ["SP"],
-    "war": 5.5
+    "war": 4.0
   },
   {
     "id": "lee_hyunseung_2008",
-    "name": "이현승",
-    "year": 2008,
-    "positions": ["SP"],
-    "war": 5.0
+    "name": "이혜천",
+    "year": 2001,
+    "positions": ["RP"],
+    "war": 2.9
   },
   {
     "id": "lim_taehoon_2007",
     "name": "임태훈",
     "year": 2007,
-    "positions": ["SP", "RP"],
-    "war": 4.5
+    "positions": ["RP"],
+    "war": 4.1
   },
   {
     "id": "jin_piljoong_2001",
-    "name": "진필중",
-    "year": 2001,
+    "name": "구자운",
+    "year": 2000,
     "positions": ["RP"],
     "war": 4.5
   },
   {
     "id": "jung_jaehoon_2008",
     "name": "정재훈",
-    "year": 2008,
+    "year": 2006,
     "positions": ["RP"],
-    "war": 4.0
+    "war": 2.8
   },
   {
     "id": "lee_hyecheon_2007",
-    "name": "이혜천",
-    "year": 2007,
+    "name": "이재영",
+    "year": 2004,
     "positions": ["RP"],
-    "war": 3.5
+    "war": 3.6
   },
   {
     "id": "lee_yongchan_2009",
@@ -148,30 +148,30 @@
   },
   {
     "id": "kim_jaeho_2009",
-    "name": "김재호",
-    "year": 2009,
-    "positions": ["SS"],
-    "war": 3.0
+    "name": "이광우",
+    "year": 2000,
+    "positions": ["RP"],
+    "war": 3.4
   },
   {
     "id": "oh_jaewon_2009",
-    "name": "오재원",
-    "year": 2009,
-    "positions": ["2B"],
-    "war": 3.0
+    "name": "심재학",
+    "year": 2000,
+    "positions": ["RF"],
+    "war": 7.5
   },
   {
     "id": "ahn_kyunghyun_2000",
     "name": "안경현",
     "year": 2000,
     "positions": ["SS", "2B"],
-    "war": 4.0
+    "war": 4.4
   },
   {
     "id": "hong_sangsam_2009",
-    "name": "홍상삼",
-    "year": 2009,
-    "positions": ["SP"],
-    "war": 3.0
+    "name": "장원진",
+    "year": 2000,
+    "positions": ["1B","LF"],
+    "war": 3.8
   }
 ]
