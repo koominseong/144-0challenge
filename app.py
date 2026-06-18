@@ -500,53 +500,33 @@ def result_loading():
         wins=wins
     )
 
-@app.route("/save_record", methods=["POST"])
-def save_record_route():
+def save_record(name, wins, losses, grade):
 
-    print("===== SAVE START =====")
+    supabase.table("records").insert({
 
-    print("FORM:", request.form)
+        "name": name,
+        "wins": wins,
+        "losses": losses,
+        "grade": grade,
+        "date": datetime.now().strftime("%Y-%m-%d")
 
-    print("WINS:", session.get("final_wins"))
-    print("LOSSES:", session.get("final_losses"))
-    print("GRADE:", session.get("final_grade"))
-
-    name = request.form.get(
-        "name",
-        ""
-    ).strip()
-
-    if not name:
-        return "이름을 입력하세요."
-
-    save_record(
-        name,
-        session["final_wins"],
-        session["final_losses"],
-        session["final_grade"]
-    )
-
-    print("===== SAVE END =====")
-
-    return redirect("/ranking")
+    }).execute()
     
 @app.route("/ranking")
 def ranking():
 
-    record_file = os.path.join(
-        os.path.dirname(__file__),
-        "records.json"
-    )
-
     try:
 
-        with open(
-            record_file,
-            "r",
-            encoding="utf-8"
-        ) as f:
+        response = (
+            supabase
+            .table("records")
+            .select("*")
+            .order("wins", desc=True)
+            .limit(100)
+            .execute()
+        )
 
-            records = json.load(f)
+        records = response.data
 
         print(
             "LOADED RECORDS:",
