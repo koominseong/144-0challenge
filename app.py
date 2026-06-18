@@ -200,10 +200,12 @@ def team_reroll():
         return redirect("/next")
 
     session["team_reroll"] -= 1
-
+    
     session["used_teams"].remove(
         session["current_team"]
     )
+
+    session["allow_next"] = True
 
     return redirect("/next")
 
