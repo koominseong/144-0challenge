@@ -1,129 +1,393 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 
 <head>
+
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>KBO 144-0 Challenge</title>
 
 <style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-    font-family: Arial, sans-serif;
-    margin:20px;
-}
+    font-family:-apple-system,BlinkMacSystemFont,
+    "Segoe UI",sans-serif;
 
-.player-table{
-    width:70%;
-    border-collapse:collapse;
+    background:#f3f6fb;
+    color:#222;
 }
-
-.player-table th,
-.player-table td{
-    border:1px solid #ccc;
-    padding:8px;
-    text-align:center;
-}
-
-.player-table th{
-    background:#f5f5f5;
-}
-
-.player-table tr:hover{
-    background:#e8f4ff;
-}
-
-.sidebar{
-    position:fixed;
-    top:20px;
-    right:20px;
-    width:350px;
-    background:white;
-    border:1px solid #ddd;
-    border-radius:10px;
-    padding:15px;
-    box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
-
-.field{
-    position:relative;
-    width:300px;
-    height:450px;
-    margin:auto;
-}
-
-.player{
-    position:absolute;
-    width:90px;
-    background:#eee;
-    border-radius:8px;
-    padding:5px;
-    text-align:center;
-    font-size:12px;
-}
-
-.filled{
-    background:#4caf50;
-    color:white;
-    font-weight:bold;
-}
-
-.diamond{
-    position:absolute;
-    width:140px;
-    height:140px;
-    border:3px solid black;
-    transform:rotate(45deg);
-    left:80px;
-    top:120px;
-}
-
-/* 다크모드 */
 
 .dark{
     background:#121212;
     color:white;
 }
 
+/* 헤더 */
+
+.topbar{
+
+    background:white;
+
+    padding:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:
+    0 2px 10px rgba(0,0,0,.08);
+
+}
+
+.dark .topbar{
+    background:#1e1e1e;
+}
+
+.title{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+.top-buttons{
+
+    display:flex;
+    gap:10px;
+
+}
+
+.btn{
+
+    border:none;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+.btn-blue{
+
+    background:#1976d2;
+    color:white;
+
+}
+
+.btn-green{
+
+    background:#4caf50;
+    color:white;
+
+}
+
+.btn-dark{
+
+    background:#333;
+    color:white;
+
+}
+
+/* 메인 */
+
+.container{
+
+    max-width:1500px;
+
+    margin:auto;
+
+    padding:25px;
+
+    display:grid;
+
+    grid-template-columns:
+    1fr 420px;
+
+    gap:25px;
+
+}
+
+/* 선수 목록 */
+
+.card-area{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fill,minmax(220px,1fr));
+
+    gap:15px;
+
+}
+
+.player-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:16px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,.08);
+
+    transition:.2s;
+
+}
+
+.player-card:hover{
+
+    transform:translateY(-3px);
+
+}
+
+.dark .player-card{
+
+    background:#1e1e1e;
+
+}
+
+.player-name{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    margin-bottom:10px;
+
+}
+
+.player-year{
+
+    color:#777;
+
+    margin-bottom:8px;
+
+}
+
+.dark .player-year{
+    color:#aaa;
+}
+
+.player-pos{
+
+    margin-bottom:15px;
+
+    font-size:14px;
+
+}
+
+.assign-btn{
+
+    width:100%;
+
+    padding:10px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976d2;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.assign-btn:hover{
+
+    background:#1565c0;
+
+}
+
+/* 사이드 */
+
+.sidebar{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,.08);
+
+}
+
 .dark .sidebar{
     background:#1e1e1e;
-    color:white;
 }
 
-.dark .player-table th{
-    background:#333;
+.sidebar h2{
+    text-align:center;
+    margin-bottom:15px;
 }
 
-.dark .player-table td{
-    background:#222;
+/* 야구장 */
+
+.field{
+
+    position:relative;
+
+    width:340px;
+    height:500px;
+
+    margin:auto;
+}
+
+.diamond{
+
+    position:absolute;
+
+    width:150px;
+    height:150px;
+
+    border:4px solid #444;
+
+    transform:rotate(45deg);
+
+    left:95px;
+    top:140px;
+
+}
+
+.dark .diamond{
+    border-color:white;
+}
+
+.player{
+
+    position:absolute;
+
+    width:95px;
+
+    padding:6px;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    font-size:12px;
+
+    background:#e5e7eb;
+
 }
 
 .dark .player{
-    background:#444;
+    background:#333;
 }
 
-.dark .filled{
-    background:#2e7d32;
+.filled{
+
+    background:#4caf50;
+    color:white;
+    font-weight:bold;
+
+}
+
+/* 모달 */
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,.65);
+
+    z-index:9999;
+
+}
+
+.modal-content{
+
+    background:white;
+
+    width:350px;
+
+    margin:120px auto;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+}
+
+.dark .modal-content{
+
+    background:#1e1e1e;
+
+}
+
+.pos-btn{
+
+    margin:5px;
+
+    padding:10px 15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#4caf50;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
 }
 
 /* 모바일 */
 
-@media (max-width: 900px){
+@media(max-width:1100px){
 
-    .sidebar{
-        position:static;
-        width:100%;
-        margin-top:20px;
+    .container{
+
+        grid-template-columns:1fr;
+
     }
 
-    .player-table{
-        width:100%;
+    .sidebar{
+
+        order:-1;
+
     }
 
     .field{
-        transform:scale(0.8);
+
+        transform:scale(.9);
+
         transform-origin:top center;
+
     }
+
 }
 
 </style>
@@ -132,82 +396,88 @@ body{
 
 <body>
 
-<h1>{{ team_name }}</h1>
+<div class="topbar">
+
+    <div class="title">
+        ⚾ {{ team_name }}
+    </div>
+
+    <div class="top-buttons">
+
+        {% if rerolls > 0 %}
+        <a href="/team_reroll">
+            <button class="btn btn-green">
+                🔄 리롤 {{ rerolls }}
+            </button>
+        </a>
+        {% endif %}
+
+        <button
+        class="btn btn-dark"
+        onclick="toggleDarkMode()">
+            🌙 다크모드
+        </button>
+
+    </div>
+
+</div>
 
 {% if error %}
 <div style="
+max-width:1400px;
+margin:20px auto;
+padding:15px;
 background:#ef4444;
 color:white;
-padding:12px;
-border-radius:10px;
-margin-bottom:15px;
+border-radius:12px;
 font-weight:bold;
 ">
 {{ error }}
 </div>
 {% endif %}
 
-<p>
-팀 리롤 남음 : {{ rerolls }}
-</p>
+<div class="container">
 
-{% if rerolls > 0 %}
-<a href="/team_reroll">
-    <button type="button">
-        🔄 팀 리롤
-    </button>
-</a>
-{% endif %}
+<div>
 
-<br><br>
-
-<button onclick="toggleDarkMode()">
-🌙 다크모드
-</button>
-
-<br><br>
-
-<form action="/select" method="post">
-
-<table class="player-table">
-
-<tr>
-    <th>선택</th>
-    <th>선수</th>
-    <th>연도</th>
-    <th>포지션</th>
-</tr>
+<div class="card-area">
 
 {% for p in players %}
-<tr>
 
-<td>
-<input
-type="checkbox"
-name="players"
-value="{{ p.id }}">
-</td>
+{% if p.id not in session["used_players"] %}
 
-<td>{{ p.name }}</td>
+<div class="player-card">
 
-<td>{{ p.year }}</td>
+<div class="player-name">
+{{ p.name }}
+</div>
 
-<td>
+<div class="player-year">
+{{ p.year }}
+</div>
+
+<div class="player-pos">
 {{ p.positions | join(", ") }}
-</td>
-    
-</tr>
-{% endfor %}
+</div>
 
-</table>
-
-<br>
-
-<button type="submit">
-선수 3명 선택
+<button
+class="assign-btn"
+type="button"
+onclick="openAssign(
+'{{ p.id }}',
+'{{ p.positions|join(",") }}'
+)">
+배치
 </button>
 
-</form>
+</div>
+
+{% endif %}
+{% endfor %}
+
+</div>
+
+</div>
 
 <div class="sidebar">
 
@@ -217,80 +487,220 @@ value="{{ p.id }}">
 
 <div class="diamond"></div>
 
-<div class="player {% if lineup['CF'] %}filled{% endif %}" style="top:0;left:105px;">
+<div class="player {% if lineup['CF'] %}filled{% endif %}"
+style="top:0;left:120px;">
 CF<br>{{ lineup["CF"].name if lineup["CF"] else "-" }}
 </div>
 
-<div class="player {% if lineup['LF'] %}filled{% endif %}" style="top:50px;left:0;">
+<div class="player {% if lineup['LF'] %}filled{% endif %}"
+style="top:50px;left:0;">
 LF<br>{{ lineup["LF"].name if lineup["LF"] else "-" }}
 </div>
 
-<div class="player {% if lineup['RF'] %}filled{% endif %}" style="top:50px;right:0;">
+<div class="player {% if lineup['RF'] %}filled{% endif %}"
+style="top:50px;right:0;">
 RF<br>{{ lineup["RF"].name if lineup["RF"] else "-" }}
 </div>
 
-<div class="player {% if lineup['SS'] %}filled{% endif %}" style="top:140px;left:45px;">
+<div class="player {% if lineup['SS'] %}filled{% endif %}"
+style="top:170px;left:50px;">
 SS<br>{{ lineup["SS"].name if lineup["SS"] else "-" }}
 </div>
 
-<div class="player {% if lineup['2B'] %}filled{% endif %}" style="top:140px;right:45px;">
+<div class="player {% if lineup['2B'] %}filled{% endif %}"
+style="top:170px;right:50px;">
 2B<br>{{ lineup["2B"].name if lineup["2B"] else "-" }}
 </div>
 
-<div class="player {% if lineup['3B'] %}filled{% endif %}" style="top:230px;left:0;">
+<div class="player {% if lineup['3B'] %}filled{% endif %}"
+style="top:280px;left:0;">
 3B<br>{{ lineup["3B"].name if lineup["3B"] else "-" }}
 </div>
 
-<div class="player {% if lineup['1B'] %}filled{% endif %}" style="top:230px;right:0;">
+<div class="player {% if lineup['1B'] %}filled{% endif %}"
+style="top:280px;right:0;">
 1B<br>{{ lineup["1B"].name if lineup["1B"] else "-" }}
 </div>
 
-<div class="player {% if lineup['DH'] %}filled{% endif %}" style="top:300px;left:105px;">
+<div class="player {% if lineup['DH'] %}filled{% endif %}"
+style="top:360px;left:120px;">
 DH<br>{{ lineup["DH"].name if lineup["DH"] else "-" }}
 </div>
 
-<div class="player {% if lineup['C'] %}filled{% endif %}" style="top:380px;left:105px;">
+<div class="player {% if lineup['C'] %}filled{% endif %}"
+style="top:430px;left:120px;">
 C<br>{{ lineup["C"].name if lineup["C"] else "-" }}
 </div>
 
-<div class="player" style="top:100px;left:-100px;">
+<div class="player"
+style="top:120px;left:-110px;">
 SP1<br>{{ lineup["SP"][0].name if lineup["SP"]|length > 0 else "-" }}
 </div>
 
-<div class="player" style="top:180px;left:-100px;">
+<div class="player"
+style="top:210px;left:-110px;">
 SP2<br>{{ lineup["SP"][1].name if lineup["SP"]|length > 1 else "-" }}
 </div>
 
-<div class="player" style="top:260px;left:-100px;">
+<div class="player"
+style="top:300px;left:-110px;">
 SP3<br>{{ lineup["SP"][2].name if lineup["SP"]|length > 2 else "-" }}
 </div>
 
-<div class="player" style="top:100px;right:-100px;">
+<div class="player"
+style="top:120px;right:-110px;">
 RP1<br>{{ lineup["RP"][0].name if lineup["RP"]|length > 0 else "-" }}
 </div>
 
-<div class="player" style="top:180px;right:-100px;">
+<div class="player"
+style="top:210px;right:-110px;">
 RP2<br>{{ lineup["RP"][1].name if lineup["RP"]|length > 1 else "-" }}
 </div>
 
-<div class="player" style="top:260px;right:-100px;">
+<div class="player"
+style="top:300px;right:-110px;">
 RP3<br>{{ lineup["RP"][2].name if lineup["RP"]|length > 2 else "-" }}
 </div>
 
 </div>
 
-<hr>
+</div>
 
-<p><b>팀 리롤</b> : {{ rerolls }}</p>
-<p><b>사용 팀</b> : {{ session["used_teams"]|length }}/10</p>
+</div>
+
+<!-- 모달 -->
+
+<div id="assignModal" class="modal">
+
+<div class="modal-content">
+
+<h3 style="margin-bottom:15px;">
+포지션 선택
+</h3>
+
+<form
+id="assignForm"
+action="/assign_player"
+method="post">
+
+<input
+type="hidden"
+name="player_id"
+id="playerId">
+
+<div id="positionButtons"></div>
+
+</form>
+
+<br>
+
+<button
+class="btn btn-dark"
+onclick="closeModal()">
+취소
+</button>
+
+</div>
 
 </div>
 
 <script>
 
 function toggleDarkMode(){
+
     document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "darkMode",
+        document.body.classList.contains("dark")
+    );
+
 }
+
+if(
+    localStorage.getItem("darkMode")
+    === "true"
+){
+    document.body.classList.add("dark");
+}
+
+function openAssign(
+playerId,
+positions
+){
+
+    document.getElementById(
+        "playerId"
+    ).value = playerId;
+
+    let html = "";
+
+    let posList =
+    positions.split(",");
+
+    posList.forEach(pos => {
+
+        html += `
+        <button
+        class="pos-btn"
+        type="submit"
+        name="position"
+        value="${pos}">
+        ${pos}
+        </button>
+        `;
+
+    });
+
+    if(
+        !posList.includes("SP")
+        &&
+        !posList.includes("RP")
+    ){
+
+        html += `
+        <button
+        class="pos-btn"
+        type="submit"
+        name="position"
+        value="DH">
+        DH
+        </button>
+        `;
+
+    }
+
+    document.getElementById(
+        "positionButtons"
+    ).innerHTML = html;
+
+    document.getElementById(
+        "assignModal"
+    ).style.display = "block";
+
+}
+
+function closeModal(){
+
+    document.getElementById(
+        "assignModal"
+    ).style.display = "none";
+
+}
+
+window.addEventListener("load", () => {
+
+    const nav =
+    performance.getEntriesByType("navigation")[0];
+
+    if(
+        nav &&
+        nav.type === "reload"
+    ){
+        window.location.href = "/";
+    }
+
+});
 
 </script>
 
