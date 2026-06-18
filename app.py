@@ -8,6 +8,9 @@ from supabase import create_client
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
+print("SUPABASE_URL =", SUPABASE_URL)
+print("SUPABASE_KEY EXISTS =", bool(SUPABASE_KEY))
+
 supabase = create_client(
     SUPABASE_URL,
     SUPABASE_KEY
@@ -86,60 +89,6 @@ def load_team(team):
 
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
-
-def save_record(name, wins, losses, grade):
-
-    record_file = os.path.join(
-        os.path.dirname(__file__),
-        "records.json"
-    )
-
-    print("SAVE RECORD CALLED")
-    print(name, wins, losses, grade)
-
-    try:
-        with open(
-            record_file,
-            "r",
-            encoding="utf-8"
-        ) as f:
-
-            records = json.load(f)
-
-    except Exception as e:
-
-        print("LOAD ERROR:", e)
-        records = []
-
-    records.append({
-        "name": name,
-        "wins": wins,
-        "losses": losses,
-        "grade": grade,
-        "date": datetime.now().strftime("%Y-%m-%d")
-    })
-
-    records.sort(
-        key=lambda x: x["wins"],
-        reverse=True
-    )
-
-    records = records[:100]
-
-    with open(
-        record_file,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        json.dump(
-            records,
-            f,
-            ensure_ascii=False,
-            indent=2
-        )
-
-    print("RECORD SAVED:", len(records))
     
 @app.route("/")
 def home():
@@ -409,6 +358,9 @@ def assign_player():
 @app.route("/result")
 def result():
 
+    if "lineup" not in session:
+        return redirect("/")
+
     lineup = session["lineup"]
 
     total_war = 0
@@ -473,6 +425,9 @@ def result():
 @app.route("/result_loading")
 def result_loading():
 
+    if "lineup" not in session:
+        return redirect("/")
+
     lineup = session["lineup"]
 
     total_war = 0
@@ -511,6 +466,23 @@ def save_record(name, wins, losses, grade):
         "date": datetime.now().strftime("%Y-%m-%d")
 
     }).execute()
+
+@app.route("/save_record", methods=["POST"])
+def save_record_route():
+
+    if "final_wins" not in session:
+        return redirect("/")
+
+    name = request.form["name"]
+
+    save_record(
+        name,
+        session["final_wins"],
+        session["final_losses"],
+        session["final_grade"]
+    )
+
+    return redirect("/ranking")
     
 @app.route("/ranking")
 def ranking():
