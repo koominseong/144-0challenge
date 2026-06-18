@@ -99,6 +99,8 @@ def start(era):
 
     session.clear()
 
+    session["allow_next"] = True
+
     if era == "all_time":
         session["actual_era"] = random.choice(
             ["2000s", "2010s", "2020s"]
@@ -130,9 +132,13 @@ def start(era):
 
     return redirect("/next")
 
-
 @app.route("/next")
 def next_team():
+
+    if not session.get("allow_next", False):
+        return redirect("/team_view")
+
+    session["allow_next"] = False
 
     if "era" not in session:
         return redirect("/")
@@ -351,6 +357,7 @@ def assign_player():
 
     if session["assigned_this_round"] >= 3:
         session["assigned_this_round"] = 0
+        session["allow_next"] = True
         return redirect("/next")
 
     return redirect("/assign")
