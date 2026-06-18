@@ -332,15 +332,15 @@ def assign_player():
         session["error"] = "동일 이름 선수는 중복 배치할 수 없습니다."
         return redirect("/team_view")
 
+    # DH는 모든 야수 가능
     if position == "DH":
-        if (
-            "SP" in player["positions"]
-            or
-            "RP" in player["positions"]
-        ):
+        if "SP" in player["positions"] or "RP" in player["positions"]:
             session["error"] = "투수는 DH에 배치할 수 없습니다."
             return redirect("/team_view")
-        elif position not in player["positions"]:
+
+    # DH 외에는 원래 포지션만 가능
+    else:
+        if position not in player["positions"]:
             session["error"] = "배치 불가한 포지션입니다."
             return redirect("/team_view")
 
