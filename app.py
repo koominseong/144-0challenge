@@ -500,6 +500,28 @@ def transfer_release():
 @app.route("/release_player/<player_id>")
 def release_player(player_id):
 
+    lineup = session["lineup"]
+
+    for p in lineup["SP"][:]:
+        if p["id"] == player_id:
+            lineup["SP"].remove(p)
+
+    for p in lineup["RP"][:]:
+        if p["id"] == player_id:
+            lineup["RP"].remove(p)
+
+    for pos in [
+        "C","1B","2B","3B",
+        "SS","LF","CF","RF","DH"
+    ]:
+        if (
+            lineup[pos]
+            and lineup[pos]["id"] == player_id
+        ):
+            lineup[pos] = None
+
+    session["lineup"] = lineup
+
     released = session["released_players"]
 
     if player_id not in released:
