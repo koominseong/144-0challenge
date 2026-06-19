@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>이적의 신</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,
+    "Segoe UI",sans-serif;
+    background:#f3f6fb;
+    padding:30px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:10px;
+    font-size:34px;
+    font-weight:bold;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:30px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fill,minmax(250px,1fr));
+    gap:15px;
+}
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,.08);
+
+}
+
+.player-name{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.player-pos{
+    color:#666;
+    margin-bottom:8px;
+}
+
+.player-war{
+    font-weight:bold;
+    color:#1976d2;
+    margin-bottom:15px;
+}
+
+.release-btn{
+
+    width:100%;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#ef4444;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.release-btn:hover{
+    opacity:.9;
+}
+
+.counter{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#ef4444;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        🔥 이적의 신
+    </div>
+
+    <div class="subtitle">
+        방출할 선수 3명을 선택하세요
+    </div>
+
+    <div class="counter">
+        {{ released_count }}/3 방출
+    </div>
+
+    <div class="grid">
+
+        {% for p in players %}
+
+        <div class="card">
+
+            <div class="player-name">
+                {{ p.name }}
+            </div>
+
+            <div class="player-pos">
+                {{ p.pos }}
+            </div>
+
+            <div class="player-war">
+                WAR {{ p.war }}
+            </div>
+
+            <a href="/release_player/{{ p.id }}">
+                <button class="release-btn">
+                    방출
+                </button>
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
