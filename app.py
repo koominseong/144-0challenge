@@ -388,7 +388,6 @@ def result():
     return render_template(
         "result.html",
         lineup=lineup,
-        total_war=round(total_war, 1),
         wins=wins,
         losses=losses,
         record=record,
