@@ -173,5 +173,33 @@
     "year": 2003,
     "positions": ["RP"],
     "war": 3.9
+  },
+  {
+    "id": "junsg_hyunwook_2006",
+    "name": "신명철",
+    "year": 2009,
+    "positions": ["2B"],
+    "war": 4.3
+  },
+  {
+    "id": "jung_hyunwookd_2006",
+    "name": "브리또",
+    "year": 2002,
+    "positions": ["SS"],
+    "war": 5.2
+  },
+  {
+    "id": "jung_hyunwookds_2006",
+    "name": "강봉규",
+    "year": 2009,
+    "positions": ["RF"],
+    "war": 4.8
+  },
+  {
+    "id": "jung_hyunwooks_2006",
+    "name": "권혁",
+    "year": 2009,
+    "positions": ["RP"],
+    "war": 3.3
   }
 ]
