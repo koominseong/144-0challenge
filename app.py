@@ -283,7 +283,7 @@ def trait_team():
             if t["id"] != "era_master"
         ]
 
-    if "trait_choices" not in session:
+    if not session.get("trait_choices"):
         session["trait_choices"] = random.sample(
             traits_pool,
             session.get("trait_count", 3)
@@ -404,7 +404,7 @@ def team_view():
         players=players,
         lineup=session["lineup"],
         rerolls=session["team_reroll"],
-        error=error
+        error=error,
         next_team_preview=session.get("next_team_preview")
     )
 
