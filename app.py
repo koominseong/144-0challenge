@@ -135,52 +135,52 @@ def start(era):
         {
             "id": "offense",
             "name": "공격 야구",
-            "desc": "야수 WAR 합 80 이상 → +3승"
+            "icon": "💥"
         },
         {
             "id": "defense",
             "name": "수비 야구",
-            "desc": "SS+2B+CF WAR 합 15 이하 → +4승"
+            "icon": "🛡️"
         },
         {
             "id": "mountain",
             "name": "마운드 왕국",
-            "desc": "투수 WAR 합 40 이상 → +2승"
+            "icon": "⚾"
         },
         {
             "id": "closer",
             "name": "철벽 마무리",
-            "desc": "RP WAR 합 13 이하 → +3승"
+            "icon": "🔒"
         },
         {
             "id": "smallball",
             "name": "스몰볼",
-            "desc": "1B+3B+LF+RF WAR 합 25 이하 → +3승"
+            "icon": "🎯"
         },
         {
             "id": "slugger",
             "name": "홈런 군단",
-            "desc": "1B+3B+LF+RF WAR 합 37 이상 → +3승"
+            "icon": "🔥"
         },
         {
             "id": "superstar",
             "name": "슈퍼스타 군단",
-            "desc": "WAR 9 이상 선수 3명 이상 → +5승"
+            "icon": "🌟"
         },
         {
             "id": "balanced",
             "name": "밸런스형",
-            "desc": "모든 선수 WAR 6.5 이상 → +4승"
+            "icon": "⚙️"
         },
         {
             "id": "core",
             "name": "수비 코어",
-            "desc": "C+SS+CF WAR 합 15 이하 → +4승"
+            "icon": "🧱"
         },
         {
             "id": "bullpen",
             "name": "불펜 의존",
-            "desc": "RP WAR +10 > SP WAR → +4승"
+            "icon": "🚨"
         }
     ]
 
