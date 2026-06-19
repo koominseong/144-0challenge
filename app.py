@@ -148,6 +148,7 @@ def start(era):
     session["first_round_bonus"] = False
     session["transfer_mode"] = False
     session["released_players"] = []
+    session["transfer_used"] = False
 
     return redirect("/behavior_trait")
 
@@ -532,7 +533,7 @@ def release_player(player_id):
     if len(released) >= 3:
 
         session["transfer_mode"] = True
-
+        session["transfer_used"] = True
         session["allow_next"] = True
 
         return redirect("/next")
@@ -703,7 +704,7 @@ def assign_player():
         if (
             session.get("selected_behavior")
             == "transfer_god"
-            and not session["transfer_mode"]
+            and not session["transfer_used"]
         ):
             return redirect("/transfer_release")
 
