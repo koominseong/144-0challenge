@@ -65,100 +65,100 @@
   {
     "id": "kim_jinwoo_2002",
     "name": "김진우",
-    "year": 2002,
+    "year": 2003,
     "positions": ["SP"],
-    "war": 7.0
+    "war": 4.8
   },
   {
     "id": "yun_seokmin_2009",
     "name": "윤석민",
-    "year": 2009,
+    "year": 2008,
     "positions": ["SP"],
-    "war": 8.0
+    "war": 6.1
   },
   {
     "id": "aquilino_lopez_2009",
-    "name": "아퀼리노 로페즈",
-    "year": 2009,
-    "positions": ["SP"],
-    "war": 6.5
-  },
-  {
-    "id": "seo_jaeweong_2008",
-    "name": "서재응",
-    "year": 2008,
-    "positions": ["SP"],
-    "war": 5.0
-  },
-  {
-    "id": "lee_daejin_2002",
-    "name": "이대진",
-    "year": 2002,
+    "name": "그레이싱어",
+    "year": 2006,
     "positions": ["SP"],
     "war": 5.5
   },
   {
+    "id": "seo_jaeweong_2008",
+    "name": "구톰슨",
+    "year": 2009,
+    "positions": ["SP"],
+    "war": 5.5
+  },
+  {
+    "id": "lee_daejin_2002",
+    "name": "리오스",
+    "year": 2004,
+    "positions": ["SP"],
+    "war": 7.8
+  },
+  {
     "id": "choi_sangdeok_2002",
     "name": "최상덕",
-    "year": 2002,
+    "year": 2000,
     "positions": ["SP"],
-    "war": 5.0
+    "war": 3.3
   },
   {
     "id": "han_giseon_2004",
     "name": "한기주",
-    "year": 2004,
+    "year": 2008,
     "positions": ["RP"],
-    "war": 5.0
+    "war": 3.1
   },
   {
     "id": "jang_moonseok_2009",
-    "name": "장문석",
-    "year": 2009,
+    "name": "신용은",
+    "year": 2003,
     "positions": ["RP"],
-    "war": 3.5
+    "war": 43.0
   },
   {
     "id": "yoo_donghoon_2009",
     "name": "유동훈",
     "year": 2009,
     "positions": ["RP"],
-    "war": 4.5
+    "war": 5.0
   },
   {
     "id": "kwak_jungcheol_2009",
-    "name": "곽정철",
-    "year": 2009,
+    "name": "오봉욕",
+    "year": 2000,
     "positions": ["RP"],
-    "war": 4.0
+    "war": 3.8
   },
   {
     "id": "jung_sunghoon_2002",
-    "name": "정성훈",
-    "year": 2002,
-    "positions": ["3B","DH"],
-    "war": 5.5
+    "name": "오철민",
+    "year": 2001,
+    "positions": ["SP"],
+    "war": 4.7
   },
   {
     "id": "kim_wonjong_2009",
-    "name": "김원중",
-    "year": 2009,
+    "name": "이병석",
+    "year": 2001,
     "positions": ["RP"],
-    "war": 3.5
+    "war": 3.2
   },
   {
     "id": "choi_kyunghwan_2000",
-    "name": "최경환",
-    "year": 2000,
-    "positions": ["2B","DH"],
-    "war": 4.5
+    "name": "김종국",
+    "year": 2002,
+    "positions": ["2B"],
+    "war": 5.7
   },
   {
     "id": "shin_dongju_2001",
-    "name": "신동주",
-    "year": 2001,
-    "positions": ["LF","CF","RF"],
-    "war": 4.0
+    "name": "키퍼",
+    "year": 2002,
+    "positions": ["SP"],
+    "war": 5.8
   },
   {
     "id": "kim_jongguk_2002",
@@ -166,5 +166,40 @@
     "year": 2002,
     "positions": ["SS", "2B"],
     "war": 4.5
+  },
+  {
+    "id": "dkim_jongguk_2002",
+    "name": "이강철",
+    "year": 2002,
+    "positions": ["RP"],
+    "war": 3.3
+  },
+  {
+    "id": "kim_hjongguk_2002",
+    "name": "이용규",
+    "year": 2006,
+    "positions": ["CF", "LF","RF"],
+    "war": 6.6
+  },
+  {
+    "id": "kim_jongguksa_2002",
+    "name": "심재학",
+    "year": 2004,
+    "positions": ["LF", "RF"],
+    "war": 5.9
+  },
+  {
+    "id": "kim_nnjongguk_2002",
+    "name": "김원섭",
+    "year": 2008,
+    "positions": ["RF", "LF"],
+    "war": 4.2
+  },
+  {
+    "id": "kim_jonggukrrr_2002",
+    "name": "윤석민",
+    "year": 2006,
+    "positions": ["RP"],
+    "war":3.4
   }
 ]
