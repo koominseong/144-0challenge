@@ -131,98 +131,53 @@ def start(era):
 
     session["team_reroll"] = 2
 
+    return redirect("/next")
+
+@app.route("/trait_team")
+def trait_team():
+
+    if session.get("selected_trait"):
+        return redirect("/team_view")
+
     TRAITS = [
-        {
-            "id": "offense",
-            "name": "공격 야구",
-            "icon": "💥"
-        },
-        {
-            "id": "defense",
-            "name": "수비 야구",
-            "icon": "🛡️"
-        },
-        {
-            "id": "mountain",
-            "name": "마운드 왕국",
-            "icon": "⚾"
-        },
-        {
-            "id": "closer",
-            "name": "철벽 마무리",
-            "icon": "🔒"
-        },
-        {
-            "id": "smallball",
-            "name": "스몰볼",
-            "icon": "🎯"
-        },
-        {
-            "id": "slugger",
-            "name": "홈런 군단",
-            "icon": "🔥"
-        },
-        {
-            "id": "superstar",
-            "name": "슈퍼스타 군단",
-            "icon": "🌟"
-        },
-        {
-            "id": "balanced",
-            "name": "밸런스형",
-            "icon": "⚙️"
-        },
-        {
-            "id": "core",
-            "name": "수비 코어",
-            "icon": "🧱"
-        },
-        {
-            "id": "bullpen",
-            "name": "불펜 의존",
-            "icon": "🚨"
-        }
+        {"id":"offense","name":"공격 야구","icon":"💥"},
+        {"id":"defense","name":"수비 야구","icon":"🛡️"},
+        {"id":"mountain","name":"마운드 왕국","icon":"⚾"},
+        {"id":"closer","name":"철벽 마무리","icon":"🔒"},
+        {"id":"smallball","name":"스몰볼","icon":"🎯"},
+        {"id":"slugger","name":"홈런 군단","icon":"🔥"},
+        {"id":"superstar","name":"슈퍼스타 군단","icon":"🌟"},
+        {"id":"balanced","name":"밸런스형","icon":"⚙️"},
+        {"id":"core","name":"수비 코어","icon":"🧱"},
+        {"id":"bullpen","name":"불펜 의존","icon":"🚨"},
+        {"id":"era_master","name":"왕조 건","icon":"🕰️"}
     ]
 
     traits_pool = TRAITS.copy()
 
-    if era != "all_time":
-
+    if session["era"] != "all_time":
         traits_pool = [
             t
             for t in traits_pool
             if t["id"] != "era_master"
         ]
 
-    session["trait_choices"] = random.sample(
-        TRAITS,
-        3
-    )
-
-    return redirect("/trait")
-
-@app.route("/trait")
-def trait():
-
     if "trait_choices" not in session:
-        return redirect("/")
-
-    if session.get("selected_trait"):
-        return redirect("/team_view")
+        session["trait_choices"] = random.sample(
+            traits_pool,
+            3
+        )
 
     return render_template(
-        "trait.html",
+        "trait_team.html",
         traits=session["trait_choices"]
     )
 
-@app.route("/select_trait/<trait_id>")
-def select_trait(trait_id):
+@app.route("/select_trait_team/<trait_id>")
+def select_trait_team(trait_id):
 
     if "trait_choices" not in session:
         return redirect("/")
-
-    if session.get("selected_trait"):
-        return redirect("/team_view")
 
     valid_ids = [
         t["id"]
@@ -230,13 +185,13 @@ def select_trait(trait_id):
     ]
 
     if trait_id not in valid_ids:
-        return redirect("/trait")
+        return redirect("/trait_team")
 
     session["selected_trait"] = trait_id
 
     session.pop("trait_choices", None)
 
-    return redirect("/next")
+    return redirect("/team_view")
     
 @app.route("/next")
 def next_team():
@@ -245,6 +200,25 @@ def next_team():
         return redirect("/team_view")
 
     session["allow_next"] = False
+
+    # 6명 채웠는데 아직 특성 안 골랐으면
+    filled = (
+        len(session["lineup"]["SP"])
+        + len(session["lineup"]["RP"])
+    )
+
+    for pos in [
+        "C","1B","2B","3B",
+        "SS","LF","CF","RF","DH"
+    ]:
+        if session["lineup"][pos]:
+            filled += 1
+
+    if (
+        filled >= 6
+        and "selected_trait" not in session
+    ):
+        return redirect("/trait_team")
 
     if "era" not in session:
         return redirect("/")
@@ -616,7 +590,7 @@ def result():
             bonus += 4
 
     # 시대 통일
-    elif session["era"] == "all_time":
+    elif trait == "era_master":
 
         eras = []
 
