@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>특성 선택</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #111827
+    );
+
+    color:white;
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+
+    width:100%;
+    max-width:1300px;
+
+    padding:40px;
+}
+
+.title{
+
+    text-align:center;
+
+    font-size:52px;
+
+    font-weight:900;
+
+    margin-bottom:10px;
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:18px;
+
+    margin-bottom:60px;
+}
+
+.cards{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:35px;
+
+    flex-wrap:wrap;
+}
+
+.card{
+
+    width:320px;
+    height:420px;
+
+    text-decoration:none;
+
+    color:white;
+
+    border-radius:24px;
+
+    background:
+    rgba(255,255,255,.05);
+
+    backdrop-filter:blur(15px);
+
+    border:
+    1px solid rgba(255,255,255,.15);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
+    overflow:hidden;
+
+    transition:.25s;
+}
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-100%;
+    left:-100%;
+
+    width:250%;
+    height:250%;
+
+    background:
+    linear-gradient(
+        45deg,
+        transparent,
+        rgba(255,255,255,.08),
+        transparent
+    );
+
+    transform:rotate(25deg);
+
+    transition:.5s;
+}
+
+.card:hover::before{
+
+    top:-30%;
+    left:-30%;
+}
+
+.card:hover{
+
+    transform:
+    translateY(-12px)
+    scale(1.03);
+
+    border-color:#60a5fa;
+
+    box-shadow:
+    0 0 35px
+    rgba(96,165,250,.45);
+}
+
+.icon{
+
+    font-size:90px;
+
+    margin-bottom:25px;
+}
+
+.name{
+
+    font-size:34px;
+
+    font-weight:800;
+
+    text-align:center;
+}
+
+.pick{
+
+    position:absolute;
+
+    bottom:30px;
+
+    color:#94a3b8;
+
+    font-size:14px;
+}
+
+@media(max-width:1100px){
+
+    .cards{
+
+        flex-direction:column;
+
+        align-items:center;
+    }
+
+    .card{
+
+        width:100%;
+        max-width:380px;
+
+        height:220px;
+    }
+
+    .icon{
+
+        font-size:55px;
+
+        margin-bottom:15px;
+    }
+
+    .name{
+
+        font-size:26px;
+    }
+
+    .title{
+
+        font-size:40px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 class="title">
+⚡ 특성 선택
+</h1>
+
+<p class="subtitle">
+랜덤으로 등장한 특성 중 하나를 선택하세요
+</p>
+
+<div class="cards">
+
+{% for trait in traits %}
+
+<a
+href="/select_trait/{{ trait.id }}"
+class="card">
+
+<div class="icon">
+{{ trait.icon }}
+</div>
+
+<div class="name">
+{{ trait.name }}
+</div>
+
+<div class="pick">
+클릭하여 선택
+</div>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</body>
+
+</html>
