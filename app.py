@@ -469,6 +469,16 @@ def fix_era(era):
 
     return redirect("/team_view")
 
+@app.route("/boost_player/<player_id>")
+def boost_player(player_id):
+
+    if session.get("boost_player"):
+        return redirect("/team_view")
+
+    session["boost_player"] = player_id
+
+    return redirect("/team_view")
+
 @app.route("/team_view")
 def team_view():
 
@@ -659,20 +669,50 @@ def result():
 
     lineup = session["lineup"]
 
+    boost_player = session.get("boost_player")
+
     total_war = 0
 
     for player in lineup["SP"]:
-        total_war += player["war"]
+
+        war = player["war"]
+
+        if (
+            boost_player
+            and player["id"] == boost_player
+        ):
+            war *= 1.1
+
+        total_war += war
 
     for player in lineup["RP"]:
-        total_war += player["war"]
+
+        war = player["war"]
+
+        if (
+            boost_player
+            and player["id"] == boost_player
+        ):
+            war *= 1.1
+
+        total_war += war
 
     for pos in [
-        "C", "1B", "2B", "3B", "SS",
-        "LF", "CF", "RF", "DH"
+        "C","1B","2B","3B",
+        "SS","LF","CF","RF","DH"
     ]:
+
         if lineup[pos]:
-            total_war += lineup[pos]["war"]
+
+            war = lineup[pos]["war"]
+
+            if (
+                boost_player
+                and lineup[pos]["id"] == boost_player
+            ):
+                war *= 1.1
+
+            total_war += war
 
     wins = round(total_war * 1.2)
 
