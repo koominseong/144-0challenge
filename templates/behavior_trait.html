@@ -1,1 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
 
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>행동 특성 선택</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        180deg,
+        #0f172a 0%,
+        #111827 100%
+    );
+
+    color:white;
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:30px;
+}
+
+.wrapper{
+
+    width:100%;
+    max-width:1200px;
+}
+
+.header{
+
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.badge{
+
+    display:inline-block;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    color:#93c5fd;
+
+    font-size:14px;
+
+    margin-bottom:20px;
+}
+
+.title{
+
+    font-size:52px;
+    font-weight:800;
+
+    margin-bottom:14px;
+}
+
+.subtitle{
+
+    color:#94a3b8;
+
+    font-size:18px;
+}
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:28px;
+}
+
+.card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    text-decoration:none;
+
+    color:white;
+
+    border-radius:28px;
+
+    background:
+    rgba(255,255,255,.05);
+
+    border:
+    1px solid rgba(255,255,255,.08);
+
+    padding:40px 30px;
+
+    transition:.25s;
+}
+
+.card:hover{
+
+    transform:
+    translateY(-10px);
+
+    border:
+    1px solid rgba(59,130,246,.6);
+
+    box-shadow:
+    0 20px 50px rgba(
+        59,
+        130,
+        246,
+        .25
+    );
+}
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-80px;
+    right:-80px;
+
+    width:160px;
+    height:160px;
+
+    border-radius:50%;
+
+    background:
+    rgba(59,130,246,.08);
+}
+
+.icon{
+
+    font-size:70px;
+
+    margin-bottom:25px;
+}
+
+.name{
+
+    font-size:30px;
+
+    font-weight:800;
+
+    margin-bottom:12px;
+}
+
+.flavor{
+
+    color:#94a3b8;
+
+    line-height:1.7;
+
+    font-size:15px;
+}
+
+.pick{
+
+    margin-top:30px;
+
+    display:inline-block;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    font-size:14px;
+
+    font-weight:700;
+}
+
+.footer{
+
+    margin-top:40px;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:13px;
+}
+
+/* 모바일 */
+
+@media(max-width:1000px){
+
+    .cards{
+
+        grid-template-columns:1fr;
+    }
+
+    .title{
+
+        font-size:36px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="header">
+
+<div class="badge">
+행동 특성
+</div>
+
+<h1 class="title">
+감독 성향 선택
+</h1>
+
+<div class="subtitle">
+이번 도전에서 사용할 전략을 선택하세요
+</div>
+
+</div>
+
+<div class="cards">
+
+{% for trait in traits %}
+
+<a
+class="card"
+href="/select_behavior/{{ trait.id }}"
+>
+
+<div class="icon">
+{{ trait.icon }}
+</div>
+
+<div class="name">
+{{ trait.name }}
+</div>
+
+<div class="flavor">
+{{ trait.flavor }}
+</div>
+
+<div class="pick">
+선택하기 →
+</div>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+<div class="footer">
+
+선택 후에는 변경할 수 없습니다
+
+</div>
+
+</div>
+
+</body>
+</html>
