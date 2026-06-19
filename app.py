@@ -314,15 +314,15 @@ def assign_player():
         session["error"] = "이미 배치한 선수입니다."
         return redirect("/team_view")
 
-    player["era"] = session["actual_era"]
-
     players = load_team(session["current_team"])
 
     player = next(
         p for p in players
         if p["id"] == player_id
     )
-
+    
+    player["era"] = session["actual_era"]
+    
     lineup = session["lineup"]
 
     # 같은 이름 선수 중복 방지
