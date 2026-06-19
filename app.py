@@ -304,6 +304,8 @@ def assign_player():
         session["error"] = "이미 배치한 선수입니다."
         return redirect("/team_view")
 
+    player["era"] = session["actual_era"]
+
     players = load_team(session["current_team"])
 
     player = next(
@@ -424,11 +426,11 @@ def result():
         if lineup[pos]:
             total_war += lineup[pos]["war"]
 
-    wins = round(total_war * 1.25)
+    wins = round(total_war * 1.2)
 
     bonus = 0
 
-    trait = session.get("selected_trait")
+    trait = session.get("selected_trait","none")
 
     # 공격 야구
     if trait == "offense":
@@ -580,6 +582,28 @@ def result():
 
         if rp + 10 > sp:
             bonus += 4
+
+    # 시대 통일
+    elif session["era"] == "all_time":
+
+        eras = []
+
+        for p in lineup["SP"]:
+            eras.append(p["era"])
+
+        for p in lineup["RP"]:
+            eras.append(p["era"])
+
+        for pos in [
+            "C","1B","2B","3B",
+            "SS","LF","CF","RF","DH"
+        ]:    
+            eras.append(
+                lineup[pos]["era"]
+            )
+
+        if len(set(eras)) == 1:
+            bonus += 10
 
     wins += bonus
 
