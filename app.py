@@ -184,6 +184,16 @@ def start(era):
         }
     ]
 
+    traits_pool = TRAITS.copy()
+
+    if era != "all_time":
+
+        traits_pool = [
+            t
+            for t in traits_pool
+            if t["id"] != "era_master"
+        ]
+
     session["trait_choices"] = random.sample(
         TRAITS,
         3
