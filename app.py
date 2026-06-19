@@ -136,6 +136,16 @@ def start(era):
     session["next_team_preview"] = None
     session["trait_count"] = 3
     session["fixed_era_used"] = False
+    session["round_count"] = 1
+    session["fa_used"] = False
+    session["trade_used"] = False
+    session["fungo_used"] = False
+    session["cheerleader_used"] = False
+    session["boost_player"] = None
+    session["fixed_era_used"] = False
+    session["fixed_era"] = None
+    session["released_players"] = []
+    session["first_round_bonus"] = False
 
     return redirect("/behavior_trait")
 
@@ -247,8 +257,25 @@ def select_behavior(behavior_id):
     if behavior_id == "owner":
         session["team_reroll"] = 4
 
-    if behavior_id == "genius_manager":
+    elif behavior_id == "genius_manager":
         session["trait_count"] = 5
+
+    elif behavior_id == "pitching_dynasty":
+
+        lineup = session["lineup"]
+
+        lineup["SP"] = []
+        lineup["RP"] = []
+
+        session["lineup"] = lineup
+
+        session["sp_limit"] = 4
+        session["rp_limit"] = 2
+
+    else:
+
+        session["sp_limit"] = 3
+        session["rp_limit"] = 3
 
     session["behavior_choices"] = []
 
@@ -345,10 +372,13 @@ def next_team():
         return redirect("/")
 
     if session["era"] == "all_time":
-
-        session["actual_era"] = random.choice(
-            ["2000s", "2010s", "2020s"]
-        )
+        if session.get("fixed_era"):
+            session["actual_era"] = session["fixed_era"]
+            session["fixed_era"] = None
+        else:
+            session["actual_era"] = random.choice(
+                ["2000s","2010s","2020s"]
+            )
 
     else:
 
@@ -365,6 +395,14 @@ def next_team():
         return redirect("/result")
 
     team = random.choice(available)
+
+    if (
+        session.get("selected_behavior")
+        == "fa_god"
+        and session["round_count"] == 3
+        and not session["fa_used"]
+    ):
+        return redirect("/fa_select")
 
     if session.get("selected_behavior") == "future_scout":
         remain = [
@@ -385,6 +423,46 @@ def next_team():
         actual_era=session.get("actual_era")
     )
 
+@app.route("/fa_select")
+def fa_select():
+
+    team_names = get_team_names()
+
+    available = [
+        t
+        for t in team_names.keys()
+        if t not in session["used_teams"]
+    ]
+
+    return render_template(
+        "fa_select.html",
+        teams=available,
+        team_names=team_names
+    )
+
+@app.route("/fa_pick/<team>")
+def fa_pick(team):
+
+    session["fa_used"] = True
+
+    session["current_team"] = team
+
+    session["used_teams"].append(team)
+
+    return redirect("/team_view")
+
+@app.route("/fix_era/<era>")
+def fix_era(era):
+
+    if session["fixed_era_used"]:
+        return redirect("/team_view")
+
+    session["fixed_era"] = era
+
+    session["fixed_era_used"] = True
+
+    return redirect("/team_view")
+
 @app.route("/team_view")
 def team_view():
 
@@ -394,6 +472,18 @@ def team_view():
         return redirect("/")
 
     players = load_team(session["current_team"])
+
+    top3 = None
+    if (
+        session.get("selected_behavior")
+        == "recorder"
+        and session["round_count"] == 1
+    ):
+        top3 = sorted(
+            players,
+            key=lambda x:x["war"],
+            reverse=True
+        )[:3]
 
     error = session.pop("error", None)
 
@@ -405,7 +495,8 @@ def team_view():
         lineup=session["lineup"],
         rerolls=session["team_reroll"],
         error=error,
-        next_team_preview=session.get("next_team_preview")
+        next_team_preview=session.get("next_team_preview"),
+        top3=top3
     )
 
 
@@ -488,7 +579,7 @@ def assign_player():
 
     if position == "SP":
 
-        if len(lineup["SP"]) >= 3:
+        if len(lineup["SP"]) >= session.get("sp_limit",3):
             session["error"] = "선발투수 자리가 가득 찼습니다."
             return redirect("/team_view")
 
@@ -496,7 +587,7 @@ def assign_player():
 
     elif position == "RP":
 
-        if len(lineup["RP"]) >= 3:
+        if len(lineup["RP"]) >= session.get("rp_limit",3):
             session["error"] = "불펜 자리가 가득 찼습니다."
             return redirect("/team_view")
         
@@ -533,11 +624,21 @@ def assign_player():
     if filled >= 15:
         return redirect("/result_loading")
 
-    if session["assigned_this_round"] >= 3:
+    ilimit = 3
+    if (
+        session.get("selected_behavior")
+        == "recruit_master"
+    ):
+        if session["round_count"] == 1:
+            limit = 4
+        elif session["round_count"] == 5:
+            limit = 2
+    if session["assigned_this_round"] >= limit:
         session["assigned_this_round"] = 0
+        session["round_count"] += 1
         session["allow_next"] = True
         return redirect("/next")
-
+    
     return redirect("/team_view")
     
 @app.route("/result")
