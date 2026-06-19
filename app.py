@@ -136,7 +136,7 @@ def start(era):
     session["next_team_preview"] = None
     session["trait_count"] = 3
     session["fixed_era_used"] = False
-    session["round_count"] = 1
+    session["round_count"] = 0
     session["fa_used"] = False
     session["trade_used"] = False
     session["fungo_used"] = False
@@ -413,6 +413,7 @@ def next_team():
         if remain:
             session["next_team_preview"] = random.choice(remain)
 
+    session["round_count"] += 1
     session["current_team"] = team
     session["used_teams"].append(team)
 
@@ -449,7 +450,12 @@ def fa_pick(team):
 
     session["used_teams"].append(team)
 
-    return redirect("/team_view")
+    return render_template(
+        "loading.html",
+        team_name=get_team_names()[team],
+        era=session["era"],
+        actual_era=session.get("actual_era")
+    )
 
 @app.route("/fix_era/<era>")
 def fix_era(era):
@@ -488,17 +494,6 @@ def team_view():
     error = session.pop("error", None)
 
     top3 = None
-
-    if (
-        session.get("selected_behavior")
-        == "recorder"
-        and session["round_count"] == 1
-    ):
-        top3 = sorted(
-            players,
-            key=lambda x:x["war"],
-            reverse=True
-        )[:3]
         
     return render_template(
         "team.html",
@@ -636,7 +631,7 @@ def assign_player():
     if filled >= 15:
         return redirect("/result_loading")
 
-    ilimit = 3
+    limit = 3
     if (
         session.get("selected_behavior")
         == "recruit_master"
