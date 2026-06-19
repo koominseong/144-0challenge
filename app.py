@@ -503,7 +503,10 @@ def team_view():
         lineup=session["lineup"],
         rerolls=session["team_reroll"],
         error=error,
-        next_team_preview=session.get("next_team_preview"),
+        next_team_preview=get_team_names().get(
+            session.get("next_team_preview"),
+            session.get("next_team_preview")
+        ),
         top3=top3
     )
 
