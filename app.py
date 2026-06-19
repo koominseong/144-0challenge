@@ -131,6 +131,79 @@ def start(era):
 
     session["team_reroll"] = 2
 
+    TRAITS = [
+        {
+            "id": "offense",
+            "name": "공격 야구",
+            "desc": "야수 WAR 합 80 이상 → +3승"
+        },
+        {
+            "id": "defense",
+            "name": "수비 야구",
+            "desc": "SS+2B+CF WAR 합 15 이하 → +4승"
+        },
+        {
+            "id": "mountain",
+            "name": "마운드 왕국",
+            "desc": "투수 WAR 합 40 이상 → +2승"
+        },
+        {
+            "id": "closer",
+            "name": "철벽 마무리",
+            "desc": "RP WAR 합 13 이하 → +3승"
+        },
+        {
+            "id": "smallball",
+            "name": "스몰볼",
+            "desc": "1B+3B+LF+RF WAR 합 25 이하 → +3승"
+        },
+        {
+            "id": "slugger",
+            "name": "홈런 군단",
+            "desc": "1B+3B+LF+RF WAR 합 37 이상 → +3승"
+        },
+        {
+            "id": "superstar",
+            "name": "슈퍼스타 군단",
+            "desc": "WAR 9 이상 선수 3명 이상 → +5승"
+        },
+        {
+            "id": "balanced",
+            "name": "밸런스형",
+            "desc": "모든 선수 WAR 6.5 이상 → +4승"
+        },
+        {
+            "id": "core",
+            "name": "수비 코어",
+            "desc": "C+SS+CF WAR 합 15 이하 → +4승"
+        },
+        {
+            "id": "bullpen",
+            "name": "불펜 의존",
+            "desc": "RP WAR +10 > SP WAR → +4승"
+        }
+    ]
+
+    session["trait_choices"] = random.sample(
+        TRAITS,
+        3
+    )
+
+    return redirect("/trait")
+
+@app.route("/trait")
+def trait():
+
+    return render_template(
+        "trait.html",
+        traits=session["trait_choices"]
+    )
+
+@app.route("/select_trait/<trait_id>")
+def select_trait(trait_id):
+
+    session["selected_trait"] = trait_id
+
     return redirect("/next")
 
 @app.route("/next")
@@ -351,8 +424,164 @@ def result():
         if lineup[pos]:
             total_war += lineup[pos]["war"]
 
-    # 승패 환산
     wins = round(total_war * 1.25)
+
+    bonus = 0
+
+    trait = session.get("selected_trait")
+
+    # 공격 야구
+    if trait == "offense":
+
+        hitter_war = 0
+
+        for pos in [
+            "C", "1B", "2B", "3B",
+            "SS", "LF", "CF", "RF", "DH"
+        ]:
+            hitter_war += lineup[pos]["war"]
+
+        if hitter_war >= 80:
+            bonus += 3
+
+    # 수비 야구
+    elif trait == "defense":
+
+        total = (
+            lineup["SS"]["war"]
+            + lineup["2B"]["war"]
+            + lineup["CF"]["war"]
+        )
+
+        if total <= 15:
+            bonus += 4
+
+    # 마운드 왕국
+    elif trait == "mountain":
+
+        pitching = 0
+
+        for p in lineup["SP"]:
+            pitching += p["war"]
+
+        for p in lineup["RP"]:
+            pitching += p["war"]
+
+        if pitching >= 40:
+            bonus += 2
+
+    # 철벽 마무리
+    elif trait == "closer":
+
+        rp = sum(
+            p["war"]
+            for p in lineup["RP"]
+        )
+
+        if rp <= 13:
+            bonus += 3
+
+    # 스몰볼
+    elif trait == "smallball":
+
+        total = (
+            lineup["1B"]["war"]
+            + lineup["3B"]["war"]
+            + lineup["LF"]["war"]
+            + lineup["RF"]["war"]
+        )
+
+        if total <= 25:
+            bonus += 3
+
+    # 홈런 군단
+    elif trait == "slugger":
+
+        total = (
+            lineup["1B"]["war"]
+            + lineup["3B"]["war"]
+            + lineup["LF"]["war"]
+            + lineup["RF"]["war"]
+        )
+
+        if total >= 37:
+            bonus += 3
+
+    # 슈퍼스타 군단
+    elif trait == "superstar":
+
+        count = 0
+
+        for p in lineup["SP"]:
+            if p["war"] >= 9:
+                count += 1
+
+        for p in lineup["RP"]:
+            if p["war"] >= 9:
+                count += 1
+
+        for pos in [
+            "C", "1B", "2B", "3B",
+            "SS", "LF", "CF", "RF", "DH"
+        ]:
+            if lineup[pos]["war"] >= 9:
+                count += 1
+
+        if count >= 3:
+            bonus += 5
+
+    # 밸런스형
+    elif trait == "balanced":
+
+        ok = True
+
+        for p in lineup["SP"]:
+            if p["war"] < 6.5:
+                ok = False
+
+        for p in lineup["RP"]:
+            if p["war"] < 6.5:
+                ok = False
+
+        for pos in [
+            "C", "1B", "2B", "3B",
+            "SS", "LF", "CF", "RF", "DH"
+        ]:
+            if lineup[pos]["war"] < 6.5:
+                ok = False
+
+        if ok:
+            bonus += 4
+
+    # 수비 코어
+    elif trait == "core":
+
+        total = (
+            lineup["C"]["war"]
+            + lineup["SS"]["war"]
+            + lineup["CF"]["war"]
+        )
+
+        if total <= 15:
+            bonus += 4
+
+    # 불펜 의존
+    elif trait == "bullpen":
+
+        sp = sum(
+            p["war"]
+            for p in lineup["SP"]
+        )
+
+        rp = sum(
+            p["war"]
+            for p in lineup["RP"]
+        )
+
+        if rp + 10 > sp:
+            bonus += 4
+
+    wins += bonus
 
     if wins > 144:
         wins = 144
@@ -361,21 +590,19 @@ def result():
 
     record = f"{wins}-{losses}"
 
-    
-    # 등급
     if wins >= 140:
         grade = "SS"
 
     elif wins >= 130:
         grade = "S"
 
-    elif wins >= 115:
+    elif wins >= 120:
         grade = "A"
 
-    elif wins >= 100:
+    elif wins >= 110:
         grade = "B"
 
-    elif wins >= 85:
+    elif wins >= 90:
         grade = "C"
 
     else:
@@ -384,6 +611,7 @@ def result():
     session["final_wins"] = wins
     session["final_losses"] = losses
     session["final_grade"] = grade
+    session["trait_bonus"] = bonus
 
     return render_template(
         "result.html",
@@ -391,9 +619,10 @@ def result():
         wins=wins,
         losses=losses,
         record=record,
-        grade=grade
+        grade=grade,
+        bonus=bonus,
+        trait=trait
     )
-
 @app.route("/result_loading")
 def result_loading():
 
