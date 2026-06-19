@@ -487,6 +487,19 @@ def team_view():
 
     error = session.pop("error", None)
 
+    top3 = None
+
+    if (
+        session.get("selected_behavior")
+        == "recorder"
+        and session["round_count"] == 1
+    ):
+        top3 = sorted(
+            players,
+            key=lambda x:x["war"],
+            reverse=True
+        )[:3]
+        
     return render_template(
         "team.html",
         team_name=get_team_names()[session["current_team"]],
@@ -498,7 +511,6 @@ def team_view():
         next_team_preview=session.get("next_team_preview"),
         top3=top3
     )
-
 
 @app.route("/team_reroll")
 def team_reroll():
