@@ -704,6 +704,13 @@ window.addEventListener("load", () => {
 </body>
 </html>
 
+{% if next_team_preview %}
+<div class="preview-box">
+다음 팀 :
+{{ next_team_preview }}
+</div>
+{% endif %}
+
 <script>
 
 window.addEventListener("load", () => {
