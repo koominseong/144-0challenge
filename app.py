@@ -131,6 +131,127 @@ def start(era):
 
     session["team_reroll"] = 2
 
+    session["selected_behavior"] = None
+    session["behavior_choices"] = []
+    session["next_team_preview"] = None
+    session["trait_count"] = 3
+    session["fixed_era_used"] = False
+
+    return redirect("/behavior_trait")
+
+@app.route("/behavior_trait")
+def behavior_trait():
+
+    if session.get("selected_behavior"):
+        return redirect("/next")
+
+    BEHAVIORS = [
+
+        {
+            "id":"owner",
+            "name":"돈많은 구단주",
+            "desc":"리롤 횟수 +2"
+        },
+
+        {
+            "id":"fa_god",
+            "name":"FA의 신",
+            "desc":"3번째 팀을 원하는 팀으로 변경"
+        },
+
+        {
+            "id":"trade_hunter",
+            "name":"트레이드 헌터",
+            "desc":"2차 특성 선택 전 선수 1명 교체"
+        },
+
+        {
+            "id":"pitching_dynasty",
+            "name":"선발 왕조",
+            "desc":"RP 한 칸 → SP"
+        },
+
+        {
+            "id":"recruit_master",
+            "name":"영입 마스터",
+            "desc":"첫 팀 4명 선택"
+        },
+
+        {
+            "id":"cheerleader",
+            "name":"응원단장",
+            "desc":"선수 1명 WAR 1.1배"
+        },
+
+        {
+            "id":"transfer_god",
+            "name":"이적의 신",
+            "desc":"6라운드 진행"
+        },
+
+        {
+            "id":"fungo",
+            "name":"지옥의 펑고",
+            "desc":"내야수 포지션 변경 가능"
+        },
+
+        {
+            "id":"recorder",
+            "name":"신들린 기록원",
+            "desc":"1라운드 WAR TOP3 공개"
+        },
+
+        {
+            "id":"future_scout",
+            "name":"미래를 보는 스카우트",
+            "desc":"다음 팀 공개"
+        },
+
+        {
+            "id":"genius_manager",
+            "name":"천재 감독",
+            "desc":"2차 특성 선택 시 5개 제시"
+        },
+
+        {
+            "id":"time_paradox",
+            "name":"타임 패러독스",
+            "desc":"올타임에서 원하는 시대 1회 고정"
+        }
+    ]
+
+    if not session["behavior_choices"]:
+        session["behavior_choices"] = random.sample(
+            BEHAVIORS,
+            3
+        )
+
+    return render_template(
+        "behavior_trait.html",
+        traits=session["behavior_choices"]
+    )
+
+@app.route("/select_behavior/<behavior_id>")
+def select_behavior(behavior_id):
+
+    valid_ids = [
+        t["id"]
+        for t in session["behavior_choices"]
+    ]
+
+    if behavior_id not in valid_ids:
+        return redirect("/behavior_trait")
+
+    session["selected_behavior"] = behavior_id
+
+    if behavior_id == "owner":
+        session["team_reroll"] = 4
+
+    if behavior_id == "genius_manager":
+        session["trait_count"] = 5
+
+    session["behavior_choices"] = []
+
     return redirect("/next")
 
 @app.route("/trait_team")
@@ -165,7 +286,7 @@ def trait_team():
     if "trait_choices" not in session:
         session["trait_choices"] = random.sample(
             traits_pool,
-            3
+            session.get("trait_count", 3)
         )
 
     return render_template(
@@ -245,6 +366,15 @@ def next_team():
 
     team = random.choice(available)
 
+    if session.get("selected_behavior") == "future_scout":
+        remain = [
+            t for t in available
+            if t != team
+        ]
+        
+        if remain:
+            session["next_team_preview"] = random.choice(remain)
+
     session["current_team"] = team
     session["used_teams"].append(team)
 
@@ -275,6 +405,7 @@ def team_view():
         lineup=session["lineup"],
         rerolls=session["team_reroll"],
         error=error
+        next_team_preview=session.get("next_team_preview")
     )
 
 
