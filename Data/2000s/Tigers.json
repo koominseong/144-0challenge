@@ -3,64 +3,64 @@
     "id": "lee_jongbeom_2003",
     "name": "이종범",
     "year": 2003,
-    "positions": ["SS","DH"],
-    "war": 7.5
+    "positions": ["RF","CF"],
+    "war": 7.3
   },
   {
     "id": "kim_sanghyun_2009",
     "name": "김상현",
     "year": 2009,
-    "positions": ["3B","DH"],
-    "war": 8.5
+    "positions": ["3B"],
+    "war": 5.8
   },
   {
     "id": "choi_heeseop_2009",
     "name": "최희섭",
     "year": 2009,
-    "positions": ["1B","DH"],
-    "war": 6.5
+    "positions": ["1B"],
+    "war": 5.4
   },
   {
     "id": "kim_sanghoon_2009",
     "name": "김상훈",
     "year": 2009,
-    "positions": ["C","DH"],
-    "war": 5.0
+    "positions": ["C"],
+    "war": 4.0
   },
   {
     "id": "hong_sewan_2003",
     "name": "홍세완",
     "year": 2003,
-    "positions": ["SS", "2B","DH"],
-    "war": 6.0
+    "positions": ["SS"],
+    "war": 4.8
   },
   {
     "id": "jang_seongho_2002",
     "name": "장성호",
-    "year": 2002,
-    "positions": ["1B", "LF","DH"],
-    "war": 7.0
+    "year": 2006,
+    "positions": ["1B"],
+    "war": 7.2
   },
   {
     "id": "lee_hyuntaeg_2004",
-    "name": "이현태",
-    "year": 2004,
-    "positions": ["2B","DH"],
-    "war": 4.5
+    "name": "이현곤",
+    "year": 2007,
+    "positions": ["3B"],
+    "war": 6.0
   },
   {
     "id": "na_jiwan_2009",
-    "name": "나지완",
-    "year": 2009,
-    "positions": ["RF", "LF","DH"],
-    "war": 5.5
+    "name": "박재홍",
+    "year": 2003,
+    "positions": ["RF", "LF"],
+    "war": 4.3
   },
   {
     "id": "lee_bumho_2009",
-    "name": "이범호",
-    "year": 2009,
-    "positions": ["3B","DH"],
-    "war": 6.5
+    "name": "정성훈",
+    "year": 2002,
+    "positions": ["3B"],
+    "war": 3.0
   },
   {
     "id": "kim_jinwoo_2002",
