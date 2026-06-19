@@ -521,6 +521,32 @@ onclick="openAssign(
 </div>
 {% endif %}
 
+{% if session["selected_behavior"] == "time_paradox"
+and session["era"] == "all_time"
+and not session["fixed_era_used"] %}
+
+<div class="preview-box">
+
+🕰️ 시대 고정
+
+<br><br>
+
+<a href="/fix_era/2000s">
+<button class="btn btn-blue">2000s</button>
+</a>
+
+<a href="/fix_era/2010s">
+<button class="btn btn-blue">2010s</button>
+</a>
+
+<a href="/fix_era/2020s">
+<button class="btn btn-blue">2020s</button>
+</a>
+
+</div>
+
+{% endif %}
+
 <div class="field">
 
 <div class="diamond"></div>
