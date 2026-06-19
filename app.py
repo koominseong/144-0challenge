@@ -146,6 +146,8 @@ def start(era):
     session["fixed_era"] = None
     session["released_players"] = []
     session["first_round_bonus"] = False
+    session["transfer_mode"] = False
+    session["released_players"] = []
 
     return redirect("/behavior_trait")
 
@@ -386,6 +388,15 @@ def next_team():
 
     team_names = get_team_names()
 
+    if session.get("transfer_mode"):
+
+        for player_id in session["released_players"]:
+
+            if player_id in session["used_players"]:
+                session["used_players"].remove(player_id)
+
+        session["released_players"] = []
+
     available = [
         team for team in team_names.keys()
         if team not in session["used_teams"]
@@ -478,6 +489,34 @@ def boost_player(player_id):
     session["boost_player"] = player_id
 
     return redirect("/team_view")
+
+@app.route("/transfer_release")
+def transfer_release():
+
+    return render_template(
+        "transfer_release.html",
+        lineup=session["lineup"]
+    )
+
+@app.route("/release_player/<player_id>")
+def release_player(player_id):
+
+    released = session["released_players"]
+
+    if player_id not in released:
+        released.append(player_id)
+
+    session["released_players"] = released
+
+    if len(released) >= 3:
+
+        session["transfer_mode"] = True
+
+        session["allow_next"] = True
+
+        return redirect("/next")
+
+    return redirect("/transfer_release")
 
 @app.route("/team_view")
 def team_view():
@@ -640,8 +679,15 @@ def assign_player():
     ]:
         if lineup[pos]:
             filled += 1
-
+            
     if filled >= 15:
+        if (
+            session.get("selected_behavior")
+            == "transfer_god"
+            and not session["transfer_mode"]
+        ):
+            return redirect("/transfer_release")
+
         return redirect("/result_loading")
 
     limit = 3
@@ -658,6 +704,16 @@ def assign_player():
         session["round_count"] += 1
         session["allow_next"] = True
         return redirect("/next")
+
+    if session.get("transfer_mode"):
+
+        count = len(session["released_players"])
+
+        if count >= 3:
+
+            session["transfer_mode"] = False
+
+            return redirect("/result_loading")
     
     return redirect("/team_view")
     
