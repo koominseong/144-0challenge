@@ -387,6 +387,24 @@ body{
 
 }
 
+.preview-box{
+
+    background:#1976d2;
+
+    color:white;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+}
+
 </style>
 
 </head>
@@ -479,6 +497,29 @@ onclick="openAssign(
 <div class="sidebar">
 
 <h2>현재 라인업</h2>
+
+{% if next_team_preview %}
+<div class="preview-box">
+🔮 다음 팀 : {{ next_team_preview }}
+</div>
+{% endif %}
+
+{% if top3 %}
+<div class="preview-box">
+
+🔥 WAR TOP3
+
+<br><br>
+
+{% for p in top3 %}
+{{ loop.index }}위
+{{ p.name }}
+(WAR {{ p.war }})
+<br>
+{% endfor %}
+
+</div>
+{% endif %}
 
 <div class="field">
 
@@ -703,13 +744,6 @@ window.addEventListener("load", () => {
 
 </body>
 </html>
-
-{% if next_team_preview %}
-<div class="preview-box">
-다음 팀 :
-{{ next_team_preview }}
-</div>
-{% endif %}
 
 <script>
 
