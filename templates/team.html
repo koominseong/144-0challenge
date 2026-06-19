@@ -606,10 +606,23 @@ style="top:210px;left:12px;">
 SP2<br>{{ lineup["SP"][1].name if lineup["SP"]|length > 1 else "-" }}
 </div>
 
+{% if session.get("rp_limit",3) == 3 %}
+
 <div class="player"
-style="top:300px;left:12px;">
-SP3<br>{{ lineup["SP"][2].name if lineup["SP"]|length > 2 else "-" }}
+style="top:300px;right:12px;">
+RP3<br>{{ lineup["RP"][2].name if lineup["RP"]|length > 2 else "-" }}
 </div>
+
+{% endif %}
+
+{% if session.get("sp_limit",3) == 4 %}
+
+<div class="player"
+style="top:390px;left:12px;">
+SP4<br>{{ lineup["SP"][3].name if lineup["SP"]|length > 3 else "-" }}
+</div>
+
+{% endif %}
 
 <div class="player"
 style="top:120px;right:12px;">
