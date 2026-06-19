@@ -3,22 +3,22 @@
     "id": "kim_taekyun_2008",
     "name": "김태균",
     "year": 2008,
-    "positions": ["1B", "DH"],
-    "war": 8.5
+    "positions": ["1B"],
+    "war": 8.1
   },
   {
     "id": "ryu_hyunjin_2006",
     "name": "류현진",
     "year": 2006,
     "positions": ["SP"],
-    "war": 10.0
+    "war": 7.9
   },
   {
     "id": "song_jinwoo_2000",
     "name": "송진우",
-    "year": 2000,
+    "year": 2002,
     "positions": ["SP"],
-    "war": 6.5
+    "war": 6.8
   },
   {
     "id": "jung_minchul_2001",
@@ -31,15 +31,15 @@
     "id": "koo_daesung_2000",
     "name": "구대성",
     "year": 2000,
-    "positions": ["RP", "SP"],
-    "war": 7.0
+    "positions": ["RP"],
+    "war": 5.4
   },
   {
     "id": "jay_davis_2000",
     "name": "제이 데이비스",
-    "year": 2000,
+    "year": 2005,
     "positions": ["CF"],
-    "war": 7.0
+    "war": 6.4
   },
   {
     "id": "lee_beomho_2006",
