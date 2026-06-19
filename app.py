@@ -424,7 +424,6 @@ def next_team():
         if remain:
             session["next_team_preview"] = random.choice(remain)
 
-    session["round_count"] += 1
     session["current_team"] = team
     session["used_teams"].append(team)
 
@@ -541,8 +540,6 @@ def team_view():
         )[:3]
 
     error = session.pop("error", None)
-
-    top3 = None
         
     return render_template(
         "team.html",
