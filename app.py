@@ -204,6 +204,12 @@ def start(era):
 @app.route("/trait")
 def trait():
 
+    if "trait_choices" not in session:
+        return redirect("/")
+
+    if session.get("selected_trait"):
+        return redirect("/team_view")
+
     return render_template(
         "trait.html",
         traits=session["trait_choices"]
@@ -212,10 +218,26 @@ def trait():
 @app.route("/select_trait/<trait_id>")
 def select_trait(trait_id):
 
+    if "trait_choices" not in session:
+        return redirect("/")
+
+    if session.get("selected_trait"):
+        return redirect("/team_view")
+
+    valid_ids = [
+        t["id"]
+        for t in session["trait_choices"]
+    ]
+
+    if trait_id not in valid_ids:
+        return redirect("/trait")
+
     session["selected_trait"] = trait_id
 
-    return redirect("/next")
+    session.pop("trait_choices", None)
 
+    return redirect("/next")
+    
 @app.route("/next")
 def next_team():
 
