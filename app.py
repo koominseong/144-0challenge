@@ -520,11 +520,30 @@ def boost_player(player_id):
 @app.route("/transfer_release")
 def transfer_release():
 
+    players = []
+
+    lineup = session["lineup"]
+
+    for p in lineup["SP"]:
+        players.append(p)
+
+    for p in lineup["RP"]:
+        players.append(p)
+
+    for pos in [
+        "C","1B","2B","3B",
+        "SS","LF","CF","RF","DH"
+    ]:
+        if lineup[pos]:
+            players.append(lineup[pos])
+
     return render_template(
         "transfer_release.html",
-        lineup=session["lineup"]
+        players=players,
+        released_count=len(
+            session["released_players"]
+        )
     )
-
 @app.route("/release_player/<player_id>")
 def release_player(player_id):
 
