@@ -406,6 +406,11 @@ def next_team():
         if team not in session["used_teams"]
     ]
 
+    current_team = session.get("current_team")
+    
+    if current_team in available:
+        available.remove(current_team)
+
     if not available:
         return redirect("/result")
 
