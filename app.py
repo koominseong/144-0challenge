@@ -354,7 +354,6 @@ def next_team():
 
     session["allow_next"] = False
 
-    # 6명 채웠는데 아직 특성 안 골랐으면
     filled = (
         len(session["lineup"]["SP"])
         + len(session["lineup"]["RP"])
@@ -377,12 +376,14 @@ def next_team():
         return redirect("/")
 
     if session["era"] == "all_time":
+
         if session.get("fixed_era"):
             session["actual_era"] = session["fixed_era"]
             session["fixed_era"] = None
+
         else:
             session["actual_era"] = random.choice(
-                ["2000s","2010s","2020s"]
+                ["2000s", "2010s", "2020s"]
             )
 
     else:
@@ -408,27 +409,44 @@ def next_team():
     if not available:
         return redirect("/result")
 
-    team = random.choice(available)
-
     if (
-        session.get("selected_behavior")
-        == "fa_god"
+        session.get("selected_behavior") == "fa_god"
         and session["round_count"] == 3
         and not session["fa_used"]
     ):
         return redirect("/fa_select")
 
+    # 미래를 보는 스카우트
     if session.get("selected_behavior") == "future_scout":
+
+        preview = session.get("next_team_preview")
+
+        if preview and preview in available:
+
+            team = preview
+
+        else:
+
+            team = random.choice(available)
+
         remain = [
             t for t in available
             if t != team
         ]
-        
+
         if remain:
             session["next_team_preview"] = random.choice(remain)
+        else:
+            session["next_team_preview"] = None
+
+    else:
+
+        team = random.choice(available)
 
     session["current_team"] = team
     session["used_teams"].append(team)
+
+    session.modified = True
 
     return render_template(
         "loading.html",
@@ -436,7 +454,7 @@ def next_team():
         era=session["era"],
         actual_era=session.get("actual_era")
     )
-
+    
 @app.route("/fa_select")
 def fa_select():
 
