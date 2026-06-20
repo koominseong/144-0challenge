@@ -288,7 +288,7 @@ def select_behavior(behavior_id):
 def trait_team():
 
     if session.get("selected_trait"):
-        return redirect("/team_view")
+        return redirect("/next")
 
     TRAITS = [
         {"id":"offense","name":"공격 야구","icon":"💥"},
@@ -342,7 +342,7 @@ def select_trait_team(trait_id):
 
     session.pop("trait_choices", None)
 
-    return redirect("/team_view")
+    return redirect("/next")
     
 @app.route("/next")
 def next_team():
