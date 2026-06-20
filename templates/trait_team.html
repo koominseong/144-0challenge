@@ -242,7 +242,7 @@ body{
 {% for trait in traits %}
 
 <a
-href="/select_trait/{{ trait.id }}"
+href="{{ url_for('select_trait_team', trait_id=trait.id) }}"
 class="card">
 
 <div class="icon">
