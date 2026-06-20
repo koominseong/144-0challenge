@@ -342,6 +342,8 @@ def select_trait_team(trait_id):
 
     session.pop("trait_choices", None)
 
+    session["allow_next"] = True
+
     session.modified = True
 
     return redirect("/next")
