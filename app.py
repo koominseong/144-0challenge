@@ -301,7 +301,7 @@ def trait_team():
         {"id":"balanced","name":"밸런스형","icon":"⚙️"},
         {"id":"core","name":"수비 코어","icon":"🧱"},
         {"id":"bullpen","name":"불펜 의존","icon":"🚨"},
-        {"id":"era_master","name":"왕조 건","icon":"🕰️"}
+        {"id":"era_master","name":"왕조 건설","icon":"🕰️"}
     ]
 
     traits_pool = TRAITS.copy()
@@ -904,7 +904,7 @@ def result():
         )
 
         if total <= 25:
-            bonus += 3
+            bonus += 5
 
     # 홈런 군단
     elif trait == "slugger":
@@ -940,7 +940,7 @@ def result():
                 count += 1
 
         if count >= 3:
-            bonus += 5
+            bonus += 2
 
     # 밸런스형
     elif trait == "balanced":
@@ -1013,7 +1013,7 @@ def result():
             )
 
         if len(set(eras)) == 1:
-            bonus += 10
+            bonus += 6
 
     wins += bonus
 
