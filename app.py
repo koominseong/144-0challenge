@@ -156,7 +156,7 @@ def start(era):
 def behavior_trait():
 
     if session.get("selected_behavior"):
-        return redirect("/next")
+        return redirect("/team_view")
 
     BEHAVIORS = [
 
@@ -288,7 +288,7 @@ def select_behavior(behavior_id):
 def trait_team():
 
     if session.get("selected_trait"):
-        return redirect("/next")
+        return redirect("/team_view")
 
     TRAITS = [
         {"id":"offense","name":"공격 야구","icon":"💥"},
