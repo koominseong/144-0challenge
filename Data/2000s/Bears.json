@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": "Bears_2000_1",
     "name": "김동주",
     "position": "3B",
     "war": 8.5,
@@ -14,7 +14,7 @@
     "Captain": true
   },
   {
-    "id": 2,
+    "id": "Bears_2000_2",
     "name": "홍성흔",
     "position": "C",
     "war": 7.6,
@@ -28,9 +28,9 @@
     "Captain": false
   },
   {
-    "id": 3,
+    "id": "Bears_2000_3",
     "name": "정수근",
-    "position": "OF",
+    "position": "CF",
     "war": 6.0,
     "ops": 0.78,
     "AVG": 0.3,
@@ -42,9 +42,9 @@
     "Captain": false
   },
   {
-    "id": 4,
+    "id": "Bears_2000_4",
     "name": "박명환",
-    "position": "P",
+    "position": "SP",
     "war": 7.8,
     "ops": null,
     "AVG": null,
@@ -56,7 +56,7 @@
     "Captain": false
   },
   {
-    "id": 5,
+    "id": "Bears_2000_5",
     "name": "손시헌",
     "position": "SS",
     "war": 5.8,
@@ -70,7 +70,7 @@
     "Captain": false
   },
   {
-    "id": 6,
+    "id": "Bears_2000_6",
     "name": "고영민",
     "position": "2B",
     "war": 5.0,
@@ -84,9 +84,9 @@
     "Captain": false
   },
   {
-    "id": 7,
+    "id": "Bears_2000_7",
     "name": "다니엘 리오스",
-    "position": "P",
+    "position": "SP",
     "war": 9.2,
     "ops": null,
     "AVG": null,
@@ -98,9 +98,9 @@
     "Captain": false
   },
   {
-    "id": 8,
+    "id": "Bears_2000_8",
     "name": "이혜천",
-    "position": "P",
+    "position": "RP",
     "war": 5.5,
     "ops": null,
     "AVG": null,
@@ -112,9 +112,9 @@
     "Captain": false
   },
   {
-    "id": 9,
+    "id": "Bears_2000_9",
     "name": "진필중",
-    "position": "P",
+    "position": "RP",
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -126,7 +126,7 @@
     "Captain": true
   },
   {
-    "id": 10,
+    "id": "Bears_2000_10",
     "name": "안경현",
     "position": "2B",
     "war": 4.8,
@@ -140,9 +140,9 @@
     "Captain": true
   },
   {
-    "id": 11,
+    "id": "Bears_2000_11",
     "name": "임재철",
-    "position": "OF",
+    "position": "LF",
     "war": 3.8,
     "ops": 0.71,
     "AVG": 0.285,
@@ -154,9 +154,9 @@
     "Captain": false
   },
   {
-    "id": 12,
+    "id": "Bears_2000_12",
     "name": "이종욱",
-    "position": "OF",
+    "position": "CF",
     "war": 5.2,
     "ops": 0.76,
     "AVG": 0.3,
@@ -168,7 +168,7 @@
     "Captain": false
   },
   {
-    "id": 13,
+    "id": "Bears_2000_13",
     "name": "최준석",
     "position": "1B",
     "war": 4.2,
@@ -182,7 +182,7 @@
     "Captain": false
   },
   {
-    "id": 14,
+    "id": "Bears_2000_14",
     "name": "김재호",
     "position": "SS",
     "war": 3.2,
@@ -196,9 +196,9 @@
     "Captain": false
   },
   {
-    "id": 15,
+    "id": "Bears_2000_15",
     "name": "강봉규",
-    "position": "OF",
+    "position": "RF",
     "war": 3.0,
     "ops": 0.7,
     "AVG": 0.27,
@@ -210,9 +210,9 @@
     "Captain": false
   },
   {
-    "id": 16,
+    "id": "Bears_2000_16",
     "name": "김선우",
-    "position": "P",
+    "position": "SP",
     "war": 3.8,
     "ops": null,
     "AVG": null,
@@ -224,9 +224,9 @@
     "Captain": false
   },
   {
-    "id": 17,
+    "id": "Bears_2000_17",
     "name": "채병용",
-    "position": "P",
+    "position": "SP",
     "war": 3.4,
     "ops": null,
     "AVG": null,
@@ -238,9 +238,9 @@
     "Captain": false
   },
   {
-    "id": 18,
+    "id": "Bears_2000_18",
     "name": "정재훈",
-    "position": "P",
+    "position": "RP",
     "war": 3.6,
     "ops": null,
     "AVG": null,
@@ -252,9 +252,9 @@
     "Captain": false
   },
   {
-    "id": 19,
+    "id": "Bears_2000_19",
     "name": "이재우",
-    "position": "P",
+    "position": "SP",
     "war": 3.0,
     "ops": null,
     "AVG": null,
@@ -266,7 +266,7 @@
     "Captain": false
   },
   {
-    "id": 20,
+    "id": "Bears_2000_20",
     "name": "최동수",
     "position": "C",
     "war": 2.6,
@@ -280,7 +280,7 @@
     "Captain": false
   },
   {
-    "id": 21,
+    "id": "Bears_2000_21",
     "name": "양의지",
     "position": "C",
     "war": 2.2,
@@ -294,7 +294,7 @@
     "Captain": false
   },
   {
-    "id": 22,
+    "id": "Bears_2000_22",
     "name": "김민재",
     "position": "1B",
     "war": 2.0,
@@ -308,9 +308,9 @@
     "Captain": false
   },
   {
-    "id": 23,
+    "id": "Bears_2000_23",
     "name": "윤재국",
-    "position": "P",
+    "position": "RP",
     "war": 2.4,
     "ops": null,
     "AVG": null,
@@ -322,9 +322,9 @@
     "Captain": false
   },
   {
-    "id": 24,
+    "id": "Bears_2000_24",
     "name": "게리 레스",
-    "position": "P",
+    "position": "SP",
     "war": 4.6,
     "ops": null,
     "AVG": null,
@@ -336,9 +336,9 @@
     "Captain": false
   },
   {
-    "id": 25,
+    "id": "Bears_2000_25",
     "name": "정명원",
-    "position": "P",
+    "position": "RP",
     "war": 2.3,
     "ops": null,
     "AVG": null,
