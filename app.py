@@ -418,7 +418,7 @@ def next_team():
 
     if (
         session.get("selected_behavior") == "fa_god"
-        and session["round_count"] == 3
+        and session["round_count"] == 2
         and not session["fa_used"]
     ):
         return redirect("/fa_select")
