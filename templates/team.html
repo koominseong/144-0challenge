@@ -520,14 +520,13 @@ style="margin-top:8px;background:#f59e0b;">
 {% if top3 %}
 <div class="preview-box">
 
-🔥 WAR TOP3
+🔥TOP3
 
 <br><br>
 
 {% for p in top3 %}
 {{ loop.index }}위
 {{ p.name }}
-(WAR {{ p.war }})
 <br>
 {% endfor %}
 
@@ -620,8 +619,8 @@ SP2<br>{{ lineup["SP"][1].name if lineup["SP"]|length > 1 else "-" }}
 </div>
 
 <div class="player"
-style="top:300px;right:12px;">
-RP3<br>{{ lineup["RP"][2].name if lineup["RP"]|length > 2 else "-" }}
+style="top:300px;left:12px;">
+SP3<br>{{ lineup["SP"][2].name if lineup["SP"]|length > 2 else "-" }}
 </div>
 
 {% if session.get("sp_limit",3) == 4 %}
