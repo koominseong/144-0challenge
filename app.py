@@ -193,31 +193,31 @@ def behavior_trait():
         {
             "id":"cheerleader",
             "name":"응원단장",
-            "desc":"선수 1명 WAR 1.1배"
+            "desc":"선수 1명 능력치 소폭 증가"
         },
 
         {
             "id":"transfer_god",
             "name":"이적의 신",
-            "desc":"6라운드 진행"
+            "desc":"6라운드 진행, 3명 방출"
         },
 
         {
             "id":"fungo",
             "name":"지옥의 펑고",
-            "desc":"내야수 포지션 변경 가능"
+            "desc":"내야수 1명 내야 포지션 변경 가능"
         },
 
         {
             "id":"recorder",
             "name":"신들린 기록원",
-            "desc":"1라운드 WAR TOP3 공개"
+            "desc":"1라운드 능력치 TOP3 공개"
         },
 
         {
             "id":"future_scout",
             "name":"미래를 보는 스카우트",
-            "desc":"다음 팀 공개"
+            "desc":"다음 팀 미리 공개"
         },
 
         {
