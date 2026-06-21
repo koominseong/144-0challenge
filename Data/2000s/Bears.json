@@ -128,7 +128,10 @@
   {
     "id": "Bears_2000_10",
     "name": "안경현",
-    "position": "2B",
+    "position": [
+      "2B",
+      "3B"
+    ],
     "war": 4.8,
     "ops": 0.74,
     "AVG": 0.28,
@@ -198,7 +201,10 @@
   {
     "id": "Bears_2000_15",
     "name": "강봉규",
-    "position": "RF",
+    "position": [
+      "LF",
+      "RF"
+    ],
     "war": 3.0,
     "ops": 0.7,
     "AVG": 0.27,
@@ -268,7 +274,10 @@
   {
     "id": "Bears_2000_20",
     "name": "최동수",
-    "position": "C",
+    "position": [
+      "C",
+      "1B"
+    ],
     "war": 2.6,
     "ops": 0.68,
     "AVG": 0.26,
@@ -296,7 +305,10 @@
   {
     "id": "Bears_2000_22",
     "name": "김민재",
-    "position": "1B",
+    "position": [
+      "1B",
+      "C"
+    ],
     "war": 2.0,
     "ops": 0.64,
     "AVG": 0.255,
