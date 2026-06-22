@@ -285,3 +285,20 @@ href="/select_behavior/{{ trait.id }}"
 
 </body>
 </html>
+
+<script>
+
+window.addEventListener("load", () => {
+
+    const nav =
+    performance.getEntriesByType("navigation")[0];
+
+    if(nav && nav.type === "reload"){
+
+        window.location.href = "/";
+
+    }
+
+});
+
+</script>
