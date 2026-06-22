@@ -169,13 +169,13 @@ def behavior_trait():
         {
             "id":"fa_god",
             "name":"FA의 신",
-            "desc":"3번째 팀을 원하는 팀으로 변경"
+            "desc":"3번째 팀을 원하는 팀으로 변경(오류 수정 중)"
         },
 
         {
             "id":"trade_hunter",
             "name":"트레이드 헌터",
-            "desc":"2차 특성 선택 전 선수 1명 교체"
+            "desc":"2차 특성 선택 전 선수 1명 교체(구현 중)"
         },
 
         {
@@ -187,7 +187,7 @@ def behavior_trait():
         {
             "id":"recruit_master",
             "name":"영입 마스터",
-            "desc":"첫 팀 4명 선택"
+            "desc":"첫 팀 4명 선택(오류 수정 중)"
         },
 
         {
@@ -205,13 +205,13 @@ def behavior_trait():
         {
             "id":"fungo",
             "name":"지옥의 펑고",
-            "desc":"내야수 1명 내야 포지션 변경 가능"
+            "desc":"내야수 1명 내야 포지션 변경 가능(구현 중)"
         },
 
         {
             "id":"recorder",
             "name":"신들린 기록원",
-            "desc":"1라운드 능력치 TOP3 공개"
+            "desc":"2라운드 능력치 TOP3 공개"
         },
 
         {
