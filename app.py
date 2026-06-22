@@ -95,7 +95,7 @@ def home():
 
 ALLOWED_ERAS = ["all_time"]
 
-@app.route("/start/<era>")
+@app.route("/start")
 def start(era):
 
     if era not in ALLOWED_ERAS:
