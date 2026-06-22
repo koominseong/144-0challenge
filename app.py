@@ -465,34 +465,52 @@ def next_team():
 @app.route("/fa_select")
 def fa_select():
 
-    team_names = get_team_names()
+    all_teams = []
 
-    available = [
-        t
-        for t in team_names.keys()
-        if t not in session["used_teams"]
-    ]
+    eras = ["2000s", "2010s", "2020s"]
+
+    for era in eras:
+
+        path = os.path.join("Data", era)
+
+        if not os.path.exists(path):
+            continue
+
+        for file in os.listdir(path):
+
+            if not file.endswith(".json"):
+                continue
+
+            team_key = file.replace(".json", "")
+
+            all_teams.append({
+                "era": era,
+                "team": team_key,
+                "file": file
+            })
 
     return render_template(
         "fa_select.html",
-        teams=available,
-        team_names=team_names
+        teams=all_teams
     )
 
-@app.route("/fa_pick/<team>")
-def fa_pick(team):
+@app.route("/fa_pick/<era>/<team>")
+def fa_pick(era, team):
 
     session["fa_used"] = True
 
+    session["actual_era"] = era
+
     session["current_team"] = team
 
-    session["used_teams"].append(team)
+    if team not in session["used_teams"]:
+        session["used_teams"].append(team)
 
     return render_template(
         "loading.html",
-        team_name=get_team_names()[team],
+        team_name=f"{era} / {team}",
         era=session["era"],
-        actual_era=session.get("actual_era")
+        actual_era=era
     )
 
 @app.route("/fix_era/<era>")
@@ -761,9 +779,9 @@ def assign_player():
         session.get("selected_behavior")
         == "recruit_master"
     ):
-        if session["round_count"] == 1:
+        if session["round_count"] == 0:
             limit = 4
-        elif session["round_count"] == 5:
+        elif session["round_count"] == 4:
             limit = 2
     if session["assigned_this_round"] >= limit:
         session["assigned_this_round"] = 0
