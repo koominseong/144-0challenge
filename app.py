@@ -95,8 +95,13 @@ def load_team(team):
 def home():
     return render_template("index.html")
 
+ALLOWED_ERAS = ["all_time"]
+
 @app.route("/start/<era>")
 def start(era):
+
+    if era not in ALLOWED_ERAS:
+        return redirect("/")
 
     session.clear()
 
