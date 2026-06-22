@@ -169,7 +169,7 @@ def behavior_trait():
         {
             "id":"fa_god",
             "name":"FA의 신",
-            "desc":"3번째 팀을 원하는 팀으로 변경(오류 수정 중)"
+            "desc":"3번째 팀을 원하는 팀으로 변경"
         },
 
         {
@@ -187,7 +187,7 @@ def behavior_trait():
         {
             "id":"recruit_master",
             "name":"영입 마스터",
-            "desc":"첫 팀 4명 선택(오류 수정 중)"
+            "desc":"첫 팀 4명 선택"
         },
 
         {
