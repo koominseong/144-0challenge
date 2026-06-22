@@ -5,12 +5,8 @@ import random
 from datetime import datetime
 from supabase import create_client
 
-
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-print("URL =", SUPABASE_URL)
-print("KEY EXISTS =", bool(SUPABASE_KEY))
 
 supabase = create_client(
     SUPABASE_URL,
@@ -19,6 +15,8 @@ supabase = create_client(
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+
+"SECRET_KEY"=KBO_1440_Challenge_2025_8f7c9d1e4a6b2c8d5f0e7a3b9c1d6e4f
 
 def get_team_names():
 
