@@ -16,10 +16,9 @@ supabase = create_client(
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
-SECRET_KEY
-=
-KBO_1440_Challenge_2025_8f7c9d1e4a6b2c8d5f0e7a3b9c1d6e4f
-
+if not app.secret_key:
+    raise Exception("SECRET_KEY missing")
+    
 def get_team_names():
 
     era = session.get("actual_era", session.get("era", "2010s"))
