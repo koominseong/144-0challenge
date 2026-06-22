@@ -97,7 +97,9 @@ def home():
 ALLOWED_ERAS = ["all_time"]
 
 @app.route("/start")
-def start(era):
+def start():
+
+    era = "all_time"
 
     if era not in ALLOWED_ERAS:
         return redirect("/")
