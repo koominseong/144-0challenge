@@ -1,177 +1,417 @@
 [
   {
-    "id": "park_kyungwan_2004",
-    "name": "박경완",
-    "year": 2004,
-    "positions": ["C"],
-    "war": 7.97
-  },
-  {
-    "id": "kim_jaehyun_2003",
-    "name": "김재현",
-    "year": 2003,
-    "positions": ["RF", "DH"],
-    "war": 7.0
-  },
-  {
-    "id": "jeong_geunwoo_2009",
-    "name": "정근우",
-    "year": 2009,
-    "positions": ["2B"],
-    "war": 8.0
-  },
-  {
-    "id": "choi_jeong_2009",
-    "name": "최정",
-    "year": 2009,
-    "positions": ["3B"],
-    "war": 7.0
-  },
-  {
-    "id": "kim_gangmin_2009",
-    "name": "김강민",
-    "year": 2009,
-    "positions": ["CF"],
-    "war": 5.5
-  },
-  {
-    "id": "park_jaesang_2009",
-    "name": "박재상",
-    "year": 2009,
-    "positions": ["LF", "CF"],
-    "war": 5.0
-  },
-  {
-    "id": "park_jaehong_2000",
-    "name": "박재홍",
-    "year": 2000,
-    "positions": ["RF"],
-    "war": 7.5
-  },
-  {
-    "id": "lee_jinho_2003",
-    "name": "이진영",
-    "year": 2003,
-    "positions": ["LF", "RF"],
-    "war": 6.5
-  },
-  {
-    "id": "lee_hojun_2009",
-    "name": "이호준",
-    "year": 2009,
-    "positions": ["1B", "DH"],
-    "war": 6.0
-  },
-  {
-    "id": "park_jeongkwon_2009",
+    "id": "SK_2000_1",
     "name": "박정권",
-    "year": 2009,
-    "positions": ["1B"],
-    "war": 5.0
+    "positions": [
+      "1B",
+      "3B"
+    ],
+    "war": 7.1,
+    "ops": 0.87,
+    "AVG": 0.29,
+    "ERA": null,
+    "SO": 81,
+    "Year": 2007,
+    "HR": 27,
+    "Korean": true,
+    "Captain": true
   },
   {
-    "id": "na_juhwan_2008",
-    "name": "나주환",
-    "year": 2008,
-    "positions": ["SS"],
-    "war": 4.5
+    "id": "SK_2000_2",
+    "name": "이호준",
+    "positions": [
+      "LF",
+      "1B"
+    ],
+    "war": 6.5,
+    "ops": 0.84,
+    "AVG": 0.283,
+    "ERA": null,
+    "SO": 74,
+    "Year": 2006,
+    "HR": 23,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "cho_donghwa_2008",
+    "id": "SK_2000_3",
+    "name": "최정",
+    "positions": [
+      "3B"
+    ],
+    "war": 6.8,
+    "ops": 0.88,
+    "AVG": 0.278,
+    "ERA": null,
+    "SO": 91,
+    "Year": 2009,
+    "HR": 30,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_4",
+    "name": "김재현",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 6.0,
+    "ops": 0.83,
+    "AVG": 0.293,
+    "ERA": null,
+    "SO": 68,
+    "Year": 2007,
+    "HR": 19,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_5",
+    "name": "이진영",
+    "positions": [
+      "CF",
+      "LF"
+    ],
+    "war": 5.5,
+    "ops": 0.76,
+    "AVG": 0.281,
+    "ERA": null,
+    "SO": 59,
+    "Year": 2008,
+    "HR": 12,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_6",
     "name": "조동화",
-    "year": 2008,
-    "positions": ["CF", "LF"],
-    "war": 4.0
+    "positions": [
+      "CF"
+    ],
+    "war": 4.7,
+    "ops": 0.72,
+    "AVG": 0.271,
+    "ERA": null,
+    "SO": 52,
+    "Year": 2007,
+    "HR": 8,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "kim_kwanghyun_2008",
-    "name": "김광현",
-    "year": 2008,
-    "positions": ["SP"],
-    "war": 8.5
+    "id": "SK_2000_7",
+    "name": "박재상",
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 4.2,
+    "ops": 0.74,
+    "AVG": 0.275,
+    "ERA": null,
+    "SO": 57,
+    "Year": 2009,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "song_eunbeom_2008",
-    "name": "송은범",
-    "year": 2008,
-    "positions": ["SP"],
-    "war": 6.0
-  },
-  {
-    "id": "chae_byungryong_2003",
-    "name": "채병룡",
-    "year": 2003,
-    "positions": ["SP"],
-    "war": 5.5
-  },
-  {
-    "id": "kim_wonhyung_2003",
-    "name": "김원형",
-    "year": 2003,
-    "positions": ["SP"],
-    "war": 5.0
-  },
-  {
-    "id": "yoon_gilhyun_2009",
-    "name": "윤길현",
-    "year": 2009,
-    "positions": ["SP", "RP"],
-    "war": 4.5
-  },
-  {
-    "id": "jung_daehyun_2007",
-    "name": "정대현",
-    "year": 2007,
-    "positions": ["RP"],
-    "war": 5.5
-  },
-  {
-    "id": "jung_wooram_2009",
-    "name": "정우람",
-    "year": 2009,
-    "positions": ["RP"],
-    "war": 5.0
-  },
-  {
-    "id": "jeon_byeongdoo_2009",
-    "name": "전병두",
-    "year": 2009,
-    "positions": ["RP"],
-    "war": 4.5
-  },
-  {
-    "id": "chae_byeongyong_2008",
-    "name": "채병용",
-    "year": 2008,
-    "positions": ["SP", "RP"],
-    "war": 4.5
-  },
-  {
-    "id": "park_heesoo_2009",
-    "name": "박희수",
-    "year": 2009,
-    "positions": ["RP"],
-    "war": 3.5
-  },
-  {
-    "id": "jung_sangho_2009",
+    "id": "SK_2000_8",
     "name": "정상호",
-    "year": 2009,
-    "positions": ["C"],
-    "war": 3.0
+    "positions": [
+      "C"
+    ],
+    "war": 4.9,
+    "ops": 0.73,
+    "AVG": 0.268,
+    "ERA": null,
+    "SO": 49,
+    "Year": 2007,
+    "HR": 14,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "kim_minjae_2003",
-    "name": "김민재",
-    "year": 2003,
-    "positions": ["SS"],
-    "war": 3.5
+    "id": "SK_2000_9",
+    "name": "박경완",
+    "positions": [
+      "C"
+    ],
+    "war": 5.7,
+    "ops": 0.8,
+    "AVG": 0.281,
+    "ERA": null,
+    "SO": 55,
+    "Year": 2005,
+    "HR": 18,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "lee_jinhoeng_2009",
-    "name": "박진만",
-    "year": 2009,
-    "positions": ["SS"],
-    "war": 4.0
+    "id": "SK_2000_10",
+    "name": "나주환",
+    "positions": [
+      "SS",
+      "2B"
+    ],
+    "war": 4.4,
+    "ops": 0.68,
+    "AVG": 0.262,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2006,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_11",
+    "name": "김강민",
+    "positions": [
+      "CF",
+      "RF"
+    ],
+    "war": 3.9,
+    "ops": 0.7,
+    "AVG": 0.264,
+    "ERA": null,
+    "SO": 52,
+    "Year": 2009,
+    "HR": 9,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_12",
+    "name": "김원형",
+    "positions": [
+      "SP"
+    ],
+    "war": 7.4,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.89,
+    "SO": 150,
+    "Year": 2003,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_13",
+    "name": "채병룡",
+    "positions": [
+      "SP"
+    ],
+    "war": 6.1,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.21,
+    "SO": 133,
+    "Year": 2007,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_14",
+    "name": "이승호",
+    "positions": [
+      "SP",
+      "RP"
+    ],
+    "war": 4.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.47,
+    "SO": 112,
+    "Year": 2005,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_15",
+    "name": "박희수",
+    "positions": [
+      "RP"
+    ],
+    "war": 4.6,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.1,
+    "SO": 87,
+    "Year": 2008,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_16",
+    "name": "정대현",
+    "positions": [
+      "RP"
+    ],
+    "war": 4.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.31,
+    "SO": 81,
+    "Year": 2007,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_17",
+    "name": "윤길현",
+    "positions": [
+      "RP",
+      "SP"
+    ],
+    "war": 3.3,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.68,
+    "SO": 74,
+    "Year": 2004,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_18",
+    "name": "레이예스",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 5.2,
+    "ops": 0.91,
+    "AVG": 0.3,
+    "ERA": null,
+    "SO": 95,
+    "Year": 2005,
+    "HR": 32,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_19",
+    "name": "크레이그 브레슬로",
+    "positions": [
+      "SP"
+    ],
+    "war": 4.1,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.42,
+    "SO": 122,
+    "Year": 2004,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_20",
+    "name": "세스 에쓰리지",
+    "positions": [
+      "SP"
+    ],
+    "war": 3.7,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.73,
+    "SO": 109,
+    "Year": 2006,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_21",
+    "name": "길 클로드",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 3.8,
+    "ops": 0.84,
+    "AVG": 0.285,
+    "ERA": null,
+    "SO": 84,
+    "Year": 2008,
+    "HR": 24,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_22",
+    "name": "박종호",
+    "positions": [
+      "2B",
+      "SS"
+    ],
+    "war": 2.7,
+    "ops": 0.63,
+    "AVG": 0.255,
+    "ERA": null,
+    "SO": 40,
+    "Year": 2005,
+    "HR": 4,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_23",
+    "name": "전병두",
+    "positions": [
+      "SP",
+      "RP"
+    ],
+    "war": 2.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 4.1,
+    "SO": 78,
+    "Year": 2008,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_24",
+    "name": "유한준",
+    "positions": [
+      "RF",
+      "CF"
+    ],
+    "war": 2.2,
+    "ops": 0.65,
+    "AVG": 0.259,
+    "ERA": null,
+    "SO": 46,
+    "Year": 2009,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "SK_2000_25",
+    "name": "정경배",
+    "positions": [
+      "3B",
+      "2B"
+    ],
+    "war": 1.9,
+    "ops": 0.61,
+    "AVG": 0.245,
+    "ERA": null,
+    "SO": 34,
+    "Year": 2006,
+    "HR": 4,
+    "Korean": true,
+    "Captain": false
   }
 ]
