@@ -1,149 +1,415 @@
 [
   {
-    "id": "lee_daeho_2009",
+    "id": "Lotte_2000_1",
     "name": "이대호",
-    "year": 2006,
-    "positions": ["1B"],
-    "war": 7.1
+    "positions": [
+      "3B",
+      "1B"
+    ],
+    "war": 9.3,
+    "ops": 0.97,
+    "AVG": 0.32,
+    "ERA": null,
+    "SO": 74,
+    "Year": 2006,
+    "HR": 36,
+    "Korean": true,
+    "Captain": true
   },
   {
-    "id": "kang_minho_2009",
-    "name": "강민호",
-    "year": 2008,
-    "positions": ["C"],
-    "war": 5.5
-  },
-  {
-    "id": "son_minhan_2005",
-    "name": "손민한",
-    "year": 2005,
-    "positions": ["SP"],
-    "war": 6.5
-  },
-  {
-    "id": "cho_seonghwan_2008",
-    "name": "조성환",
-    "year": 2008,
-    "positions": ["2B"],
-    "war": 5.9
-  },
-  {
-    "id": "hong_seongheun_2009",
+    "id": "Lotte_2000_2",
     "name": "홍성흔",
-    "year": 2009,
-    "positions": ["LF", "C"],
-    "war": 6.9
+    "positions": [
+      "C",
+      "1B"
+    ],
+    "war": 6.8,
+    "ops": 0.87,
+    "AVG": 0.301,
+    "ERA": null,
+    "SO": 62,
+    "Year": 2005,
+    "HR": 24,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "karim_garcia_2008",
-    "name": "카림 가르시아",
-    "year": 2008,
-    "positions": ["LF","RF"],
-    "war": 4.3
-  },
-  {
-    "id": "jeon_junwoo_2009",
-    "name": "펠릭스 호세",
-    "year": 2001,
-    "positions": ["RF","LF"],
-    "war":8.5
-  },
-  {
-    "id": "park_kihyuk_2008",
-    "name": "박기혁",
-    "year": 2005,
-    "positions": ["SS"],
-    "war": 3.2
-  },
-  {
-    "id": "lee_daeho_2006",
-    "name": "킷 펠로우",
-    "year": 2005,
-    "positions": ["SP"],
-    "war": 3.1
-  },
-  {
-    "id": "jang_seongwoo_2009",
-    "name": "최기문",
-    "year": 2003,
-    "positions": ["C"],
-    "war": 4.1
-  },
-  {
-    "id": "choi_hyangnam_2005",
-    "name": "조정훈",
-    "year": 2009,
-    "positions": ["SP"],
-    "war": 3.9
-  },
-  {
-    "id": "yeom_jongseok_2001",
+    "id": "Lotte_2000_3",
     "name": "손민한",
-    "year": 2000,
-    "positions": ["SP"],
-    "war": 5.8
+    "positions": [
+      "SP"
+    ],
+    "war": 7.1,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.03,
+    "SO": 147,
+    "Year": 2006,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "jang_wonjun_2008",
-    "name": "박석진",
-    "year": 2001,
-    "positions": ["RP"],
-    "war": 4.9
+    "id": "Lotte_2000_4",
+    "name": "박세직",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.1,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.47,
+    "SO": 122,
+    "Year": 2003,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "song_seungjun_2008",
-    "name": "이정훈",
-    "year": 2009,
-    "positions": ["RP"],
-    "war": 3.2
-  },
-  {
-    "id": "cho_junghoon_2009",
-    "name": "조경환",
-    "year": 2001,
-    "positions": ["RF","LF"],
-    "war": 4.0
-  },
-  {
-    "id": "im_kyungwan_2004",
-    "name": "임경완",
-    "year": 2004,
-    "positions": ["RP"],
-    "war": 3.2
-  },
-  {
-    "id": "kang_youngsik_2008",
-    "name": "마해영",
-    "year": 2000,
-    "positions": ["1B"],
-    "war": 3.8
-  },
-  {
-    "id": "choi_dongwon_legend",
-    "name": "손인호",
-    "year": 2004,
-    "positions": ["RF"],
-    "war": 3.9
-  },
-  {
-    "id": "lee_jungmin_2008",
-    "name": "김대익",
-    "year": 2000,
-    "positions": ["CF"],
-    "war": 3.1
-  },
-  {
-    "id": "kim_sajul_2008",
+    "id": "Lotte_2000_5",
     "name": "정수근",
-    "year": 2007,
-    "positions": ["CF","LF"],
-    "war": 3.1
+    "positions": [
+      "CF"
+    ],
+    "war": 5.7,
+    "ops": 0.76,
+    "AVG": 0.283,
+    "ERA": null,
+    "SO": 57,
+    "Year": 2001,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "park_hyunseung_2008",
-    "name": "박현승",
-    "year": 2008,
-    "positions": ["OF"],
-    "war": 3.0
+    "id": "Lotte_2000_6",
+    "name": "김주찬",
+    "positions": [
+      "LF",
+      "CF"
+    ],
+    "war": 5.2,
+    "ops": 0.77,
+    "AVG": 0.287,
+    "ERA": null,
+    "SO": 65,
+    "Year": 2008,
+    "HR": 11,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_7",
+    "name": "전준호",
+    "positions": [
+      "CF",
+      "RF"
+    ],
+    "war": 4.7,
+    "ops": 0.73,
+    "AVG": 0.276,
+    "ERA": null,
+    "SO": 52,
+    "Year": 2000,
+    "HR": 8,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_8",
+    "name": "조성환",
+    "positions": [
+      "2B",
+      "SS"
+    ],
+    "war": 5.0,
+    "ops": 0.7,
+    "AVG": 0.267,
+    "ERA": null,
+    "SO": 49,
+    "Year": 2004,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_9",
+    "name": "박기혁",
+    "positions": [
+      "SS",
+      "2B"
+    ],
+    "war": 4.4,
+    "ops": 0.68,
+    "AVG": 0.264,
+    "ERA": null,
+    "SO": 46,
+    "Year": 2007,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_10",
+    "name": "마이크 가르시아",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.9,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.21,
+    "SO": 135,
+    "Year": 2004,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_11",
+    "name": "펠릭스 호세",
+    "positions": [
+      "LF",
+      "1B"
+    ],
+    "war": 4.8,
+    "ops": 0.87,
+    "AVG": 0.3,
+    "ERA": null,
+    "SO": 81,
+    "Year": 2003,
+    "HR": 30,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_12",
+    "name": "후안 카를로스 오비에도",
+    "positions": [
+      "RP"
+    ],
+    "war": 4.1,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.73,
+    "SO": 81,
+    "Year": 2006,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_13",
+    "name": "던컨",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 4.6,
+    "ops": 0.88,
+    "AVG": 0.293,
+    "ERA": null,
+    "SO": 90,
+    "Year": 2005,
+    "HR": 33,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_14",
+    "name": "마크 듀란",
+    "positions": [
+      "SP"
+    ],
+    "war": 3.7,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.79,
+    "SO": 112,
+    "Year": 2007,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_15",
+    "name": "최기문",
+    "positions": [
+      "C"
+    ],
+    "war": 3.3,
+    "ops": 0.66,
+    "AVG": 0.255,
+    "ERA": null,
+    "SO": 40,
+    "Year": 2004,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_16",
+    "name": "장원준",
+    "positions": [
+      "SP"
+    ],
+    "war": 3.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.58,
+    "SO": 107,
+    "Year": 2009,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_17",
+    "name": "이용훈",
+    "positions": [
+      "RP"
+    ],
+    "war": 3.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.68,
+    "SO": 74,
+    "Year": 2005,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_18",
+    "name": "박정태",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 3.9,
+    "ops": 0.79,
+    "AVG": 0.29,
+    "ERA": null,
+    "SO": 55,
+    "Year": 2001,
+    "HR": 19,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_19",
+    "name": "조원우",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 2.7,
+    "ops": 0.65,
+    "AVG": 0.259,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2003,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_20",
+    "name": "강귀태",
+    "positions": [
+      "C"
+    ],
+    "war": 1.9,
+    "ops": 0.6,
+    "AVG": 0.242,
+    "ERA": null,
+    "SO": 30,
+    "Year": 2001,
+    "HR": 5,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_21",
+    "name": "이규환",
+    "positions": [
+      "SP",
+      "RP"
+    ],
+    "war": 2.4,
+    "ops": null,
+    "AVG": null,
+    "ERA": 4.21,
+    "SO": 76,
+    "Year": 2006,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_22",
+    "name": "진해수",
+    "positions": [
+      "RP"
+    ],
+    "war": 2.2,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.94,
+    "SO": 62,
+    "Year": 2008,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_23",
+    "name": "장성호",
+    "positions": [
+      "1B",
+      "RF"
+    ],
+    "war": 3.2,
+    "ops": 0.74,
+    "AVG": 0.274,
+    "ERA": null,
+    "SO": 59,
+    "Year": 2002,
+    "HR": 13,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_24",
+    "name": "이현곤",
+    "positions": [
+      "3B",
+      "2B"
+    ],
+    "war": 2.0,
+    "ops": 0.62,
+    "AVG": 0.249,
+    "ERA": null,
+    "SO": 38,
+    "Year": 2007,
+    "HR": 4,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2000_25",
+    "name": "정대현",
+    "positions": [
+      "RP"
+    ],
+    "war": 2.6,
+    "ops": null,
+    "AVG": null,
+    "ERA": 4.05,
+    "SO": 67,
+    "Year": 2009,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   }
 ]
