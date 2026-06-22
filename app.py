@@ -465,37 +465,73 @@ def next_team():
 @app.route("/fa_select")
 def fa_select():
 
-    all_teams = []
+    teams = []
 
-    eras = ["2000s", "2010s", "2020s"]
+    for era in ["2000s", "2010s", "2020s"]:
 
-    for era in eras:
+        era_path = os.path.join(
+            "Data",
+            era
+        )
 
-        path = os.path.join("Data", era)
-
-        if not os.path.exists(path):
+        if not os.path.exists(era_path):
             continue
 
-        for file in os.listdir(path):
+        for team_file in os.listdir(era_path):
 
-            if not file.endswith(".json"):
+            if not team_file.endswith(".json"):
                 continue
 
-            team_key = file.replace(".json", "")
+            team_key = team_file[:-5]
 
-            all_teams.append({
+            try:
+
+                old_era = session.get("actual_era")
+
+                session["actual_era"] = era
+
+                display_name = get_team_names().get(
+                    team_key,
+                    team_key
+                )
+
+                if old_era:
+                    session["actual_era"] = old_era
+
+            except:
+
+                display_name = team_key
+
+            teams.append({
+                "id": f"{era}|{team_key}",
+                "display": display_name,
                 "era": era,
-                "team": team_key,
-                "file": file
+                "file": f"{era}/{team_file}"
             })
+
+    teams.sort(
+        key=lambda x: (
+            x["era"],
+            x["display"]
+        )
+    )
 
     return render_template(
         "fa_select.html",
-        teams=all_teams
+        teams=teams
     )
 
-@app.route("/fa_pick/<era>/<team>")
-def fa_pick(era, team):
+
+@app.route("/fa_pick/<path:team_id>")
+def fa_pick(team_id):
+
+    try:
+
+        era, team = team_id.split("|")
+
+    except:
+
+        return redirect("/fa_select")
 
     session["fa_used"] = True
 
@@ -503,16 +539,28 @@ def fa_pick(era, team):
 
     session["current_team"] = team
 
-    if team not in session["used_teams"]:
-        session["used_teams"].append(team)
+    used = session.get(
+        "used_teams",
+        []
+    )
+
+    unique_id = f"{era}|{team}"
+
+    if unique_id not in used:
+        used.append(unique_id)
+
+    session["used_teams"] = used
 
     return render_template(
         "loading.html",
-        team_name=f"{era} / {team}",
+        team_name=get_team_names().get(
+            team,
+            team
+        ),
         era=session["era"],
         actual_era=era
     )
-
+    
 @app.route("/fix_era/<era>")
 def fix_era(era):
 
