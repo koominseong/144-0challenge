@@ -403,13 +403,19 @@ def next_team():
 
         session["released_players"] = []
 
-    available = [
-        team for team in team_names.keys()
-        if team not in session["used_teams"]
-    ]
+    available = []
+
+    for team in team_names.keys():
+
+        unique_id = (
+            f"{session['actual_era']}|{team}"
+        )
+
+        if unique_id not in session["used_teams"]:
+            available.append(team)
 
     current_team = session.get("current_team")
-    
+
     if current_team in available:
         available.remove(current_team)
 
@@ -423,7 +429,6 @@ def next_team():
     ):
         return redirect("/fa_select")
 
-    # 미래를 보는 스카우트
     if session.get("selected_behavior") == "future_scout":
 
         preview = session.get("next_team_preview")
@@ -451,7 +456,10 @@ def next_team():
         team = random.choice(available)
 
     session["current_team"] = team
-    session["used_teams"].append(team)
+
+    session["used_teams"].append(
+        f"{session['actual_era']}|{team}"
+    )
 
     session.modified = True
 
