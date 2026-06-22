@@ -542,6 +542,9 @@ def fa_select():
 @app.route("/fa_pick/<path:team_id>")
 def fa_pick(team_id):
 
+    if session.get("fa_used"):
+        return redirect("/team_view")
+
     try:
 
         era, team = team_id.split("|")
@@ -603,6 +606,15 @@ def boost_player(player_id):
 @app.route("/transfer_release")
 def transfer_release():
 
+    if session.get("transfer_used"):
+        return redirect("/team_view")
+
+    if (
+        session.get("selected_behavior")
+        != "transfer_god"
+    ):
+        return redirect("/team_view")
+        
     players = []
 
     lineup = session["lineup"]
