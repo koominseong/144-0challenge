@@ -473,6 +473,15 @@ def next_team():
 @app.route("/fa_select")
 def fa_select():
 
+    if session.get("fa_used"):
+        return redirect("/team_view")
+
+    if (
+        session.get("selected_behavior")
+        != "fa_god"
+    ):
+        return redirect("/team_view")
+
     teams = []
 
     for era in ["2000s", "2010s", "2020s"]:
