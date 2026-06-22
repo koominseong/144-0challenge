@@ -589,6 +589,9 @@ def fa_pick(team_id):
 @app.route("/fix_era/<era>")
 def fix_era(era):
 
+    if session.get("selected_behavior") != "time_paradox":
+        return redirect("/team_view")
+
     if session["fixed_era_used"]:
         return redirect("/team_view")
 
