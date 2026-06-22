@@ -1,177 +1,415 @@
 [
   {
-    "id": "yang_euiji_2019",
-    "name": "양의지",
-    "year": 2019,
-    "positions": ["C"],
-    "war": 7.5
-  },
-  {
-    "id": "kim_taegun_2016",
-    "name": "김태군",
-    "year": 2016,
-    "positions": ["C"],
-    "war": 3.0
-  },
-  {
-    "id": "eric_thames_2015",
-    "name": "에릭 테임즈",
-    "year": 2015,
-    "positions": ["1B", "LF"],
-    "war": 11.0
-  },
-  {
-    "id": "mo_changmin_2015",
-    "name": "모창민",
-    "year": 2015,
-    "positions": ["1B", "DH"],
-    "war": 5.0
-  },
-  {
-    "id": "park_minhwoo_2019",
-    "name": "박민우",
-    "year": 2019,
-    "positions": ["2B"],
-    "war": 6.5
-  },
-  {
-    "id": "ji_seokhoon_2015",
-    "name": "지석훈",
-    "year": 2015,
-    "positions": ["2B", "SS"],
-    "war": 3.0
-  },
-  {
-    "id": "park_seokmin_2016",
-    "name": "박석민",
-    "year": 2016,
-    "positions": ["3B"],
-    "war": 6.0
-  },
-  {
-    "id": "noh_jinhyuk_2019",
-    "name": "노진혁",
-    "year": 2019,
-    "positions": ["SS"],
-    "war": 5.0
-  },
-  {
-    "id": "kim_jongho_2013",
-    "name": "김종호",
-    "year": 2013,
-    "positions": ["CF"],
-    "war": 4.0
-  },
-  {
-    "id": "na_sungbum_2017",
+    "id": "NC_2010_1",
     "name": "나성범",
-    "year": 2017,
-    "positions": ["RF", "CF"],
-    "war": 8.0
+    "positions": [
+      "RF",
+      "CF"
+    ],
+    "war": 8.4,
+    "ops": 0.93,
+    "AVG": 0.302,
+    "ERA": null,
+    "SO": 90,
+    "Year": 2015,
+    "HR": 29,
+    "Korean": true,
+    "Captain": true
   },
   {
-    "id": "lee_jongwook_2014",
-    "name": "이종욱",
-    "year": 2014,
-    "positions": ["CF", "LF"],
-    "war": 4.5
-  },
-  {
-    "id": "kwon_hee_dong_2018",
-    "name": "권희동",
-    "year": 2018,
-    "positions": ["LF", "RF"],
-    "war": 4.0
-  },
-  {
-    "id": "lee_hojun_2013",
+    "id": "NC_2010_2",
     "name": "이호준",
-    "year": 2013,
-    "positions": ["DH", "1B"],
-    "war": 5.0
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 6.2,
+    "ops": 0.84,
+    "AVG": 0.285,
+    "ERA": null,
+    "SO": 76,
+    "Year": 2014,
+    "HR": 25,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "xavier_scruggs_2017",
-    "name": "재비어 스크럭스",
-    "year": 2017,
-    "positions": ["1B", "DH"],
-    "war": 3.5
+    "id": "NC_2010_3",
+    "name": "박민우",
+    "positions": [
+      "2B"
+    ],
+    "war": 5.7,
+    "ops": 0.76,
+    "AVG": 0.303,
+    "ERA": null,
+    "SO": 40,
+    "Year": 2016,
+    "HR": 4,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "park_seunwook_2018",
-    "name": "박석욱",
-    "year": 2018,
-    "positions": ["3B", "1B"],
-    "war": 2.5
+    "id": "NC_2010_4",
+    "name": "손시헌",
+    "positions": [
+      "SS",
+      "3B"
+    ],
+    "war": 4.9,
+    "ops": 0.72,
+    "AVG": 0.268,
+    "ERA": null,
+    "SO": 52,
+    "Year": 2015,
+    "HR": 9,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "eric_hacker_2014",
+    "id": "NC_2010_5",
+    "name": "테임즈",
+    "positions": [
+      "LF",
+      "1B"
+    ],
+    "war": 8.1,
+    "ops": 1.05,
+    "AVG": 0.362,
+    "ERA": null,
+    "SO": 122,
+    "Year": 2015,
+    "HR": 45,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_6",
+    "name": "모창민",
+    "positions": [
+      "3B",
+      "SS"
+    ],
+    "war": 4.3,
+    "ops": 0.7,
+    "AVG": 0.264,
+    "ERA": null,
+    "SO": 55,
+    "Year": 2016,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_7",
+    "name": "김종호",
+    "positions": [
+      "CF",
+      "LF"
+    ],
+    "war": 3.8,
+    "ops": 0.68,
+    "AVG": 0.266,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2015,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_8",
+    "name": "지석훈",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 3.3,
+    "ops": 0.67,
+    "AVG": 0.259,
+    "ERA": null,
+    "SO": 46,
+    "Year": 2014,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_9",
+    "name": "양의지",
+    "positions": [
+      "C"
+    ],
+    "war": 5.2,
+    "ops": 0.76,
+    "AVG": 0.281,
+    "ERA": null,
+    "SO": 55,
+    "Year": 2013,
+    "HR": 14,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_10",
+    "name": "이원석",
+    "positions": [
+      "1B",
+      "3B"
+    ],
+    "war": 4.0,
+    "ops": 0.72,
+    "AVG": 0.271,
+    "ERA": null,
+    "SO": 59,
+    "Year": 2017,
+    "HR": 15,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_11",
+    "name": "찰리 쉬렉",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.7,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.15,
+    "SO": 141,
+    "Year": 2013,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_12",
     "name": "에릭 해커",
-    "year": 2014,
-    "positions": ["SP"],
-    "war": 7.0
+    "positions": [
+      "SP"
+    ],
+    "war": 5.2,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.26,
+    "SO": 131,
+    "Year": 2016,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "jeff_manship_2017",
-    "name": "제프 맨쉽",
-    "year": 2017,
-    "positions": ["SP"],
-    "war": 6.0
+    "id": "NC_2010_13",
+    "name": "이민호",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.21,
+    "SO": 135,
+    "Year": 2014,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "drew_rucinski_2019",
-    "name": "드류 루친스키",
-    "year": 2019,
-    "positions": ["SP"],
-    "war": 6.5
+    "id": "NC_2010_14",
+    "name": "박민",
+    "positions": [
+      "SP",
+      "RP"
+    ],
+    "war": 4.3,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.52,
+    "SO": 112,
+    "Year": 2015,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "goo_changmo_2019",
-    "name": "구창모",
-    "year": 2019,
-    "positions": ["SP"],
-    "war": 5.5
-  },
-  {
-    "id": "lee_jaehak_2015",
-    "name": "이재학",
-    "year": 2015,
-    "positions": ["SP"],
-    "war": 5.0
-  },
-  {
-    "id": "won_jonghyun_2017",
+    "id": "NC_2010_15",
     "name": "원종현",
-    "year": 2017,
-    "positions": ["RP"],
-    "war": 4.5
+    "positions": [
+      "RP"
+    ],
+    "war": 3.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.36,
+    "SO": 90,
+    "Year": 2017,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "im_changmin_2016",
+    "id": "NC_2010_16",
     "name": "임창민",
-    "year": 2016,
-    "positions": ["RP"],
-    "war": 4.5
+    "positions": [
+      "RP",
+      "SP"
+    ],
+    "war": 3.6,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.58,
+    "SO": 84,
+    "Year": 2018,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "kim_jinhyun_2014",
-    "name": "김진성",
-    "year": 2014,
-    "positions": ["RP"],
-    "war": 4.0
+    "id": "NC_2010_17",
+    "name": "해커",
+    "positions": [
+      "SP"
+    ],
+    "war": 4.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.31,
+    "SO": 128,
+    "Year": 2015,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "lim_jungho_2015",
-    "name": "임정호",
-    "year": 2015,
-    "positions": ["RP"],
-    "war": 3.5
+    "id": "NC_2010_18",
+    "name": "반헤켄",
+    "positions": [
+      "SP"
+    ],
+    "war": 4.9,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.1,
+    "SO": 141,
+    "Year": 2017,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "bae_jaehwan_2019",
-    "name": "배재환",
-    "year": 2019,
-    "positions": ["SP", "RP"],
-    "war": 3.0
+    "id": "NC_2010_19",
+    "name": "드루 루친스키",
+    "positions": [
+      "SP"
+    ],
+    "war": 4.6,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.42,
+    "SO": 122,
+    "Year": 2019,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_20",
+    "name": "박세혁",
+    "positions": [
+      "C"
+    ],
+    "war": 2.9,
+    "ops": 0.65,
+    "AVG": 0.255,
+    "ERA": null,
+    "SO": 38,
+    "Year": 2016,
+    "HR": 8,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_21",
+    "name": "권희동",
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 3.3,
+    "ops": 0.7,
+    "AVG": 0.268,
+    "ERA": null,
+    "SO": 52,
+    "Year": 2018,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_22",
+    "name": "김성욱",
+    "positions": [
+      "RF",
+      "CF"
+    ],
+    "war": 2.7,
+    "ops": 0.65,
+    "AVG": 0.257,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2017,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_23",
+    "name": "박평호",
+    "positions": [
+      "3B",
+      "SS"
+    ],
+    "war": 2.1,
+    "ops": 0.61,
+    "AVG": 0.245,
+    "ERA": null,
+    "SO": 36,
+    "Year": 2016,
+    "HR": 4,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_24",
+    "name": "심창민",
+    "positions": [
+      "RP"
+    ],
+    "war": 3.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.73,
+    "SO": 74,
+    "Year": 2019,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "NC_2010_25",
+    "name": "구창모",
+    "positions": [
+      "SP"
+    ],
+    "war": 4.3,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.26,
+    "SO": 119,
+    "Year": 2019,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   }
 ]
