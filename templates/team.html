@@ -475,26 +475,26 @@ font-weight:bold;
 {{ p.positions | join(", ") }}
 </div>
 
-{% if p.ops is not none %}
+{% if p.get("ops") %}
 <div style="
 margin-bottom:6px;
 color:#1976d2;
 font-weight:bold;
 ">
-OPS {{ "%.3f"|format(p.ops) }}
+OPS {{ "%.3f"|format(p["ops"]) }}
 </div>
 {% endif %}
-
-{% if p.ERA is not none %}
+    
+{% if p.get("ERA") is not none %}
 <div style="
 margin-bottom:6px;
 color:#ef4444;
 font-weight:bold;
 ">
-ERA {{ "%.2f"|format(p.ERA) }}
+ERA {{ "%.2f"|format(p["ERA"]) }}
 </div>
 {% endif %}
-
+    
 <button
 class="assign-btn"
 type="button"
