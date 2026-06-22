@@ -744,14 +744,18 @@ def team_reroll():
 
     session["team_reroll"] -= 1
 
-    session["used_teams"].remove(
-        session["current_team"]
+    current_key = (
+        f"{session.get('actual_era')}|"
+        f"{session.get('current_team')}"
     )
+
+    if current_key in session["used_teams"]:
+        session["used_teams"].remove(current_key)
 
     session["allow_next"] = True
 
     return redirect("/next")
-
+    
 @app.route("/assign_player", methods=["POST"])
 def assign_player():
 
