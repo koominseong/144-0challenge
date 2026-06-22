@@ -18,7 +18,7 @@ supabase = create_client(
 )
 
 app = Flask(__name__)
-app.secret_key = "kbo1440"
+app.secret_key = os.getenv("SECRET_KEY")
 
 def get_team_names():
 
@@ -478,6 +478,9 @@ def next_team():
 @app.route("/fa_select")
 def fa_select():
 
+    if session.get("selected_behavior") != "fa_god":
+        return redirect("/team_view")
+        
     if session.get("fa_used"):
         return redirect("/team_view")
 
