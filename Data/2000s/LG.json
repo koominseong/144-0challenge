@@ -166,39 +166,6 @@
     "Captain": false
   },
   {
-    "id": "LG_2000_11",
-    "name": "김동주",
-    "positions": [
-      "1B",
-      "3B"
-    ],
-    "war": 5.9,
-    "ops": 0.87,
-    "AVG": 0.297,
-    "ERA": null,
-    "SO": 78,
-    "Year": 2000,
-    "HR": 29,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "LG_2000_12",
-    "name": "강민호",
-    "positions": [
-      "C"
-    ],
-    "war": 3.4,
-    "ops": 0.68,
-    "AVG": 0.257,
-    "ERA": null,
-    "SO": 46,
-    "Year": 2008,
-    "HR": 10,
-    "Korean": true,
-    "Captain": false
-  },
-  {
     "id": "LG_2000_13",
     "name": "박종윤",
     "positions": [
