@@ -120,6 +120,26 @@ body{
 
 }
 
+.captain-badge{
+
+    display:inline-block;
+
+    margin-bottom:8px;
+
+    padding:4px 10px;
+
+    border-radius:999px;
+
+    background:#f59e0b;
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
 /* 선수 목록 */
 
 .card-area{
@@ -466,6 +486,12 @@ font-weight:bold;
 <div class="player-name">
 {{ p.name }}
 </div>
+
+{% if p.Captain %}
+<div class="captain-badge">
+👑 CAPTAIN
+</div>
+{% endif %}
 
 <div class="player-year">
 {{ p.Year }}
