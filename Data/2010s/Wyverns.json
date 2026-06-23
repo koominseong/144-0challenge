@@ -264,40 +264,6 @@
     "Captain": false
   },
   {
-    "id": "SK_2010_17",
-    "name": "야마이코 나바로",
-    "positions": [
-      "SS",
-      "3B"
-    ],
-    "war": 5.5,
-    "ops": 0.91,
-    "AVG": 0.306,
-    "ERA": null,
-    "SO": 91,
-    "Year": 2015,
-    "HR": 20,
-    "Korean": false,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_18",
-    "name": "에릭 테임즈",
-    "positions": [
-      "LF",
-      "1B"
-    ],
-    "war": 6.5,
-    "ops": 1.06,
-    "AVG": 0.331,
-    "ERA": null,
-    "SO": 120,
-    "Year": 2015,
-    "HR": 48,
-    "Korean": false,
-    "Captain": false
-  },
-  {
     "id": "SK_2010_19",
     "name": "케이시 켈리",
     "positions": [
