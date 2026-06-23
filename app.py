@@ -545,7 +545,7 @@ def trait_team():
 
     return render_template(
         "trait_team.html",
-        traits=session["trait_choices"]
+        trait=session["trait_choices"]
     )
 
 @app.route("/select_trait_team/<trait_id>")
