@@ -84,7 +84,7 @@ body{
 .card{
 
     width:320px;
-    height:420px;
+    height:470px;
 
     text-decoration:none;
 
@@ -175,6 +175,24 @@ body{
     text-align:center;
 }
 
+.desc{
+
+    margin-top:18px;
+
+    padding:0 25px;
+
+    text-align:center;
+
+    color:#cbd5e1;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+    min-height:70px;
+
+}
+    
 .pick{
 
     position:absolute;
@@ -200,7 +218,7 @@ body{
         width:100%;
         max-width:380px;
 
-        height:220px;
+        height:300px;
     }
 
     .icon{
@@ -251,6 +269,10 @@ class="card">
 
 <div class="name">
 {{ trait.name }}
+</div>
+
+<div class="desc">
+{{ trait.desc }}
 </div>
 
 <div class="pick">
