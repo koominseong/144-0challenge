@@ -1168,7 +1168,7 @@ def result():
 
             total_war += war
 
-    wins = round(total_war * 1.18)
+    wins = round(total_war * 1.22)
 
     bonus = 0
 
@@ -1641,7 +1641,7 @@ def result_loading():
         if lineup[pos]:
             total_war += lineup[pos]["war"]
 
-    wins = round(total_war * 1.18)
+    wins = round(total_war * 1.22)
 
     if wins > 144:
         wins = 144
