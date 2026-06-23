@@ -1191,10 +1191,9 @@ def result():
 
         if cnt >= 5:
             bonus += 4
-
-
-     elif trait == "beijing2008":
     
+    elif trait == "beijing2008":
+        
         cnt = sum(
             1 for p in all_players
             if p["name"] in BEIJING_2008
@@ -1202,7 +1201,6 @@ def result():
     
         if cnt >= 13:
             bonus += 6
-
 
     # K-Baseball
     elif trait == "kbaseball":
