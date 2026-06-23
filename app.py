@@ -18,7 +18,34 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
-    
+
+BEIJING_2008 = {
+
+    "강민호",
+    "고영민",
+    "고창성",
+    "김광현",
+    "김현수",
+    "김동주",
+    "류현진",
+    "박경완",
+    "박재홍",
+    "봉중근",
+    "손민한",
+    "송승준",
+    "오승환",
+    "윤석민",
+    "이대호",
+    "이범호",
+    "이용규",
+    "이종욱",
+    "장원삼",
+    "정근우",
+    "진갑용",
+    "최정"
+
+}
+
 def get_team_names():
 
     era = session.get("actual_era", session.get("era", "2010s"))
@@ -297,27 +324,218 @@ def trait_team():
         return redirect("/team_view")
 
     TRAITS = [
-        {"id":"offense","name":"공격 야구","icon":"💥"},
-        {"id":"defense","name":"수비 야구","icon":"🛡️"},
-        {"id":"mountain","name":"마운드 왕국","icon":"⚾"},
-        {"id":"closer","name":"철벽 마무리","icon":"🔒"},
-        {"id":"smallball","name":"스몰볼","icon":"🎯"},
-        {"id":"slugger","name":"홈런 군단","icon":"🔥"},
-        {"id":"superstar","name":"슈퍼스타 군단","icon":"🌟"},
-        {"id":"balanced","name":"밸런스형","icon":"⚙️"},
-        {"id":"core","name":"수비 코어","icon":"🧱"},
-        {"id":"bullpen","name":"불펜 의존","icon":"🚨"},
-        {"id":"era_master","name":"왕조 건설","icon":"🕰️"}
+        {
+            "id":"million_miracle",
+            "name":"천만의 기적",
+            "icon":"💰",
+            "desc":"2024~2025 시즌 선수 5명 이상 배치 (+4승)"
+        },
+    
+        {
+            "id":"beijing2008",
+            "name":"2008",
+            "icon":"🥇",
+            "desc":"베이징 올림픽 엔트리 선수 13명 이상 (+6승)"
+        },
+    
+        {
+            "id":"k_baseball",
+            "name":"K-Baseball",
+            "icon":"🇰🇷",
+            "desc":"전 선수 한국인 (+3승)"
+        },
+    
+        {
+            "id":"hell_defense",
+            "name":"수비는 지옥이다",
+            "icon":"😱",
+            "desc":"SP 3명 SO 합 450 이하 (+4승)"
+        },
+    
+        {
+            "id":"bullpen",
+            "name":"불펜 의존",
+            "icon":"🚨",
+            "desc":"RP WAR 합 +10 > SP WAR 합 (+4승)"
+        },
+    
+        {
+            "id":"dynasty",
+            "name":"왕조 구축",
+            "icon":"👑",
+            "desc":"전 선수 같은 년대 (+6승)"
+        },
+    
+        {
+            "id":"balanced",
+            "name":"밸런스형",
+            "icon":"⚖️",
+            "desc":"전 선수 WAR 6.5 이상 (+4승)"
+        },
+    
+        {
+            "id":"hr_era",
+            "name":"홈런의 시대",
+            "icon":"💥",
+            "desc":"타자 홈런 합 200개 이상 (+3승)"
+        },
+    
+        {
+            "id":"small_hr",
+            "name":"딱총 야구",
+            "icon":"🎯",
+            "desc":"타자 홈런 합 120개 이하 (+5승)"
+        },
+    
+        {
+            "id":"new_jokka",
+            "name":"New-JOKKA",
+            "icon":"🔥",
+            "desc":"RP 평균 ERA 1.50 이하 (+3승)"
+        },
+    
+        {
+            "id":"new_kill",
+            "name":"New-KILL 라인",
+            "icon":"⚔️",
+            "desc":"SP 평균 ERA 2.50 이하 (+3승)"
+        },
+    
+        {
+            "id":"avg_win",
+            "name":"타율=승리",
+            "icon":"📈",
+            "desc":"타율 0.300 이상 타자 7명 이상 (+3승)"
+        },
+    
+        {
+            "id":"def_core",
+            "name":"수비 코어",
+            "icon":"🧱",
+            "desc":"C+2B+SS+CF WAR 합 25 이하 (+4승)"
+        },
+    
+        {
+            "id":"captain",
+            "name":"주장의 품격",
+            "icon":"🎖️",
+            "desc":"주장 선수 7명 이상 (+3승)"
+        },
+    
+        {
+            "id":"leader",
+            "name":"구심점 야구",
+            "icon":"⭐",
+            "desc":"주장 선수 정확히 1명 (+5승)"
+        },
+    
+        {
+            "id":"ops18",
+            "name":"18의 향연",
+            "icon":"📊",
+            "desc":"OPS 0.900 이상 타자 8명 이상 (+3승)"
+        },
+    
+        {
+            "id":"foreign",
+            "name":"외인은 전설이다",
+            "icon":"🌎",
+            "desc":"외국인 선수 7명 이상 (+4승)"
+        },
+    
+        {
+            "id":"dirtyball",
+            "name":"더러운 볼",
+            "icon":"🌀",
+            "desc":"SP+RP SO 합 777 이상 (+4승)"
+        },
+    
+        {
+            "id":"timetravel",
+            "name":"시대를 뛰어넘은 야구",
+            "icon":"⏳",
+            "desc":"전 선수 서로 다른 연도 (+3승)"
+        },
+    
+        {
+            "id":"superstar",
+            "name":"스타 플레이어",
+            "icon":"🌟",
+            "desc":"WAR 9.0 이상 선수 3명 이상 (+2승)"
+        },
+    
+        {
+            "id":"one_man",
+            "name":"원맨팀",
+            "icon":"🎭",
+            "desc":"WAR 1위와 2위 차이 1.5 이상 (+3승)"
+        },
+    
+        {
+            "id":"doyoung",
+            "name":"도영맘",
+            "icon":"🐯",
+            "desc":"김도영을 유격수로 배치 (+4승)"
+        },
+    
+        {
+            "id":"power_ss",
+            "name":"거포 유격수",
+            "icon":"🚀",
+            "desc":"유격수 OPS 0.900 이상 (+3승)"
+        },
+    
+        {
+            "id":"power_cf",
+            "name":"거포 중견수",
+            "icon":"🏹",
+            "desc":"중견수 OPS 0.900 이상 (+3승)"
+        },
+    
+        {
+            "id":"nohit_sp",
+            "name":"무실점 선발",
+            "icon":"🛡️",
+            "desc":"SP 평균 ERA 1.50 이하 (+4승)"
+        },
+    
+        {
+            "id":"nohit_rp",
+            "name":"무실점 불펜",
+            "icon":"🔒",
+            "desc":"RP 평균 ERA 0.90 이하 (+4승)"
+        },
+    
+        {
+            "id":"tablesetter",
+            "name":"테이블 세터",
+            "icon":"🏃",
+            "desc":"2B+SS+CF AVG 평균 0.320 이상 (+3승)"
+        },
+    
+        {
+            "id":"acekingdom",
+            "name":"에이스 왕국",
+            "icon":"👑",
+            "desc":"SP WAR 합 25 이상 (+3승)"
+        },
+    
+        {
+            "id":"ks_dna",
+            "name":"한국시리즈 DNA",
+            "icon":"🏆",
+            "desc":"주장 5명 이상 + WAR 8 이상 선수 5명 이상 (+4승)"
+        },
+    
+        {
+            "id":"gold_generation",
+            "name":"황금 세대",
+            "icon":"✨",
+            "desc":"같은 연도 선수 5명 이상 (+3승)"
+        }
     ]
 
     traits_pool = TRAITS.copy()
-
-    if session["era"] != "all_time":
-        traits_pool = [
-            t
-            for t in traits_pool
-            if t["id"] != "era_master"
-        ]
 
     if not session.get("trait_choices"):
         session["trait_choices"] = random.sample(
@@ -951,181 +1169,412 @@ def result():
 
     bonus = 0
 
+    all_players = []
+    all_players.extend(lineup["SP"])
+    all_players.extend(lineup["RP"])
+        
+    for pos in [
+        "C","1B","2B","3B",
+        "SS","LF","CF","RF","DH"
+    ]:
+        all_players.append(lineup[pos])
+
     trait = session.get("selected_trait","none")
 
-    # 공격 야구
-    if trait == "offense":
+    # 천만의 기적
+    if trait == "miracle":
 
-        hitter_war = 0
-
-        for pos in [
-            "C", "1B", "2B", "3B",
-            "SS", "LF", "CF", "RF", "DH"
-        ]:
-            hitter_war += lineup[pos]["war"]
-
-        if hitter_war >= 80:
-            bonus += 3
-
-    # 수비 야구
-    elif trait == "defense":
-
-        total = (
-            lineup["SS"]["war"]
-            + lineup["2B"]["war"]
-            + lineup["CF"]["war"]
+        cnt = sum(
+            1 for p in all_players
+            if p["Year"] in [2024, 2025]
         )
 
-        if total <= 15:
+        if cnt >= 5:
             bonus += 4
 
-    # 마운드 왕국
-    elif trait == "mountain":
 
-        pitching = 0
-
-        for p in lineup["SP"]:
-            pitching += p["war"]
-
-        for p in lineup["RP"]:
-            pitching += p["war"]
-
-        if pitching >= 40:
-            bonus += 2
-
-    # 철벽 마무리
-    elif trait == "closer":
-
-        rp = sum(
-            p["war"]
-            for p in lineup["RP"]
+     elif trait == "beijing2008":
+    
+        cnt = sum(
+            1 for p in all_players
+            if p["name"] in BEIJING_2008
         )
+    
+        if cnt >= 13:
+            bonus += 6
 
-        if rp <= 13:
+
+    # K-Baseball
+    elif trait == "kbaseball":
+
+        if all(
+            p.get("Korean", False)
+            for p in all_players
+        ):
             bonus += 3
-
-    # 스몰볼
-    elif trait == "smallball":
-
-        total = (
-            lineup["1B"]["war"]
-            + lineup["3B"]["war"]
-            + lineup["LF"]["war"]
-            + lineup["RF"]["war"]
-        )
-
-        if total <= 25:
-            bonus += 5
-
-    # 홈런 군단
-    elif trait == "slugger":
-
-        total = (
-            lineup["1B"]["war"]
-            + lineup["3B"]["war"]
-            + lineup["LF"]["war"]
-            + lineup["RF"]["war"]
-        )
-
-        if total >= 37:
-            bonus += 3
-
-    # 슈퍼스타 군단
-    elif trait == "superstar":
-
-        count = 0
-
-        for p in lineup["SP"]:
-            if p["war"] >= 9:
-                count += 1
-
-        for p in lineup["RP"]:
-            if p["war"] >= 9:
-                count += 1
-
-        for pos in [
-            "C", "1B", "2B", "3B",
-            "SS", "LF", "CF", "RF", "DH"
-        ]:
-            if lineup[pos]["war"] >= 9:
-                count += 1
-
-        if count >= 3:
-            bonus += 2
-
+    
+    
+    # 수비는 지옥이다
+    elif trait == "defense_hell":
+    
+        if sum(
+            p.get("SO",0)
+            for p in lineup["SP"]
+        ) <= 450:
+            bonus += 4
+    
+    
+    # 불펜 의존
+    elif trait == "bullpen_depend":
+    
+        sp = sum(p["war"] for p in lineup["SP"])
+        rp = sum(p["war"] for p in lineup["RP"])
+    
+        if rp + 10 > sp:
+            bonus += 4
+    
+    
+    # 왕조 구축
+    elif trait == "dynasty":
+    
+        decades = set()
+    
+        for p in all_players:
+            decades.add(
+                (p["Year"] // 10) * 10
+            )
+    
+        if len(decades) == 1:
+            bonus += 6
+    
+    
     # 밸런스형
     elif trait == "balanced":
-
-        ok = True
-
-        for p in lineup["SP"]:
-            if p["war"] < 6.5:
-                ok = False
-
-        for p in lineup["RP"]:
-            if p["war"] < 6.5:
-                ok = False
-
-        for pos in [
-            "C", "1B", "2B", "3B",
-            "SS", "LF", "CF", "RF", "DH"
-        ]:
-            if lineup[pos]["war"] < 6.5:
-                ok = False
-
-        if ok:
+    
+        if all(
+            p["war"] >= 6.5
+            for p in all_players
+        ):
             bonus += 4
+    
+    
+    # 홈런의 시대
+    elif trait == "homerun_era":
+    
+        hitters = [
+            lineup[pos]
+            for pos in [
+                "C","1B","2B","3B",
+                "SS","LF","CF","RF","DH"
+            ]
+        ]
+    
+        if sum(
+            p.get("HR",0)
+            for p in hitters
+        ) >= 200:
+            bonus += 3
+    
+    
+    # 딱총 야구
+    elif trait == "smallball":
+    
+        hitters = [
+            lineup[pos]
+            for pos in [
+                "C","1B","2B","3B",
+                "SS","LF","CF","RF","DH"
+            ]
+        ]
+    
+        if sum(
+            p.get("HR",0)
+            for p in hitters
+        ) <= 120:
+            bonus += 5
+    
+    
+    # New-JOKKA
+    elif trait == "new_jokka":
+    
+        eras = [
+            p["ERA"]
+            for p in lineup["RP"]
+            if p.get("ERA") is not None
+        ]
+    
+        if eras and sum(eras)/len(eras) <= 1.5:
+            bonus += 3
+    
+    
+    # New-KILL
+    elif trait == "new_kill":
+    
+        eras = [
+            p["ERA"]
+            for p in lineup["SP"]
+            if p.get("ERA") is not None
+        ]
+    
+        if eras and sum(eras)/len(eras) <= 2.5:
+            bonus += 3
+    
+    
+    # 스타 플레이어
+    elif trait == "starplayer":
+    
+        cnt = sum(
+            1 for p in all_players
+            if p["war"] >= 9
+        )
+    
+        if cnt >= 3:
+            bonus += 2
+    
+    
+    # 원맨팀
+    elif trait == "oneman":
+    
+        wars = sorted(
+            [p["war"] for p in all_players],
+            reverse=True
+        )
+    
+        if wars[0] - wars[1] >= 1.5:
+            bonus += 3
 
+    # 타율=승리
+    elif trait == "avg_win":
+    
+        hitters = [
+            lineup[pos]
+            for pos in [
+                "C","1B","2B","3B",
+                "SS","LF","CF","RF","DH"
+            ]
+        ]
+    
+        cnt = sum(
+            1 for p in hitters
+            if p.get("AVG",0) >= 0.300
+        )
+    
+        if cnt >= 7:
+            bonus += 3
+    
+    
     # 수비 코어
-    elif trait == "core":
-
+    elif trait == "def_core":
+    
         total = (
             lineup["C"]["war"]
+            + lineup["2B"]["war"]
             + lineup["SS"]["war"]
             + lineup["CF"]["war"]
         )
-
-        if total <= 15:
+    
+        if total <= 25:
             bonus += 4
-
-    # 불펜 의존
-    elif trait == "bullpen":
-
-        sp = sum(
+    
+    
+    # 주장의 품격
+    elif trait == "captain":
+    
+        cnt = sum(
+            1 for p in all_players
+            if p.get("Captain")
+        )
+    
+        if cnt >= 7:
+            bonus += 3
+    
+    
+    # 구심점 야구
+    elif trait == "leader":
+    
+        cnt = sum(
+            1 for p in all_players
+            if p.get("Captain")
+        )
+    
+        if cnt == 1:
+            bonus += 5
+    
+    
+    # 18의 향연
+    elif trait == "ops18":
+    
+        hitters = [
+            lineup[pos]
+            for pos in [
+                "C","1B","2B","3B",
+                "SS","LF","CF","RF","DH"
+            ]
+        ]
+    
+        cnt = sum(
+            1 for p in hitters
+            if p.get("ops",0) >= 0.9
+        )
+    
+        if cnt >= 8:
+            bonus += 3
+    
+    
+    # 외인은 전설이다
+    elif trait == "foreign":
+    
+        cnt = sum(
+            1 for p in all_players
+            if not p.get("Korean",True)
+        )
+    
+        if cnt >= 7:
+            bonus += 4
+    
+    
+    # 더러운 볼
+    elif trait == "dirtyball":
+    
+        total_so = 0
+    
+        for p in lineup["SP"]:
+            total_so += p.get("SO",0)
+    
+        for p in lineup["RP"]:
+            total_so += p.get("SO",0)
+    
+        if total_so >= 777:
+            bonus += 3
+    
+    
+    # 시대를 뛰어넘은 야구
+    elif trait == "timetravel":
+    
+        years = [
+            p["Year"]
+            for p in all_players
+        ]
+    
+        if len(set(years)) == len(years):
+            bonus += 3
+    
+    
+    # 도영맘
+    elif trait == "doyoung":
+    
+        if (
+            lineup["SS"]
+            and lineup["SS"]["name"] == "김도영"
+        ):
+            bonus += 4
+    
+    
+    # 거포 유격수
+    elif trait == "power_ss":
+    
+        if lineup["SS"].get("ops",0) >= 0.9:
+            bonus += 3
+    
+    
+    # 거포 중견수
+    elif trait == "power_cf":
+    
+        if lineup["CF"].get("ops",0) >= 0.9:
+            bonus += 3
+    
+    
+    # 무실점 선발
+    elif trait == "nohit_sp":
+    
+        eras = [
+            p["ERA"]
+            for p in lineup["SP"]
+            if p.get("ERA") is not None
+        ]
+    
+        if eras and sum(eras)/len(eras) <= 1.5:
+            bonus += 4
+    
+    
+    # 무실점 불펜
+    elif trait == "nohit_rp":
+    
+        eras = [
+            p["ERA"]
+            for p in lineup["RP"]
+            if p.get("ERA") is not None
+        ]
+    
+        if eras and sum(eras)/len(eras) <= 0.9:
+            bonus += 4
+    
+    
+    # 테이블 세터
+    elif trait == "tablesetter":
+    
+        avg = (
+            lineup["2B"].get("AVG",0)
+            + lineup["SS"].get("AVG",0)
+            + lineup["CF"].get("AVG",0)
+        ) / 3
+    
+        if avg >= 0.320:
+            bonus += 3
+    
+    
+    # 에이스 왕국
+    elif trait == "acekingdom":
+    
+        sp_war = sum(
             p["war"]
             for p in lineup["SP"]
         )
-
-        rp = sum(
-            p["war"]
-            for p in lineup["RP"]
+    
+        if sp_war >= 25:
+            bonus += 3
+    
+    
+    # 한국시리즈 DNA
+    elif trait == "ks_dna":
+    
+        captain_cnt = sum(
+            1 for p in all_players
+            if p.get("Captain")
         )
-
-        if rp + 10 > sp:
+    
+        star_cnt = sum(
+            1 for p in all_players
+            if p["war"] >= 8
+        )
+    
+        if (
+            captain_cnt >= 5
+            and star_cnt >= 5
+        ):
             bonus += 4
-
-    # 시대 통일
-    elif trait == "era_master":
-
-        eras = []
-
-        for p in lineup["SP"]:
-            eras.append(p["era"])
-
-        for p in lineup["RP"]:
-            eras.append(p["era"])
-
-        for pos in [
-            "C","1B","2B","3B",
-            "SS","LF","CF","RF","DH"
-        ]:    
-            eras.append(
-                lineup[pos]["era"]
+    
+    
+    # 황금 세대
+    elif trait == "gold_generation":
+    
+        year_count = {}
+    
+        for p in all_players:
+    
+            y = p["Year"]
+    
+            year_count[y] = (
+                year_count.get(y,0)
+                + 1
             )
+    
+        if max(
+            year_count.values()
+        ) >= 5:
+            bonus += 3
 
-        if len(set(eras)) == 1:
-            bonus += 6
-
+    
     wins += bonus
 
     if wins > 144:
