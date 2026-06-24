@@ -105,10 +105,7 @@ POSITIONS = [
     "RF",
     "DH"
 ]
-player_positions = player.get("positions")
 
-if player_positions is None:
-    player_positions = [player.get("position")]
 
 def load_team(team):
 
@@ -919,6 +916,11 @@ def release_player(player_id):
 
 @app.route("/team_view")
 def team_view():
+
+    player_positions = player.get("positions")
+
+    if player_positions is None:
+        player_positions = [player.get("position")]
 
     session["allow_next"] = False
 
