@@ -2,7 +2,7 @@
   {
     "id": "Eagles_1990_1",
     "name": "송진우",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 8.8,
     "ops": null,
     "AVG": null,
@@ -16,7 +16,7 @@
   {
     "id": "Eagles_1990_2",
     "name": "정민철",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 8.3,
     "ops": null,
     "AVG": null,
@@ -30,7 +30,7 @@
   {
     "id": "Eagles_1990_3",
     "name": "한용덕",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.4,
     "ops": null,
     "AVG": null,
@@ -44,7 +44,7 @@
   {
     "id": "Eagles_1990_4",
     "name": "구대성",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 7.0,
     "ops": null,
     "AVG": null,
@@ -58,7 +58,7 @@
   {
     "id": "Eagles_1990_5",
     "name": "이상군",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.2,
     "ops": null,
     "AVG": null,
@@ -72,7 +72,7 @@
   {
     "id": "Eagles_1990_6",
     "name": "장종훈",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 8.7,
     "ops": 1.117,
     "AVG": 0.345,
@@ -86,7 +86,7 @@
   {
     "id": "Eagles_1990_7",
     "name": "이정훈",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 7.4,
     "ops": 1.012,
     "AVG": 0.36,
@@ -100,7 +100,7 @@
   {
     "id": "Eagles_1990_8",
     "name": "이강돈",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.1,
     "ops": 0.982,
     "AVG": 0.323,
@@ -114,7 +114,7 @@
   {
     "id": "Eagles_1990_9",
     "name": "김태균",
-    "position": ["DH"],
+    "positions": ["DH"],
     "war": 0,
     "ops": 0,
     "AVG": 0,
@@ -128,7 +128,7 @@
   {
     "id": "Eagles_1990_10",
     "name": "이영우",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 5.5,
     "ops": 0.903,
     "AVG": 0.335,
@@ -142,7 +142,7 @@
   {
     "id": "Eagles_1990_11",
     "name": "강석천",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.8,
     "ops": 0.821,
     "AVG": 0.301,
@@ -156,7 +156,7 @@
   {
     "id": "Eagles_1990_12",
     "name": "한상훈",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 0,
     "ops": 0,
     "AVG": 0,
@@ -170,7 +170,7 @@
   {
     "id": "Eagles_1990_13",
     "name": "이도형",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 4.3,
     "ops": 0.812,
     "AVG": 0.287,
@@ -184,7 +184,7 @@
   {
     "id": "Eagles_1990_14",
     "name": "송지만",
-    "position": ["OF"],
+    "positions": ["OF"],
     "war": 4.0,
     "ops": 0.886,
     "AVG": 0.306,
@@ -198,7 +198,7 @@
   {
     "id": "Eagles_1990_15",
     "name": "김상국",
-    "position": ["IF"],
+    "positions": ["IF"],
     "war": 3.8,
     "ops": 0.801,
     "AVG": 0.292,

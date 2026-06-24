@@ -2,7 +2,7 @@
   {
     "id": "Eagles_2000_1",
     "name": "김태균",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 7.8,
     "ops": 1.058,
     "AVG": 0.365,
@@ -16,7 +16,7 @@
   {
     "id": "Eagles_2000_2",
     "name": "이범호",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 5.6,
     "ops": 0.915,
     "AVG": 0.315,
@@ -30,7 +30,7 @@
   {
     "id": "Eagles_2000_3",
     "name": "송광민",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 4.2,
     "ops": 0.842,
     "AVG": 0.301,
@@ -44,7 +44,7 @@
   {
     "id": "Eagles_2000_4",
     "name": "김민재",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.0,
     "ops": 0.801,
     "AVG": 0.298,
@@ -58,7 +58,7 @@
   {
     "id": "Eagles_2000_5",
     "name": "데이비스",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.1,
     "ops": 0.972,
     "AVG": 0.334,
@@ -72,7 +72,7 @@
   {
     "id": "Eagles_2000_6",
     "name": "최진행",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.3,
     "ops": 0.928,
     "AVG": 0.312,
@@ -86,7 +86,7 @@
   {
     "id": "Eagles_2000_7",
     "name": "정근우",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.9,
     "ops": 0.879,
     "AVG": 0.329,
@@ -100,7 +100,7 @@
   {
     "id": "Eagles_2000_8",
     "name": "이용규",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 5.4,
     "ops": 0.821,
     "AVG": 0.316,
@@ -114,7 +114,7 @@
   {
     "id": "Eagles_2000_9",
     "name": "고동진",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.1,
     "ops": 0.765,
     "AVG": 0.288,
@@ -128,7 +128,7 @@
   {
     "id": "Eagles_2000_10",
     "name": "클락",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 4.8,
     "ops": 0.902,
     "AVG": 0.301,
@@ -142,7 +142,7 @@
   {
     "id": "Eagles_2000_11",
     "name": "심광호",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 2.7,
     "ops": 0.741,
     "AVG": 0.271,
@@ -156,7 +156,7 @@
   {
     "id": "Eagles_2000_12",
     "name": "신경현",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.0,
     "ops": 0.760,
     "AVG": 0.279,
@@ -170,7 +170,7 @@
   {
     "id": "Eagles_2000_13",
     "name": "한상훈",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 3.3,
     "ops": 0.784,
     "AVG": 0.286,
@@ -184,7 +184,7 @@
   {
     "id": "Eagles_2000_14",
     "name": "김태완",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 2.9,
     "ops": 0.812,
     "AVG": 0.291,
@@ -198,7 +198,7 @@
   {
     "id": "Eagles_2000_15",
     "name": "문동환",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.2,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Eagles_2000_16",
     "name": "류현진",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.9,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Eagles_2000_17",
     "name": "김혁민",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 3.6,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Eagles_2000_18",
     "name": "정민철",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.8,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Eagles_2000_19",
     "name": "구대성",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 6.5,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Eagles_2000_20",
     "name": "안영명",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.9,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Eagles_2000_21",
     "name": "송진우",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.8,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Eagles_2000_22",
     "name": "황준서",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.4,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Eagles_2000_23",
     "name": "마정길",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.0,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "Eagles_2000_24",
     "name": "이상군",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.1,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Eagles_2000_25",
     "name": "정현석",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 2.5,
     "ops": 0.748,
     "AVG": 0.280,

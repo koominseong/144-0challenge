@@ -2,7 +2,7 @@
   {
     "id": "Dinos_2010s_1",
     "name": "나성범",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.8,
     "ops": 0.960,
     "AVG": 0.329,
@@ -16,7 +16,7 @@
   {
     "id": "Dinos_2010s_2",
     "name": "박민우",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.9,
     "ops": 0.840,
     "AVG": 0.351,
@@ -30,7 +30,7 @@
   {
     "id": "Dinos_2010s_3",
     "name": "양의지",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 7.8,
     "ops": 1.012,
     "AVG": 0.354,
@@ -44,7 +44,7 @@
   {
     "id": "Dinos_2010s_4",
     "name": "박석민",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 5.2,
     "ops": 0.930,
     "AVG": 0.315,
@@ -58,7 +58,7 @@
   {
     "id": "Dinos_2010s_5",
     "name": "이호준",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.6,
     "ops": 0.880,
     "AVG": 0.311,
@@ -72,7 +72,7 @@
   {
     "id": "Dinos_2010s_6",
     "name": "모창민",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 3.9,
     "ops": 0.820,
     "AVG": 0.298,
@@ -86,7 +86,7 @@
   {
     "id": "Dinos_2010s_7",
     "name": "권희동",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 4.2,
     "ops": 0.845,
     "AVG": 0.303,
@@ -100,7 +100,7 @@
   {
     "id": "Dinos_2010s_8",
     "name": "김성욱",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.8,
     "ops": 0.810,
     "AVG": 0.292,
@@ -114,7 +114,7 @@
   {
     "id": "Dinos_2010s_9",
     "name": "이종욱",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.5,
     "ops": 0.805,
     "AVG": 0.299,
@@ -128,7 +128,7 @@
   {
     "id": "Dinos_2010s_10",
     "name": "에릭 테임즈",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 8.5,
     "ops": 1.300,
     "AVG": 0.381,
@@ -142,7 +142,7 @@
   {
     "id": "Dinos_2010s_11",
     "name": "스크럭스",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 5.1,
     "ops": 0.980,
     "AVG": 0.290,
@@ -156,7 +156,7 @@
   {
     "id": "Dinos_2010s_12",
     "name": "나테슨",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 4.0,
     "ops": 0.910,
     "AVG": 0.287,
@@ -170,7 +170,7 @@
   {
     "id": "Dinos_2010s_13",
     "name": "임정호",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.6,
     "ops": null,
     "AVG": null,
@@ -184,7 +184,7 @@
   {
     "id": "Dinos_2010s_14",
     "name": "원종현",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.1,
     "ops": null,
     "AVG": null,
@@ -198,7 +198,7 @@
   {
     "id": "Dinos_2010s_15",
     "name": "이민호",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.8,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Dinos_2010s_16",
     "name": "구창모",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.7,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Dinos_2010s_17",
     "name": "이재학",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.4,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Dinos_2010s_18",
     "name": "해커",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.1,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Dinos_2010s_19",
     "name": "에릭",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.0,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Dinos_2010s_20",
     "name": "스튜어트",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.9,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Dinos_2010s_21",
     "name": "김진성",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.3,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Dinos_2010s_22",
     "name": "박진우",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.5,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Dinos_2010s_23",
     "name": "최금강",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.2,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "Dinos_2010s_24",
     "name": "장현식",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Dinos_2010s_25",
     "name": "이상호",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 3.0,
     "ops": 0.780,
     "AVG": 0.295,

@@ -2,7 +2,7 @@
   {
     "id": "KIA_2010_1",
     "name": "양현종",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.8,
     "ops": null,
     "AVG": null,
@@ -16,7 +16,7 @@
   {
     "id": "KIA_2010_2",
     "name": "나지완",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 3.2,
     "ops": 0.845,
     "AVG": 0.302,
@@ -30,7 +30,7 @@
   {
     "id": "KIA_2010_3",
     "name": "김선빈",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.5,
     "ops": 0.812,
     "AVG": 0.324,
@@ -44,7 +44,7 @@
   {
     "id": "KIA_2010_4",
     "name": "안치홍",
-    "position": ["2B", "3B"],
+    "positions": ["2B", "3B"],
     "war": 4.8,
     "ops": 0.869,
     "AVG": 0.315,
@@ -58,7 +58,7 @@
   {
     "id": "KIA_2010_5",
     "name": "최형우",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.2,
     "ops": 0.985,
     "AVG": 0.340,
@@ -72,7 +72,7 @@
   {
     "id": "KIA_2010_6",
     "name": "이범호",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 3.0,
     "ops": 0.820,
     "AVG": 0.298,
@@ -86,7 +86,7 @@
   {
     "id": "KIA_2010_7",
     "name": "김주찬",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 3.6,
     "ops": 0.860,
     "AVG": 0.318,
@@ -100,7 +100,7 @@
   {
     "id": "KIA_2010_8",
     "name": "이명기",
-    "position": ["CF", "LF"],
+    "positions": ["CF", "LF"],
     "war": 3.1,
     "ops": 0.790,
     "AVG": 0.305,
@@ -114,7 +114,7 @@
   {
     "id": "KIA_2010_9",
     "name": "김민식",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 2.7,
     "ops": 0.745,
     "AVG": 0.270,
@@ -128,7 +128,7 @@
   {
     "id": "KIA_2010_10",
     "name": "김주형",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 2.0,
     "ops": 0.730,
     "AVG": 0.265,
@@ -142,7 +142,7 @@
   {
     "id": "KIA_2010_11",
     "name": "최원준",
-    "position": ["CF", "RF"],
+    "positions": ["CF", "RF"],
     "war": 3.9,
     "ops": 0.810,
     "AVG": 0.310,
@@ -156,7 +156,7 @@
   {
     "id": "KIA_2010_12",
     "name": "유재신",
-    "position": ["2B", "SS"],
+    "positions": ["2B", "SS"],
     "war": 1.8,
     "ops": 0.705,
     "AVG": 0.278,
@@ -170,7 +170,7 @@
   {
     "id": "KIA_2010_13",
     "name": "서동욱",
-    "position": ["3B", "1B"],
+    "positions": ["3B", "1B"],
     "war": 2.2,
     "ops": 0.740,
     "AVG": 0.276,
@@ -184,7 +184,7 @@
   {
     "id": "KIA_2010_14",
     "name": "이대형",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 2.9,
     "ops": 0.720,
     "AVG": 0.288,
@@ -198,7 +198,7 @@
   {
     "id": "KIA_2010_15",
     "name": "필",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.0,
     "ops": 0.910,
     "AVG": 0.310,
@@ -212,7 +212,7 @@
   {
     "id": "KIA_2010_16",
     "name": "로페즈",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 3.8,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "KIA_2010_17",
     "name": "헥터",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.5,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "KIA_2010_18",
     "name": "양현종",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 8.1,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "KIA_2010_19",
     "name": "심동섭",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.4,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "KIA_2010_20",
     "name": "임창용",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.9,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "KIA_2010_21",
     "name": "윤석민",
-    "position": ["SP", "RP"],
+    "positions": ["SP", "RP"],
     "war": 5.0,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "KIA_2010_22",
     "name": "김진우",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 2.5,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "KIA_2010_23",
     "name": "전상현",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.3,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "KIA_2010_24",
     "name": "한승혁",
-    "position": ["SP", "RP"],
+    "positions": ["SP", "RP"],
     "war": 2.6,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "KIA_2010_25",
     "name": "홍건희",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.0,
     "ops": null,
     "AVG": null,

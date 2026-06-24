@@ -2,7 +2,7 @@
   {
     "id": "Lions_2010_1",
     "name": "최형우",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 8.3,
     "ops": 1.008,
     "AVG": 0.376,
@@ -16,7 +16,7 @@
   {
     "id": "Lions_2010_2",
     "name": "박석민",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 7.3,
     "ops": 0.950,
     "AVG": 0.369,
@@ -30,7 +30,7 @@
   {
     "id": "Lions_2010_3",
     "name": "이승엽",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 6.8,
     "ops": 0.968,
     "AVG": 0.332,
@@ -44,7 +44,7 @@
   {
     "id": "Lions_2010_4",
     "name": "구자욱",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.8,
     "ops": 0.965,
     "AVG": 0.343,
@@ -58,7 +58,7 @@
   {
     "id": "Lions_2010_5",
     "name": "박한이",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 5.8,
     "ops": 0.894,
     "AVG": 0.338,
@@ -72,7 +72,7 @@
   {
     "id": "Lions_2010_6",
     "name": "김상수",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 5.5,
     "ops": 0.801,
     "AVG": 0.320,
@@ -86,7 +86,7 @@
   {
     "id": "Lions_2010_7",
     "name": "채태인",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 5.2,
     "ops": 0.931,
     "AVG": 0.381,
@@ -100,7 +100,7 @@
   {
     "id": "Lions_2010_8",
     "name": "강봉규",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 4.8,
     "ops": 0.863,
     "AVG": 0.310,
@@ -114,7 +114,7 @@
   {
     "id": "Lions_2010_9",
     "name": "나바로",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 7.0,
     "ops": 1.006,
     "AVG": 0.308,
@@ -128,7 +128,7 @@
   {
     "id": "Lions_2010_10",
     "name": "진갑용",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 4.0,
     "ops": 0.816,
     "AVG": 0.305,
@@ -142,7 +142,7 @@
   {
     "id": "Lions_2010_11",
     "name": "양준혁",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 2.7,
     "ops": 0.871,
     "AVG": 0.342,
@@ -156,7 +156,7 @@
   {
     "id": "Lions_2010_12",
     "name": "손주인",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 3.0,
     "ops": 0.782,
     "AVG": 0.317,
@@ -170,7 +170,7 @@
   {
     "id": "Lions_2010_13",
     "name": "배영섭",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.6,
     "ops": 0.785,
     "AVG": 0.294,
@@ -184,7 +184,7 @@
   {
     "id": "Lions_2010_14",
     "name": "박해민",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 5.2,
     "ops": 0.816,
     "AVG": 0.299,
@@ -198,7 +198,7 @@
   {
     "id": "Lions_2010_15",
     "name": "이지영",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.0,
     "ops": 0.720,
     "AVG": 0.343,
@@ -212,7 +212,7 @@
   {
     "id": "Lions_2010_16",
     "name": "윤성환",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.8,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Lions_2010_17",
     "name": "장원삼",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.5,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Lions_2010_18",
     "name": "차우찬",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.9,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Lions_2010_19",
     "name": "배영수",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.2,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Lions_2010_20",
     "name": "밴덴헐크",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.2,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Lions_2010_21",
     "name": "안지만",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Lions_2010_22",
     "name": "오승환",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 5.8,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Lions_2010_23",
     "name": "권오준",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.8,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "Lions_2010_24",
     "name": "심창민",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.2,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Lions_2010_25",
     "name": "권혁",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.5,
     "ops": null,
     "AVG": null,

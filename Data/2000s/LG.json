@@ -2,7 +2,7 @@
   {
     "id": "Twins_2000_1",
     "name": "박용택",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.2,
     "ops": 0.890,
     "AVG": 0.307,
@@ -16,7 +16,7 @@
   {
     "id": "Twins_2000_2",
     "name": "이병규",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.5,
     "ops": 0.910,
     "AVG": 0.312,
@@ -30,7 +30,7 @@
   {
     "id": "Twins_2000_3",
     "name": "서용빈",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.8,
     "ops": 0.780,
     "AVG": 0.289,
@@ -44,7 +44,7 @@
   {
     "id": "Twins_2000_4",
     "name": "조인성",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 6.0,
     "ops": 0.860,
     "AVG": 0.295,
@@ -58,7 +58,7 @@
   {
     "id": "Twins_2000_5",
     "name": "김재현",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 5.1,
     "ops": 0.825,
     "AVG": 0.298,
@@ -72,7 +72,7 @@
   {
     "id": "Twins_2000_6",
     "name": "박경수",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.7,
     "ops": 0.790,
     "AVG": 0.287,
@@ -86,7 +86,7 @@
   {
     "id": "Twins_2000_7",
     "name": "권용관",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.3,
     "ops": 0.765,
     "AVG": 0.281,
@@ -100,7 +100,7 @@
   {
     "id": "Twins_2000_8",
     "name": "김민재",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 4.9,
     "ops": 0.805,
     "AVG": 0.292,
@@ -114,7 +114,7 @@
   {
     "id": "Twins_2000_9",
     "name": "최동수",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 5.3,
     "ops": 0.870,
     "AVG": 0.301,
@@ -128,7 +128,7 @@
   {
     "id": "Twins_2000_10",
     "name": "정성훈",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 6.0,
     "ops": 0.890,
     "AVG": 0.308,
@@ -142,7 +142,7 @@
   {
     "id": "Twins_2000_11",
     "name": "박명환",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.8,
     "ops": null,
     "AVG": null,
@@ -156,7 +156,7 @@
   {
     "id": "Twins_2000_12",
     "name": "이상훈",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 6.5,
     "ops": null,
     "AVG": null,
@@ -170,7 +170,7 @@
   {
     "id": "Twins_2000_13",
     "name": "김용수",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 5.9,
     "ops": null,
     "AVG": null,
@@ -184,7 +184,7 @@
   {
     "id": "Twins_2000_14",
     "name": "장문석",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.7,
     "ops": null,
     "AVG": null,
@@ -198,7 +198,7 @@
   {
     "id": "Twins_2000_15",
     "name": "이승호",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.5,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Twins_2000_16",
     "name": "김광삼",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.8,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Twins_2000_17",
     "name": "류택현",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 5.0,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Twins_2000_18",
     "name": "이동현",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.6,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Twins_2000_19",
     "name": "봉중근",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.2,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Twins_2000_20",
     "name": "심수창",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.4,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Twins_2000_21",
     "name": "오지환",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.2,
     "ops": 0.780,
     "AVG": 0.285,
@@ -296,7 +296,7 @@
   {
     "id": "Twins_2000_22",
     "name": "박용택",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 5.8,
     "ops": 0.880,
     "AVG": 0.303,
@@ -310,7 +310,7 @@
   {
     "id": "Twins_2000_23",
     "name": "이병규",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.1,
     "ops": 0.905,
     "AVG": 0.310,
@@ -324,7 +324,7 @@
   {
     "id": "Twins_2000_24",
     "name": "조인성",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 5.2,
     "ops": 0.845,
     "AVG": 0.290,
@@ -338,7 +338,7 @@
   {
     "id": "Twins_2000_25",
     "name": "서용빈",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.5,
     "ops": 0.770,
     "AVG": 0.280,

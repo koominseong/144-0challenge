@@ -2,7 +2,7 @@
   {
     "id": "Unicorns_2000_1",
     "name": "김동수",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 5.8,
     "ops": 0.865,
     "AVG": 0.302,
@@ -16,7 +16,7 @@
   {
     "id": "Unicorns_2000_2",
     "name": "박경완",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 6.9,
     "ops": 0.912,
     "AVG": 0.289,
@@ -30,7 +30,7 @@
   {
     "id": "Unicorns_2000_3",
     "name": "이숭용",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 5.4,
     "ops": 0.860,
     "AVG": 0.305,
@@ -44,7 +44,7 @@
   {
     "id": "Unicorns_2000_4",
     "name": "클리프 브룸바",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 7.0,
     "ops": 1.120,
     "AVG": 0.343,
@@ -58,7 +58,7 @@
   {
     "id": "Unicorns_2000_5",
     "name": "심정수",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 7.8,
     "ops": 1.197,
     "AVG": 0.335,
@@ -72,7 +72,7 @@
   {
     "id": "Unicorns_2000_6",
     "name": "송지만",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.6,
     "ops": 0.910,
     "AVG": 0.308,
@@ -86,7 +86,7 @@
   {
     "id": "Unicorns_2000_7",
     "name": "전준호",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 5.1,
     "ops": 0.840,
     "AVG": 0.312,
@@ -100,7 +100,7 @@
   {
     "id": "Unicorns_2000_8",
     "name": "이택근",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.8,
     "ops": 0.820,
     "AVG": 0.298,
@@ -114,7 +114,7 @@
   {
     "id": "Unicorns_2000_9",
     "name": "박진만",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 6.2,
     "ops": 0.801,
     "AVG": 0.289,
@@ -128,7 +128,7 @@
   {
     "id": "Unicorns_2000_10",
     "name": "김민재",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.5,
     "ops": 0.780,
     "AVG": 0.284,
@@ -142,7 +142,7 @@
   {
     "id": "Unicorns_2000_11",
     "name": "정성훈",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 5.9,
     "ops": 0.875,
     "AVG": 0.307,
@@ -156,7 +156,7 @@
   {
     "id": "Unicorns_2000_12",
     "name": "브랜든 나이트",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.6,
     "ops": null,
     "AVG": null,
@@ -170,7 +170,7 @@
   {
     "id": "Unicorns_2000_13",
     "name": "조용준",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 5.8,
     "ops": null,
     "AVG": null,
@@ -184,7 +184,7 @@
   {
     "id": "Unicorns_2000_14",
     "name": "김수경",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.4,
     "ops": null,
     "AVG": null,
@@ -198,7 +198,7 @@
   {
     "id": "Unicorns_2000_15",
     "name": "정민태",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.2,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Unicorns_2000_16",
     "name": "조용준",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 5.0,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Unicorns_2000_17",
     "name": "오주원",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.1,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Unicorns_2000_18",
     "name": "마일영",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.2,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Unicorns_2000_19",
     "name": "클리프 브룸바",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 7.0,
     "ops": 1.100,
     "AVG": 0.330,
@@ -268,7 +268,7 @@
   {
     "id": "Unicorns_2000_20",
     "name": "송신영",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Unicorns_2000_21",
     "name": "김상훈",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.5,
     "ops": 0.770,
     "AVG": 0.280,
@@ -296,7 +296,7 @@
   {
     "id": "Unicorns_2000_22",
     "name": "클리어",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.9,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Unicorns_2000_23",
     "name": "전병두",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.7,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "Unicorns_2000_24",
     "name": "이현승",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.9,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Unicorns_2000_25",
     "name": "정대현",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.3,
     "ops": null,
     "AVG": null,

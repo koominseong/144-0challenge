@@ -2,7 +2,7 @@
   {
     "id": "Eagles_2010_1",
     "name": "김태균",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 7.8,
     "ops": 0.986,
     "AVG": 0.363,
@@ -16,7 +16,7 @@
   {
     "id": "Eagles_2010_2",
     "name": "이용규",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 6.5,
     "ops": 0.820,
     "AVG": 0.333,
@@ -30,7 +30,7 @@
   {
     "id": "Eagles_2010_3",
     "name": "정근우",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 6.8,
     "ops": 0.845,
     "AVG": 0.311,
@@ -44,7 +44,7 @@
   {
     "id": "Eagles_2010_4",
     "name": "최진행",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.4,
     "ops": 0.910,
     "AVG": 0.301,
@@ -58,7 +58,7 @@
   {
     "id": "Eagles_2010_5",
     "name": "김태완",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 4.6,
     "ops": 0.880,
     "AVG": 0.312,
@@ -72,7 +72,7 @@
   {
     "id": "Eagles_2010_6",
     "name": "송광민",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 4.9,
     "ops": 0.860,
     "AVG": 0.305,
@@ -86,7 +86,7 @@
   {
     "id": "Eagles_2010_7",
     "name": "하주석",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.7,
     "ops": 0.800,
     "AVG": 0.289,
@@ -100,7 +100,7 @@
   {
     "id": "Eagles_2010_8",
     "name": "정은원",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.2,
     "ops": 0.840,
     "AVG": 0.324,
@@ -114,7 +114,7 @@
   {
     "id": "Eagles_2010_9",
     "name": "김회성",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 3.8,
     "ops": 0.815,
     "AVG": 0.298,
@@ -128,7 +128,7 @@
   {
     "id": "Eagles_2010_10",
     "name": "김민우",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.9,
     "ops": null,
     "AVG": null,
@@ -142,7 +142,7 @@
   {
     "id": "Eagles_2010_11",
     "name": "배영수",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.8,
     "ops": null,
     "AVG": null,
@@ -156,7 +156,7 @@
   {
     "id": "Eagles_2010_12",
     "name": "이태양",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.4,
     "ops": null,
     "AVG": null,
@@ -170,7 +170,7 @@
   {
     "id": "Eagles_2010_13",
     "name": "송창식",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.2,
     "ops": null,
     "AVG": null,
@@ -184,7 +184,7 @@
   {
     "id": "Eagles_2010_14",
     "name": "박정진",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -198,7 +198,7 @@
   {
     "id": "Eagles_2010_15",
     "name": "권혁",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Eagles_2010_16",
     "name": "안영명",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.3,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Eagles_2010_17",
     "name": "김혁민",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.6,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Eagles_2010_18",
     "name": "송은범",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.1,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Eagles_2010_19",
     "name": "장민재",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.5,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Eagles_2010_20",
     "name": "김용주",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 3.3,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Eagles_2010_21",
     "name": "정범모",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.7,
     "ops": 0.790,
     "AVG": 0.275,
@@ -296,7 +296,7 @@
   {
     "id": "Eagles_2010_22",
     "name": "최재훈",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 5.0,
     "ops": 0.810,
     "AVG": 0.288,
@@ -310,7 +310,7 @@
   {
     "id": "Eagles_2010_23",
     "name": "장운호",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.4,
     "ops": 0.770,
     "AVG": 0.280,
@@ -324,7 +324,7 @@
   {
     "id": "Eagles_2010_24",
     "name": "김경언",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 3.9,
     "ops": 0.820,
     "AVG": 0.295,
@@ -338,7 +338,7 @@
   {
     "id": "Eagles_2010_25",
     "name": "이성열",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 5.1,
     "ops": 0.860,
     "AVG": 0.301,

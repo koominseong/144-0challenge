@@ -2,7 +2,7 @@
   {
     "id": "Giants_2000_1",
     "name": "이대호",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 8.3,
     "ops": 1.060,
     "AVG": 0.364,
@@ -16,7 +16,7 @@
   {
     "id": "Giants_2000_2",
     "name": "손아섭",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.1,
     "ops": 0.920,
     "AVG": 0.324,
@@ -30,7 +30,7 @@
   {
     "id": "Giants_2000_3",
     "name": "전준우",
-    "position": ["LF", "CF"],
+    "positions": ["LF", "CF"],
     "war": 5.8,
     "ops": 0.885,
     "AVG": 0.313,
@@ -44,7 +44,7 @@
   {
     "id": "Giants_2000_4",
     "name": "강민호",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 6.5,
     "ops": 0.890,
     "AVG": 0.300,
@@ -58,7 +58,7 @@
   {
     "id": "Giants_2000_5",
     "name": "조성환",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.8,
     "ops": 0.780,
     "AVG": 0.295,
@@ -72,7 +72,7 @@
   {
     "id": "Giants_2000_6",
     "name": "박기혁",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.6,
     "ops": 0.770,
     "AVG": 0.288,
@@ -86,7 +86,7 @@
   {
     "id": "Giants_2000_7",
     "name": "이대형",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.2,
     "ops": 0.745,
     "AVG": 0.301,
@@ -100,7 +100,7 @@
   {
     "id": "Giants_2000_8",
     "name": "최만호",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 3.9,
     "ops": 0.760,
     "AVG": 0.286,
@@ -114,7 +114,7 @@
   {
     "id": "Giants_2000_9",
     "name": "김주찬",
-    "position": ["LF", "RF"],
+    "positions": ["LF", "RF"],
     "war": 5.0,
     "ops": 0.812,
     "AVG": 0.309,
@@ -128,7 +128,7 @@
   {
     "id": "Giants_2000_10",
     "name": "박정태",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.1,
     "ops": 0.790,
     "AVG": 0.297,
@@ -142,7 +142,7 @@
   {
     "id": "Giants_2000_11",
     "name": "펠릭스 호세",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 7.2,
     "ops": 1.030,
     "AVG": 0.328,
@@ -156,7 +156,7 @@
   {
     "id": "Giants_2000_12",
     "name": "마해영",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 6.0,
     "ops": 0.950,
     "AVG": 0.315,
@@ -170,7 +170,7 @@
   {
     "id": "Giants_2000_13",
     "name": "이승화",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.5,
     "ops": 0.760,
     "AVG": 0.285,
@@ -184,7 +184,7 @@
   {
     "id": "Giants_2000_14",
     "name": "이용훈",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.7,
     "ops": null,
     "AVG": null,
@@ -198,7 +198,7 @@
   {
     "id": "Giants_2000_15",
     "name": "손민한",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.8,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Giants_2000_16",
     "name": "조정훈",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.2,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Giants_2000_17",
     "name": "송승준",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.6,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Giants_2000_18",
     "name": "염종석",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.9,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Giants_2000_19",
     "name": "강영식",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.3,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Giants_2000_20",
     "name": "최향남",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Giants_2000_21",
     "name": "김사율",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.8,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Giants_2000_22",
     "name": "임경완",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Giants_2000_23",
     "name": "이대호",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 6.3,
     "ops": 0.980,
     "AVG": 0.320,
@@ -324,7 +324,7 @@
   {
     "id": "Giants_2000_24",
     "name": "김수화",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.6,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Giants_2000_25",
     "name": "장원준",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.1,
     "ops": null,
     "AVG": null,

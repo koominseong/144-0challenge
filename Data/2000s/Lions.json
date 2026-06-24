@@ -2,7 +2,7 @@
   {
     "id": "Lions_2000_1",
     "name": "이승엽",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 8.5,
     "ops": 1.172,
     "AVG": 0.324,
@@ -16,7 +16,7 @@
   {
     "id": "Lions_2000_2",
     "name": "심정수",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 7.2,
     "ops": 1.090,
     "AVG": 0.315,
@@ -30,7 +30,7 @@
   {
     "id": "Lions_2000_3",
     "name": "양준혁",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.8,
     "ops": 1.020,
     "AVG": 0.321,
@@ -44,7 +44,7 @@
   {
     "id": "Lions_2000_4",
     "name": "박한이",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.9,
     "ops": 0.905,
     "AVG": 0.314,
@@ -58,7 +58,7 @@
   {
     "id": "Lions_2000_5",
     "name": "진갑용",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 6.1,
     "ops": 0.842,
     "AVG": 0.292,
@@ -72,7 +72,7 @@
   {
     "id": "Lions_2000_6",
     "name": "박진만",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 5.7,
     "ops": 0.801,
     "AVG": 0.287,
@@ -86,7 +86,7 @@
   {
     "id": "Lions_2000_7",
     "name": "김한수",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 4.8,
     "ops": 0.842,
     "AVG": 0.295,
@@ -100,7 +100,7 @@
   {
     "id": "Lions_2000_8",
     "name": "조동찬",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.6,
     "ops": 0.795,
     "AVG": 0.288,
@@ -114,7 +114,7 @@
   {
     "id": "Lions_2000_9",
     "name": "강동우",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.2,
     "ops": 0.780,
     "AVG": 0.286,
@@ -128,7 +128,7 @@
   {
     "id": "Lions_2000_10",
     "name": "크루즈",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 5.3,
     "ops": 0.912,
     "AVG": 0.301,
@@ -142,7 +142,7 @@
   {
     "id": "Lions_2000_11",
     "name": "가르시아",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.0,
     "ops": 0.889,
     "AVG": 0.297,
@@ -156,7 +156,7 @@
   {
     "id": "Lions_2000_12",
     "name": "이정식",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.1,
     "ops": 0.741,
     "AVG": 0.275,
@@ -170,7 +170,7 @@
   {
     "id": "Lions_2000_13",
     "name": "신명철",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 3.4,
     "ops": 0.762,
     "AVG": 0.279,
@@ -184,7 +184,7 @@
   {
     "id": "Lions_2000_14",
     "name": "김재걸",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 3.0,
     "ops": 0.738,
     "AVG": 0.271,
@@ -198,7 +198,7 @@
   {
     "id": "Lions_2000_15",
     "name": "배영수",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.5,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Lions_2000_16",
     "name": "오승환",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 7.9,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Lions_2000_17",
     "name": "권오준",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Lions_2000_18",
     "name": "전병호",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.7,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Lions_2000_19",
     "name": "임창용",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 6.3,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Lions_2000_20",
     "name": "권혁",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Lions_2000_21",
     "name": "윤성환",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.8,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Lions_2000_22",
     "name": "차우찬",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.6,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Lions_2000_23",
     "name": "브라운",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 4.9,
     "ops": 0.870,
     "AVG": 0.289,
@@ -324,7 +324,7 @@
   {
     "id": "Lions_2000_24",
     "name": "마해영",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.3,
     "ops": 0.860,
     "AVG": 0.291,
@@ -338,7 +338,7 @@
   {
     "id": "Lions_2000_25",
     "name": "조현근",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.6,
     "ops": null,
     "AVG": null,

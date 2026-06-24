@@ -2,7 +2,7 @@
   {
     "id": "Bears_2000_1",
     "name": "김동주",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 7.6,
     "ops": 1.018,
     "AVG": 0.320,
@@ -16,7 +16,7 @@
   {
     "id": "Bears_2000_2",
     "name": "타이론 우즈",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 7.9,
     "ops": 1.065,
     "AVG": 0.315,
@@ -30,7 +30,7 @@
   {
     "id": "Bears_2000_3",
     "name": "심정수",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 7.2,
     "ops": 1.110,
     "AVG": 0.312,
@@ -44,7 +44,7 @@
   {
     "id": "Bears_2000_4",
     "name": "홍성흔",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 6.4,
     "ops": 0.930,
     "AVG": 0.315,
@@ -58,7 +58,7 @@
   {
     "id": "Bears_2000_5",
     "name": "손시헌",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 5.5,
     "ops": 0.801,
     "AVG": 0.289,
@@ -72,7 +72,7 @@
   {
     "id": "Bears_2000_6",
     "name": "고영민",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.1,
     "ops": 0.772,
     "AVG": 0.283,
@@ -86,7 +86,7 @@
   {
     "id": "Bears_2000_7",
     "name": "이종욱",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 6.0,
     "ops": 0.815,
     "AVG": 0.301,
@@ -100,7 +100,7 @@
   {
     "id": "Bears_2000_8",
     "name": "김현수",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 7.4,
     "ops": 0.950,
     "AVG": 0.357,
@@ -114,7 +114,7 @@
   {
     "id": "Bears_2000_9",
     "name": "김재환",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.1,
     "ops": 0.980,
     "AVG": 0.310,
@@ -128,7 +128,7 @@
   {
     "id": "Bears_2000_10",
     "name": "이원석",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 4.8,
     "ops": 0.790,
     "AVG": 0.288,
@@ -142,7 +142,7 @@
   {
     "id": "Bears_2000_11",
     "name": "채상병",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.9,
     "ops": 0.760,
     "AVG": 0.279,
@@ -156,7 +156,7 @@
   {
     "id": "Bears_2000_12",
     "name": "안경현",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.2,
     "ops": 0.781,
     "AVG": 0.285,
@@ -170,7 +170,7 @@
   {
     "id": "Bears_2000_13",
     "name": "이승엽",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 6.5,
     "ops": 1.020,
     "AVG": 0.320,
@@ -184,7 +184,7 @@
   {
     "id": "Bears_2000_14",
     "name": "김민재",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 3.7,
     "ops": 0.742,
     "AVG": 0.277,
@@ -198,7 +198,7 @@
   {
     "id": "Bears_2000_15",
     "name": "김선우",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.8,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Bears_2000_16",
     "name": "랜들",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.1,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Bears_2000_17",
     "name": "리오스",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.4,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Bears_2000_18",
     "name": "레일리",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.9,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Bears_2000_19",
     "name": "정재훈",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.7,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Bears_2000_20",
     "name": "임태훈",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 5.2,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Bears_2000_21",
     "name": "오재원",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.9,
     "ops": 0.790,
     "AVG": 0.292,
@@ -296,7 +296,7 @@
   {
     "id": "Bears_2000_22",
     "name": "허경민",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 4.6,
     "ops": 0.812,
     "AVG": 0.300,
@@ -310,7 +310,7 @@
   {
     "id": "Bears_2000_23",
     "name": "최준석",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.3,
     "ops": 0.860,
     "AVG": 0.290,
@@ -324,7 +324,7 @@
   {
     "id": "Bears_2000_24",
     "name": "이혜천",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.1,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Bears_2000_25",
     "name": "김강률",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.8,
     "ops": null,
     "AVG": null,

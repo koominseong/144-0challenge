@@ -2,7 +2,7 @@
   {
     "id": "Tigers_2000_1",
     "name": "김상현",
-    "position": ["3B", "1B"],
+    "positions": ["3B", "1B"],
     "war": 6.8,
     "ops": 1.012,
     "AVG": 0.335,
@@ -16,7 +16,7 @@
   {
     "id": "Tigers_2000_2",
     "name": "이범호",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 6.2,
     "ops": 0.945,
     "AVG": 0.312,
@@ -30,7 +30,7 @@
   {
     "id": "Tigers_2000_3",
     "name": "장성호",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.9,
     "ops": 0.890,
     "AVG": 0.318,
@@ -44,7 +44,7 @@
   {
     "id": "Tigers_2000_4",
     "name": "김원섭",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 4.8,
     "ops": 0.850,
     "AVG": 0.301,
@@ -58,7 +58,7 @@
   {
     "id": "Tigers_2000_5",
     "name": "최희섭",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 6.5,
     "ops": 0.980,
     "AVG": 0.305,
@@ -72,7 +72,7 @@
   {
     "id": "Tigers_2000_6",
     "name": "홍세완",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.6,
     "ops": 0.810,
     "AVG": 0.289,
@@ -86,7 +86,7 @@
   {
     "id": "Tigers_2000_7",
     "name": "김선빈",
-    "position": ["2B", "SS"],
+    "positions": ["2B", "SS"],
     "war": 5.1,
     "ops": 0.820,
     "AVG": 0.305,
@@ -100,7 +100,7 @@
   {
     "id": "Tigers_2000_8",
     "name": "이종범",
-    "position": ["SS", "CF"],
+    "positions": ["SS", "CF"],
     "war": 6.0,
     "ops": 0.870,
     "AVG": 0.315,
@@ -114,7 +114,7 @@
   {
     "id": "Tigers_2000_9",
     "name": "김종국",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.7,
     "ops": 0.780,
     "AVG": 0.292,
@@ -128,7 +128,7 @@
   {
     "id": "Tigers_2000_10",
     "name": "김상훈",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 5.8,
     "ops": 0.840,
     "AVG": 0.290,
@@ -142,7 +142,7 @@
   {
     "id": "Tigers_2000_11",
     "name": "나지완",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.5,
     "ops": 0.910,
     "AVG": 0.298,
@@ -156,7 +156,7 @@
   {
     "id": "Tigers_2000_12",
     "name": "서재응",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.4,
     "ops": null,
     "AVG": null,
@@ -170,7 +170,7 @@
   {
     "id": "Tigers_2000_13",
     "name": "윤석민",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.8,
     "ops": null,
     "AVG": null,
@@ -184,7 +184,7 @@
   {
     "id": "Tigers_2000_14",
     "name": "한기주",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.9,
     "ops": null,
     "AVG": null,
@@ -198,7 +198,7 @@
   {
     "id": "Tigers_2000_15",
     "name": "정재훈",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.2,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Tigers_2000_16",
     "name": "이대진",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.0,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Tigers_2000_17",
     "name": "전병두",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.4,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Tigers_2000_18",
     "name": "곽채진",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Tigers_2000_19",
     "name": "유동훈",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.6,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Tigers_2000_20",
     "name": "강영식",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.1,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Tigers_2000_21",
     "name": "이현곤",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.3,
     "ops": 0.780,
     "AVG": 0.288,
@@ -296,7 +296,7 @@
   {
     "id": "Tigers_2000_22",
     "name": "안치홍",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.0,
     "ops": 0.835,
     "AVG": 0.304,
@@ -310,7 +310,7 @@
   {
     "id": "Tigers_2000_23",
     "name": "이동욱",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.9,
     "ops": 0.760,
     "AVG": 0.281,
@@ -324,7 +324,7 @@
   {
     "id": "Tigers_2000_24",
     "name": "브리또",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.2,
     "ops": 0.900,
     "AVG": 0.310,
@@ -338,7 +338,7 @@
   {
     "id": "Tigers_2000_25",
     "name": "로페즈",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.7,
     "ops": null,
     "AVG": null,

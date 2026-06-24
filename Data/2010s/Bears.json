@@ -2,7 +2,7 @@
   {
     "id": "Bears_2010_1",
     "name": "김현수",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 7.1,
     "ops": 0.976,
     "AVG": 0.357,
@@ -16,7 +16,7 @@
   {
     "id": "Bears_2010_2",
     "name": "양의지",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 8.0,
     "ops": 1.012,
     "AVG": 0.348,
@@ -30,7 +30,7 @@
   {
     "id": "Bears_2010_3",
     "name": "민병헌",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.1,
     "ops": 0.930,
     "AVG": 0.344,
@@ -44,7 +44,7 @@
   {
     "id": "Bears_2010_4",
     "name": "박건우",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 6.9,
     "ops": 0.978,
     "AVG": 0.366,
@@ -58,7 +58,7 @@
   {
     "id": "Bears_2010_5",
     "name": "김재환",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 6.7,
     "ops": 1.134,
     "AVG": 0.340,
@@ -72,7 +72,7 @@
   {
     "id": "Bears_2010_6",
     "name": "오재일",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.8,
     "ops": 0.919,
     "AVG": 0.310,
@@ -86,7 +86,7 @@
   {
     "id": "Bears_2010_7",
     "name": "허경민",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 5.4,
     "ops": 0.838,
     "AVG": 0.324,
@@ -100,7 +100,7 @@
   {
     "id": "Bears_2010_8",
     "name": "김재호",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 5.1,
     "ops": 0.807,
     "AVG": 0.310,
@@ -114,7 +114,7 @@
   {
     "id": "Bears_2010_9",
     "name": "오재운",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.5,
     "ops": 0.835,
     "AVG": 0.337,
@@ -128,7 +128,7 @@
   {
     "id": "Bears_2010_10",
     "name": "정수빈",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 5.6,
     "ops": 0.838,
     "AVG": 0.321,
@@ -142,7 +142,7 @@
   {
     "id": "Bears_2010_11",
     "name": "최주환",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.5,
     "ops": 0.897,
     "AVG": 0.333,
@@ -156,7 +156,7 @@
   {
     "id": "Bears_2010_12",
     "name": "국해성",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 2.4,
     "ops": 0.889,
     "AVG": 0.298,
@@ -170,7 +170,7 @@
   {
     "id": "Bears_2010_13",
     "name": "류지혁",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 2.8,
     "ops": 0.789,
     "AVG": 0.304,
@@ -184,7 +184,7 @@
   {
     "id": "Bears_2010_14",
     "name": "박세혁",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.4,
     "ops": 0.785,
     "AVG": 0.301,
@@ -198,7 +198,7 @@
   {
     "id": "Bears_2010_15",
     "name": "에반스",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.2,
     "ops": 0.957,
     "AVG": 0.308,
@@ -212,7 +212,7 @@
   {
     "id": "Bears_2010_16",
     "name": "니퍼트",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 8.5,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Bears_2010_17",
     "name": "유희관",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.7,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Bears_2010_18",
     "name": "장원준",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.2,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Bears_2010_19",
     "name": "린드블럼",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 7.0,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Bears_2010_20",
     "name": "플렉센",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.4,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Bears_2010_21",
     "name": "함덕주",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.3,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Bears_2010_22",
     "name": "이현승",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.8,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Bears_2010_23",
     "name": "김강률",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.6,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "Bears_2010_24",
     "name": "이용찬",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.1,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Bears_2010_25",
     "name": "노경은",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
