@@ -1,381 +1,140 @@
-[
-  {
-    "id": "SK_2010_1",
-    "name": "최정",
-    "positions": [
-      "3B"
-    ],
-    "war": 9.3,
-    "ops": 0.98,
-    "AVG": 0.306,
-    "ERA": null,
-    "SO": 100,
-    "Year": 2015,
-    "HR": 38,
-    "Korean": true,
-    "Captain": true
-  },
-  {
-    "id": "SK_2010_2",
-    "name": "김강민",
-    "positions": [
-      "CF",
-      "RF"
-    ],
-    "war": 6.9,
-    "ops": 0.82,
-    "AVG": 0.297,
-    "ERA": null,
-    "SO": 72,
-    "Year": 2013,
-    "HR": 14,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_3",
-    "name": "박정권",
-    "positions": [
-      "1B",
-      "LF"
-    ],
-    "war": 6.5,
-    "ops": 0.89,
-    "AVG": 0.301,
-    "ERA": null,
-    "SO": 80,
-    "Year": 2010,
-    "HR": 24,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_4",
-    "name": "나주환",
-    "positions": [
-      "SS",
-      "2B"
-    ],
-    "war": 5.2,
-    "ops": 0.74,
-    "AVG": 0.279,
-    "ERA": null,
-    "SO": 52,
-    "Year": 2012,
-    "HR": 7,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_5",
-    "name": "이재원",
-    "positions": [
-      "C"
-    ],
-    "war": 6.0,
-    "ops": 0.83,
-    "AVG": 0.297,
-    "ERA": null,
-    "SO": 60,
-    "Year": 2016,
-    "HR": 18,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_6",
-    "name": "박승욱",
-    "positions": [
-      "RF",
-      "LF"
-    ],
-    "war": 4.5,
-    "ops": 0.78,
-    "AVG": 0.286,
-    "ERA": null,
-    "SO": 65,
-    "Year": 2014,
-    "HR": 12,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_7",
-    "name": "김동엽",
-    "positions": [
-      "LF",
-      "1B"
-    ],
-    "war": 5.5,
-    "ops": 0.89,
-    "AVG": 0.297,
-    "ERA": null,
-    "SO": 86,
-    "Year": 2017,
-    "HR": 26,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_8",
-    "name": "한동민",
-    "positions": [
-      "RF"
-    ],
-    "war": 5.8,
-    "ops": 0.9,
-    "AVG": 0.297,
-    "ERA": null,
-    "SO": 92,
-    "Year": 2017,
-    "HR": 30,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_9",
-    "name": "최항",
-    "positions": [
-      "SS",
-      "2B"
-    ],
-    "war": 3.8,
-    "ops": 0.71,
-    "AVG": 0.273,
-    "ERA": null,
-    "SO": 49,
-    "Year": 2016,
-    "HR": 6,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_10",
-    "name": "김원형",
-    "positions": [
-      "SP"
-    ],
-    "war": 5.8,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.09,
-    "SO": 135,
-    "Year": 2010,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_11",
-    "name": "박희수",
-    "positions": [
-      "RP",
-      "SP"
-    ],
-    "war": 5.2,
-    "ops": null,
-    "AVG": null,
-    "ERA": 2.98,
-    "SO": 106,
-    "Year": 2012,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_12",
-    "name": "김광현",
-    "positions": [
-      "SP"
-    ],
-    "war": 8.9,
-    "ops": null,
-    "AVG": null,
-    "ERA": 2.47,
-    "SO": 193,
-    "Year": 2014,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_13",
-    "name": "문승원",
-    "positions": [
-      "RP"
-    ],
-    "war": 4.5,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.18,
-    "SO": 95,
-    "Year": 2018,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_14",
-    "name": "채병룡",
-    "positions": [
-      "SP"
-    ],
-    "war": 4.9,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.33,
-    "SO": 126,
-    "Year": 2011,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_15",
-    "name": "전병두",
-    "positions": [
-      "SP",
-      "RP"
-    ],
-    "war": 3.5,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.64,
-    "SO": 95,
-    "Year": 2013,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_16",
-    "name": "조동화",
-    "positions": [
-      "CF"
-    ],
-    "war": 4.0,
-    "ops": 0.74,
-    "AVG": 0.281,
-    "ERA": null,
-    "SO": 55,
-    "Year": 2012,
-    "HR": 8,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_19",
-    "name": "케이시 켈리",
-    "positions": [
-      "SP"
-    ],
-    "war": 4.2,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.24,
-    "SO": 129,
-    "Year": 2016,
-    "HR": null,
-    "Korean": false,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_20",
-    "name": "닉 킹엄",
-    "positions": [
-      "SP"
-    ],
-    "war": 3.8,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.53,
-    "SO": 113,
-    "Year": 2019,
-    "HR": null,
-    "Korean": false,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_21",
-    "name": "김성현",
-    "positions": [
-      "SS",
-      "2B"
-    ],
-    "war": 3.2,
-    "ops": 0.69,
-    "AVG": 0.269,
-    "ERA": null,
-    "SO": 44,
-    "Year": 2014,
-    "HR": 5,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_22",
-    "name": "정의윤",
-    "positions": [
-      "1B",
-      "LF"
-    ],
-    "war": 2.9,
-    "ops": 0.71,
-    "AVG": 0.273,
-    "ERA": null,
-    "SO": 58,
-    "Year": 2012,
-    "HR": 11,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_23",
-    "name": "유한준",
-    "positions": [
-      "RF"
-    ],
-    "war": 3.1,
-    "ops": 0.72,
-    "AVG": 0.277,
-    "ERA": null,
-    "SO": 52,
-    "Year": 2010,
-    "HR": 8,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_24",
-    "name": "이홍구",
-    "positions": [
-      "RP"
-    ],
-    "war": 2.2,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.88,
-    "SO": 69,
-    "Year": 2017,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
-    "id": "SK_2010_25",
-    "name": "정경배",
-    "positions": [
-      "2B",
-      "3B"
-    ],
-    "war": 1.8,
-    "ops": 0.62,
-    "AVG": 0.253,
-    "ERA": null,
-    "SO": 32,
-    "Year": 2010,
-    "HR": 3,
-    "Korean": true,
-    "Captain": false
-  }
-]
+{
+  "id": "SK_2010s_16",
+  "name": "박희수",
+  "position": ["RP"],
+  "war": 4.12,
+  "ops": null,
+  "AVG": null,
+  "ERA": 1.32,
+  "SO": 76,
+  "Year": 2012,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_17",
+  "name": "정우람",
+  "position": ["RP"],
+  "war": 3.64,
+  "ops": null,
+  "AVG": null,
+  "ERA": 2.16,
+  "SO": 69,
+  "Year": 2010,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_18",
+  "name": "박정배",
+  "position": ["RP"],
+  "war": 2.47,
+  "ops": null,
+  "AVG": null,
+  "ERA": 2.44,
+  "SO": 72,
+  "Year": 2012,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_19",
+  "name": "김광현",
+  "position": ["SP"],
+  "war": 6.91,
+  "ops": null,
+  "AVG": null,
+  "ERA": 2.13,
+  "SO": 160,
+  "Year": 2010,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_20",
+  "name": "문승원",
+  "position": ["SP"],
+  "war": 4.01,
+  "ops": null,
+  "AVG": null,
+  "ERA": 3.31,
+  "SO": 144,
+  "Year": 2018,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_21",
+  "name": "박종훈",
+  "position": ["SP"],
+  "war": 3.85,
+  "ops": null,
+  "AVG": null,
+  "ERA": 3.88,
+  "SO": 126,
+  "Year": 2018,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_22",
+  "name": "켈리",
+  "position": ["SP"],
+  "war": 5.66,
+  "ops": null,
+  "AVG": null,
+  "ERA": 3.60,
+  "SO": 189,
+  "Year": 2015,
+  "HR": null,
+  "Korean": false,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_23",
+  "name": "산체스",
+  "position": ["SP"],
+  "war": 5.33,
+  "ops": null,
+  "AVG": null,
+  "ERA": 2.55,
+  "SO": 181,
+  "Year": 2018,
+  "HR": null,
+  "Korean": false,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_24",
+  "name": "박민호",
+  "position": ["RP"],
+  "war": 1.82,
+  "ops": null,
+  "AVG": null,
+  "ERA": 3.26,
+  "SO": 58,
+  "Year": 2018,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+},
+{
+  "id": "SK_2010s_25",
+  "name": "서진용",
+  "position": ["RP"],
+  "war": 1.76,
+  "ops": null,
+  "AVG": null,
+  "ERA": 2.68,
+  "SO": 65,
+  "Year": 2019,
+  "HR": null,
+  "Korean": true,
+  "Captain": false
+}
