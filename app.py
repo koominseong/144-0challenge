@@ -105,7 +105,10 @@ POSITIONS = [
     "RF",
     "DH"
 ]
+player_positions = player.get("positions")
 
+if player_positions is None:
+    player_positions = [player.get("position")]
 
 def load_team(team):
 
