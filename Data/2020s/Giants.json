@@ -1,177 +1,416 @@
 [
   {
-    "id": "jeon_junwoo_2020",
-    "name": "전준우",
-    "year": 2020,
-    "positions": ["LF", "RF"],
-    "war": 6.5
-  },
-  {
-    "id": "jeon_junwoo_2023",
-    "name": "전준우",
-    "year": 2023,
-    "positions": ["LF", "DH"],
-    "war": 5.0
-  },
-  {
-    "id": "ahn_chihong_2020",
+    "id": "Lotte_2020_1",
     "name": "안치홍",
-    "year": 2020,
-    "positions": ["2B"],
-    "war": 5.0
+    "positions": [
+      "2B",
+      "SS"
+    ],
+    "war": 6.0,
+    "ops": 0.85,
+    "AVG": 0.303,
+    "ERA": null,
+    "SO": 62,
+    "Year": 2021,
+    "HR": 16,
+    "Korean": true,
+    "Captain": true
   },
   {
-    "id": "go_seungmin_2023",
-    "name": "고승민",
-    "year": 2023,
-    "positions": ["2B", "LF"],
-    "war": 5.0
+    "id": "Lotte_2020_2",
+    "name": "전준우",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 5.4,
+    "ops": 0.81,
+    "AVG": 0.294,
+    "ERA": null,
+    "SO": 68,
+    "Year": 2021,
+    "HR": 15,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "go_seungmin_2024",
-    "name": "고승민",
-    "year": 2024,
-    "positions": ["2B"],
-    "war": 4.5
+    "id": "Lotte_2020_3",
+    "name": "손아섭",
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 6.5,
+    "ops": 0.86,
+    "AVG": 0.306,
+    "ERA": null,
+    "SO": 65,
+    "Year": 2020,
+    "HR": 16,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "yoon_donghee_2024",
-    "name": "윤동희",
-    "year": 2024,
-    "positions": ["CF", "RF"],
-    "war": 5.0
-  },
-  {
-    "id": "victor_reyes_2024",
-    "name": "빅터 레이예스",
-    "year": 2024,
-    "positions": ["CF", "LF"],
-    "war": 6.0
-  },
-  {
-    "id": "lee_daeho_2020",
+    "id": "Lotte_2020_4",
     "name": "이대호",
-    "year": 2020,
-    "positions": ["1B", "DH"],
-    "war": 4.5
+    "positions": [
+      "1B"
+    ],
+    "war": 5.0,
+    "ops": 0.79,
+    "AVG": 0.289,
+    "ERA": null,
+    "SO": 58,
+    "Year": 2020,
+    "HR": 16,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "lee_daeho_2021",
-    "name": "이대호",
-    "year": 2021,
-    "positions": ["1B", "DH"],
-    "war": 4.0
-  },
-  {
-    "id": "na_seungyeop_2024",
-    "name": "나승엽",
-    "year": 2024,
-    "positions": ["1B"],
-    "war": 4.5
-  },
-  {
-    "id": "jeong_hoon_2020",
-    "name": "정훈",
-    "year": 2020,
-    "positions": ["1B", "2B"],
-    "war": 3.5
-  },
-  {
-    "id": "han_donghee_2022",
+    "id": "Lotte_2020_5",
     "name": "한동희",
-    "year": 2022,
-    "positions": ["3B"],
-    "war": 4.0
+    "positions": [
+      "3B",
+      "1B"
+    ],
+    "war": 6.0,
+    "ops": 0.88,
+    "AVG": 0.303,
+    "ERA": null,
+    "SO": 82,
+    "Year": 2022,
+    "HR": 24,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "son_sunbin_2020",
-    "name": "딕슨 마차도",
-    "year": 2020,
-    "positions": ["SS"],
-    "war": 4.5
+    "id": "Lotte_2020_6",
+    "name": "고승민",
+    "positions": [
+      "2B",
+      "SS"
+    ],
+    "war": 5.1,
+    "ops": 0.77,
+    "AVG": 0.287,
+    "ERA": null,
+    "SO": 54,
+    "Year": 2023,
+    "HR": 8,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "park_seunghwook_2024",
-    "name": "박승욱",
-    "year": 2024,
-    "positions": ["SS"],
-    "war": 3.5
+    "id": "Lotte_2020_7",
+    "name": "윤동희",
+    "positions": [
+      "CF",
+      "LF"
+    ],
+    "war": 5.4,
+    "ops": 0.82,
+    "AVG": 0.296,
+    "ERA": null,
+    "SO": 60,
+    "Year": 2024,
+    "HR": 12,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "yoo_gangnam_2023",
-    "name": "유강남",
-    "year": 2023,
-    "positions": ["C"],
-    "war": 3.0
+    "id": "Lotte_2020_8",
+    "name": "정훈",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 4.0,
+    "ops": 0.75,
+    "AVG": 0.28,
+    "ERA": null,
+    "SO": 58,
+    "Year": 2020,
+    "HR": 14,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "son_seongbin_2024",
-    "name": "손성빈",
-    "year": 2024,
-    "positions": ["C"],
-    "war": 3.5
+    "id": "Lotte_2020_9",
+    "name": "강로한",
+    "positions": [
+      "C"
+    ],
+    "war": 3.5,
+    "ops": 0.7,
+    "AVG": 0.269,
+    "ERA": null,
+    "SO": 45,
+    "Year": 2022,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "kim_minho_2024",
-    "name": "김민호",
-    "year": 2024,
-    "positions": ["LF", "RF"],
-    "war": 2.5
-  },
-  {
-    "id": "park_sewoong_2022",
+    "id": "Lotte_2020_10",
     "name": "박세웅",
-    "year": 2022,
-    "positions": ["SP"],
-    "war": 6.0
+    "positions": [
+      "SP"
+    ],
+    "war": 7.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.96,
+    "SO": 147,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "park_sewoong_2024",
-    "name": "박세웅",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 4.5
+    "id": "Lotte_2020_11",
+    "name": "나균안",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.21,
+    "SO": 134,
+    "Year": 2023,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "charlie_barnes_2024",
-    "name": "찰리 반즈",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 5.0
+    "id": "Lotte_2020_12",
+    "name": "스트레일리",
+    "positions": [
+      "SP"
+    ],
+    "war": 6.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.9,
+    "SO": 152,
+    "Year": 2022,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "dan_straily_2020",
-    "name": "댄 스트레일리",
-    "year": 2020,
-    "positions": ["SP"],
-    "war": 7.0
+    "id": "Lotte_2020_13",
+    "name": "글렌 스파크맨",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.37,
+    "SO": 124,
+    "Year": 2021,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "aaron_wilkerson_2023",
-    "name": "애런 윌커슨",
-    "year": 2023,
-    "positions": ["SP"],
-    "war": 5.5
+    "id": "Lotte_2020_14",
+    "name": "샘 개벗",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.4,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.12,
+    "SO": 137,
+    "Year": 2023,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "kim_wonjung_2020",
+    "id": "Lotte_2020_15",
     "name": "김원중",
-    "year": 2020,
-    "positions": ["RP"],
-    "war": 3.5
+    "positions": [
+      "RP"
+    ],
+    "war": 4.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.01,
+    "SO": 94,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "kim_wonjung_2024",
-    "name": "김원중",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 3.5
+    "id": "Lotte_2020_16",
+    "name": "진해수",
+    "positions": [
+      "RP"
+    ],
+    "war": 3.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.47,
+    "SO": 77,
+    "Year": 2020,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "choi_joonyoung_2024",
-    "name": "최준용",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 3.0
+    "id": "Lotte_2020_17",
+    "name": "구승민",
+    "positions": [
+      "RP",
+      "SP"
+    ],
+    "war": 3.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.67,
+    "SO": 71,
+    "Year": 2022,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_18",
+    "name": "이인복",
+    "positions": [
+      "RP"
+    ],
+    "war": 2.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.82,
+    "SO": 65,
+    "Year": 2023,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_19",
+    "name": "문경찬",
+    "positions": [
+      "RP",
+      "SP"
+    ],
+    "war": 2.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.72,
+    "SO": 70,
+    "Year": 2024,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_20",
+    "name": "황성빈",
+    "positions": [
+      "CF",
+      "LF"
+    ],
+    "war": 4.2,
+    "ops": 0.73,
+    "AVG": 0.28,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2024,
+    "HR": 5,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_22",
+    "name": "빅터 레예스",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 4.0,
+    "ops": 0.84,
+    "AVG": 0.294,
+    "ERA": null,
+    "SO": 77,
+    "Year": 2023,
+    "HR": 18,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_23",
+    "name": "배성근",
+    "positions": [
+      "C",
+      "1B"
+    ],
+    "war": 2.2,
+    "ops": 0.64,
+    "AVG": 0.253,
+    "ERA": null,
+    "SO": 35,
+    "Year": 2023,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_24",
+    "name": "전미르",
+    "positions": [
+      "SS",
+      "2B"
+    ],
+    "war": 2.0,
+    "ops": 0.63,
+    "AVG": 0.251,
+    "ERA": null,
+    "SO": 31,
+    "Year": 2024,
+    "HR": 3,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_25",
+    "name": "이민석",
+    "positions": [
+      "SP"
+    ],
+    "war": 2.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.92,
+    "SO": 77,
+    "Year": 2024,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Lotte_2020_26",
+    "name": "디에고 카스티요",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 4.5,
+    "ops": 0.86,
+    "AVG": 0.298,
+    "ERA": null,
+    "SO": 88,
+    "Year": 2021,
+    "HR": 24,
+    "Korean": false,
+    "Captain": false
   }
 ]
