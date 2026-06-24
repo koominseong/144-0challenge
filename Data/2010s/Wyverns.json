@@ -2,7 +2,7 @@
   {
     "id": "Wyverns_2010_1",
     "name": "최정",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 7.1,
     "ops": 1.111,
     "AVG": 0.316,
@@ -16,7 +16,7 @@
   {
     "id": "Wyverns_2010_2",
     "name": "김광현",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.2,
     "ops": null,
     "AVG": null,
@@ -30,7 +30,7 @@
   {
     "id": "Wyverns_2010_3",
     "name": "정우람",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.8,
     "ops": null,
     "AVG": null,
@@ -44,7 +44,7 @@
   {
     "id": "Wyverns_2010_4",
     "name": "박희수",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -58,7 +58,7 @@
   {
     "id": "Wyverns_2010_5",
     "name": "김강민",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 4.3,
     "ops": 0.780,
     "AVG": 0.276,
@@ -72,7 +72,7 @@
   {
     "id": "Wyverns_2010_6",
     "name": "정근우",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 5.2,
     "ops": 0.812,
     "AVG": 0.318,
@@ -86,7 +86,7 @@
   {
     "id": "Wyverns_2010_7",
     "name": "박정권",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.1,
     "ops": 0.845,
     "AVG": 0.297,
@@ -100,7 +100,7 @@
   {
     "id": "Wyverns_2010_8",
     "name": "박경완",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.9,
     "ops": 0.790,
     "AVG": 0.260,
@@ -114,7 +114,7 @@
   {
     "id": "Wyverns_2010_9",
     "name": "이호준",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 3.8,
     "ops": 0.835,
     "AVG": 0.289,
@@ -128,7 +128,7 @@
   {
     "id": "Wyverns_2010_10",
     "name": "나주환",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 3.2,
     "ops": 0.760,
     "AVG": 0.271,
@@ -142,7 +142,7 @@
   {
     "id": "Wyverns_2010_11",
     "name": "박재상",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 3.1,
     "ops": 0.755,
     "AVG": 0.274,
@@ -156,7 +156,7 @@
   {
     "id": "Wyverns_2010_12",
     "name": "한동민",
-    "position": ["RF"],
+    "positions": ["RF"],
     "war": 5.6,
     "ops": 0.910,
     "AVG": 0.285,
@@ -170,7 +170,7 @@
   {
     "id": "Wyverns_2010_13",
     "name": "로맥",
-    "position": ["1B"],
+    "positions": ["1B"],
     "war": 4.7,
     "ops": 0.930,
     "AVG": 0.276,
@@ -184,7 +184,7 @@
   {
     "id": "Wyverns_2010_14",
     "name": "정의윤",
-    "position": ["LF"],
+    "positions": ["LF"],
     "war": 3.5,
     "ops": 0.845,
     "AVG": 0.283,
@@ -198,7 +198,7 @@
   {
     "id": "Wyverns_2010_15",
     "name": "박종훈",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.6,
     "ops": null,
     "AVG": null,
@@ -212,7 +212,7 @@
   {
     "id": "Wyverns_2010_16",
     "name": "문승원",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.0,
     "ops": null,
     "AVG": null,
@@ -226,7 +226,7 @@
   {
     "id": "Wyverns_2010_17",
     "name": "이태양",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 3.6,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "Wyverns_2010_18",
     "name": "윤희상",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 3.9,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "Wyverns_2010_19",
     "name": "채병용",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.0,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "Wyverns_2010_20",
     "name": "전유수",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.8,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "Wyverns_2010_21",
     "name": "김태훈",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.4,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "Wyverns_2010_22",
     "name": "서진용",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.1,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "Wyverns_2010_23",
     "name": "세든",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.2,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "Wyverns_2010_24",
     "name": "산체스",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.0,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "Wyverns_2010_25",
     "name": "고효준",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.7,
     "ops": null,
     "AVG": null,
