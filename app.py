@@ -917,11 +917,6 @@ def release_player(player_id):
 @app.route("/team_view")
 def team_view():
 
-    player_positions = player.get("positions")
-
-    if player_positions is None:
-        player_positions = [player.get("position")]
-
     session["allow_next"] = False
 
     if "current_team" not in session:
@@ -1004,6 +999,11 @@ def assign_player():
     player["era"] = session["actual_era"]
     
     lineup = session["lineup"]
+
+    positions = player.get("positions")
+
+    if positions is None:
+        positions = [player.get("position")]
 
     # 같은 이름 선수 중복 방지
     existing_names = set()
