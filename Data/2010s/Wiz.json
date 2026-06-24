@@ -2,7 +2,7 @@
   {
     "id": "KT_2010_1",
     "name": "강백호",
-    "position": ["1B", "RF"],
+    "positions": ["1B", "RF"],
     "war": 6.5,
     "ops": 0.965,
     "AVG": 0.335,
@@ -16,7 +16,7 @@
   {
     "id": "KT_2010_2",
     "name": "로하스",
-    "position": ["RF", "CF"],
+    "positions": ["RF", "CF"],
     "war": 7.2,
     "ops": 1.045,
     "AVG": 0.349,
@@ -30,7 +30,7 @@
   {
     "id": "KT_2010_3",
     "name": "황재균",
-    "position": ["3B"],
+    "positions": ["3B"],
     "war": 5.4,
     "ops": 0.880,
     "AVG": 0.316,
@@ -44,7 +44,7 @@
   {
     "id": "KT_2010_4",
     "name": "박경수",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 4.8,
     "ops": 0.820,
     "AVG": 0.292,
@@ -58,7 +58,7 @@
   {
     "id": "KT_2010_5",
     "name": "유한준",
-    "position": ["RF", "DH"],
+    "positions": ["RF", "DH"],
     "war": 4.9,
     "ops": 0.865,
     "AVG": 0.310,
@@ -72,7 +72,7 @@
   {
     "id": "KT_2010_6",
     "name": "박기혁",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 3.6,
     "ops": 0.740,
     "AVG": 0.275,
@@ -86,7 +86,7 @@
   {
     "id": "KT_2010_7",
     "name": "오태곤",
-    "position": ["1B", "RF"],
+    "positions": ["1B", "RF"],
     "war": 3.8,
     "ops": 0.785,
     "AVG": 0.288,
@@ -100,7 +100,7 @@
   {
     "id": "KT_2010_8",
     "name": "김상수",
-    "position": ["2B", "SS"],
+    "positions": ["2B", "SS"],
     "war": 3.9,
     "ops": 0.800,
     "AVG": 0.295,
@@ -114,7 +114,7 @@
   {
     "id": "KT_2010_9",
     "name": "심우준",
-    "position": ["SS"],
+    "positions": ["SS"],
     "war": 4.2,
     "ops": 0.760,
     "AVG": 0.285,
@@ -128,7 +128,7 @@
   {
     "id": "KT_2010_10",
     "name": "정현",
-    "position": ["SS", "2B"],
+    "positions": ["SS", "2B"],
     "war": 3.7,
     "ops": 0.775,
     "AVG": 0.298,
@@ -142,7 +142,7 @@
   {
     "id": "KT_2010_11",
     "name": "강민국",
-    "position": ["2B"],
+    "positions": ["2B"],
     "war": 3.1,
     "ops": 0.735,
     "AVG": 0.281,
@@ -156,7 +156,7 @@
   {
     "id": "KT_2010_12",
     "name": "김민혁",
-    "position": ["LF", "RF"],
+    "positions": ["LF", "RF"],
     "war": 3.0,
     "ops": 0.745,
     "AVG": 0.287,
@@ -170,7 +170,7 @@
   {
     "id": "KT_2010_13",
     "name": "배정대",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 3.5,
     "ops": 0.780,
     "AVG": 0.290,
@@ -184,7 +184,7 @@
   {
     "id": "KT_2010_14",
     "name": "유재신",
-    "position": ["CF"],
+    "positions": ["CF"],
     "war": 2.8,
     "ops": 0.720,
     "AVG": 0.275,
@@ -198,7 +198,7 @@
   {
     "id": "KT_2010_15",
     "name": "장성우",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 4.6,
     "ops": 0.820,
     "AVG": 0.298,
@@ -212,7 +212,7 @@
   {
     "id": "KT_2010_16",
     "name": "이해창",
-    "position": ["C"],
+    "positions": ["C"],
     "war": 3.2,
     "ops": 0.770,
     "AVG": 0.285,
@@ -226,7 +226,7 @@
   {
     "id": "KT_2010_17",
     "name": "고영표",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 5.6,
     "ops": null,
     "AVG": null,
@@ -240,7 +240,7 @@
   {
     "id": "KT_2010_18",
     "name": "쿠에바스",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.0,
     "ops": null,
     "AVG": null,
@@ -254,7 +254,7 @@
   {
     "id": "KT_2010_19",
     "name": "데스파이네",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 6.3,
     "ops": null,
     "AVG": null,
@@ -268,7 +268,7 @@
   {
     "id": "KT_2010_20",
     "name": "주권",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.2,
     "ops": null,
     "AVG": null,
@@ -282,7 +282,7 @@
   {
     "id": "KT_2010_21",
     "name": "김재윤",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 4.5,
     "ops": null,
     "AVG": null,
@@ -296,7 +296,7 @@
   {
     "id": "KT_2010_22",
     "name": "심재민",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 3.0,
     "ops": null,
     "AVG": null,
@@ -310,7 +310,7 @@
   {
     "id": "KT_2010_23",
     "name": "이대은",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 4.1,
     "ops": null,
     "AVG": null,
@@ -324,7 +324,7 @@
   {
     "id": "KT_2010_24",
     "name": "엄상백",
-    "position": ["SP"],
+    "positions": ["SP"],
     "war": 3.4,
     "ops": null,
     "AVG": null,
@@ -338,7 +338,7 @@
   {
     "id": "KT_2010_25",
     "name": "김민수",
-    "position": ["RP"],
+    "positions": ["RP"],
     "war": 2.9,
     "ops": null,
     "AVG": null,
