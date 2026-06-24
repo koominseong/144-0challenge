@@ -249,22 +249,6 @@
     "Captain": false
   },
   {
-    "id": "KT_2010_16",
-    "name": "정대현",
-    "positions": [
-      "RP"
-    ],
-    "war": 3.1,
-    "ops": null,
-    "AVG": null,
-    "ERA": 3.59,
-    "SO": 78,
-    "Year": 2015,
-    "HR": null,
-    "Korean": true,
-    "Captain": false
-  },
-  {
     "id": "KT_2010_17",
     "name": "임시후",
     "positions": [
@@ -331,22 +315,6 @@
     "Captain": false
   },
   {
-    "id": "KT_2010_21",
-    "name": "로니 헤르난데스",
-    "positions": [
-      "C"
-    ],
-    "war": 2.2,
-    "ops": 0.64,
-    "AVG": 0.255,
-    "ERA": null,
-    "SO": 35,
-    "Year": 2016,
-    "HR": 6,
-    "Korean": false,
-    "Captain": false
-  },
-  {
     "id": "KT_2010_22",
     "name": "박세진",
     "positions": [
@@ -394,22 +362,4 @@
     "HR": null,
     "Korean": true,
     "Captain": false
-  },
-  {
-    "id": "KT_2010_25",
-    "name": "오재원",
-    "positions": [
-      "SS",
-      "2B"
-    ],
-    "war": 3.2,
-    "ops": 0.71,
-    "AVG": 0.273,
-    "ERA": null,
-    "SO": 45,
-    "Year": 2014,
-    "HR": 5,
-    "Korean": true,
-    "Captain": false
   }
-]
