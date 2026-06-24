@@ -1,177 +1,417 @@
 [
   {
-    "id": "kim_doyeong_2024",
-    "name": "김도영",
-    "year": 2024,
-    "positions": ["3B", "SS"],
-    "war": 8.5
-  },
-  {
-    "id": "na_sungbum_2022",
-    "name": "나성범",
-    "year": 2022,
-    "positions": ["RF"],
-    "war": 7.5
-  },
-  {
-    "id": "na_sungbum_2023",
-    "name": "나성범",
-    "year": 2023,
-    "positions": ["RF"],
-    "war": 6.8
-  },
-  {
-    "id": "choi_hyungwoo_2024",
-    "name": "최형우",
-    "year": 2024,
-    "positions": ["DH", "LF"],
-    "war": 5.5
-  },
-  {
-    "id": "choi_hyungwoo_2023",
-    "name": "최형우",
-    "year": 2023,
-    "positions": ["DH"],
-    "war": 4.8
-  },
-  {
-    "id": "kim_sunbin_2024",
-    "name": "김선빈",
-    "year": 2024,
-    "positions": ["2B"],
-    "war": 4.5
-  },
-  {
-    "id": "park_chanho_2024",
-    "name": "박찬호",
-    "year": 2024,
-    "positions": ["SS"],
-    "war": 4.2
-  },
-  {
-    "id": "choi_wonjun_2024",
-    "name": "최원준",
-    "year": 2024,
-    "positions": ["CF", "RF"],
-    "war": 4.0
-  },
-  {
-    "id": "socrates_2022",
-    "name": "소크라테스 브리토",
-    "year": 2022,
-    "positions": ["CF"],
-    "war": 5.0
-  },
-  {
-    "id": "socrates_2024",
-    "name": "소크라테스 브리토",
-    "year": 2024,
-    "positions": ["CF", "LF"],
-    "war": 4.5
-  },
-  {
-    "id": "lee_woosung_2024",
-    "name": "이우성",
-    "year": 2024,
-    "positions": ["LF", "RF"],
-    "war": 3.8
-  },
-  {
-    "id": "han_joonsoo_2024",
-    "name": "한준수",
-    "year": 2024,
-    "positions": ["C"],
-    "war": 3.5
-  },
-  {
-    "id": "kim_taegun_2024",
-    "name": "김태군",
-    "year": 2024,
-    "positions": ["C"],
-    "war": 2.5
-  },
-  {
-    "id": "byun_woohyuk_2024",
-    "name": "변우혁",
-    "year": 2024,
-    "positions": ["1B"],
-    "war": 2.8
-  },
-  {
-    "id": "ryu_jihyuk_2022",
-    "name": "류지혁",
-    "year": 2022,
-    "positions": ["2B", "3B", "SS"],
-    "war": 3.0
-  },
-  {
-    "id": "yang_hyeonjong_2024",
-    "name": "양현종",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 5.0
-  },
-  {
-    "id": "yang_hyeonjong_2022",
-    "name": "양현종",
-    "year": 2022,
-    "positions": ["SP"],
-    "war": 4.8
-  },
-  {
-    "id": "james_nail_2024",
-    "name": "제임스 네일",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 7.0
-  },
-  {
-    "id": "aaron_brooks_2020",
-    "name": "애런 브룩스",
-    "year": 2020,
-    "positions": ["SP"],
-    "war": 5.5
-  },
-  {
-    "id": "lee_euilee_2023",
+    "id": "Kia_2020_1",
     "name": "이의리",
-    "year": 2023,
-    "positions": ["SP"],
-    "war": 4.5
+    "positions": [
+      "SP"
+    ],
+    "war": 6.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.07,
+    "SO": 147,
+    "Year": 2023,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "yoon_youngcheol_2023",
+    "id": "Kia_2020_2",
+    "name": "양현종",
+    "positions": [
+      "SP"
+    ],
+    "war": 8.2,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.76,
+    "SO": 174,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": true
+  },
+  {
+    "id": "Kia_2020_3",
+    "name": "최형우",
+    "positions": [
+      "LF",
+      "1B"
+    ],
+    "war": 7.0,
+    "ops": 0.91,
+    "AVG": 0.316,
+    "ERA": null,
+    "SO": 71,
+    "Year": 2020,
+    "HR": 22,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_4",
+    "name": "나성범",
+    "positions": [
+      "RF",
+      "CF"
+    ],
+    "war": 6.8,
+    "ops": 0.89,
+    "AVG": 0.306,
+    "ERA": null,
+    "SO": 88,
+    "Year": 2022,
+    "HR": 24,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_5",
+    "name": "김선빈",
+    "positions": [
+      "2B",
+      "SS"
+    ],
+    "war": 5.4,
+    "ops": 0.76,
+    "AVG": 0.314,
+    "ERA": null,
+    "SO": 35,
+    "Year": 2021,
+    "HR": 3,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_6",
+    "name": "소크라테스 브리토",
+    "positions": [
+      "CF",
+      "RF"
+    ],
+    "war": 7.1,
+    "ops": 0.94,
+    "AVG": 0.323,
+    "ERA": null,
+    "SO": 91,
+    "Year": 2023,
+    "HR": 28,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_7",
+    "name": "박찬호",
+    "positions": [
+      "SS",
+      "2B"
+    ],
+    "war": 5.8,
+    "ops": 0.75,
+    "AVG": 0.283,
+    "ERA": null,
+    "SO": 54,
+    "Year": 2022,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_8",
+    "name": "터커",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 6.5,
+    "ops": 0.95,
+    "AVG": 0.316,
+    "ERA": null,
+    "SO": 101,
+    "Year": 2024,
+    "HR": 30,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_9",
+    "name": "윌 크로우",
+    "positions": [
+      "SP"
+    ],
+    "war": 7.4,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.84,
+    "SO": 161,
+    "Year": 2024,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_10",
+    "name": "네일",
+    "positions": [
+      "SP"
+    ],
+    "war": 6.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.07,
+    "SO": 144,
+    "Year": 2023,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_11",
+    "name": "김도영",
+    "positions": [
+      "3B",
+      "SS"
+    ],
+    "war": 8.5,
+    "ops": 0.97,
+    "AVG": 0.323,
+    "ERA": null,
+    "SO": 94,
+    "Year": 2024,
+    "HR": 38,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_12",
+    "name": "나경민",
+    "positions": [
+      "3B",
+      "SS"
+    ],
+    "war": 3.5,
+    "ops": 0.7,
+    "AVG": 0.271,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2022,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_13",
+    "name": "한준수",
+    "positions": [
+      "C"
+    ],
+    "war": 4.2,
+    "ops": 0.73,
+    "AVG": 0.276,
+    "ERA": null,
+    "SO": 50,
+    "Year": 2023,
+    "HR": 12,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_14",
+    "name": "이창진",
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 3.0,
+    "ops": 0.69,
+    "AVG": 0.269,
+    "ERA": null,
+    "SO": 51,
+    "Year": 2021,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_15",
+    "name": "정해영",
+    "positions": [
+      "RP"
+    ],
+    "war": 5.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.92,
+    "SO": 97,
+    "Year": 2022,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_16",
+    "name": "임기영",
+    "positions": [
+      "SP",
+      "RP"
+    ],
+    "war": 4.2,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.47,
+    "SO": 112,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_17",
+    "name": "김기훈",
+    "positions": [
+      "RP"
+    ],
+    "war": 3.1,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.57,
+    "SO": 79,
+    "Year": 2023,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_18",
+    "name": "최원준",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 4.0,
+    "ops": 0.77,
+    "AVG": 0.291,
+    "ERA": null,
+    "SO": 62,
+    "Year": 2022,
+    "HR": 12,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_19",
+    "name": "김호령",
+    "positions": [
+      "CF",
+      "LF"
+    ],
+    "war": 3.5,
+    "ops": 0.71,
+    "AVG": 0.276,
+    "ERA": null,
+    "SO": 45,
+    "Year": 2021,
+    "HR": 5,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_20",
+    "name": "황대인",
+    "positions": [
+      "1B",
+      "LF"
+    ],
+    "war": 2.8,
+    "ops": 0.7,
+    "AVG": 0.271,
+    "ERA": null,
+    "SO": 54,
+    "Year": 2024,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_21",
+    "name": "박준표",
+    "positions": [
+      "SP"
+    ],
+    "war": 3.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.62,
+    "SO": 105,
+    "Year": 2024,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_22",
+    "name": "전상현",
+    "positions": [
+      "RP",
+      "SP"
+    ],
+    "war": 2.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.87,
+    "SO": 71,
+    "Year": 2023,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_23",
+    "name": "류지혁",
+    "positions": [
+      "2B",
+      "SS"
+    ],
+    "war": 2.2,
+    "ops": 0.64,
+    "AVG": 0.256,
+    "ERA": null,
+    "SO": 38,
+    "Year": 2020,
+    "HR": 3,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_24",
+    "name": "김민식",
+    "positions": [
+      "C"
+    ],
+    "war": 2.5,
+    "ops": 0.66,
+    "AVG": 0.26,
+    "ERA": null,
+    "SO": 38,
+    "Year": 2020,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_25",
     "name": "윤영철",
-    "year": 2023,
-    "positions": ["SP"],
-    "war": 3.5
-  },
-  {
-    "id": "jung_haeyoung_2021",
-    "name": "정해영",
-    "year": 2021,
-    "positions": ["RP"],
-    "war": 4.0
-  },
-  {
-    "id": "jung_haeyoung_2024",
-    "name": "정해영",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 3.5
-  },
-  {
-    "id": "choi_jimin_2024",
-    "name": "최지민",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 2.5
-  },
-  {
-    "id": "kwak_dogyu_2024",
-    "name": "곽도규",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 2.8
+    "positions": [
+      "SP"
+    ],
+    "war": 4.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.32,
+    "SO": 119,
+    "Year": 2024,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   }
 ]
