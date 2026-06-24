@@ -1,177 +1,415 @@
 [
   {
-    "id": "kang_baekho_2021",
+    "id": "KT_2020_1",
     "name": "강백호",
-    "year": 2021,
-    "positions": ["RF", "1B"],
-    "war": 7.8
+    "positions": [
+      "1B",
+      "C"
+    ],
+    "war": 8.7,
+    "ops": 0.99,
+    "AVG": 0.334,
+    "ERA": null,
+    "SO": 94,
+    "Year": 2022,
+    "HR": 31,
+    "Korean": true,
+    "Captain": true
   },
   {
-    "id": "kang_baekho_2024",
-    "name": "강백호",
-    "year": 2024,
-    "positions": ["DH", "RF"],
-    "war": 5.5
-  },
-  {
-    "id": "mel_rojas_2020",
-    "name": "멜 로하스 주니어",
-    "year": 2020,
-    "positions": ["RF", "CF"],
-    "war": 8.5
-  },
-  {
-    "id": "mel_rojas_2024",
-    "name": "멜 로하스 주니어",
-    "year": 2024,
-    "positions": ["RF", "DH"],
-    "war": 5.8
-  },
-  {
-    "id": "park_byungho_2022",
-    "name": "박병호",
-    "year": 2022,
-    "positions": ["1B"],
-    "war": 4.8
-  },
-  {
-    "id": "jang_sungwoo_2021",
-    "name": "장성우",
-    "year": 2021,
-    "positions": ["C"],
-    "war": 5.0
-  },
-  {
-    "id": "jang_sungwoo_2024",
-    "name": "장성우",
-    "year": 2024,
-    "positions": ["C"],
-    "war": 3.8
-  },
-  {
-    "id": "hwang_jaegyun_2021",
+    "id": "KT_2020_2",
     "name": "황재균",
-    "year": 2021,
-    "positions": ["3B"],
-    "war": 5.5
+    "positions": [
+      "3B"
+    ],
+    "war": 6.5,
+    "ops": 0.86,
+    "AVG": 0.294,
+    "ERA": null,
+    "SO": 71,
+    "Year": 2021,
+    "HR": 22,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "kim_sangsoo_2023",
-    "name": "김상수",
-    "year": 2023,
-    "positions": ["SS", "2B"],
-    "war": 3.8
-  },
-  {
-    "id": "sim_woojun_2022",
-    "name": "심우준",
-    "year": 2022,
-    "positions": ["SS"],
-    "war": 4.2
-  },
-  {
-    "id": "park_kyungsoo_2020",
+    "id": "KT_2020_3",
     "name": "박경수",
-    "year": 2020,
-    "positions": ["2B"],
-    "war": 3.5
+    "positions": [
+      "2B",
+      "3B"
+    ],
+    "war": 5.0,
+    "ops": 0.75,
+    "AVG": 0.278,
+    "ERA": null,
+    "SO": 51,
+    "Year": 2020,
+    "HR": 9,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "bae_jungdae_2022",
+    "id": "KT_2020_4",
+    "name": "멜 로하스 주니어",
+    "positions": [
+      "RF"
+    ],
+    "war": 8.1,
+    "ops": 1.01,
+    "AVG": 0.348,
+    "ERA": null,
+    "SO": 97,
+    "Year": 2021,
+    "HR": 46,
+    "Korean": false,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_5",
     "name": "배정대",
-    "year": 2022,
-    "positions": ["CF"],
-    "war": 4.0
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 5.4,
+    "ops": 0.79,
+    "AVG": 0.291,
+    "ERA": null,
+    "SO": 62,
+    "Year": 2022,
+    "HR": 12,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "bae_jungdae_2024",
-    "name": "배정대",
-    "year": 2024,
-    "positions": ["CF"],
-    "war": 3.2
+    "id": "KT_2020_6",
+    "name": "오재일",
+    "positions": [
+      "1B"
+    ],
+    "war": 5.0,
+    "ops": 0.82,
+    "AVG": 0.283,
+    "ERA": null,
+    "SO": 77,
+    "Year": 2023,
+    "HR": 20,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "cho_yongho_2020",
-    "name": "조용호",
-    "year": 2020,
-    "positions": ["LF", "RF"],
-    "war": 3.0
+    "id": "KT_2020_7",
+    "name": "장성우",
+    "positions": [
+      "C"
+    ],
+    "war": 5.4,
+    "ops": 0.77,
+    "AVG": 0.283,
+    "ERA": null,
+    "SO": 58,
+    "Year": 2021,
+    "HR": 16,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "anthony_alford_2023",
-    "name": "앤서니 알포드",
-    "year": 2023,
-    "positions": ["LF", "CF"],
-    "war": 3.5
+    "id": "KT_2020_8",
+    "name": "심우준",
+    "positions": [
+      "SS",
+      "2B"
+    ],
+    "war": 5.0,
+    "ops": 0.73,
+    "AVG": 0.278,
+    "ERA": null,
+    "SO": 51,
+    "Year": 2021,
+    "HR": 7,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "ko_youngpyo_2021",
-    "name": "고영표",
-    "year": 2021,
-    "positions": ["SP"],
-    "war": 6.5
+    "id": "KT_2020_9",
+    "name": "천성호",
+    "positions": [
+      "SS",
+      "3B"
+    ],
+    "war": 4.0,
+    "ops": 0.71,
+    "AVG": 0.274,
+    "ERA": null,
+    "SO": 50,
+    "Year": 2023,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "ko_youngpyo_2024",
-    "name": "고영표",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 5.5
-  },
-  {
-    "id": "so_hyeongjun_2020",
+    "id": "KT_2020_10",
     "name": "소형준",
-    "year": 2020,
-    "positions": ["SP"],
-    "war": 5.5
+    "positions": [
+      "SP"
+    ],
+    "war": 7.4,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.87,
+    "SO": 157,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "so_hyeongjun_2024",
-    "name": "소형준",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 4.5
+    "id": "KT_2020_11",
+    "name": "고영표",
+    "positions": [
+      "SP"
+    ],
+    "war": 7.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.94,
+    "SO": 152,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "william_cuevas_2021",
-    "name": "윌리엄 쿠에바스",
-    "year": 2021,
-    "positions": ["SP"],
-    "war": 6.0
+    "id": "KT_2020_12",
+    "name": "쿠에바스",
+    "positions": [
+      "SP"
+    ],
+    "war": 6.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.01,
+    "SO": 147,
+    "Year": 2022,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "wes_benjamin_2024",
-    "name": "웨스 벤자민",
-    "year": 2024,
-    "positions": ["SP"],
-    "war": 4.5
+    "id": "KT_2020_13",
+    "name": "벤자민",
+    "positions": [
+      "SP"
+    ],
+    "war": 5.4,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.16,
+    "SO": 134,
+    "Year": 2023,
+    "HR": null,
+    "Korean": false,
+    "Captain": false
   },
   {
-    "id": "kim_minsoo_2021",
-    "name": "김민수",
-    "year": 2021,
-    "positions": ["RP"],
-    "war": 3.0
+    "id": "KT_2020_14",
+    "name": "김재윤",
+    "positions": [
+      "RP"
+    ],
+    "war": 5.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 2.79,
+    "SO": 108,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "park_yeonghyun_2024",
-    "name": "박영현",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 4.5
+    "id": "KT_2020_15",
+    "name": "엄상백",
+    "positions": [
+      "SP",
+      "RP"
+    ],
+    "war": 4.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.37,
+    "SO": 117,
+    "Year": 2022,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "joo_kwons_2021",
+    "id": "KT_2020_16",
     "name": "주권",
-    "year": 2021,
-    "positions": ["RP"],
-    "war": 3.5
+    "positions": [
+      "SP"
+    ],
+    "war": 4.0,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.52,
+    "SO": 108,
+    "Year": 2021,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   },
   {
-    "id": "son_donghyun_2024",
-    "name": "손동현",
-    "year": 2024,
-    "positions": ["RP"],
-    "war": 3.0
+    "id": "KT_2020_17",
+    "name": "이상동",
+    "positions": [
+      "RP"
+    ],
+    "war": 3.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.42,
+    "SO": 88,
+    "Year": 2022,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_18",
+    "name": "오태곤",
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 3.8,
+    "ops": 0.72,
+    "AVG": 0.276,
+    "ERA": null,
+    "SO": 58,
+    "Year": 2021,
+    "HR": 10,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_19",
+    "name": "임시후",
+    "positions": [
+      "CF",
+      "LF"
+    ],
+    "war": 4.2,
+    "ops": 0.74,
+    "AVG": 0.283,
+    "ERA": null,
+    "SO": 50,
+    "Year": 2022,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_20",
+    "name": "박자윤",
+    "positions": [
+      "2B",
+      "3B"
+    ],
+    "war": 3.0,
+    "ops": 0.68,
+    "AVG": 0.267,
+    "ERA": null,
+    "SO": 42,
+    "Year": 2023,
+    "HR": 5,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_21",
+    "name": "조용호",
+    "positions": [
+      "SS",
+      "2B"
+    ],
+    "war": 2.5,
+    "ops": 0.65,
+    "AVG": 0.258,
+    "ERA": null,
+    "SO": 38,
+    "Year": 2021,
+    "HR": 3,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_22",
+    "name": "강현우",
+    "positions": [
+      "RP",
+      "SP"
+    ],
+    "war": 2.8,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.77,
+    "SO": 74,
+    "Year": 2023,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_23",
+    "name": "최이준",
+    "positions": [
+      "RF",
+      "LF"
+    ],
+    "war": 2.2,
+    "ops": 0.65,
+    "AVG": 0.258,
+    "ERA": null,
+    "SO": 42,
+    "Year": 2024,
+    "HR": 6,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_24",
+    "name": "김민혁",
+    "positions": [
+      "LF",
+      "RF"
+    ],
+    "war": 3.0,
+    "ops": 0.7,
+    "AVG": 0.271,
+    "ERA": null,
+    "SO": 48,
+    "Year": 2022,
+    "HR": 8,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "KT_2020_25",
+    "name": "박영현",
+    "positions": [
+      "RP"
+    ],
+    "war": 4.5,
+    "ops": null,
+    "AVG": null,
+    "ERA": 3.12,
+    "SO": 97,
+    "Year": 2024,
+    "HR": null,
+    "Korean": true,
+    "Captain": false
   }
 ]
