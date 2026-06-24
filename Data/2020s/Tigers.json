@@ -169,10 +169,25 @@
     "id": "Kia_2020_11",
     "name": "김도영",
     "positions": [
-      "3B",
-      "SS"
+      "3B"
     ],
     "war": 8.5,
+    "ops": 0.97,
+    "AVG": 0.323,
+    "ERA": null,
+    "SO": 94,
+    "Year": 2024,
+    "HR": 38,
+    "Korean": true,
+    "Captain": false
+  },
+  {
+    "id": "Kia_2020_011",
+    "name": "김도영",
+    "positions": [
+      "SS"
+    ],
+    "war": 4.5,
     "ops": 0.97,
     "AVG": 0.323,
     "ERA": null,
