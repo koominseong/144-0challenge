@@ -279,22 +279,6 @@
     "Captain": false
   },
   {
-    "id": "LG_2010_18",
-    "name": "타이론 우즈",
-    "positions": [
-      "1B"
-    ],
-    "war": 4.9,
-    "ops": 0.92,
-    "AVG": 0.309,
-    "ERA": null,
-    "SO": 98,
-    "Year": 2010,
-    "HR": 31,
-    "Korean": false,
-    "Captain": false
-  },
-  {
     "id": "LG_2010_19",
     "name": "루카스",
     "positions": [
