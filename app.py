@@ -2084,8 +2084,8 @@ def pvp_assign_player():
 @app.route("/pvp_result")
 def pvp_result():
 
-    lineup_a = session["player_a"]
-    lineup_b = session["player_b"]
+    lineup_a = session["pvp_lineup_a"]
+    lineup_b = session["pvp_lineup_b"]
 
 
     def calc_war(lineup):
