@@ -1945,10 +1945,10 @@ def pvp_assign_player():
     print(request.form)
 
     player_id = request.form.get("player_id")
-    position = request.form.get("position")
+    positions = request.form.get("positions")
 
     print(player_id)
-    print(position)
+    print(positions)
     
     used_players = session[
         "pvp_used_players"
