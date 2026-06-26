@@ -1719,6 +1719,363 @@ def ranking():
         "ranking.html",
         records=records
     )
+
+@app.route("/pvp_start")
+def pvp_start():
+
+    session.clear()
+
+    session["mode"] = "pvp"
+
+    session["era"] = "all_time"
+
+    session["pvp_actual_era"] = random.choice(
+        ["2000s", "2010s", "2020s"]
+    )
+
+    session["pvp_lineup_a"] = {
+        "SP": [],
+        "RP": [],
+        "C": None,
+        "1B": None,
+        "2B": None,
+        "3B": None,
+        "SS": None,
+        "LF": None,
+        "CF": None,
+        "RF": None,
+        "DH": None
+    }
+
+    session["pvp_lineup_b"] = {
+        "SP": [],
+        "RP": [],
+        "C": None,
+        "1B": None,
+        "2B": None,
+        "3B": None,
+        "SS": None,
+        "LF": None,
+        "CF": None,
+        "RF": None,
+        "DH": None
+    }
+
+    session["pvp_used_players"] = []
+
+    session["pvp_used_teams"] = []
+
+    session["pvp_turn"] = "A"
+
+    session["pvp_round"] = 0
+
+    session["pvp_pick_count"] = 0
+
+    return redirect("/pvp_next")
+
+
+@app.route("/pvp_next")
+def pvp_next():
+
+    if "pvp_lineup_a" not in session:
+        return redirect("/")
+
+    session["pvp_actual_era"] = random.choice(
+        ["2000s", "2010s", "2020s"]
+    )
+
+    old_era = session.get("actual_era")
+
+    session["actual_era"] = session[
+        "pvp_actual_era"
+    ]
+
+    team_names = get_team_names()
+
+    if old_era:
+        session["actual_era"] = old_era
+
+    available = []
+
+    for team in team_names.keys():
+
+        unique_id = (
+            f"{session['pvp_actual_era']}|{team}"
+        )
+
+        if unique_id not in session[
+            "pvp_used_teams"
+        ]:
+            available.append(team)
+
+    retry = 0
+
+    while not available and retry < 10:
+
+        session["pvp_actual_era"] = random.choice(
+            ["2000s", "2010s", "2020s"]
+        )
+
+        old_era = session.get("actual_era")
+
+        session["actual_era"] = session[
+            "pvp_actual_era"
+        ]
+
+        team_names = get_team_names()
+
+        if old_era:
+            session["actual_era"] = old_era
+
+        available = []
+
+        for team in team_names.keys():
+
+            unique_id = (
+                f"{session['pvp_actual_era']}|{team}"
+            )
+
+            if unique_id not in session[
+                "pvp_used_teams"
+            ]:
+                available.append(team)
+
+        retry += 1
+
+    if not available:
+        return redirect("/pvp_result")
+
+    team = random.choice(available)
+
+    session["pvp_current_team"] = team
+
+    session["pvp_used_teams"].append(
+        f"{session['pvp_actual_era']}|{team}"
+    )
+
+    session["pvp_pick_count"] = 0
+
+    session.modified = True
+
+    return render_template(
+        "pvp_loading.html",
+        team_name=team_names[team],
+        era="all_time",
+        actual_era=session[
+            "pvp_actual_era"
+        ]
+    )
+
+
+def load_pvp_team(team):
+
+    path = os.path.join(
+        "Data",
+        session["pvp_actual_era"],
+        f"{team}.json"
+    )
+
+    with open(
+        path,
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        return json.load(f)
+
+
+@app.route("/pvp_team_view")
+def pvp_team_view():
+
+    if "pvp_current_team" not in session:
+        return redirect("/")
+
+    players = load_pvp_team(
+        session["pvp_current_team"]
+    )
+
+    old_era = session.get("actual_era")
+
+    session["actual_era"] = session[
+        "pvp_actual_era"
+    ]
+
+    team_name = get_team_names()[
+        session["pvp_current_team"]
+    ]
+
+    if old_era:
+        session["actual_era"] = old_era
+
+    error = session.pop(
+        "pvp_error",
+        None
+    )
+
+    return render_template(
+        "vs_team.html",
+
+        team_name=team_name,
+
+        players=players,
+
+        current_turn=session[
+            "pvp_turn"
+        ],
+
+        lineup_a=session[
+            "pvp_lineup_a"
+        ],
+
+        lineup_b=session[
+            "pvp_lineup_b"
+        ],
+
+        actual_era=session[
+            "pvp_actual_era"
+        ],
+
+        error=error
+    )
+
+
+@app.route(
+    "/pvp_assign_player",
+    methods=["POST"]
+)
+def pvp_assign_player():
+
+    player_id = request.form["player_id"]
+    position = request.form["position"]
+
+    used_players = session[
+        "pvp_used_players"
+    ]
+
+    if player_id in used_players:
+
+        session["pvp_error"] = (
+            "이미 선택된 선수입니다."
+        )
+
+        return redirect("/pvp_team_view")
+
+    players = load_pvp_team(
+        session["pvp_current_team"]
+    )
+
+    player = next(
+        p for p in players
+        if p["id"] == player_id
+    )
+
+    current_turn = session["pvp_turn"]
+
+    if current_turn == "A":
+        lineup = session["pvp_lineup_a"]
+    else:
+        lineup = session["pvp_lineup_b"]
+
+    player_positions = (
+        player.get("position")
+        or player.get("positions", [])
+    )
+
+    if position == "DH":
+
+        if (
+            "SP" in player_positions
+            or "RP" in player_positions
+        ):
+
+            session["pvp_error"] = (
+                "투수는 DH에 배치할 수 없습니다."
+            )
+
+            return redirect("/pvp_team_view")
+
+    else:
+
+        if position not in player_positions:
+
+            session["pvp_error"] = (
+                "배치 불가능한 포지션입니다."
+            )
+
+            return redirect("/pvp_team_view")
+
+    if position == "SP":
+
+        if len(lineup["SP"]) >= 3:
+
+            session["pvp_error"] = (
+                "선발 자리가 가득 찼습니다."
+            )
+
+            return redirect("/pvp_team_view")
+
+        lineup["SP"].append(player)
+
+    elif position == "RP":
+
+        if len(lineup["RP"]) >= 3:
+
+            session["pvp_error"] = (
+                "불펜 자리가 가득 찼습니다."
+            )
+
+            return redirect("/pvp_team_view")
+
+        lineup["RP"].append(player)
+
+    else:
+
+        if lineup[position]:
+
+            session["pvp_error"] = (
+                "이미 사용 중인 포지션입니다."
+            )
+
+            return redirect("/pvp_team_view")
+
+        lineup[position] = player
+
+    if current_turn == "A":
+
+        session["pvp_lineup_a"] = lineup
+        session["pvp_turn"] = "B"
+
+    else:
+
+        session["pvp_lineup_b"] = lineup
+        session["pvp_turn"] = "A"
+
+    used_players.append(player_id)
+
+    session["pvp_used_players"] = used_players
+
+    session["pvp_pick_count"] += 1
+
+    session.modified = True
+
+    # 팀 하나에서 총 6명 선택 완료
+    if session["pvp_pick_count"] >= 6:
+
+        session["pvp_round"] += 1
+
+        # 다음 팀 선공 변경
+        if session["pvp_round"] % 2 == 1:
+            session["pvp_turn"] = "B"
+        else:
+            session["pvp_turn"] = "A"
+
+        # 총 5팀 완료
+        if session["pvp_round"] >= 5:
+            return redirect("/pvp_result")
+
+        return redirect("/pvp_next")
+
+    return redirect("/pvp_team_view")
     
 if __name__ == "__main__":
-    app.run(debug=True)
+app.run(debug=True)
