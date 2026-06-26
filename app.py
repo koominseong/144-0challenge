@@ -1949,8 +1949,6 @@ def pvp_assign_player():
 
     print(player_id)
     print(position)
-
-    return "OK"
     
     used_players = session[
         "pvp_used_players"
