@@ -1984,6 +1984,7 @@ def pvp_assign_player():
         or player.get("positions", [])
     )
 
+    
     if position == "DH":
 
         if (
