@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>PVP Draft</title>
+
+<style>
+
+body{
+
+    margin:0;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b
+    );
+
+    color:white;
+
+    font-family:sans-serif;
+
+    height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+}
+
+.box{
+
+    text-align:center;
+}
+
+.era{
+
+    color:#60a5fa;
+
+    font-size:24px;
+
+    margin-bottom:20px;
+}
+
+.team{
+
+    font-size:64px;
+
+    font-weight:900;
+
+    margin-bottom:30px;
+}
+
+.loading{
+
+    font-size:20px;
+
+    opacity:.7;
+}
+
+</style>
+
+<script>
+
+setTimeout(function(){
+
+    location.href="/pvp_team_view"
+
+},2500)
+
+</script>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<div class="era">
+
+{{ actual_era }}
+
+</div>
+
+<div class="team">
+
+{{ team_name }}
+
+</div>
+
+<div class="loading">
+
+선수 드래프트 시작...
+
+</div>
+
+</div>
+
+</body>
+</html>
