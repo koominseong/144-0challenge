@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>PVP Draft</title>
+
+<style>
+
+body{
+
+    margin:0;
+
+    background:#0f172a;
+
+    color:white;
+
+    font-family:sans-serif;
+}
+
+.header{
+
+    text-align:center;
+
+    padding:30px;
+}
+
+.team-name{
+
+    font-size:50px;
+
+    font-weight:900;
+}
+
+.turn{
+
+    margin-top:15px;
+
+    font-size:28px;
+
+    color:#60a5fa;
+}
+
+.container{
+
+    display:flex;
+
+    gap:30px;
+
+    padding:30px;
+}
+
+.players{
+
+    flex:2;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+}
+
+.card{
+
+    background:#1e293b;
+
+    border-radius:20px;
+
+    padding:20px;
+}
+
+.name{
+
+    font-size:26px;
+
+    font-weight:800;
+}
+
+.war{
+
+    color:#fbbf24;
+
+    margin:10px 0;
+}
+
+select{
+
+    width:100%;
+
+    padding:10px;
+
+    margin-top:10px;
+}
+
+button{
+
+    width:100%;
+
+    margin-top:10px;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+}
+
+.lineups{
+
+    flex:1;
+}
+
+.side{
+
+    background:#1e293b;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+}
+
+.side h2{
+
+    margin-bottom:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<div class="team-name">
+{{ team_name }}
+</div>
+
+<div class="turn">
+
+{{ current_turn }}팀 차례
+
+</div>
+
+</div>
+
+{% if error %}
+
+<div style="text-align:center;color:red">
+
+{{ error }}
+
+</div>
+
+{% endif %}
+
+<div class="container">
+
+<div class="players">
+
+{% for player in players %}
+
+<div class="card">
+
+<div class="name">
+
+{{ player.name }}
+
+</div>
+
+<div class="war">
+
+WAR {{ player.war }}
+
+</div>
+
+<form
+action="/pvp_assign_player"
+method="POST">
+
+<input
+type="hidden"
+name="player_id"
+value="{{ player.id }}">
+
+<select name="position">
+
+{% for pos in player.position %}
+
+<option value="{{ pos }}">
+
+{{ pos }}
+
+</option>
+
+{% endfor %}
+
+<option value="DH">
+
+DH
+
+</option>
+
+</select>
+
+<button>
+
+선택
+
+</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<div class="lineups">
+
+<div class="side">
+
+<h2>
+
+🔵 A팀
+
+</h2>
+
+{{ lineup_a }}
+
+</div>
+
+<div class="side">
+
+<h2>
+
+🔴 B팀
+
+</h2>
+
+{{ lineup_b }}
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
