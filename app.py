@@ -2076,6 +2076,231 @@ def pvp_assign_player():
         return redirect("/pvp_next")
 
     return redirect("/pvp_team_view")
+
+@app.route("/pvp_result")
+def pvp_result():
+
+    lineup_a = session["player_a"]
+    lineup_b = session["player_b"]
+
+
+    def calc_war(lineup):
+
+        total = 0
+
+        for p in lineup["SP"]:
+            total += p["war"]
+
+        for p in lineup["RP"]:
+            total += p["war"]
+
+        for pos in [
+            "C","1B","2B","3B",
+            "SS","LF","CF","RF","DH"
+        ]:
+
+            if lineup[pos]:
+                total += lineup[pos]["war"]
+
+        return total
+
+
+    war_a = calc_war(lineup_a)
+    war_b = calc_war(lineup_b)
+
+
+    EVENTS = [
+
+        {
+            "name":"🔥 타선 폭발",
+            "desc":"타자들이 미친 듯이 터졌다",
+            "war":4
+        },
+
+        {
+            "name":"🦸 에이스 완투승",
+            "desc":"선발진이 압도적인 경기력을 보였다",
+            "war":5
+        },
+
+        {
+            "name":"⚡ 클러치 히터",
+            "desc":"승부처마다 적시타가 터졌다",
+            "war":3
+        },
+
+        {
+            "name":"🛡 철벽 수비",
+            "desc":"완벽한 수비 집중력",
+            "war":2
+        },
+
+        {
+            "name":"🏃 기동력 야구",
+            "desc":"주루 플레이가 빛났다",
+            "war":2
+        },
+
+        {
+            "name":"💣 홈런 더비",
+            "desc":"장타쇼가 펼쳐졌다",
+            "war":4
+        },
+
+        {
+            "name":"🎯 감독의 명장면",
+            "desc":"작전이 모두 성공했다",
+            "war":3
+        },
+
+        {
+            "name":"👑 챔피언 DNA",
+            "desc":"승리 본능이 발휘됐다",
+            "war":4
+        },
+
+        {
+            "name":"🌟 슈퍼스타 각성",
+            "desc":"에이스가 미친 활약을 했다",
+            "war":5
+        },
+
+        {
+            "name":"🤕 주전 부상",
+            "desc":"핵심 선수가 이탈했다",
+            "war":-4
+        },
+
+        {
+            "name":"💀 불펜 대참사",
+            "desc":"불펜이 무너졌다",
+            "war":-5
+        },
+
+        {
+            "name":"😱 치명적 실책",
+            "desc":"수비 실수가 이어졌다",
+            "war":-3
+        },
+
+        {
+            "name":"🌧 우천 경기",
+            "desc":"악천후의 영향을 받았다",
+            "war":-2
+        },
+
+        {
+            "name":"🥶 타선 침묵",
+            "desc":"득점권 집중력이 사라졌다",
+            "war":-4
+        },
+
+        {
+            "name":"😴 집단 부진",
+            "desc":"전체적으로 컨디션이 좋지 않았다",
+            "war":-3
+        },
+
+        {
+            "name":"🚑 줄부상",
+            "desc":"부상자가 속출했다",
+            "war":-5
+        },
+
+        {
+            "name":"🧊 에이스 난조",
+            "desc":"믿었던 선발이 무너졌다",
+            "war":-4
+        },
+
+        {
+            "name":"💸 FA 먹튀",
+            "desc":"고액 연봉자들이 부진했다",
+            "war":-3
+        },
+
+        {
+            "name":"🎲 평범한 경기",
+            "desc":"특별한 일은 없었다",
+            "war":0
+        }
+    ]
+
+
+    event_a = random.choice(EVENTS)
+    event_b = random.choice(EVENTS)
+
+
+    war_a += event_a["war"]
+    war_b += event_b["war"]
+
+
+    # 당일 컨디션 (-3 ~ +3)
+    form_a = round(
+        random.uniform(-3, 3),
+        1
+    )
+
+    form_b = round(
+        random.uniform(-3, 3),
+        1
+    )
+
+
+    final_a = round(
+        war_a + form_a,
+        1
+    )
+
+    final_b = round(
+        war_b + form_b,
+        1
+    )
+
+
+    if final_a > final_b:
+
+        winner = "A"
+
+    elif final_b > final_a:
+
+        winner = "B"
+
+    else:
+
+        winner = random.choice(
+            ["A", "B"]
+        )
+
+
+    return render_template(
+
+        "pvp_result.html",
+
+        lineup_a=lineup_a,
+        lineup_b=lineup_b,
+
+        base_war_a=round(
+            calc_war(lineup_a),
+            1
+        ),
+
+        base_war_b=round(
+            calc_war(lineup_b),
+            1
+        ),
+
+        event_a=event_a,
+        event_b=event_b,
+
+        form_a=form_a,
+        form_b=form_b,
+
+        final_a=final_a,
+        final_b=final_b,
+
+        winner=winner
+    )
     
 if __name__ == "__main__":
 app.run(debug=True)
