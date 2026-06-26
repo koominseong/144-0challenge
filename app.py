@@ -1939,15 +1939,19 @@ def pvp_team_view():
     )
 
 
-@app.route(
-    "/pvp_assign_player",
-    methods=["POST"]
-)
+@app.route("/pvp_assign_player", methods=["POST"])
 def pvp_assign_player():
 
-    player_id = request.form["player_id"]
-    position = request.form["position"]
+    print(request.form)
 
+    player_id = request.form.get("player_id")
+    position = request.form.get("position")
+
+    print(player_id)
+    print(position)
+
+    return "OK"
+    
     used_players = session[
         "pvp_used_players"
     ]
