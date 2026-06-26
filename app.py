@@ -1946,6 +1946,7 @@ def pvp_assign_player():
 
     player_id = request.form.get("player_id")
     positions = request.form.get("positions")
+    position = positions
 
     print(player_id)
     print(positions)
