@@ -209,7 +209,7 @@ def classic_start():
     session["lineup"] = {
         "SP": [],
         "RP": [],
-        "C": None
+        "C": None,
         "1B": None,
         "2B": None,
         "3B": None,
