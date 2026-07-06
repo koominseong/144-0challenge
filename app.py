@@ -658,7 +658,7 @@ def next_team():
         
         session["actual_era"] = None
 
-    if session["era"] == "all_time":
+    elif session["era"] == "all_time":
 
         if session.get("fixed_era"):
             session["actual_era"] = session["fixed_era"]
