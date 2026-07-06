@@ -4,12 +4,12 @@
     "name": "강진규",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.52,
     "AVG": 0.105,
-    "OPS": 0.233,
+    "ops": 0.233,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -25,13 +25,13 @@
     "name": "구동환",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.02,
     "AVG": 0.25,
-    "OPS": 0.65,
+    "ops": 0.65,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -47,12 +47,12 @@
     "name": "김건우",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.24,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.0,
     "HR": 1,
     "SB": null,
@@ -68,12 +68,12 @@
     "name": "김기덕",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.1,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.87,
     "HR": 2,
     "SB": null,
@@ -89,12 +89,12 @@
     "name": "김기범",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 3.26,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.95,
     "HR": 8,
     "SB": null,
@@ -110,13 +110,13 @@
     "name": "김덕근",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.81,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.0,
     "HR": 2,
     "SB": null,
@@ -132,12 +132,12 @@
     "name": "김동수",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.23,
     "AVG": 0.196,
-    "OPS": 0.598,
+    "ops": 0.598,
     "ERA": null,
     "HR": 5,
     "SB": 5,
@@ -153,13 +153,13 @@
     "name": "김동재",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.06,
     "AVG": 0.253,
-    "OPS": 0.66,
+    "ops": 0.66,
     "ERA": null,
     "HR": 4,
     "SB": 1,
@@ -175,12 +175,12 @@
     "name": "김상훈",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 0.02,
     "AVG": 0.255,
-    "OPS": 0.687,
+    "ops": 0.687,
     "ERA": null,
     "HR": 7,
     "SB": 2,
@@ -196,12 +196,12 @@
     "name": "김선진",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.23,
     "AVG": 0.255,
-    "OPS": 0.653,
+    "ops": 0.653,
     "ERA": null,
     "HR": 3,
     "SB": 12,
@@ -217,12 +217,12 @@
     "name": "김성식",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.94,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.8,
     "HR": 2,
     "SB": null,
@@ -238,14 +238,14 @@
     "name": "김성일",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.75,
     "AVG": 0.171,
-    "OPS": 0.493,
+    "ops": 0.493,
     "ERA": null,
     "HR": 1,
     "SB": 5,
@@ -261,12 +261,12 @@
     "name": "김영직",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 0.09,
     "AVG": 0.245,
-    "OPS": 0.701,
+    "ops": 0.701,
     "ERA": null,
     "HR": 4,
     "SB": 0,
@@ -282,13 +282,13 @@
     "name": "김용수",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 4.1,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.79,
     "HR": 5,
     "SB": null,
@@ -304,14 +304,14 @@
     "name": "김일권",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -1.47,
     "AVG": 0.151,
-    "OPS": 0.399,
+    "ops": 0.399,
     "ERA": null,
     "HR": 0,
     "SB": 8,
@@ -327,13 +327,13 @@
     "name": "김재박",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 1.03,
     "AVG": 0.263,
-    "OPS": 0.675,
+    "ops": 0.675,
     "ERA": null,
     "HR": 0,
     "SB": 15,
@@ -349,12 +349,12 @@
     "name": "김종철",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.14,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.23,
     "HR": 2,
     "SB": null,
@@ -370,12 +370,12 @@
     "name": "김태원",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": -0.17,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.84,
     "HR": 12,
     "SB": null,
@@ -391,12 +391,12 @@
     "name": "나웅",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.25,
     "AVG": 0.179,
-    "OPS": 0.513,
+    "ops": 0.513,
     "ERA": null,
     "HR": 0,
     "SB": 5,
@@ -412,13 +412,13 @@
     "name": "나진균",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.32,
     "AVG": 0.0,
-    "OPS": 0.077,
+    "ops": 0.077,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -434,14 +434,14 @@
     "name": "노찬엽",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 2.9,
     "AVG": 0.317,
-    "OPS": 0.817,
+    "ops": 0.817,
     "ERA": null,
     "HR": 3,
     "SB": 12,
@@ -457,12 +457,12 @@
     "name": "문병권",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": -0.61,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.15,
     "HR": 12,
     "SB": null,
@@ -478,12 +478,12 @@
     "name": "민경삼",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.09,
     "AVG": 0.223,
-    "OPS": 0.594,
+    "ops": 0.594,
     "ERA": null,
     "HR": 2,
     "SB": 7,
@@ -499,13 +499,13 @@
     "name": "박일현",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.04,
     "AVG": 0.286,
-    "OPS": 0.619,
+    "ops": 0.619,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -521,14 +521,14 @@
     "name": "박흥식",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.22,
     "AVG": 0.125,
-    "OPS": 0.458,
+    "ops": 0.458,
     "ERA": null,
     "HR": 0,
     "SB": 4,
@@ -544,12 +544,12 @@
     "name": "배현우",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.2,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.35,
     "HR": 0,
     "SB": null,
@@ -565,12 +565,12 @@
     "name": "서왕권",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.02,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.5,
     "HR": 0,
     "SB": null,
@@ -586,13 +586,13 @@
     "name": "서효인",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.2,
     "AVG": 0.152,
-    "OPS": 0.535,
+    "ops": 0.535,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -608,13 +608,13 @@
     "name": "소순배",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.1,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -630,12 +630,12 @@
     "name": "송구홍",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.11,
     "AVG": 0.236,
-    "OPS": 0.603,
+    "ops": 0.603,
     "ERA": null,
     "HR": 2,
     "SB": 13,
@@ -651,12 +651,12 @@
     "name": "심재원",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.02,
     "AVG": 0.25,
-    "OPS": 0.5,
+    "ops": 0.5,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -672,13 +672,13 @@
     "name": "오종우",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.01,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.8,
     "HR": 1,
     "SB": null,
@@ -694,13 +694,13 @@
     "name": "윤덕규",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 1.95,
     "AVG": 0.308,
-    "OPS": 0.782,
+    "ops": 0.782,
     "ERA": null,
     "HR": 1,
     "SB": 3,
@@ -716,12 +716,12 @@
     "name": "이광은",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 1.45,
     "AVG": 0.271,
-    "OPS": 0.719,
+    "ops": 0.719,
     "ERA": null,
     "HR": 5,
     "SB": 6,
@@ -737,12 +737,12 @@
     "name": "이국성",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.71,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.89,
     "HR": 8,
     "SB": null,
@@ -758,12 +758,12 @@
     "name": "이병석",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.03,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.84,
     "HR": 3,
     "SB": null,
@@ -779,13 +779,13 @@
     "name": "이병훈",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.1,
     "AVG": 0.219,
-    "OPS": 0.634,
+    "ops": 0.634,
     "ERA": null,
     "HR": 2,
     "SB": 1,
@@ -801,12 +801,12 @@
     "name": "이석구",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.29,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 18.0,
     "HR": 1,
     "SB": null,
@@ -822,12 +822,12 @@
     "name": "이승배",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.0,
     "HR": 0,
     "SB": null,
@@ -843,13 +843,13 @@
     "name": "이용철",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -1.51,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.39,
     "HR": 11,
     "SB": null,
@@ -865,13 +865,13 @@
     "name": "이우수",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.35,
     "AVG": 0.208,
-    "OPS": 0.504,
+    "ops": 0.504,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -887,12 +887,12 @@
     "name": "이종열",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.1,
     "AVG": 0.238,
-    "OPS": 0.511,
+    "ops": 0.511,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -908,13 +908,13 @@
     "name": "장주덕",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.01,
     "AVG": 0.308,
-    "OPS": 0.742,
+    "ops": 0.742,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -930,13 +930,13 @@
     "name": "전태건",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.28,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.77,
     "HR": 2,
     "SB": null,
@@ -952,12 +952,12 @@
     "name": "정삼흠",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.1,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.18,
     "HR": 17,
     "SB": null,
@@ -973,12 +973,12 @@
     "name": "정재훈",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.14,
     "AVG": 0.333,
-    "OPS": 0.812,
+    "ops": 0.812,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -994,14 +994,14 @@
     "name": "조필현",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -1.19,
     "AVG": 0.195,
-    "OPS": 0.546,
+    "ops": 0.546,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -1017,12 +1017,12 @@
     "name": "차동열",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.3,
     "AVG": 0.148,
-    "OPS": 0.32,
+    "ops": 0.32,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -1038,12 +1038,12 @@
     "name": "차동철",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.41,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 14.73,
     "HR": 1,
     "SB": null,
@@ -1059,12 +1059,12 @@
     "name": "최달호",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.03,
     "AVG": 0.196,
-    "OPS": 0.582,
+    "ops": 0.582,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -1080,12 +1080,12 @@
     "name": "최우석",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.06,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.0,
     "HR": 0,
     "SB": null,
@@ -1101,12 +1101,12 @@
     "name": "최훈재",
     "team": "LG",
     "team_kr": "LG",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 0.7,
     "AVG": 0.24,
-    "OPS": 0.773,
+    "ops": 0.773,
     "ERA": null,
     "HR": 10,
     "SB": null,

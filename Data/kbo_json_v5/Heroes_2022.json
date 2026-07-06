@@ -4,13 +4,13 @@
     "name": "강민국",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.03,
     "AVG": 0.0,
-    "OPS": 0.25,
+    "ops": 0.25,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -26,12 +26,12 @@
     "name": "김동혁",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.04,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.73,
     "HR": 0,
     "SB": null,
@@ -47,12 +47,12 @@
     "name": "김선기",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.15,
     "HR": 1,
     "SB": null,
@@ -68,12 +68,12 @@
     "name": "김성진",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.72,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.89,
     "HR": 3,
     "SB": null,
@@ -89,12 +89,12 @@
     "name": "김수환",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.3,
     "AVG": 0.179,
-    "OPS": 0.604,
+    "ops": 0.604,
     "ERA": null,
     "HR": 4,
     "SB": 0,
@@ -110,12 +110,12 @@
     "name": "김시앙",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.16,
     "AVG": 0.083,
-    "OPS": 0.237,
+    "ops": 0.237,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -131,12 +131,12 @@
     "name": "김웅빈",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": -0.26,
     "AVG": 0.226,
-    "OPS": 0.639,
+    "ops": 0.639,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -152,12 +152,12 @@
     "name": "김재웅",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 2.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.01,
     "HR": 4,
     "SB": null,
@@ -173,12 +173,12 @@
     "name": "김재현",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.15,
     "AVG": 0.207,
-    "OPS": 0.526,
+    "ops": 0.526,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -194,13 +194,13 @@
     "name": "김주형",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 0.27,
     "AVG": 0.2,
-    "OPS": 0.614,
+    "ops": 0.614,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -216,13 +216,13 @@
     "name": "김준완",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.04,
     "AVG": 0.192,
-    "OPS": 0.585,
+    "ops": 0.585,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -238,12 +238,12 @@
     "name": "김준형",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.42,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.03,
     "HR": 0,
     "SB": null,
@@ -259,12 +259,12 @@
     "name": "김태진",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.61,
     "AVG": 0.268,
-    "OPS": 0.61,
+    "ops": 0.61,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -280,12 +280,12 @@
     "name": "김태훈",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.83,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.14,
     "HR": 3,
     "SB": null,
@@ -301,12 +301,12 @@
     "name": "김혜성",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 4.04,
     "AVG": 0.318,
-    "OPS": 0.776,
+    "ops": 0.776,
     "ERA": null,
     "HR": 4,
     "SB": 34,
@@ -322,13 +322,13 @@
     "name": "김휘집",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 1.39,
     "AVG": 0.222,
-    "OPS": 0.662,
+    "ops": 0.662,
     "ERA": null,
     "HR": 8,
     "SB": 0,
@@ -344,12 +344,12 @@
     "name": "노운현",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.28,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 11.25,
     "HR": 0,
     "SB": null,
@@ -365,12 +365,12 @@
     "name": "문성현",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.74,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.27,
     "HR": 3,
     "SB": null,
@@ -386,12 +386,12 @@
     "name": "박승주",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.16,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.32,
     "HR": 3,
     "SB": null,
@@ -407,12 +407,12 @@
     "name": "박주성",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.1,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.54,
     "HR": 4,
     "SB": null,
@@ -428,13 +428,13 @@
     "name": "박주홍",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.04,
     "AVG": 0.224,
-    "OPS": 0.619,
+    "ops": 0.619,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -450,13 +450,13 @@
     "name": "박준태",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.15,
     "AVG": 0.157,
-    "OPS": 0.546,
+    "ops": 0.546,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -472,13 +472,13 @@
     "name": "박찬혁",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.03,
     "AVG": 0.211,
-    "OPS": 0.628,
+    "ops": 0.628,
     "ERA": null,
     "HR": 6,
     "SB": 0,
@@ -494,12 +494,12 @@
     "name": "송성문",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 1.38,
     "AVG": 0.247,
-    "OPS": 0.673,
+    "ops": 0.673,
     "ERA": null,
     "HR": 13,
     "SB": 0,
@@ -515,12 +515,12 @@
     "name": "송정인",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.39,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 22.5,
     "HR": 0,
     "SB": null,
@@ -536,13 +536,13 @@
     "name": "신준우",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.08,
     "AVG": 0.14,
-    "OPS": 0.497,
+    "ops": 0.497,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -558,12 +558,12 @@
     "name": "안우진",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 6.03,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.11,
     "HR": 4,
     "SB": null,
@@ -579,13 +579,13 @@
     "name": "애플러",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.91,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.3,
     "HR": 13,
     "SB": null,
@@ -601,12 +601,12 @@
     "name": "양현",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.15,
     "HR": 4,
     "SB": null,
@@ -622,13 +622,13 @@
     "name": "예진원",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.06,
     "AVG": 0.1,
-    "OPS": 0.408,
+    "ops": 0.408,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -644,12 +644,12 @@
     "name": "요키시",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 4.76,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.57,
     "HR": 8,
     "SB": null,
@@ -665,12 +665,12 @@
     "name": "윤정현",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.37,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.35,
     "HR": 2,
     "SB": null,
@@ -686,12 +686,12 @@
     "name": "이명기",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": -0.03,
     "AVG": 0.25,
-    "OPS": 0.5,
+    "ops": 0.5,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -707,12 +707,12 @@
     "name": "이명종",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.12,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.27,
     "HR": 3,
     "SB": null,
@@ -728,12 +728,12 @@
     "name": "이병규",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.26,
     "AVG": 0.184,
-    "OPS": 0.488,
+    "ops": 0.488,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -749,12 +749,12 @@
     "name": "이승호",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.73,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.58,
     "HR": 7,
     "SB": null,
@@ -770,12 +770,12 @@
     "name": "이영준",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.14,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.29,
     "HR": 0,
     "SB": null,
@@ -791,14 +791,14 @@
     "name": "이용규",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.25,
     "AVG": 0.199,
-    "OPS": 0.547,
+    "ops": 0.547,
     "ERA": null,
     "HR": 0,
     "SB": 12,
@@ -814,12 +814,12 @@
     "name": "이재홍",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.02,
     "AVG": 0.25,
-    "OPS": 0.5,
+    "ops": 0.5,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -835,13 +835,13 @@
     "name": "이정후",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 8.26,
     "AVG": 0.349,
-    "OPS": 0.996,
+    "ops": 0.996,
     "ERA": null,
     "HR": 23,
     "SB": 5,
@@ -857,13 +857,13 @@
     "name": "이주형",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.25,
     "AVG": 0.169,
-    "OPS": 0.505,
+    "ops": 0.505,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -879,12 +879,12 @@
     "name": "이지영",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 1.21,
     "AVG": 0.267,
-    "OPS": 0.634,
+    "ops": 0.634,
     "ERA": null,
     "HR": 2,
     "SB": 1,
@@ -900,13 +900,13 @@
     "name": "임지열",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.3,
     "AVG": 0.275,
-    "OPS": 0.675,
+    "ops": 0.675,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -922,14 +922,14 @@
     "name": "장재영",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.44,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.71,
     "HR": 2,
     "SB": null,
@@ -945,12 +945,12 @@
     "name": "전병우",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.49,
     "AVG": 0.203,
-    "OPS": 0.603,
+    "ops": 0.603,
     "ERA": null,
     "HR": 5,
     "SB": 0,
@@ -966,13 +966,13 @@
     "name": "정찬헌",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.46,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.36,
     "HR": 13,
     "SB": null,
@@ -988,12 +988,12 @@
     "name": "주승우",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.22,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 10.8,
     "HR": 1,
     "SB": null,
@@ -1009,13 +1009,13 @@
     "name": "최원태",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 1.33,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.75,
     "HR": 5,
     "SB": null,
@@ -1031,13 +1031,13 @@
     "name": "푸이그",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 4.4,
     "AVG": 0.277,
-    "OPS": 0.841,
+    "ops": 0.841,
     "ERA": null,
     "HR": 21,
     "SB": null,
@@ -1053,12 +1053,12 @@
     "name": "하영민",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.63,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.43,
     "HR": 4,
     "SB": null,
@@ -1074,13 +1074,13 @@
     "name": "한현희",
     "team": "Heroes",
     "team_kr": "키움",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.75,
     "HR": 9,
     "SB": null,

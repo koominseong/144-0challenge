@@ -4,13 +4,13 @@
     "name": "가르시아",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 1.64,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.91,
     "HR": 2,
     "SB": null,
@@ -26,14 +26,14 @@
     "name": "강동우",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.1,
     "AVG": 0.1,
-    "OPS": 0.457,
+    "ops": 0.457,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -49,12 +49,12 @@
     "name": "김기태",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": 3.52,
     "AVG": 0.309,
-    "OPS": 1.032,
+    "ops": 1.032,
     "ERA": null,
     "HR": 26,
     "SB": 5,
@@ -70,12 +70,12 @@
     "name": "김동수",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.89,
     "AVG": 0.205,
-    "OPS": 0.744,
+    "ops": 0.744,
     "ERA": null,
     "HR": 11,
     "SB": 0,
@@ -91,13 +91,13 @@
     "name": "김상진",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 1.71,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.84,
     "HR": 8,
     "SB": null,
@@ -113,12 +113,12 @@
     "name": "김수관",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.47,
     "AVG": 0.163,
-    "OPS": 0.45,
+    "ops": 0.45,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -134,14 +134,14 @@
     "name": "김인철",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.15,
     "AVG": 0.218,
-    "OPS": 0.656,
+    "ops": 0.656,
     "ERA": null,
     "HR": 3,
     "SB": 5,
@@ -157,13 +157,13 @@
     "name": "김종훈",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.27,
     "AVG": 0.245,
-    "OPS": 0.706,
+    "ops": 0.706,
     "ERA": null,
     "HR": 11,
     "SB": 7,
@@ -179,12 +179,12 @@
     "name": "김주찬",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.33,
     "AVG": 0.313,
-    "OPS": 0.823,
+    "ops": 0.823,
     "ERA": null,
     "HR": 0,
     "SB": 7,
@@ -200,12 +200,12 @@
     "name": "김진웅",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.93,
     "HR": 23,
     "SB": null,
@@ -221,13 +221,13 @@
     "name": "김태균",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.35,
     "AVG": 0.24,
-    "OPS": 0.626,
+    "ops": 0.626,
     "ERA": null,
     "HR": 4,
     "SB": 5,
@@ -243,12 +243,12 @@
     "name": "김태한",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.24,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.57,
     "HR": 1,
     "SB": null,
@@ -264,12 +264,12 @@
     "name": "김한수",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.29,
     "AVG": 0.263,
-    "OPS": 0.691,
+    "ops": 0.691,
     "ERA": null,
     "HR": 7,
     "SB": 8,
@@ -285,12 +285,12 @@
     "name": "김현욱",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 2.94,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.14,
     "HR": 7,
     "SB": null,
@@ -306,13 +306,13 @@
     "name": "남기헌",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.17,
     "AVG": 0.227,
-    "OPS": 0.633,
+    "ops": 0.633,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -328,12 +328,12 @@
     "name": "노장진",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.97,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.29,
     "HR": 15,
     "SB": null,
@@ -349,12 +349,12 @@
     "name": "라형진",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.57,
     "HR": 1,
     "SB": null,
@@ -370,13 +370,13 @@
     "name": "박동희",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.49,
     "HR": 6,
     "SB": null,
@@ -392,12 +392,12 @@
     "name": "박영진",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.93,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.43,
     "HR": 3,
     "SB": null,
@@ -413,12 +413,12 @@
     "name": "박정환",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.25,
     "AVG": 0.267,
-    "OPS": 0.776,
+    "ops": 0.776,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -434,12 +434,12 @@
     "name": "배영수",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.6,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 9,
     "SB": null,
@@ -455,14 +455,14 @@
     "name": "신동주",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 1.01,
     "AVG": 0.261,
-    "OPS": 0.762,
+    "ops": 0.762,
     "ERA": null,
     "HR": 12,
     "SB": 17,
@@ -478,12 +478,12 @@
     "name": "이강철",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.71,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.3,
     "HR": 8,
     "SB": null,
@@ -499,13 +499,13 @@
     "name": "이계성",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.54,
     "AVG": 0.235,
-    "OPS": 0.604,
+    "ops": 0.604,
     "ERA": null,
     "HR": 2,
     "SB": 2,
@@ -521,12 +521,12 @@
     "name": "이동은",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.73,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 20.77,
     "HR": 4,
     "SB": null,
@@ -542,12 +542,12 @@
     "name": "이승엽",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 4.66,
     "AVG": 0.293,
-    "OPS": 1.008,
+    "ops": 1.008,
     "ERA": null,
     "HR": 36,
     "SB": 4,
@@ -563,13 +563,13 @@
     "name": "이용훈",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.09,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.63,
     "HR": 22,
     "SB": null,
@@ -585,12 +585,12 @@
     "name": "임창용",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 3.99,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.52,
     "HR": 2,
     "SB": null,
@@ -606,12 +606,12 @@
     "name": "임학수",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.02,
     "AVG": 0.286,
-    "OPS": 0.572,
+    "ops": 0.572,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -627,13 +627,13 @@
     "name": "장영균",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.11,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -649,12 +649,12 @@
     "name": "정경배",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 2.07,
     "AVG": 0.289,
-    "OPS": 0.815,
+    "ops": 0.815,
     "ERA": null,
     "HR": 12,
     "SB": 5,
@@ -670,12 +670,12 @@
     "name": "정성훈",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.62,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.34,
     "HR": 4,
     "SB": null,
@@ -691,12 +691,12 @@
     "name": "정현욱",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.6,
     "HR": 1,
     "SB": null,
@@ -712,12 +712,12 @@
     "name": "조문식",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.18,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 13.5,
     "HR": 1,
     "SB": null,
@@ -733,12 +733,12 @@
     "name": "조상수",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.35,
     "AVG": 0.167,
-    "OPS": 0.334,
+    "ops": 0.334,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -754,12 +754,12 @@
     "name": "진갑용",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 1.01,
     "AVG": 0.273,
-    "OPS": 0.734,
+    "ops": 0.734,
     "ERA": null,
     "HR": 8,
     "SB": null,
@@ -775,12 +775,12 @@
     "name": "최재호",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.25,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.16,
     "HR": 6,
     "SB": null,
@@ -796,13 +796,13 @@
     "name": "최창양",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.58,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.27,
     "HR": 7,
     "SB": null,
@@ -818,13 +818,13 @@
     "name": "프랑코",
     "team": "Lions",
     "team_kr": "삼성",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 4.2,
     "AVG": 0.327,
-    "OPS": 0.912,
+    "ops": 0.912,
     "ERA": null,
     "HR": 22,
     "SB": null,

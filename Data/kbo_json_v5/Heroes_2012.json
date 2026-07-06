@@ -4,12 +4,12 @@
     "name": "강귀태",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.07,
     "AVG": 0.211,
-    "OPS": 0.461,
+    "ops": 0.461,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -25,13 +25,13 @@
     "name": "강병식",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.01,
     "AVG": 0.2,
-    "OPS": 0.6,
+    "ops": 0.6,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -47,12 +47,12 @@
     "name": "강윤구",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 0.7,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.08,
     "HR": 14,
     "SB": null,
@@ -68,13 +68,13 @@
     "name": "강정호",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 7.39,
     "AVG": 0.314,
-    "OPS": 0.973,
+    "ops": 0.973,
     "ERA": null,
     "HR": 25,
     "SB": 21,
@@ -90,12 +90,12 @@
     "name": "김건태",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.6,
     "HR": 0,
     "SB": 0,
@@ -113,13 +113,13 @@
     "name": "김남형",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.12,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -135,12 +135,12 @@
     "name": "김민성",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 1.21,
     "AVG": 0.283,
-    "OPS": 0.725,
+    "ops": 0.725,
     "ERA": null,
     "HR": 4,
     "SB": 7,
@@ -156,12 +156,12 @@
     "name": "김민우",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.52,
     "AVG": 0.228,
-    "OPS": 0.668,
+    "ops": 0.668,
     "ERA": null,
     "HR": 5,
     "SB": 5,
@@ -177,13 +177,13 @@
     "name": "김병현",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.74,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.66,
     "HR": 6,
     "SB": null,
@@ -199,13 +199,13 @@
     "name": "김세현",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.14,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.69,
     "HR": 9,
     "SB": null,
@@ -221,12 +221,12 @@
     "name": "김수경",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.35,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.13,
     "HR": 0,
     "SB": null,
@@ -242,12 +242,12 @@
     "name": "김태혁",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.73,
     "HR": 4,
     "SB": null,
@@ -263,12 +263,12 @@
     "name": "나이트",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 5.53,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.2,
     "HR": 6,
     "SB": null,
@@ -284,12 +284,12 @@
     "name": "문성현",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.15,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.23,
     "HR": 0,
     "SB": null,
@@ -305,13 +305,13 @@
     "name": "문우람",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.14,
     "AVG": 0.231,
-    "OPS": 0.574,
+    "ops": 0.574,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -327,12 +327,12 @@
     "name": "박병호",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 5.42,
     "AVG": 0.29,
-    "OPS": 0.954,
+    "ops": 0.954,
     "ERA": null,
     "HR": 31,
     "SB": 20,
@@ -348,12 +348,12 @@
     "name": "박성훈",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.45,
     "HR": 1,
     "SB": null,
@@ -369,13 +369,13 @@
     "name": "박정준",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.14,
     "AVG": 0.185,
-    "OPS": 0.51,
+    "ops": 0.51,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -391,12 +391,12 @@
     "name": "박종윤",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.0,
     "HR": 0,
     "SB": null,
@@ -412,13 +412,13 @@
     "name": "박헌도",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.14,
     "AVG": 0.176,
-    "OPS": 0.486,
+    "ops": 0.486,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -434,12 +434,12 @@
     "name": "밴헤켄",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 2.46,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.28,
     "HR": 16,
     "SB": null,
@@ -455,12 +455,12 @@
     "name": "서건창",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 2.33,
     "AVG": 0.266,
-    "OPS": 0.709,
+    "ops": 0.709,
     "ERA": null,
     "HR": 1,
     "SB": 39,
@@ -476,12 +476,12 @@
     "name": "손승락",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.36,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.15,
     "HR": 2,
     "SB": null,
@@ -497,14 +497,14 @@
     "name": "송지만",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.24,
     "AVG": 0.175,
-    "OPS": 0.436,
+    "ops": 0.436,
     "ERA": null,
     "HR": 0,
     "SB": 2,
@@ -520,12 +520,12 @@
     "name": "신현철",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.08,
     "AVG": 0.231,
-    "OPS": 0.539,
+    "ops": 0.539,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -541,12 +541,12 @@
     "name": "심수창",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -1.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.3,
     "HR": 3,
     "SB": null,
@@ -562,13 +562,13 @@
     "name": "오윤",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.53,
     "AVG": 0.231,
-    "OPS": 0.663,
+    "ops": 0.663,
     "ERA": null,
     "HR": 3,
     "SB": 5,
@@ -584,12 +584,12 @@
     "name": "오주원",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.18,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.19,
     "HR": 6,
     "SB": null,
@@ -605,12 +605,12 @@
     "name": "유재신",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.05,
     "AVG": 0.235,
-    "OPS": 0.589,
+    "ops": 0.589,
     "ERA": null,
     "HR": 0,
     "SB": 5,
@@ -626,13 +626,13 @@
     "name": "유한준",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.06,
     "AVG": 0.24,
-    "OPS": 0.628,
+    "ops": 0.628,
     "ERA": null,
     "HR": 3,
     "SB": 3,
@@ -648,12 +648,12 @@
     "name": "이보근",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.31,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.27,
     "HR": 3,
     "SB": null,
@@ -669,12 +669,12 @@
     "name": "이성열",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": -0.63,
     "AVG": 0.219,
-    "OPS": 0.643,
+    "ops": 0.643,
     "ERA": null,
     "HR": 7,
     "SB": 5,
@@ -690,12 +690,12 @@
     "name": "이정훈",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.04,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.67,
     "HR": 2,
     "SB": null,
@@ -711,12 +711,12 @@
     "name": "이태양",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.0,
     "HR": 0,
     "SB": null,
@@ -732,14 +732,14 @@
     "name": "이택근",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 1.54,
     "AVG": 0.275,
-    "OPS": 0.744,
+    "ops": 0.744,
     "ERA": null,
     "HR": 8,
     "SB": 13,
@@ -755,12 +755,12 @@
     "name": "임창민",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.5,
     "HR": 0,
     "SB": null,
@@ -776,14 +776,14 @@
     "name": "장민석",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.98,
     "AVG": 0.246,
-    "OPS": 0.665,
+    "ops": 0.665,
     "ERA": null,
     "HR": 8,
     "SB": 32,
@@ -799,12 +799,12 @@
     "name": "장시환",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.3,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.02,
     "HR": 3,
     "SB": null,
@@ -820,12 +820,12 @@
     "name": "장영석",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.25,
     "AVG": 0.0,
-    "OPS": 0.077,
+    "ops": 0.077,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -841,14 +841,14 @@
     "name": "정수성",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.31,
     "AVG": 0.217,
-    "OPS": 0.638,
+    "ops": 0.638,
     "ERA": null,
     "HR": 2,
     "SB": 19,
@@ -864,12 +864,12 @@
     "name": "조중근",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -2.1,
     "AVG": 0.137,
-    "OPS": 0.39,
+    "ops": 0.39,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -885,12 +885,12 @@
     "name": "지석훈",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.43,
     "AVG": 0.173,
-    "OPS": 0.531,
+    "ops": 0.531,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -906,12 +906,12 @@
     "name": "지재옥",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.17,
     "AVG": 0.12,
-    "OPS": 0.49,
+    "ops": 0.49,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -927,12 +927,12 @@
     "name": "차화준",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.12,
     "AVG": 0.25,
-    "OPS": 0.5,
+    "ops": 0.5,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -948,12 +948,12 @@
     "name": "최경철",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.29,
     "AVG": 0.223,
-    "OPS": 0.525,
+    "ops": 0.525,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -969,12 +969,12 @@
     "name": "한현희",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.12,
     "HR": 4,
     "SB": null,
@@ -990,12 +990,12 @@
     "name": "허도환",
     "team": "Heroes",
     "team_kr": "넥센",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.42,
     "AVG": 0.195,
-    "OPS": 0.534,
+    "ops": 0.534,
     "ERA": null,
     "HR": 1,
     "SB": null,

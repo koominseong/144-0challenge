@@ -4,12 +4,12 @@
     "name": "강성우",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -1.64,
     "AVG": 0.16,
-    "OPS": 0.422,
+    "ops": 0.422,
     "ERA": null,
     "HR": 0,
     "SB": 2,
@@ -25,12 +25,12 @@
     "name": "강혁",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.23,
     "AVG": 0.252,
-    "OPS": 0.732,
+    "ops": 0.732,
     "ERA": null,
     "HR": 7,
     "SB": 0,
@@ -46,12 +46,12 @@
     "name": "강희석",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.31,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.43,
     "HR": 4,
     "SB": null,
@@ -67,12 +67,12 @@
     "name": "권명철",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.54,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.81,
     "HR": 2,
     "SB": null,
@@ -88,12 +88,12 @@
     "name": "김건한",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.71,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.17,
     "HR": 9,
     "SB": null,
@@ -109,12 +109,12 @@
     "name": "김경기",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.25,
     "AVG": 0.232,
-    "OPS": 0.657,
+    "ops": 0.657,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -130,13 +130,13 @@
     "name": "김기덕",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.36,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.19,
     "HR": 17,
     "SB": null,
@@ -152,12 +152,12 @@
     "name": "김동건",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.02,
     "AVG": 0.2,
-    "OPS": 0.533,
+    "ops": 0.533,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -173,12 +173,12 @@
     "name": "김원형",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 2.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.37,
     "HR": 20,
     "SB": null,
@@ -194,12 +194,12 @@
     "name": "박계원",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.02,
     "AVG": 0.25,
-    "OPS": 0.618,
+    "ops": 0.618,
     "ERA": null,
     "HR": 0,
     "SB": 7,
@@ -215,12 +215,12 @@
     "name": "박상근",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.49,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.22,
     "HR": 4,
     "SB": null,
@@ -236,13 +236,13 @@
     "name": "박재상",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.11,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -258,13 +258,13 @@
     "name": "박준서",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.03,
     "AVG": 0.263,
-    "OPS": 0.596,
+    "ops": 0.596,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -280,13 +280,13 @@
     "name": "브리또",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 5.6,
     "AVG": 0.32,
-    "OPS": 0.965,
+    "ops": 0.965,
     "ERA": null,
     "HR": 22,
     "SB": 7,
@@ -302,12 +302,12 @@
     "name": "손차훈",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.15,
     "AVG": 0.27,
-    "OPS": 0.646,
+    "ops": 0.646,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -323,12 +323,12 @@
     "name": "송재익",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.66,
     "AVG": 0.189,
-    "OPS": 0.564,
+    "ops": 0.564,
     "ERA": null,
     "HR": 2,
     "SB": 9,
@@ -344,12 +344,12 @@
     "name": "신승현",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.6,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 8.53,
     "HR": 7,
     "SB": null,
@@ -365,13 +365,13 @@
     "name": "신주일",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.01,
     "AVG": 0.0,
-    "OPS": 0.5,
+    "ops": 0.5,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -387,12 +387,12 @@
     "name": "안재만",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 1.24,
     "AVG": 0.255,
-    "OPS": 0.737,
+    "ops": 0.737,
     "ERA": null,
     "HR": 11,
     "SB": 19,
@@ -408,12 +408,12 @@
     "name": "양용모",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.33,
     "AVG": 0.234,
-    "OPS": 0.591,
+    "ops": 0.591,
     "ERA": null,
     "HR": 1,
     "SB": 12,
@@ -429,13 +429,13 @@
     "name": "양현석",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.59,
     "AVG": 0.246,
-    "OPS": 0.764,
+    "ops": 0.764,
     "ERA": null,
     "HR": 11,
     "SB": 3,
@@ -451,14 +451,14 @@
     "name": "에레라",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 3.05,
     "AVG": 0.34,
-    "OPS": 0.898,
+    "ops": 0.898,
     "ERA": null,
     "HR": 15,
     "SB": 15,
@@ -474,12 +474,12 @@
     "name": "에르난데스",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 4.62,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.89,
     "HR": 18,
     "SB": null,
@@ -495,12 +495,12 @@
     "name": "오상민",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 3.12,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.57,
     "HR": 16,
     "SB": null,
@@ -516,12 +516,12 @@
     "name": "오승준",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.0,
     "HR": 2,
     "SB": null,
@@ -537,14 +537,14 @@
     "name": "윤재국",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.78,
     "AVG": 0.277,
-    "OPS": 0.764,
+    "ops": 0.764,
     "ERA": null,
     "HR": 10,
     "SB": 11,
@@ -560,12 +560,12 @@
     "name": "이승호",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 5.19,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.55,
     "HR": 27,
     "SB": null,
@@ -581,13 +581,13 @@
     "name": "이진영",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.68,
     "AVG": 0.28,
-    "OPS": 0.753,
+    "ops": 0.753,
     "ERA": null,
     "HR": 7,
     "SB": 9,
@@ -603,12 +603,12 @@
     "name": "이호준",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.76,
     "AVG": 0.234,
-    "OPS": 0.7,
+    "ops": 0.7,
     "ERA": null,
     "HR": 8,
     "SB": 4,
@@ -624,13 +624,13 @@
     "name": "장용대",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.19,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -646,12 +646,12 @@
     "name": "정대현",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.4,
     "HR": 2,
     "SB": null,
@@ -667,12 +667,12 @@
     "name": "정상호",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.15,
     "AVG": 0.267,
-    "OPS": 0.727,
+    "ops": 0.727,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -688,12 +688,12 @@
     "name": "정수찬",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.48,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 8.59,
     "HR": 2,
     "SB": null,
@@ -709,12 +709,12 @@
     "name": "조규제",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 2.5,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.55,
     "HR": 12,
     "SB": null,
@@ -730,14 +730,14 @@
     "name": "조동화",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.43,
     "AVG": 0.167,
-    "OPS": 0.334,
+    "ops": 0.334,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -753,14 +753,14 @@
     "name": "조병찬",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.82,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -776,12 +776,12 @@
     "name": "조웅천",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.03,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.63,
     "HR": 9,
     "SB": null,
@@ -797,14 +797,14 @@
     "name": "조원우",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.02,
     "AVG": 0.244,
-    "OPS": 0.707,
+    "ops": 0.707,
     "ERA": null,
     "HR": 7,
     "SB": null,
@@ -820,13 +820,13 @@
     "name": "채종범",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.14,
     "AVG": 0.255,
-    "OPS": 0.697,
+    "ops": 0.697,
     "ERA": null,
     "HR": 8,
     "SB": null,
@@ -842,12 +842,12 @@
     "name": "최태원",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.2,
     "AVG": 0.242,
-    "OPS": 0.665,
+    "ops": 0.665,
     "ERA": null,
     "HR": 5,
     "SB": null,
@@ -863,14 +863,14 @@
     "name": "추성건",
     "team": "Landers",
     "team_kr": "SK",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.09,
     "AVG": 0.235,
-    "OPS": 0.661,
+    "ops": 0.661,
     "ERA": null,
     "HR": 1,
     "SB": null,

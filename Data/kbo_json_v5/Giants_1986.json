@@ -4,12 +4,12 @@
     "name": "김민호",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.37,
     "AVG": 0.233,
-    "OPS": 0.619,
+    "ops": 0.619,
     "ERA": null,
     "HR": 4,
     "SB": 3,
@@ -25,12 +25,12 @@
     "name": "김석일",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.08,
     "AVG": 0.209,
-    "OPS": 0.548,
+    "ops": 0.548,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -46,12 +46,12 @@
     "name": "김성현",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.24,
     "AVG": 0.191,
-    "OPS": 0.628,
+    "ops": 0.628,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -67,12 +67,12 @@
     "name": "김용운",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.3,
     "AVG": 0.252,
-    "OPS": 0.598,
+    "ops": 0.598,
     "ERA": null,
     "HR": 0,
     "SB": 2,
@@ -88,12 +88,12 @@
     "name": "김용철",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 2.24,
     "AVG": 0.288,
-    "OPS": 0.801,
+    "ops": 0.801,
     "ERA": null,
     "HR": 10,
     "SB": 13,
@@ -109,12 +109,12 @@
     "name": "김용희",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 2.5,
     "AVG": 0.293,
-    "OPS": 0.79,
+    "ops": 0.79,
     "ERA": null,
     "HR": 8,
     "SB": 2,
@@ -130,12 +130,12 @@
     "name": "김정행",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.04,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.9,
     "HR": 5,
     "SB": null,
@@ -151,13 +151,13 @@
     "name": "김진근",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.15,
     "AVG": 0.148,
-    "OPS": 0.503,
+    "ops": 0.503,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -173,13 +173,13 @@
     "name": "김한조",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.19,
     "AVG": 0.207,
-    "OPS": 0.513,
+    "ops": 0.513,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -195,13 +195,13 @@
     "name": "노상수",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -1.08,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.66,
     "HR": 8,
     "SB": null,
@@ -217,12 +217,12 @@
     "name": "박동수",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.9,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.54,
     "HR": 2,
     "SB": null,
@@ -238,14 +238,14 @@
     "name": "박영태",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.37,
     "AVG": 0.202,
-    "OPS": 0.535,
+    "ops": 0.535,
     "ERA": null,
     "HR": 0,
     "SB": 9,
@@ -261,13 +261,13 @@
     "name": "박용성",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.11,
     "AVG": 0.194,
-    "OPS": 0.523,
+    "ops": 0.523,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -283,12 +283,12 @@
     "name": "박희찬",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.22,
     "AVG": 0.75,
-    "OPS": 1.8,
+    "ops": 1.8,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -304,13 +304,13 @@
     "name": "배경환",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.58,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.79,
     "HR": 5,
     "SB": null,
@@ -326,12 +326,12 @@
     "name": "안창완",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 3,
     "SB": null,
@@ -347,12 +347,12 @@
     "name": "양상문",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.73,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.93,
     "HR": 2,
     "SB": null,
@@ -368,13 +368,13 @@
     "name": "오명록",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.17,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.91,
     "HR": 3,
     "SB": null,
@@ -390,12 +390,12 @@
     "name": "유두열",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": -0.08,
     "AVG": 0.239,
-    "OPS": 0.659,
+    "ops": 0.659,
     "ERA": null,
     "HR": 4,
     "SB": 4,
@@ -411,13 +411,13 @@
     "name": "윤학길",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.91,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.76,
     "HR": 6,
     "SB": null,
@@ -433,12 +433,12 @@
     "name": "이진우",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.74,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.03,
     "HR": 1,
     "SB": null,
@@ -454,13 +454,13 @@
     "name": "이창원",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.13,
     "AVG": 0.333,
-    "OPS": 1.0,
+    "ops": 1.0,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -476,13 +476,13 @@
     "name": "이충우",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.69,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.9,
     "HR": 2,
     "SB": null,
@@ -498,13 +498,13 @@
     "name": "임경택",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.15,
     "AVG": 0.208,
-    "OPS": 0.519,
+    "ops": 0.519,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -520,12 +520,12 @@
     "name": "임호균",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 0.37,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.32,
     "HR": 4,
     "SB": null,
@@ -541,12 +541,12 @@
     "name": "정영기",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.44,
     "AVG": 0.208,
-    "OPS": 0.515,
+    "ops": 0.515,
     "ERA": null,
     "HR": 1,
     "SB": 3,
@@ -562,12 +562,12 @@
     "name": "정인교",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.06,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -583,12 +583,12 @@
     "name": "정학수",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 0.76,
     "AVG": 0.271,
-    "OPS": 0.686,
+    "ops": 0.686,
     "ERA": null,
     "HR": 1,
     "SB": 5,
@@ -604,14 +604,14 @@
     "name": "조성옥",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.12,
     "AVG": 0.253,
-    "OPS": 0.617,
+    "ops": 0.617,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -627,14 +627,14 @@
     "name": "최계영",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.01,
     "AVG": 0.23,
-    "OPS": 0.594,
+    "ops": 0.594,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -650,12 +650,12 @@
     "name": "최동원",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 6.35,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.55,
     "HR": 7,
     "SB": null,
@@ -671,12 +671,12 @@
     "name": "한문연",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.57,
     "AVG": 0.25,
-    "OPS": 0.617,
+    "ops": 0.617,
     "ERA": null,
     "HR": 2,
     "SB": null,
@@ -692,12 +692,12 @@
     "name": "한영준",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.03,
     "AVG": 0.226,
-    "OPS": 0.58,
+    "ops": 0.58,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -713,14 +713,14 @@
     "name": "홍문종",
     "team": "Giants",
     "team_kr": "롯데",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 1.82,
     "AVG": 0.274,
-    "OPS": 0.713,
+    "ops": 0.713,
     "ERA": null,
     "HR": 3,
     "SB": null,

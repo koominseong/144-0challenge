@@ -4,13 +4,13 @@
     "name": "강백호",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 3.04,
     "AVG": 0.29,
-    "OPS": 0.88,
+    "ops": 0.88,
     "ERA": null,
     "HR": 29,
     "SB": 3,
@@ -26,12 +26,12 @@
     "name": "고명성",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.05,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -47,12 +47,12 @@
     "name": "고영표",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.73,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.13,
     "HR": 17,
     "SB": null,
@@ -68,12 +68,12 @@
     "name": "고창성",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.19,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.69,
     "HR": 7,
     "SB": null,
@@ -89,12 +89,12 @@
     "name": "금민철",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.42,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.41,
     "HR": 19,
     "SB": null,
@@ -110,12 +110,12 @@
     "name": "김동욱",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.22,
     "AVG": 0.091,
-    "OPS": 0.258,
+    "ops": 0.258,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -131,13 +131,13 @@
     "name": "김민",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.48,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.06,
     "HR": 4,
     "SB": null,
@@ -153,12 +153,12 @@
     "name": "김민수",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.03,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.0,
     "HR": 0,
     "SB": null,
@@ -174,12 +174,12 @@
     "name": "김사율",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.76,
     "HR": 12,
     "SB": null,
@@ -195,12 +195,12 @@
     "name": "김영환",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.11,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -216,12 +216,12 @@
     "name": "김용주",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.26,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 18.0,
     "HR": 1,
     "SB": null,
@@ -237,12 +237,12 @@
     "name": "김재윤",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.12,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.57,
     "HR": 11,
     "SB": null,
@@ -258,13 +258,13 @@
     "name": "김지열",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.24,
     "AVG": 0.2,
-    "OPS": 0.606,
+    "ops": 0.606,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -280,13 +280,13 @@
     "name": "김진곤",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.33,
     "AVG": 0.143,
-    "OPS": 0.407,
+    "ops": 0.407,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -302,12 +302,12 @@
     "name": "김태오",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.0,
     "HR": 4,
     "SB": null,
@@ -323,12 +323,12 @@
     "name": "남태혁",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.17,
     "AVG": 0.182,
-    "OPS": 0.364,
+    "ops": 0.364,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -344,12 +344,12 @@
     "name": "니퍼트",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 3.86,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.25,
     "HR": 26,
     "SB": null,
@@ -365,14 +365,14 @@
     "name": "로하스",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 5.57,
     "AVG": 0.305,
-    "OPS": 0.978,
+    "ops": 0.978,
     "ERA": null,
     "HR": 43,
     "SB": 18,
@@ -388,12 +388,12 @@
     "name": "류희운",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.64,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.91,
     "HR": 11,
     "SB": null,
@@ -409,12 +409,12 @@
     "name": "박경수",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 2.48,
     "AVG": 0.262,
-    "OPS": 0.826,
+    "ops": 0.826,
     "ERA": null,
     "HR": 25,
     "SB": 4,
@@ -430,13 +430,13 @@
     "name": "박기혁",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.91,
     "AVG": 0.214,
-    "OPS": 0.538,
+    "ops": 0.538,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -452,13 +452,13 @@
     "name": "박세진",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -1.5,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 10.68,
     "HR": 10,
     "SB": null,
@@ -474,12 +474,12 @@
     "name": "배우열",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.29,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.59,
     "HR": 0,
     "SB": null,
@@ -495,13 +495,13 @@
     "name": "배정대",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.06,
     "AVG": 0.2,
-    "OPS": 0.4,
+    "ops": 0.4,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -517,12 +517,12 @@
     "name": "배제성",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.28,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 0.0,
     "HR": 0,
     "SB": null,
@@ -538,14 +538,14 @@
     "name": "송민섭",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.42,
     "AVG": 0.148,
-    "OPS": 0.327,
+    "ops": 0.327,
     "ERA": null,
     "HR": 0,
     "SB": 2,
@@ -561,12 +561,12 @@
     "name": "신병률",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.22,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.01,
     "HR": 6,
     "SB": null,
@@ -582,12 +582,12 @@
     "name": "심우준",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.58,
     "AVG": 0.259,
-    "OPS": 0.675,
+    "ops": 0.675,
     "ERA": null,
     "HR": 4,
     "SB": 11,
@@ -603,12 +603,12 @@
     "name": "심재민",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.74,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.61,
     "HR": 5,
     "SB": null,
@@ -624,12 +624,12 @@
     "name": "엄상백",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.4,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.44,
     "HR": 4,
     "SB": null,
@@ -645,13 +645,13 @@
     "name": "오정복",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.19,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -667,13 +667,13 @@
     "name": "오준혁",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.69,
     "AVG": 0.136,
-    "OPS": 0.34,
+    "ops": 0.34,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -689,12 +689,12 @@
     "name": "오태곤",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.6,
     "AVG": 0.254,
-    "OPS": 0.731,
+    "ops": 0.731,
     "ERA": null,
     "HR": 12,
     "SB": 13,
@@ -710,13 +710,13 @@
     "name": "유한준",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 3.76,
     "AVG": 0.339,
-    "OPS": 0.939,
+    "ops": 0.939,
     "ERA": null,
     "HR": 20,
     "SB": 1,
@@ -732,12 +732,12 @@
     "name": "윤근영",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.65,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.72,
     "HR": 3,
     "SB": null,
@@ -753,12 +753,12 @@
     "name": "윤석민",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 1.6,
     "AVG": 0.276,
-    "OPS": 0.785,
+    "ops": 0.785,
     "ERA": null,
     "HR": 19,
     "SB": 4,
@@ -774,13 +774,13 @@
     "name": "이대형",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.03,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -796,12 +796,12 @@
     "name": "이상화",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.41,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.61,
     "HR": 0,
     "SB": null,
@@ -817,12 +817,12 @@
     "name": "이종혁",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.84,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.66,
     "HR": 4,
     "SB": null,
@@ -838,12 +838,12 @@
     "name": "이준수",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.01,
     "AVG": 0.25,
-    "OPS": 0.583,
+    "ops": 0.583,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -859,13 +859,13 @@
     "name": "이진영",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.78,
     "AVG": 0.318,
-    "OPS": 0.787,
+    "ops": 0.787,
     "ERA": null,
     "HR": 3,
     "SB": 2,
@@ -881,12 +881,12 @@
     "name": "이해창",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.14,
     "AVG": 0.216,
-    "OPS": 0.655,
+    "ops": 0.655,
     "ERA": null,
     "HR": 8,
     "SB": 0,
@@ -902,12 +902,12 @@
     "name": "장성우",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 1.02,
     "AVG": 0.258,
-    "OPS": 0.725,
+    "ops": 0.725,
     "ERA": null,
     "HR": 13,
     "SB": 1,
@@ -923,13 +923,13 @@
     "name": "전민수",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.16,
     "AVG": 0.172,
-    "OPS": 0.57,
+    "ops": 0.57,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -945,12 +945,12 @@
     "name": "정성곤",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.88,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.96,
     "HR": 3,
     "SB": null,
@@ -966,12 +966,12 @@
     "name": "정현",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.05,
     "AVG": 0.265,
-    "OPS": 0.693,
+    "ops": 0.693,
     "ERA": null,
     "HR": 2,
     "SB": 3,
@@ -987,12 +987,12 @@
     "name": "주권",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -2.12,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 8.39,
     "HR": 16,
     "SB": null,
@@ -1008,12 +1008,12 @@
     "name": "최이준",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.16,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 13.5,
     "HR": 0,
     "SB": null,
@@ -1029,12 +1029,12 @@
     "name": "피어밴드",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 3.49,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.3,
     "HR": 24,
     "SB": null,
@@ -1050,12 +1050,12 @@
     "name": "홍성용",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.41,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.4,
     "HR": 7,
     "SB": null,
@@ -1071,14 +1071,14 @@
     "name": "홍현빈",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.19,
     "AVG": 0.231,
-    "OPS": 0.564,
+    "ops": 0.564,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -1094,12 +1094,12 @@
     "name": "황재균",
     "team": "Wiz",
     "team_kr": "KT",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 4.47,
     "AVG": 0.296,
-    "OPS": 0.884,
+    "ops": 0.884,
     "ERA": null,
     "HR": 25,
     "SB": null,

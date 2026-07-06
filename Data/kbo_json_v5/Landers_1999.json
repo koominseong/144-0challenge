@@ -4,12 +4,12 @@
     "name": "가내영",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.38,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.66,
     "HR": 19,
     "SB": null,
@@ -25,14 +25,14 @@
     "name": "강민규",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.85,
     "AVG": 0.197,
-    "OPS": 0.544,
+    "ops": 0.544,
     "ERA": null,
     "HR": 2,
     "SB": 8,
@@ -48,13 +48,13 @@
     "name": "강희석",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.44,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.14,
     "HR": 6,
     "SB": null,
@@ -70,12 +70,12 @@
     "name": "고형욱",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.95,
     "HR": 10,
     "SB": null,
@@ -91,13 +91,13 @@
     "name": "김갑중",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.41,
     "AVG": 0.222,
-    "OPS": 0.625,
+    "ops": 0.625,
     "ERA": null,
     "HR": 2,
     "SB": 2,
@@ -113,12 +113,12 @@
     "name": "김경진",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.08,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.19,
     "HR": 5,
     "SB": null,
@@ -134,14 +134,14 @@
     "name": "김광림",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.79,
     "AVG": 0.229,
-    "OPS": 0.562,
+    "ops": 0.562,
     "ERA": null,
     "HR": 0,
     "SB": 5,
@@ -157,12 +157,12 @@
     "name": "김기덕",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 2.43,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.5,
     "HR": 17,
     "SB": null,
@@ -178,12 +178,12 @@
     "name": "김상호",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": -0.13,
     "AVG": 0.143,
-    "OPS": 0.286,
+    "ops": 0.286,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -199,12 +199,12 @@
     "name": "김성래",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 1.15,
     "AVG": 0.272,
-    "OPS": 0.768,
+    "ops": 0.768,
     "ERA": null,
     "HR": 9,
     "SB": 1,
@@ -220,12 +220,12 @@
     "name": "김원형",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.45,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.86,
     "HR": 3,
     "SB": null,
@@ -241,12 +241,12 @@
     "name": "김유진",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.16,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.11,
     "HR": 1,
     "SB": null,
@@ -262,13 +262,13 @@
     "name": "김호",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 0.33,
     "AVG": 0.255,
-    "OPS": 0.687,
+    "ops": 0.687,
     "ERA": null,
     "HR": 8,
     "SB": 11,
@@ -284,13 +284,13 @@
     "name": "동봉철",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.15,
     "AVG": 0.274,
-    "OPS": 0.724,
+    "ops": 0.724,
     "ERA": null,
     "HR": 1,
     "SB": 4,
@@ -306,12 +306,12 @@
     "name": "박경호",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": -0.56,
     "AVG": 0.254,
-    "OPS": 0.647,
+    "ops": 0.647,
     "ERA": null,
     "HR": 2,
     "SB": 12,
@@ -327,12 +327,12 @@
     "name": "박상근",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -1.19,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 8.56,
     "HR": 8,
     "SB": null,
@@ -348,13 +348,13 @@
     "name": "박재용",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -1.04,
     "AVG": 0.233,
-    "OPS": 0.622,
+    "ops": 0.622,
     "ERA": null,
     "HR": 3,
     "SB": 8,
@@ -370,13 +370,13 @@
     "name": "박정현",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 2.81,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.92,
     "HR": 10,
     "SB": null,
@@ -392,12 +392,12 @@
     "name": "박주언",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.06,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 0,
     "SB": null,
@@ -413,12 +413,12 @@
     "name": "박진석",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.38,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.62,
     "HR": 5,
     "SB": null,
@@ -434,12 +434,12 @@
     "name": "박창현",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.17,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.88,
     "HR": 2,
     "SB": null,
@@ -455,12 +455,12 @@
     "name": "비아노",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.89,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.06,
     "HR": 10,
     "SB": null,
@@ -476,13 +476,13 @@
     "name": "성영재",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.21,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.1,
     "HR": 29,
     "SB": null,
@@ -498,12 +498,12 @@
     "name": "송구홍",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -1.9,
     "AVG": 0.206,
-    "OPS": 0.509,
+    "ops": 0.509,
     "ERA": null,
     "HR": 1,
     "SB": 6,
@@ -519,13 +519,13 @@
     "name": "심성보",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.08,
     "AVG": 0.261,
-    "OPS": 0.748,
+    "ops": 0.748,
     "ERA": null,
     "HR": 6,
     "SB": 1,
@@ -541,13 +541,13 @@
     "name": "앤더슨",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.61,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 12,
     "SB": null,
@@ -563,12 +563,12 @@
     "name": "양용모",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.29,
     "AVG": 0.242,
-    "OPS": 0.675,
+    "ops": 0.675,
     "ERA": null,
     "HR": 4,
     "SB": 12,
@@ -584,12 +584,12 @@
     "name": "오상민",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.01,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.94,
     "HR": 22,
     "SB": null,
@@ -605,13 +605,13 @@
     "name": "오충원",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.21,
     "AVG": 0.071,
-    "OPS": 0.334,
+    "ops": 0.334,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -627,12 +627,12 @@
     "name": "유현승",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.37,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.23,
     "HR": 21,
     "SB": null,
@@ -648,14 +648,14 @@
     "name": "윤재국",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.1,
     "AVG": 0.265,
-    "OPS": 0.706,
+    "ops": 0.706,
     "ERA": null,
     "HR": 1,
     "SB": 15,
@@ -671,12 +671,12 @@
     "name": "윤형배",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.5,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 8.64,
     "HR": 1,
     "SB": null,
@@ -692,13 +692,13 @@
     "name": "이계성",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.22,
     "AVG": 0.214,
-    "OPS": 0.517,
+    "ops": 0.517,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -714,12 +714,12 @@
     "name": "이근엽",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.48,
     "AVG": 0.227,
-    "OPS": 0.515,
+    "ops": 0.515,
     "ERA": null,
     "HR": 1,
     "SB": 2,
@@ -735,12 +735,12 @@
     "name": "이동수",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 4.1,
     "AVG": 0.32,
-    "OPS": 1.026,
+    "ops": 1.026,
     "ERA": null,
     "HR": 19,
     "SB": 2,
@@ -756,12 +756,12 @@
     "name": "이민호",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.34,
     "AVG": 0.235,
-    "OPS": 0.737,
+    "ops": 0.737,
     "ERA": null,
     "HR": 9,
     "SB": 2,
@@ -777,13 +777,13 @@
     "name": "이병수",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.06,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -799,13 +799,13 @@
     "name": "이연수",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.06,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -821,13 +821,13 @@
     "name": "이진영",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.46,
     "AVG": 0.258,
-    "OPS": 0.663,
+    "ops": 0.663,
     "ERA": null,
     "HR": 4,
     "SB": 5,
@@ -843,13 +843,13 @@
     "name": "장용대",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.12,
     "AVG": 0.235,
-    "OPS": 0.652,
+    "ops": 0.652,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -865,12 +865,12 @@
     "name": "장재중",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -1.37,
     "AVG": 0.211,
-    "OPS": 0.555,
+    "ops": 0.555,
     "ERA": null,
     "HR": 4,
     "SB": 5,
@@ -886,12 +886,12 @@
     "name": "정명수",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.33,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 36.0,
     "HR": 1,
     "SB": null,
@@ -907,12 +907,12 @@
     "name": "정원배",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.02,
     "AVG": 0.254,
-    "OPS": 0.637,
+    "ops": 0.637,
     "ERA": null,
     "HR": 1,
     "SB": 1,
@@ -928,14 +928,14 @@
     "name": "조원우",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.87,
     "AVG": 0.314,
-    "OPS": 0.837,
+    "ops": 0.837,
     "ERA": null,
     "HR": 6,
     "SB": null,
@@ -951,12 +951,12 @@
     "name": "최승민",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.46,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 10.24,
     "HR": 2,
     "SB": null,
@@ -972,12 +972,12 @@
     "name": "최정환",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.49,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 11.74,
     "HR": 3,
     "SB": null,
@@ -993,12 +993,12 @@
     "name": "최태원",
     "team": "Landers",
     "team_kr": "쌍방울",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -1.35,
     "AVG": 0.239,
-    "OPS": 0.608,
+    "ops": 0.608,
     "ERA": null,
     "HR": 2,
     "SB": null,

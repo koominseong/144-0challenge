@@ -4,12 +4,12 @@
     "name": "곽정철",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.59,
     "HR": 6,
     "SB": null,
@@ -25,12 +25,12 @@
     "name": "김건한",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.22,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.26,
     "HR": 5,
     "SB": null,
@@ -46,13 +46,13 @@
     "name": "김다원",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.47,
     "AVG": 0.143,
-    "OPS": 0.45,
+    "ops": 0.45,
     "ERA": null,
     "HR": 2,
     "SB": 1,
@@ -68,12 +68,12 @@
     "name": "김상현",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 1.43,
     "AVG": 0.215,
-    "OPS": 0.77,
+    "ops": 0.77,
     "ERA": null,
     "HR": 21,
     "SB": 3,
@@ -89,12 +89,12 @@
     "name": "김상훈",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.7,
     "AVG": 0.243,
-    "OPS": 0.646,
+    "ops": 0.646,
     "ERA": null,
     "HR": 4,
     "SB": 1,
@@ -110,13 +110,13 @@
     "name": "김선빈",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 1.69,
     "AVG": 0.293,
-    "OPS": 0.715,
+    "ops": 0.715,
     "ERA": null,
     "HR": 1,
     "SB": 23,
@@ -132,14 +132,14 @@
     "name": "김원섭",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.59,
     "AVG": 0.238,
-    "OPS": 0.688,
+    "ops": 0.688,
     "ERA": null,
     "HR": 5,
     "SB": 15,
@@ -155,12 +155,12 @@
     "name": "김형철",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.15,
     "AVG": 0.111,
-    "OPS": 0.222,
+    "ops": 0.222,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -176,13 +176,13 @@
     "name": "나지완",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 1.08,
     "AVG": 0.215,
-    "OPS": 0.735,
+    "ops": 0.735,
     "ERA": null,
     "HR": 15,
     "SB": 3,
@@ -198,12 +198,12 @@
     "name": "라이트",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.0,
     "HR": 0,
     "SB": null,
@@ -219,12 +219,12 @@
     "name": "로페즈",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.58,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.66,
     "HR": 22,
     "SB": null,
@@ -240,12 +240,12 @@
     "name": "문수호",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.04,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 0,
     "SB": null,
@@ -261,12 +261,12 @@
     "name": "박경태",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.2,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.98,
     "HR": 2,
     "SB": null,
@@ -282,12 +282,12 @@
     "name": "박기남",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.58,
     "AVG": 0.272,
-    "OPS": 0.735,
+    "ops": 0.735,
     "ERA": null,
     "HR": 3,
     "SB": 3,
@@ -303,12 +303,12 @@
     "name": "박성호",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.54,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.81,
     "HR": 4,
     "SB": null,
@@ -324,12 +324,12 @@
     "name": "서재응",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 3.38,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.34,
     "HR": 10,
     "SB": null,
@@ -345,12 +345,12 @@
     "name": "손영민",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.67,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.63,
     "HR": 8,
     "SB": null,
@@ -366,14 +366,14 @@
     "name": "신종길",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.88,
     "AVG": 0.321,
-    "OPS": 0.795,
+    "ops": 0.795,
     "ERA": null,
     "HR": 1,
     "SB": 16,
@@ -389,12 +389,12 @@
     "name": "심동섭",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.04,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 0,
     "SB": null,
@@ -410,12 +410,12 @@
     "name": "안영명",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.95,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 15,
     "SB": null,
@@ -431,12 +431,12 @@
     "name": "안치홍",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 2.59,
     "AVG": 0.291,
-    "OPS": 0.766,
+    "ops": 0.766,
     "ERA": null,
     "HR": 8,
     "SB": 18,
@@ -452,12 +452,12 @@
     "name": "양현종",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 2.38,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.25,
     "HR": 9,
     "SB": null,
@@ -473,12 +473,12 @@
     "name": "유동훈",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.4,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.85,
     "HR": 1,
     "SB": null,
@@ -494,13 +494,13 @@
     "name": "윤석민",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 1.89,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.83,
     "HR": 5,
     "SB": null,
@@ -516,13 +516,13 @@
     "name": "윤효섭",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.05,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -538,12 +538,12 @@
     "name": "이대진",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.25,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.55,
     "HR": 1,
     "SB": null,
@@ -559,12 +559,12 @@
     "name": "이상화",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.12,
     "HR": 0,
     "SB": null,
@@ -580,12 +580,12 @@
     "name": "이성우",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.07,
     "AVG": 0.25,
-    "OPS": 0.5,
+    "ops": 0.5,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -601,12 +601,12 @@
     "name": "이영수",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.47,
     "AVG": 0.247,
-    "OPS": 0.779,
+    "ops": 0.779,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -622,14 +622,14 @@
     "name": "이용규",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 2.42,
     "AVG": 0.307,
-    "OPS": 0.769,
+    "ops": 0.769,
     "ERA": null,
     "HR": 3,
     "SB": 25,
@@ -645,13 +645,13 @@
     "name": "이종범",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.28,
     "AVG": 0.245,
-    "OPS": 0.651,
+    "ops": 0.651,
     "ERA": null,
     "HR": 4,
     "SB": 2,
@@ -667,13 +667,13 @@
     "name": "이종환",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.46,
     "AVG": 0.172,
-    "OPS": 0.548,
+    "ops": 0.548,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -689,12 +689,12 @@
     "name": "이현곤",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.02,
     "AVG": 0.262,
-    "OPS": 0.656,
+    "ops": 0.656,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -710,13 +710,13 @@
     "name": "임한용",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.05,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -732,12 +732,12 @@
     "name": "장태성",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.05,
     "AVG": 1.0,
-    "OPS": 2.0,
+    "ops": 2.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -753,13 +753,13 @@
     "name": "전우엽",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.09,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.71,
     "HR": 5,
     "SB": null,
@@ -775,12 +775,12 @@
     "name": "정용운",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.75,
     "HR": 1,
     "SB": null,
@@ -796,12 +796,12 @@
     "name": "조태수",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.75,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.95,
     "HR": 2,
     "SB": null,
@@ -817,12 +817,12 @@
     "name": "차일목",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 2.53,
     "AVG": 0.258,
-    "OPS": 0.809,
+    "ops": 0.809,
     "ERA": null,
     "HR": 7,
     "SB": null,
@@ -838,12 +838,12 @@
     "name": "차정민",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.1,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 0.0,
     "HR": 0,
     "SB": null,
@@ -859,14 +859,14 @@
     "name": "채종범",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.05,
     "AVG": 0.234,
-    "OPS": 0.684,
+    "ops": 0.684,
     "ERA": null,
     "HR": 3,
     "SB": null,
@@ -882,14 +882,14 @@
     "name": "최용규",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.48,
     "AVG": 0.16,
-    "OPS": 0.414,
+    "ops": 0.414,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -905,14 +905,14 @@
     "name": "최훈락",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.36,
     "AVG": 0.275,
-    "OPS": 0.773,
+    "ops": 0.773,
     "ERA": null,
     "HR": 2,
     "SB": null,
@@ -928,12 +928,12 @@
     "name": "최희섭",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 4.27,
     "AVG": 0.286,
-    "OPS": 0.88,
+    "ops": 0.88,
     "ERA": null,
     "HR": 21,
     "SB": null,
@@ -949,12 +949,12 @@
     "name": "콜론",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 1.85,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.91,
     "HR": 6,
     "SB": null,
@@ -970,13 +970,13 @@
     "name": "홍세완",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.18,
     "AVG": 0.2,
-    "OPS": 0.499,
+    "ops": 0.499,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -992,12 +992,12 @@
     "name": "홍재호",
     "team": "Tigers",
     "team_kr": "KIA",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.48,
     "AVG": 0.111,
-    "OPS": 0.394,
+    "ops": 0.394,
     "ERA": null,
     "HR": 0,
     "SB": null,

@@ -4,13 +4,13 @@
     "name": "강구성",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.03,
     "AVG": 0.2,
-    "OPS": 0.6,
+    "ops": 0.6,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -26,12 +26,12 @@
     "name": "강민국",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.05,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -47,12 +47,12 @@
     "name": "강장산",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.61,
     "HR": 3,
     "SB": null,
@@ -68,12 +68,12 @@
     "name": "고창성",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.23,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.72,
     "HR": 1,
     "SB": null,
@@ -89,13 +89,13 @@
     "name": "김성욱",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.04,
     "AVG": 0.258,
-    "OPS": 0.696,
+    "ops": 0.696,
     "ERA": null,
     "HR": 3,
     "SB": 3,
@@ -111,14 +111,14 @@
     "name": "김종호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 1.52,
     "AVG": 0.295,
-    "OPS": 0.758,
+    "ops": 0.758,
     "ERA": null,
     "HR": 4,
     "SB": 41,
@@ -134,14 +134,14 @@
     "name": "김준완",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.09,
     "AVG": 0.227,
-    "OPS": 0.597,
+    "ops": 0.597,
     "ERA": null,
     "HR": 0,
     "SB": 2,
@@ -157,12 +157,12 @@
     "name": "김진성",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.5,
     "HR": 14,
     "SB": null,
@@ -178,12 +178,12 @@
     "name": "김태군",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.42,
     "AVG": 0.254,
-    "OPS": 0.661,
+    "ops": 0.661,
     "ERA": null,
     "HR": 6,
     "SB": 1,
@@ -199,12 +199,12 @@
     "name": "김태진",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.08,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -220,14 +220,14 @@
     "name": "나성범",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 5.02,
     "AVG": 0.326,
-    "OPS": 0.926,
+    "ops": 0.926,
     "ERA": null,
     "HR": 28,
     "SB": 23,
@@ -243,12 +243,12 @@
     "name": "노건우",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -1.26,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 10.65,
     "HR": 8,
     "SB": null,
@@ -264,13 +264,13 @@
     "name": "노진혁",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.64,
     "AVG": 0.079,
-    "OPS": 0.254,
+    "ops": 0.254,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -286,14 +286,14 @@
     "name": "마낙길",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -309,12 +309,12 @@
     "name": "모창민",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.91,
     "AVG": 0.29,
-    "OPS": 0.779,
+    "ops": 0.779,
     "ERA": null,
     "HR": 6,
     "SB": 5,
@@ -330,12 +330,12 @@
     "name": "문수호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -351,12 +351,12 @@
     "name": "민태호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.27,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.91,
     "HR": 2,
     "SB": null,
@@ -372,12 +372,12 @@
     "name": "박대온",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.08,
     "AVG": 0.286,
-    "OPS": 0.606,
+    "ops": 0.606,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -393,12 +393,12 @@
     "name": "박명환",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.29,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.85,
     "HR": 6,
     "SB": null,
@@ -414,12 +414,12 @@
     "name": "박민우",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 3.36,
     "AVG": 0.304,
-    "OPS": 0.803,
+    "ops": 0.803,
     "ERA": null,
     "HR": 3,
     "SB": 46,
@@ -435,13 +435,13 @@
     "name": "박정준",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.22,
     "AVG": 0.381,
-    "OPS": 0.934,
+    "ops": 0.934,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -457,12 +457,12 @@
     "name": "박진우",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.43,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.14,
     "HR": 1,
     "SB": null,
@@ -478,12 +478,12 @@
     "name": "배재환",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 18.0,
     "HR": 0,
     "SB": null,
@@ -499,13 +499,13 @@
     "name": "손민한",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 1.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.89,
     "HR": 8,
     "SB": null,
@@ -521,13 +521,13 @@
     "name": "손시헌",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 1.09,
     "AVG": 0.245,
-    "OPS": 0.717,
+    "ops": 0.717,
     "ERA": null,
     "HR": 13,
     "SB": 3,
@@ -543,12 +543,12 @@
     "name": "손정욱",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.18,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.56,
     "HR": 3,
     "SB": null,
@@ -564,12 +564,12 @@
     "name": "스튜어트",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 4.16,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.68,
     "HR": 7,
     "SB": null,
@@ -585,12 +585,12 @@
     "name": "용덕한",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.08,
     "AVG": 0.243,
-    "OPS": 0.61,
+    "ops": 0.61,
     "ERA": null,
     "HR": 1,
     "SB": 2,
@@ -606,12 +606,12 @@
     "name": "윤강민",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.43,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 45.0,
     "HR": 0,
     "SB": null,
@@ -627,13 +627,13 @@
     "name": "윤병호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.17,
     "AVG": 0.111,
-    "OPS": 0.222,
+    "ops": 0.222,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -649,12 +649,12 @@
     "name": "이대환",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 54.0,
     "HR": 0,
     "SB": null,
@@ -670,12 +670,12 @@
     "name": "이민호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.85,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.06,
     "HR": 15,
     "SB": null,
@@ -691,12 +691,12 @@
     "name": "이승호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.33,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 36.0,
     "HR": 0,
     "SB": null,
@@ -712,13 +712,13 @@
     "name": "이재학",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 2.44,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.1,
     "HR": 17,
     "SB": null,
@@ -734,14 +734,14 @@
     "name": "이종욱",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.66,
     "AVG": 0.268,
-    "OPS": 0.718,
+    "ops": 0.718,
     "ERA": null,
     "HR": 5,
     "SB": 17,
@@ -757,12 +757,12 @@
     "name": "이창섭",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.03,
     "AVG": 0.0,
-    "OPS": 0.375,
+    "ops": 0.375,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -778,12 +778,12 @@
     "name": "이태양",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 3.34,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.67,
     "HR": 19,
     "SB": null,
@@ -799,12 +799,12 @@
     "name": "이혜천",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.19,
     "HR": 3,
     "SB": null,
@@ -820,12 +820,12 @@
     "name": "이호준",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 2.56,
     "AVG": 0.294,
-    "OPS": 0.891,
+    "ops": 0.891,
     "ERA": null,
     "HR": 24,
     "SB": 0,
@@ -841,12 +841,12 @@
     "name": "임정호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.75,
     "HR": 2,
     "SB": null,
@@ -862,12 +862,12 @@
     "name": "임창민",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.47,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.8,
     "HR": 7,
     "SB": null,
@@ -883,12 +883,12 @@
     "name": "장현식",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.0,
     "HR": 0,
     "SB": null,
@@ -904,12 +904,12 @@
     "name": "조영훈",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 1.24,
     "AVG": 0.282,
-    "OPS": 0.912,
+    "ops": 0.912,
     "ERA": null,
     "HR": 8,
     "SB": null,
@@ -925,12 +925,12 @@
     "name": "조평호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 0.26,
     "AVG": 0.364,
-    "OPS": 0.955,
+    "ops": 0.955,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -946,12 +946,12 @@
     "name": "지석훈",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.5,
     "AVG": 0.267,
-    "OPS": 0.711,
+    "ops": 0.711,
     "ERA": null,
     "HR": 11,
     "SB": null,
@@ -967,13 +967,13 @@
     "name": "찰리",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.74,
     "HR": 8,
     "SB": null,
@@ -989,12 +989,12 @@
     "name": "최금강",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 2.14,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.71,
     "HR": 11,
     "SB": null,
@@ -1010,12 +1010,12 @@
     "name": "최재원",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.58,
     "AVG": 0.247,
-    "OPS": 0.778,
+    "ops": 0.778,
     "ERA": null,
     "HR": 2,
     "SB": null,
@@ -1031,12 +1031,12 @@
     "name": "테임즈",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 10.26,
     "AVG": 0.381,
-    "OPS": 1.287,
+    "ops": 1.287,
     "ERA": null,
     "HR": 47,
     "SB": null,
@@ -1052,12 +1052,12 @@
     "name": "해커",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 6.19,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.13,
     "HR": 14,
     "SB": null,
@@ -1073,12 +1073,12 @@
     "name": "황윤호",
     "team": "Dinos",
     "team_kr": "NC",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.6,
     "AVG": 0.0,
-    "OPS": 0.167,
+    "ops": 0.167,
     "ERA": null,
     "HR": 0,
     "SB": null,

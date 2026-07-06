@@ -4,12 +4,12 @@
     "name": "강영식",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.73,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.99,
     "HR": 8,
     "SB": null,
@@ -25,12 +25,12 @@
     "name": "강태원",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.44,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.36,
     "HR": 6,
     "SB": null,
@@ -46,12 +46,12 @@
     "name": "곽채진",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.85,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.55,
     "HR": 6,
     "SB": null,
@@ -67,12 +67,12 @@
     "name": "곽현희",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 0.79,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.89,
     "HR": 18,
     "SB": null,
@@ -88,14 +88,14 @@
     "name": "김경진",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.19,
     "AVG": 0.2,
-    "OPS": 0.45,
+    "ops": 0.45,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -111,12 +111,12 @@
     "name": "김기환",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 0.05,
     "AVG": 0.273,
-    "OPS": 0.818,
+    "ops": 0.818,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -132,12 +132,12 @@
     "name": "김상훈",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.33,
     "AVG": 0.234,
-    "OPS": 0.593,
+    "ops": 0.593,
     "ERA": null,
     "HR": 3,
     "SB": 0,
@@ -153,12 +153,12 @@
     "name": "김종국",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.09,
     "AVG": 0.259,
-    "OPS": 0.666,
+    "ops": 0.666,
     "ERA": null,
     "HR": 2,
     "SB": 15,
@@ -174,12 +174,12 @@
     "name": "김지영",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.11,
     "AVG": 0.19,
-    "OPS": 0.513,
+    "ops": 0.513,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -195,13 +195,13 @@
     "name": "김창희",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.35,
     "AVG": 0.236,
-    "OPS": 0.704,
+    "ops": 0.704,
     "ERA": null,
     "HR": 5,
     "SB": 3,
@@ -217,12 +217,12 @@
     "name": "김태룡",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.97,
     "AVG": 0.155,
-    "OPS": 0.491,
+    "ops": 0.491,
     "ERA": null,
     "HR": 4,
     "SB": 3,
@@ -238,13 +238,13 @@
     "name": "김호",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 0.28,
     "AVG": 0.236,
-    "OPS": 0.672,
+    "ops": 0.672,
     "ERA": null,
     "HR": 3,
     "SB": 4,
@@ -260,13 +260,13 @@
     "name": "미첼",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.14,
     "AVG": 0.227,
-    "OPS": 0.698,
+    "ops": 0.698,
     "ERA": null,
     "HR": 8,
     "SB": 3,
@@ -282,12 +282,12 @@
     "name": "박진철",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.24,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.91,
     "HR": 12,
     "SB": null,
@@ -303,14 +303,14 @@
     "name": "배스",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.41,
     "AVG": 0.271,
-    "OPS": 0.86,
+    "ops": 0.86,
     "ERA": null,
     "HR": 3,
     "SB": 3,
@@ -326,13 +326,13 @@
     "name": "성영재",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.9,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.84,
     "HR": 17,
     "SB": null,
@@ -348,12 +348,12 @@
     "name": "소소경",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.42,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.28,
     "HR": 8,
     "SB": null,
@@ -369,13 +369,13 @@
     "name": "양현석",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.47,
     "AVG": 0.235,
-    "OPS": 0.65,
+    "ops": 0.65,
     "ERA": null,
     "HR": 4,
     "SB": 0,
@@ -391,12 +391,12 @@
     "name": "엄병열",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.03,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.87,
     "HR": 2,
     "SB": null,
@@ -412,12 +412,12 @@
     "name": "오봉옥",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 3.41,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.86,
     "HR": 9,
     "SB": null,
@@ -433,12 +433,12 @@
     "name": "오철민",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -2.4,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 8.82,
     "HR": 20,
     "SB": null,
@@ -454,12 +454,12 @@
     "name": "유동훈",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.71,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.71,
     "HR": 9,
     "SB": null,
@@ -475,13 +475,13 @@
     "name": "윤형진",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.42,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.95,
     "HR": 14,
     "SB": null,
@@ -497,12 +497,12 @@
     "name": "이대진",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 2.8,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.17,
     "HR": 12,
     "SB": null,
@@ -518,12 +518,12 @@
     "name": "이병석",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.96,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.93,
     "HR": 5,
     "SB": null,
@@ -539,13 +539,13 @@
     "name": "이우석",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.79,
     "AVG": 0.167,
-    "OPS": 0.422,
+    "ops": 0.422,
     "ERA": null,
     "HR": 0,
     "SB": 2,
@@ -561,13 +561,13 @@
     "name": "이원식",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.27,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.98,
     "HR": 9,
     "SB": null,
@@ -583,14 +583,14 @@
     "name": "이호성",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.86,
     "AVG": 0.242,
-    "OPS": 0.718,
+    "ops": 0.718,
     "ERA": null,
     "HR": 8,
     "SB": 13,
@@ -606,12 +606,12 @@
     "name": "장성호",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 3.64,
     "AVG": 0.324,
-    "OPS": 0.925,
+    "ops": 0.925,
     "ERA": null,
     "HR": 14,
     "SB": 6,
@@ -627,13 +627,13 @@
     "name": "장일현",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.27,
     "AVG": 0.27,
-    "OPS": 0.684,
+    "ops": 0.684,
     "ERA": null,
     "HR": 4,
     "SB": 3,
@@ -649,12 +649,12 @@
     "name": "정성훈",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.83,
     "AVG": 0.26,
-    "OPS": 0.628,
+    "ops": 0.628,
     "ERA": null,
     "HR": 1,
     "SB": 10,
@@ -670,14 +670,14 @@
     "name": "조홍준",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -1.21,
     "AVG": 0.114,
-    "OPS": 0.413,
+    "ops": 0.413,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -693,12 +693,12 @@
     "name": "최길성",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.53,
     "AVG": 0.4,
-    "OPS": 1.1,
+    "ops": 1.1,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -714,12 +714,12 @@
     "name": "최상덕",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 2.08,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.56,
     "HR": 28,
     "SB": null,
@@ -735,12 +735,12 @@
     "name": "최영완",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.14,
     "HR": 1,
     "SB": null,
@@ -756,12 +756,12 @@
     "name": "최해식",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.01,
     "AVG": 0.242,
-    "OPS": 0.636,
+    "ops": 0.636,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -777,14 +777,14 @@
     "name": "타바레스",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.74,
     "AVG": 0.334,
-    "OPS": 0.802,
+    "ops": 0.802,
     "ERA": null,
     "HR": 3,
     "SB": null,
@@ -800,12 +800,12 @@
     "name": "포조",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": -0.68,
     "AVG": 0.213,
-    "OPS": 0.508,
+    "ops": 0.508,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -821,13 +821,13 @@
     "name": "홍세완",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 0.07,
     "AVG": 0.24,
-    "OPS": 0.67,
+    "ops": 0.67,
     "ERA": null,
     "HR": 5,
     "SB": null,
@@ -843,12 +843,12 @@
     "name": "홍현우",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 2.06,
     "AVG": 0.234,
-    "OPS": 0.821,
+    "ops": 0.821,
     "ERA": null,
     "HR": 14,
     "SB": null,
@@ -864,12 +864,12 @@
     "name": "황두성",
     "team": "Tigers",
     "team_kr": "해태",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.36,
     "HR": 0,
     "SB": null,

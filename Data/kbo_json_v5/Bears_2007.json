@@ -4,13 +4,13 @@
     "name": "강동우",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.2,
     "AVG": 0.163,
-    "OPS": 0.552,
+    "ops": 0.552,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -26,12 +26,12 @@
     "name": "고영민",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 3.74,
     "AVG": 0.268,
-    "OPS": 0.792,
+    "ops": 0.792,
     "ERA": null,
     "HR": 12,
     "SB": 36,
@@ -47,12 +47,12 @@
     "name": "구자운",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.5,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.08,
     "HR": 0,
     "SB": null,
@@ -68,12 +68,12 @@
     "name": "금민철",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.48,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.97,
     "HR": 2,
     "SB": null,
@@ -89,12 +89,12 @@
     "name": "김건국",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.0,
     "HR": 0,
     "SB": null,
@@ -110,12 +110,12 @@
     "name": "김덕윤",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.34,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.2,
     "HR": 4,
     "SB": null,
@@ -131,12 +131,12 @@
     "name": "김동주",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 6.6,
     "AVG": 0.322,
-    "OPS": 0.991,
+    "ops": 0.991,
     "ERA": null,
     "HR": 19,
     "SB": 11,
@@ -152,13 +152,13 @@
     "name": "김명제",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": -0.45,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.05,
     "HR": 11,
     "SB": null,
@@ -174,12 +174,12 @@
     "name": "김승회",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.15,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.54,
     "HR": 12,
     "SB": null,
@@ -195,12 +195,12 @@
     "name": "김진수",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.43,
     "AVG": 0.156,
-    "OPS": 0.352,
+    "ops": 0.352,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -216,12 +216,12 @@
     "name": "김태영",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.3,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.33,
     "HR": 7,
     "SB": null,
@@ -237,12 +237,12 @@
     "name": "김하람",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -258,13 +258,13 @@
     "name": "김현수",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 1.11,
     "AVG": 0.273,
-    "OPS": 0.733,
+    "ops": 0.733,
     "ERA": null,
     "HR": 5,
     "SB": 5,
@@ -280,13 +280,13 @@
     "name": "김혜겸",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.07,
     "AVG": 0.4,
-    "OPS": 0.9,
+    "ops": 0.9,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -302,12 +302,12 @@
     "name": "노경은",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.02,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.67,
     "HR": 2,
     "SB": null,
@@ -323,12 +323,12 @@
     "name": "랜들",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 2.89,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.12,
     "HR": 16,
     "SB": null,
@@ -344,12 +344,12 @@
     "name": "리오스",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 6.86,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.07,
     "HR": 8,
     "SB": null,
@@ -365,14 +365,14 @@
     "name": "민병헌",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.15,
     "AVG": 0.244,
-    "OPS": 0.64,
+    "ops": 0.64,
     "ERA": null,
     "HR": 3,
     "SB": 30,
@@ -388,12 +388,12 @@
     "name": "서동환",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.04,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 6.0,
     "HR": 0,
     "SB": null,
@@ -409,12 +409,12 @@
     "name": "안경현",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 0.2,
     "AVG": 0.274,
-    "OPS": 0.703,
+    "ops": 0.703,
     "ERA": null,
     "HR": 2,
     "SB": 1,
@@ -430,13 +430,13 @@
     "name": "안상준",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.41,
     "AVG": 0.183,
-    "OPS": 0.473,
+    "ops": 0.473,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -452,12 +452,12 @@
     "name": "양의지",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.02,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -473,12 +473,12 @@
     "name": "오재원",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.02,
     "AVG": 0.259,
-    "OPS": 0.641,
+    "ops": 0.641,
     "ERA": null,
     "HR": 0,
     "SB": 3,
@@ -494,12 +494,12 @@
     "name": "원용묵",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.39,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.59,
     "HR": 0,
     "SB": null,
@@ -515,13 +515,13 @@
     "name": "유재웅",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.19,
     "AVG": 0.182,
-    "OPS": 0.482,
+    "ops": 0.482,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -537,12 +537,12 @@
     "name": "윤석민",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.49,
     "AVG": 0.074,
-    "OPS": 0.255,
+    "ops": 0.255,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -558,13 +558,13 @@
     "name": "윤재국",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.1,
     "AVG": 0.257,
-    "OPS": 0.663,
+    "ops": 0.663,
     "ERA": null,
     "HR": 3,
     "SB": 5,
@@ -580,12 +580,12 @@
     "name": "이경필",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.19,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.19,
     "HR": 0,
     "SB": null,
@@ -601,13 +601,13 @@
     "name": "이대수",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 0.79,
     "AVG": 0.252,
-    "OPS": 0.656,
+    "ops": 0.656,
     "ERA": null,
     "HR": 3,
     "SB": 5,
@@ -623,12 +623,12 @@
     "name": "이두환",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": -0.02,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -644,12 +644,12 @@
     "name": "이승학",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.75,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.17,
     "HR": 3,
     "SB": null,
@@ -665,12 +665,12 @@
     "name": "이원재",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.2,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 13.5,
     "HR": 0,
     "SB": null,
@@ -686,14 +686,14 @@
     "name": "이원희",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": null,
     "HR": 1,
     "SB": null,
@@ -709,14 +709,14 @@
     "name": "이종욱",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 3.34,
     "AVG": 0.316,
-    "OPS": 0.799,
+    "ops": 0.799,
     "ERA": null,
     "HR": 1,
     "SB": 47,
@@ -732,12 +732,12 @@
     "name": "임태훈",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 2.59,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.4,
     "HR": 2,
     "SB": null,
@@ -753,13 +753,13 @@
     "name": "장원진",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.21,
     "AVG": 0.185,
-    "OPS": 0.485,
+    "ops": 0.485,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -775,14 +775,14 @@
     "name": "전상렬",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.43,
     "AVG": 0.186,
-    "OPS": 0.515,
+    "ops": 0.515,
     "ERA": null,
     "HR": 0,
     "SB": 9,
@@ -798,12 +798,12 @@
     "name": "정성훈",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.07,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.0,
     "HR": 0,
     "SB": null,
@@ -819,12 +819,12 @@
     "name": "정원석",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.01,
     "AVG": 0.242,
-    "OPS": 0.67,
+    "ops": 0.67,
     "ERA": null,
     "HR": 1,
     "SB": 5,
@@ -840,12 +840,12 @@
     "name": "정재훈",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.48,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.44,
     "HR": 2,
     "SB": null,
@@ -861,12 +861,12 @@
     "name": "정재훈",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.12,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.03,
     "HR": 4,
     "SB": null,
@@ -882,12 +882,12 @@
     "name": "채상병",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 1.36,
     "AVG": 0.237,
-    "OPS": 0.654,
+    "ops": 0.654,
     "ERA": null,
     "HR": 7,
     "SB": null,
@@ -903,12 +903,12 @@
     "name": "최주환",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.73,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -924,12 +924,12 @@
     "name": "최준석",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 4.67,
     "AVG": 0.244,
-    "OPS": 0.76,
+    "ops": 0.76,
     "ERA": null,
     "HR": 16,
     "SB": null,
@@ -945,14 +945,14 @@
     "name": "허도환",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.0,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": null,
     "HR": 0,
     "SB": null,
@@ -968,12 +968,12 @@
     "name": "홍성흔",
     "team": "Bears",
     "team_kr": "두산",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 1.22,
     "AVG": 0.268,
-    "OPS": 0.735,
+    "ops": 0.735,
     "ERA": null,
     "HR": 5,
     "SB": null,

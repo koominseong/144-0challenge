@@ -4,14 +4,14 @@
     "name": "고동진",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.7,
     "AVG": 0.249,
-    "OPS": 0.657,
+    "ops": 0.657,
     "ERA": null,
     "HR": 1,
     "SB": 10,
@@ -27,12 +27,12 @@
     "name": "구대성",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.71,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.19,
     "HR": 3,
     "SB": null,
@@ -48,12 +48,12 @@
     "name": "권준헌",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.83,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.98,
     "HR": 4,
     "SB": null,
@@ -69,12 +69,12 @@
     "name": "김강",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.05,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -90,12 +90,12 @@
     "name": "김경선",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.42,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 7.62,
     "HR": 2,
     "SB": null,
@@ -111,14 +111,14 @@
     "name": "김동영",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": -0.17,
     "AVG": 0.188,
-    "OPS": 0.423,
+    "ops": 0.423,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -134,13 +134,13 @@
     "name": "김민재",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": 1.63,
     "AVG": 0.273,
-    "OPS": 0.694,
+    "ops": 0.694,
     "ERA": null,
     "HR": 6,
     "SB": 7,
@@ -156,13 +156,13 @@
     "name": "김수연",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.32,
     "AVG": 0.182,
-    "OPS": 0.47,
+    "ops": 0.47,
     "ERA": null,
     "HR": 0,
     "SB": 1,
@@ -178,13 +178,13 @@
     "name": "김인철",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.5,
     "AVG": 0.204,
-    "OPS": 0.542,
+    "ops": 0.542,
     "ERA": null,
     "HR": 2,
     "SB": 0,
@@ -200,12 +200,12 @@
     "name": "김태균",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": 3.84,
     "AVG": 0.29,
-    "OPS": 0.903,
+    "ops": 0.903,
     "ERA": null,
     "HR": 21,
     "SB": 2,
@@ -221,12 +221,12 @@
     "name": "김태완",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "DH"
     ],
     "war": 0.13,
     "AVG": 0.245,
-    "OPS": 0.75,
+    "ops": 0.75,
     "ERA": null,
     "HR": 4,
     "SB": 0,
@@ -242,12 +242,12 @@
     "name": "김해님",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.43,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 1.93,
     "HR": 1,
     "SB": null,
@@ -263,12 +263,12 @@
     "name": "김혁민",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.01,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 5.4,
     "HR": 0,
     "SB": null,
@@ -284,12 +284,12 @@
     "name": "류현진",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 4.13,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.94,
     "HR": 15,
     "SB": null,
@@ -305,12 +305,12 @@
     "name": "마정길",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.03,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.5,
     "HR": 3,
     "SB": null,
@@ -326,13 +326,13 @@
     "name": "문동환",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 1.49,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.11,
     "HR": 8,
     "SB": null,
@@ -348,13 +348,13 @@
     "name": "백승룡",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.09,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -370,12 +370,12 @@
     "name": "백재호",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.67,
     "AVG": 0.226,
-    "OPS": 0.702,
+    "ops": 0.702,
     "ERA": null,
     "HR": 6,
     "SB": 0,
@@ -391,12 +391,12 @@
     "name": "서민욱",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.05,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 0.0,
     "HR": 0,
     "SB": null,
@@ -412,13 +412,13 @@
     "name": "서정",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.05,
     "AVG": 1.0,
-    "OPS": 2.0,
+    "ops": 2.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -434,12 +434,12 @@
     "name": "세드릭",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 0.97,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.15,
     "HR": 7,
     "SB": null,
@@ -455,13 +455,13 @@
     "name": "송광민",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SS",
       "2B"
     ],
     "war": -0.3,
     "AVG": 0.205,
-    "OPS": 0.451,
+    "ops": 0.451,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -477,12 +477,12 @@
     "name": "송진우",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.06,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.54,
     "HR": 5,
     "SB": null,
@@ -498,12 +498,12 @@
     "name": "송창식",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.39,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 13.5,
     "HR": 0,
     "SB": null,
@@ -519,12 +519,12 @@
     "name": "신경현",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.39,
     "AVG": 0.25,
-    "OPS": 0.605,
+    "ops": 0.605,
     "ERA": null,
     "HR": 2,
     "SB": 4,
@@ -540,12 +540,12 @@
     "name": "심광호",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.05,
     "AVG": 0.197,
-    "OPS": 0.58,
+    "ops": 0.58,
     "ERA": null,
     "HR": 3,
     "SB": 3,
@@ -561,12 +561,12 @@
     "name": "안영명",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 1.72,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.06,
     "HR": 9,
     "SB": null,
@@ -582,12 +582,12 @@
     "name": "양훈",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.76,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.64,
     "HR": 3,
     "SB": null,
@@ -603,13 +603,13 @@
     "name": "연경흠",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 0.09,
     "AVG": 0.26,
-    "OPS": 0.682,
+    "ops": 0.682,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -625,12 +625,12 @@
     "name": "유원상",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.39,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.84,
     "HR": 2,
     "SB": null,
@@ -646,12 +646,12 @@
     "name": "윤규진",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.95,
     "HR": 0,
     "SB": null,
@@ -667,12 +667,12 @@
     "name": "윤근영",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": -0.33,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 9.0,
     "HR": 0,
     "SB": null,
@@ -688,12 +688,12 @@
     "name": "이도형",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.07,
     "AVG": 0.186,
-    "OPS": 0.582,
+    "ops": 0.582,
     "ERA": null,
     "HR": 6,
     "SB": 0,
@@ -709,12 +709,12 @@
     "name": "이범호",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": 3.21,
     "AVG": 0.246,
-    "OPS": 0.792,
+    "ops": 0.792,
     "ERA": null,
     "HR": 21,
     "SB": 2,
@@ -730,13 +730,13 @@
     "name": "이영우",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": -0.06,
     "AVG": 0.238,
-    "OPS": 0.633,
+    "ops": 0.633,
     "ERA": null,
     "HR": 0,
     "SB": 4,
@@ -752,12 +752,12 @@
     "name": "전현태",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "3B"
     ],
     "war": -0.07,
     "AVG": 0.0,
-    "OPS": 0.0,
+    "ops": 0.0,
     "ERA": null,
     "HR": 0,
     "SB": 0,
@@ -773,12 +773,12 @@
     "name": "정민철",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SP"
     ],
     "war": 3.11,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 2.9,
     "HR": 11,
     "SB": null,
@@ -794,12 +794,12 @@
     "name": "정민혁",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RP"
     ],
     "war": 0.17,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 3.86,
     "HR": 1,
     "SB": null,
@@ -815,12 +815,12 @@
     "name": "정범모",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "C"
     ],
     "war": 0.15,
     "AVG": 0.4,
-    "OPS": 1.4,
+    "ops": 1.4,
     "ERA": null,
     "HR": 1,
     "SB": 0,
@@ -836,12 +836,12 @@
     "name": "정희상",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "1B"
     ],
     "war": -0.46,
     "AVG": 0.159,
-    "OPS": 0.511,
+    "ops": 0.511,
     "ERA": null,
     "HR": 2,
     "SB": 1,
@@ -857,13 +857,13 @@
     "name": "조성민",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.24,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.19,
     "HR": 3,
     "SB": null,
@@ -879,14 +879,14 @@
     "name": "조원우",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "CF",
       "RF",
       "LF"
     ],
     "war": 0.5,
     "AVG": 0.266,
-    "OPS": 0.686,
+    "ops": 0.686,
     "ERA": null,
     "HR": 4,
     "SB": null,
@@ -902,13 +902,13 @@
     "name": "최영필",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "SP",
       "RP"
     ],
     "war": 0.41,
     "AVG": null,
-    "OPS": null,
+    "ops": null,
     "ERA": 4.33,
     "HR": 7,
     "SB": null,
@@ -924,13 +924,13 @@
     "name": "크루즈",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "RF",
       "LF"
     ],
     "war": 6.58,
     "AVG": 0.321,
-    "OPS": 0.972,
+    "ops": 0.972,
     "ERA": null,
     "HR": 22,
     "SB": null,
@@ -946,12 +946,12 @@
     "name": "한상훈",
     "team": "Eagles",
     "team_kr": "한화",
-    "position": [
+    "positions": [
       "2B"
     ],
     "war": 0.52,
     "AVG": 0.259,
-    "OPS": 0.663,
+    "ops": 0.663,
     "ERA": null,
     "HR": 2,
     "SB": null,
