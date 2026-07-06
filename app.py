@@ -206,6 +206,9 @@ def start():
 def classic_start():
 
     session.clear()
+
+    session["allow_next"] = True
+    
     session["lineup"] = {
         "SP": [],
         "RP": [],
