@@ -1208,15 +1208,24 @@ def assign_player():
 
         return redirect("/result_loading")
 
-    limit = 3
-    if (
-        session.get("selected_behavior")
-        == "recruit_master"
-    ):
-        if session["round_count"] == 0:
-            limit = 4
-        elif session["round_count"] == 4:
-            limit = 2
+    # Classic Mode는 팀당 1명
+    if session.get("mode") == "classic":
+    
+        limit = 1
+    
+    # 기존 모드
+    else:
+    
+        limit = 3
+    
+        if (
+            session.get("selected_behavior")
+            == "recruit_master"
+        ):
+            if session["round_count"] == 0:
+                limit = 4
+            elif session["round_count"] == 4:
+                limit = 2
     if session["assigned_this_round"] >= limit:
         session["assigned_this_round"] = 0
         session["round_count"] += 1
