@@ -205,6 +205,8 @@ def start():
 @app.route("/classic_start")
 def classic_start():
 
+    era = "all_time"
+
     session.clear()
 
     session["allow_next"] = True
