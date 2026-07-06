@@ -1104,7 +1104,14 @@ def assign_player():
         if p["id"] == player_id
     )
     
-    player["era"] = session["actual_era"]
+    if session.get("mode") == "classic":
+    
+        _, year = session["current_team"].rsplit("_", 1)
+        player["era"] = year
+    
+    else:
+    
+        player["era"] = session["actual_era"]
     
     lineup = session["lineup"]
 
