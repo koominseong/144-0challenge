@@ -222,8 +222,6 @@ def classic_start():
 
     session["mode"] = "classic"
 
-    session["lineup"] = empty_lineup()
-
     session["used_players"] = []
 
     session["used_teams"] = []
