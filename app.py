@@ -1061,6 +1061,7 @@ def team_view():
 
         top3=top3
     )
+    
 @app.route("/team_reroll")
 def team_reroll():
 
@@ -1073,18 +1074,25 @@ def team_reroll():
 
     session["team_reroll"] -= 1
 
-    current_key = (
-        f"{session.get('actual_era')}|"
-        f"{session.get('current_team')}"
-    )
+    # Classic Mode
+    if session.get("mode") == "classic":
+
+        current_key = session["current_team"]
+
+    # 기존 Mode
+    else:
+
+        current_key = (
+            f"{session.get('actual_era')}|"
+            f"{session.get('current_team')}"
+        )
 
     if current_key in session["used_teams"]:
         session["used_teams"].remove(current_key)
 
     session["allow_next"] = True
 
-    return redirect("/next")
-    
+    return redirect("/next")    
 @app.route("/assign_player", methods=["POST"])
 def assign_player():
 
