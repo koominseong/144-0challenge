@@ -230,7 +230,7 @@ def classic_start():
     session["used_players"] = []
     session["assigned_this_round"] = 0
     session["used_teams"] = []
-
+    session["round_count"] = 0
     session["team_reroll"] = 5
 
     return redirect("/next")
