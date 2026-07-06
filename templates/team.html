@@ -515,7 +515,11 @@ margin-bottom:6px;
 color:#1976d2;
 font-weight:bold;
 ">
-AVG {{ "%.3f"|format(p["AVG"]) }}
+{% if p.get("AVG") is not none %}
+AVG {{ "%.2f"|format(p["AVG"]) }}
+{% else %}
+AVG -
+{% endif %}
 </div>
 
 <div style="
@@ -523,7 +527,11 @@ margin-bottom:6px;
 color:#1976d2;
 font-weight:bold;
 ">
-HR {{ "%.3f"|format(p["HR"]) }}
+{% if p.get("HR") is not none %}
+HR {{ "%.2f"|format(p["HR"]) }}
+{% else %}
+HR -
+{% endif %}
 </div>
 
 <div style="
@@ -531,7 +539,11 @@ margin-bottom:6px;
 color:#1976d2;
 font-weight:bold;
 ">
-SB {{ "%.3f"|format(p["SB"]) }}
+{% if p.get("SB") is not none %}
+SB {{ "%.2f"|format(p["SB"]) }}
+{% else %}
+SB -
+{% endif %}
 </div>
 {% endif %}
     
@@ -549,7 +561,11 @@ margin-bottom:6px;
 color:#ef4444;
 font-weight:bold;
 ">
+{% if p.get("SO") is not none %}
 SO {{ "%.2f"|format(p["SO"]) }}
+{% else %}
+SO -
+{% endif %}
 </div>
 
 <div style="
