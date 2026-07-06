@@ -231,7 +231,7 @@ def classic_start():
 
     session["used_teams"] = []
 
-    session["rerolls"] = 5
+    session["team_reroll"] = 5
 
     return redirect("/next")
 
