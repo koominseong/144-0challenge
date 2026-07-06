@@ -646,9 +646,12 @@ def next_team():
     ):
         return redirect("/trait_team")
 
-    if "era" not in session:
+    if (
+        session.get("mode") != "classic"
+        and "era" not in session
+    ):
         return redirect("/")
-
+    
     if session.get("mode") == "classic":
         
         session["actual_era"] = None
