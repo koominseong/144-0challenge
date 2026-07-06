@@ -1309,6 +1309,11 @@ def result():
 
     bonus = 0
 
+    if session.get("mode") == "classic":
+        trait = "none"
+    else:
+        trait = session.get("selected_trait", "none")
+
     all_players = []
     all_players.extend(lineup["SP"])
     all_players.extend(lineup["RP"])
@@ -1753,7 +1758,8 @@ def result():
         record=record,
         grade=grade,
         bonus=bonus,
-        trait=trait
+        trait=trait,
+        mode=session.get("mode")
     )
 @app.route("/result_loading")
 def result_loading():
