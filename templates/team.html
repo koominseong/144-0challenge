@@ -509,6 +509,30 @@ font-weight:bold;
 ">
 OPS {{ "%.3f"|format(p["ops"]) }}
 </div>
+
+<div style="
+margin-bottom:6px;
+color:#1976d2;
+font-weight:bold;
+">
+AVG {{ "%.3f"|format(p["AVG"]) }}
+</div>
+
+<div style="
+margin-bottom:6px;
+color:#1976d2;
+font-weight:bold;
+">
+HR {{ "%.3f"|format(p["HR"]) }}
+</div>
+
+<div style="
+margin-bottom:6px;
+color:#1976d2;
+font-weight:bold;
+">
+SB {{ "%.3f"|format(p["SB"]) }}
+</div>
 {% endif %}
     
 {% if p.get("ERA") is not none %}
@@ -518,6 +542,22 @@ color:#ef4444;
 font-weight:bold;
 ">
 ERA {{ "%.2f"|format(p["ERA"]) }}
+</div>
+
+<div style="
+margin-bottom:6px;
+color:#ef4444;
+font-weight:bold;
+">
+SO {{ "%.2f"|format(p["SO"]) }}
+</div>
+
+<div style="
+margin-bottom:6px;
+color:#ef4444;
+font-weight:bold;
+">
+이닝 {{ "%.2f"|format(p["IP"]) }}
 </div>
 {% endif %}
     
