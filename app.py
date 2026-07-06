@@ -774,12 +774,14 @@ def next_team():
     if session.get("mode") == "classic":
     
         team_code, year = team.rsplit("_", 1)
+
+        session["year"] = year
     
         return render_template(
             "loading.html",
             team_name=team_names[team_code],
             era="classic",
-            actual_era=year
+            actual_era=session.get("year")
         )
     
     else:
