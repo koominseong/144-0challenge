@@ -228,7 +228,7 @@ def classic_start():
 
     session["rerolls"] = 5
 
-    return redirect("/next)
+    return redirect("/next")
 
 @app.route("/behavior_trait")
 def behavior_trait():
