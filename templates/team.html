@@ -557,7 +557,11 @@ margin-bottom:6px;
 color:#ef4444;
 font-weight:bold;
 ">
+{% if p.get("IP") is not none %}
 이닝 {{ "%.2f"|format(p["IP"]) }}
+{% else %}
+이닝 -
+{% endif %}
 </div>
 {% endif %}
     
