@@ -106,16 +106,30 @@ POSITIONS = [
     "DH"
 ]
 
-
 def load_team(team):
 
-    era = session.get("actual_era", session["era"])
+    # Classic Mode
+    if session.get("mode") == "classic":
 
-    path = os.path.join(
-        "Data",
-        era,
-        f"{team}.json"
-    )
+        path = os.path.join(
+            "Data",
+            "kbo_json_v5",
+            f"{team}.json"
+        )
+
+    # 기존 Mode
+    else:
+
+        era = session.get(
+            "actual_era",
+            session["era"]
+        )
+
+        path = os.path.join(
+            "Data",
+            era,
+            f"{team}.json"
+        )
 
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -187,6 +201,23 @@ def start():
     session["transfer_used"] = False
 
     return redirect("/behavior_trait")
+
+@app.route("/classic_start")
+def classic_start():
+
+    session.clear()
+
+    session["mode"] = "classic"
+
+    session["lineup"] = empty_lineup()
+
+    session["used_players"] = []
+
+    session["used_teams"] = []
+
+    session["rerolls"] = 5
+
+    return redirect("/next_team")
 
 @app.route("/behavior_trait")
 def behavior_trait():
@@ -604,6 +635,10 @@ def next_team():
     if "era" not in session:
         return redirect("/")
 
+    if session.get("mode") == "classic":
+        
+        session["actual_era"] = None
+
     if session["era"] == "all_time":
 
         if session.get("fixed_era"):
@@ -631,16 +666,37 @@ def next_team():
         session["released_players"] = []
 
     available = []
-
-    for team in team_names.keys():
-
-        unique_id = (
-            f"{session['actual_era']}|{team}"
+    
+    # Classic Mode
+    if session.get("mode") == "classic":
+    
+        folder = os.path.join(
+            "Data",
+            "kbo_json_v5"
         )
-
-        if unique_id not in session["used_teams"]:
-            available.append(team)
-
+    
+        for file in os.listdir(folder):
+    
+            if not file.endswith(".json"):
+                continue
+    
+            filename = file[:-5]
+    
+            if filename not in session["used_teams"]:
+                available.append(filename)
+    
+    # 기존 모드
+    else:
+    
+        for team in team_names.keys():
+    
+            unique_id = (
+                f"{session['actual_era']}|{team}"
+            )
+    
+            if unique_id not in session["used_teams"]:
+                available.append(team)
+                
     current_team = session.get("current_team")
 
     if current_team in available:
@@ -683,19 +739,38 @@ def next_team():
         team = random.choice(available)
 
     session["current_team"] = team
-
-    session["used_teams"].append(
-        f"{session['actual_era']}|{team}"
-    )
+    
+    if session.get("mode") == "classic":
+    
+        session["used_teams"].append(team)
+    
+    else:
+    
+        session["used_teams"].append(
+            f"{session['actual_era']}|{team}"
+        )
 
     session.modified = True
-
-    return render_template(
-        "loading.html",
-        team_name=team_names[team],
-        era=session["era"],
-        actual_era=session.get("actual_era")
-    )
+    
+    if session.get("mode") == "classic":
+    
+        team_code, year = team.rsplit("_", 1)
+    
+        return render_template(
+            "loading.html",
+            team_name=team_names[team_code],
+            era="classic",
+            actual_era=year
+        )
+    
+    else:
+    
+        return render_template(
+            "loading.html",
+            team_name=team_names[team],
+            era=session["era"],
+            actual_era=session.get("actual_era")
+        )    
     
 @app.route("/fa_select")
 def fa_select():
@@ -924,35 +999,68 @@ def team_view():
 
     players = load_team(session["current_team"])
 
+    # Classic Mode
+    if session.get("mode") == "classic":
+
+        team_code, year = session["current_team"].rsplit("_", 1)
+
+        team_name = get_team_names()[team_code]
+
+        next_preview = session.get("next_team_preview")
+
+        if next_preview:
+            preview_team = next_preview.rsplit("_", 1)[0]
+            next_preview = get_team_names()[preview_team]
+        else:
+            next_preview = None
+
+    # 기존 Mode
+    else:
+
+        team_name = get_team_names()[session["current_team"]]
+
+        year = session.get("actual_era")
+
+        next_preview = get_team_names().get(
+            session.get("next_team_preview"),
+            session.get("next_team_preview")
+        )
+
     top3 = None
+
     if (
-        session.get("selected_behavior")
-        == "recorder"
+        session.get("mode") != "classic"
+        and session.get("selected_behavior") == "recorder"
         and session["round_count"] == 1
     ):
         top3 = sorted(
             players,
-            key=lambda x:x["war"],
+            key=lambda x: x["war"],
             reverse=True
         )[:3]
 
     error = session.pop("error", None)
-        
+
     return render_template(
         "team.html",
-        team_name=get_team_names()[session["current_team"]],
+
+        team_name=team_name,
         team_key=session["current_team"],
+
+        actual_era=year,
+
         players=players,
+
         lineup=session["lineup"],
+
         rerolls=session["team_reroll"],
+
         error=error,
-        next_team_preview=get_team_names().get(
-            session.get("next_team_preview"),
-            session.get("next_team_preview")
-        ),
+
+        next_team_preview=next_preview,
+
         top3=top3
     )
-
 @app.route("/team_reroll")
 def team_reroll():
 
