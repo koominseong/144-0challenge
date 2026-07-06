@@ -1324,7 +1324,13 @@ def result():
 
             total_war += war
 
-    wins = round(total_war * 1.3)
+    if session.get("mode") == "classic":
+
+        wins = round(total_war * 2)
+
+    else:
+        
+        wins = round(total_war * 1.3)
 
     bonus = 0
 
@@ -1803,7 +1809,13 @@ def result_loading():
         if lineup[pos]:
             total_war += lineup[pos]["war"]
 
-    wins = round(total_war * 1.3)
+    if session.get("mode") == "classic":
+
+        wins = round(total_war * 2)
+
+    else:
+        
+        wins = round(total_war * 1.3)
 
     if wins > 144:
         wins = 144
