@@ -228,7 +228,7 @@ def classic_start():
     session["mode"] = "classic"
 
     session["used_players"] = []
-
+    session["assigned_this_round"] = 0
     session["used_teams"] = []
 
     session["team_reroll"] = 5
