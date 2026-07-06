@@ -207,6 +207,20 @@ def classic_start():
 
     session.clear()
 
+     session["lineup"] = {
+        "SP": [],
+        "RP": [],
+        "C": None,
+        "1B": None,
+        "2B": None,
+        "3B": None,
+        "SS": None,
+        "LF": None,
+        "CF": None,
+        "RF": None,
+        "DH": None
+         }
+
     session["mode"] = "classic"
 
     session["lineup"] = empty_lineup()
