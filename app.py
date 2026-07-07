@@ -294,7 +294,7 @@ def start():
 
     session["era"] = era
 
-    session["mode"] = trait
+    session["mode"] = "trait"
     
     session["assigned_this_round"] = 0
 
