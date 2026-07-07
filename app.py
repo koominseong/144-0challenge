@@ -289,7 +289,7 @@ def start():
 
     if era == "all_time":
         session["actual_era"] = random.choice(
-            ["2000s", "2010s", "2020s"]
+            ["1980s","1990s","2000s", "2010s", "2020s"]
         )
 
     session["era"] = era
