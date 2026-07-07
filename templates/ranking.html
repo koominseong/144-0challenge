@@ -2,6 +2,7 @@
 <html lang="ko">
 
 <head>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -44,8 +45,16 @@ body{
 
 .ranking-box{
 
-    max-width:1000px;
+    max-width:1400px;
     margin:auto;
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+
+}
+
+.panel{
 
     background:rgba(255,255,255,.06);
 
@@ -57,6 +66,19 @@ body{
 
     box-shadow:
     0 0 30px rgba(0,0,0,.4);
+
+}
+
+.panel h2{
+
+    background:#2563eb;
+
+    text-align:center;
+
+    padding:18px;
+
+    font-size:28px;
+
 }
 
 table{
@@ -64,15 +86,17 @@ table{
     width:100%;
 
     border-collapse:collapse;
+
 }
 
 th{
 
-    background:#2563eb;
+    background:#1d4ed8;
 
     padding:15px;
 
     font-size:18px;
+
 }
 
 td{
@@ -83,29 +107,26 @@ td{
 
     border-bottom:
     1px solid rgba(255,255,255,.08);
+
 }
 
 tr:hover{
+
     background:
     rgba(255,255,255,.05);
+
 }
 
 .rank1{
-
-    background:
-    rgba(255,215,0,.15);
+    background:rgba(255,215,0,.15);
 }
 
 .rank2{
-
-    background:
-    rgba(192,192,192,.15);
+    background:rgba(192,192,192,.15);
 }
 
 .rank3{
-
-    background:
-    rgba(205,127,50,.15);
+    background:rgba(205,127,50,.15);
 }
 
 .medal{
@@ -140,9 +161,22 @@ tr:hover{
     color:#ef5350;
 }
 
-.btn-wrap{
+.empty{
+
     text-align:center;
-    margin-top:30px;
+
+    padding:60px;
+
+    color:#94a3b8;
+
+}
+
+.btn-wrap{
+
+    text-align:center;
+
+    margin-top:35px;
+
 }
 
 .btn{
@@ -160,30 +194,44 @@ tr:hover{
     font-size:18px;
 
     cursor:pointer;
+
 }
 
 .btn:hover{
+
     opacity:.9;
+
 }
 
-.empty{
+@media(max-width:900px){
 
-    text-align:center;
+    .ranking-box{
 
-    padding:50px;
+        grid-template-columns:1fr;
 
-    color:#94a3b8;
+    }
+
 }
 
 @media(max-width:700px){
 
     th,td{
+
         font-size:13px;
         padding:10px;
+
     }
 
     .header h1{
-        font-size:36px;
+
+        font-size:38px;
+
+    }
+
+    .panel h2{
+
+        font-size:22px;
+
     }
 
 }
@@ -196,48 +244,54 @@ tr:hover{
 
 <div class="header">
 
-<h1>
-🏆 명예의 전당
-</h1>
+<h1>🏆 명예의 전당</h1>
 
 <div class="subtitle">
+
 KBO 144-0 Challenge 역대 랭킹
+
 </div>
 
 </div>
 
 <div class="ranking-box">
 
-{% if records %}
+<!-- Trait Mode -->
+
+<div class="panel">
+
+<h2>🏆 Trait Mode</h2>
+
+{% if trait_records %}
 
 <table>
 
 <tr>
+
 <th>순위</th>
 <th>닉네임</th>
 <th>기록</th>
 <th>등급</th>
-<th>날짜</th>
+
 </tr>
 
-{% for r in records %}
+{% for r in trait_records %}
 
-<tr
-class="
-{% if loop.index == 1 %}rank1{% endif %}
-{% if loop.index == 2 %}rank2{% endif %}
-{% if loop.index == 3 %}rank3{% endif %}
+<tr class="
+{% if loop.index==1 %}rank1{% endif %}
+{% if loop.index==2 %}rank2{% endif %}
+{% if loop.index==3 %}rank3{% endif %}
 ">
 
 <td>
 
-{% if loop.index == 1 %}
+{% if loop.index==1 %}
 <span class="medal">🥇</span>
 
-{% elif loop.index == 2 %}
+{% elif loop.index==2 %}
 <span class="medal">🥈</span>
 
-{% elif loop.index == 3 %}
+{% elif loop.index==3 %}
 <span class="medal">🥉</span>
 
 {% else %}
@@ -247,30 +301,32 @@ class="
 </td>
 
 <td>
+
 <b>{{ r.name }}</b>
+
 </td>
 
 <td>
+
 {{ r.wins }}-{{ r.losses }}
+
 </td>
 
 <td>
 
 <span class="
-{% if r.grade == 'SS' %}ss{% endif %}
-{% if r.grade == 'S' %}s{% endif %}
-{% if r.grade == 'A' %}a{% endif %}
-{% if r.grade == 'B' %}b{% endif %}
-{% if r.grade == 'C' %}c{% endif %}
-{% if r.grade == 'D' %}d{% endif %}
+{% if r.grade=='SS' %}ss{% endif %}
+{% if r.grade=='S' %}s{% endif %}
+{% if r.grade=='A' %}a{% endif %}
+{% if r.grade=='B' %}b{% endif %}
+{% if r.grade=='C' %}c{% endif %}
+{% if r.grade=='D' %}d{% endif %}
 ">
+
 {{ r.grade }}
+
 </span>
 
-</td>
-
-<td>
-{{ r.date }}
 </td>
 
 </tr>
@@ -283,15 +339,7 @@ class="
 
 <div class="empty">
 
-<h2>
-기록이 없습니다
-</h2>
-
-<br>
-
-<p>
-첫 번째 LEGEND가 되어보세요.
-</p>
+기록이 없습니다.
 
 </div>
 
@@ -299,15 +347,113 @@ class="
 
 </div>
 
+<!-- Classic Mode -->
+
+<div class="panel">
+
+<h2>👑 Classic Mode</h2>
+
+{% if classic_records %}
+
+<table>
+
+<tr>
+
+<th>순위</th>
+<th>닉네임</th>
+<th>기록</th>
+<th>등급</th>
+
+</tr>
+
+{% for r in classic_records %}
+
+<tr class="
+{% if loop.index==1 %}rank1{% endif %}
+{% if loop.index==2 %}rank2{% endif %}
+{% if loop.index==3 %}rank3{% endif %}
+">
+
+<td>
+
+{% if loop.index==1 %}
+<span class="medal">🥇</span>
+
+{% elif loop.index==2 %}
+<span class="medal">🥈</span>
+
+{% elif loop.index==3 %}
+<span class="medal">🥉</span>
+
+{% else %}
+#{{ loop.index }}
+{% endif %}
+
+</td>
+
+<td>
+
+<b>{{ r.name }}</b>
+
+</td>
+
+<td>
+
+{{ r.wins }}-{{ r.losses }}
+
+</td>
+
+<td>
+
+<span class="
+{% if r.grade=='SS' %}ss{% endif %}
+{% if r.grade=='S' %}s{% endif %}
+{% if r.grade=='A' %}a{% endif %}
+{% if r.grade=='B' %}b{% endif %}
+{% if r.grade=='C' %}c{% endif %}
+{% if r.grade=='D' %}d{% endif %}
+">
+
+{{ r.grade }}
+
+</span>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<div class="empty">
+
+기록이 없습니다.
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
 <div class="btn-wrap">
 
 <a href="/">
+
 <button class="btn">
+
 🎮 다시 플레이
+
 </button>
+
 </a>
 
 </div>
 
 </body>
+
 </html>
