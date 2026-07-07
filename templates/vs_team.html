@@ -1,269 +1,957 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>PVP Draft</title>
 
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
 }
 
 body{
-    font-family:-apple-system,BlinkMacSystemFont,
-    "Segoe UI",sans-serif;
 
-    background:#f3f6fb;
-    color:#222;
+font-family:
+"Pretendard",
+sans-serif;
+
+background:
+linear-gradient(
+135deg,
+#07111d,
+#10263f,
+#08131f
+);
+
+color:white;
+
+min-height:100vh;
+
+overflow-x:hidden;
+
 }
 
-.dark{
-    background:#121212;
-    color:white;
+a{
+
+text-decoration:none;
+
+color:inherit;
+
 }
 
 .topbar{
 
-    background:white;
+height:90px;
 
-    padding:20px;
+display:flex;
 
-    display:flex;
+justify-content:space-between;
 
-    justify-content:space-between;
+align-items:center;
 
-    align-items:center;
+padding:0 40px;
 
-    box-shadow:
-    0 2px 10px rgba(0,0,0,.08);
+background:
+rgba(0,0,0,.35);
 
-}
+backdrop-filter:blur(18px);
 
-.dark .topbar{
-    background:#1e1e1e;
+border-bottom:
+1px solid rgba(255,255,255,.08);
+
+position:sticky;
+
+top:0;
+
+z-index:999;
+
 }
 
 .title{
 
-    font-size:30px;
-    font-weight:bold;
+font-size:38px;
+
+font-weight:900;
+
+letter-spacing:1px;
+
+color:#60a5fa;
+
+}
+
+.subtitle{
+
+font-size:15px;
+
+color:#94a3b8;
+
+margin-top:4px;
 
 }
 
 .turn{
 
-    font-size:22px;
-    font-weight:bold;
+display:flex;
 
-    color:#1976d2;
+align-items:center;
+
+gap:20px;
+
+}
+
+.turn-badge{
+
+padding:10px 20px;
+
+border-radius:999px;
+
+background:
+
+linear-gradient(
+90deg,
+#2563eb,
+#38bdf8
+);
+
+font-weight:bold;
+
+font-size:18px;
+
+box-shadow:
+
+0 0 25px
+
+rgba(56,189,248,.45);
+
+}
+
+.progress{
+
+width:240px;
+
+height:12px;
+
+background:#223247;
+
+border-radius:999px;
+
+overflow:hidden;
+
+}
+
+.progress-fill{
+
+height:100%;
+
+background:
+
+linear-gradient(
+90deg,
+#60a5fa,
+#22d3ee
+);
+
+transition:.4s;
+
 }
 
 .container{
 
-    max-width:1600px;
+max-width:1800px;
 
-    margin:auto;
+margin:auto;
 
-    padding:25px;
+padding:30px;
 
-    display:grid;
+display:grid;
 
-    grid-template-columns:
-    2fr 1fr;
+grid-template-columns:
 
-    gap:25px;
+2.4fr
+1fr;
+
+gap:30px;
+
+}
+
+.left{
+
+display:flex;
+
+flex-direction:column;
 
 }
 
 .card-area{
 
-    display:grid;
+display:grid;
 
-    grid-template-columns:
-    repeat(auto-fill,minmax(220px,1fr));
+grid-template-columns:
 
-    gap:15px;
+repeat(
+auto-fill,
+minmax(280px,1fr)
+);
+
+gap:22px;
 
 }
 
 .player-card{
 
-    background:white;
+background:
+rgba(255,255,255,.08);
 
-    border-radius:16px;
+border:
 
-    padding:16px;
+1px solid
+rgba(255,255,255,.08);
 
-    box-shadow:
-    0 3px 12px rgba(0,0,0,.08);
+border-radius:22px;
+
+padding:22px;
+
+backdrop-filter:
+blur(18px);
+
+transition:.25s;
+
+position:relative;
+
+overflow:hidden;
 
 }
 
-.dark .player-card{
-    background:#1e1e1e;
+.player-card:hover{
+
+transform:
+
+translateY(-8px);
+
+border-color:
+
+#38bdf8;
+
+box-shadow:
+
+0 15px 40px
+rgba(56,189,248,.25);
+
 }
 
 .player-name{
 
-    font-size:22px;
+font-size:28px;
 
-    font-weight:bold;
+font-weight:900;
 
-    margin-bottom:10px;
+margin-bottom:10px;
 
 }
 
 .player-year{
 
-    color:#777;
+color:#94a3b8;
 
-    margin-bottom:8px;
+font-size:16px;
+
+margin-bottom:12px;
 
 }
 
-.dark .player-year{
-    color:#aaa;
+.player-pos{
+
+display:inline-block;
+
+padding:
+
+5px 12px;
+
+border-radius:999px;
+
+background:#1e40af;
+
+font-size:14px;
+
+margin-bottom:18px;
+
+}
+
+.player-info{
+
+display:grid;
+
+grid-template-columns:
+
+1fr
+1fr;
+
+gap:10px;
+
+margin-bottom:18px;
+
+}
+
+.info-box{
+
+background:
+
+rgba(255,255,255,.05);
+
+border-radius:12px;
+
+padding:10px;
+
+text-align:center;
+
+}
+
+.info-title{
+
+font-size:12px;
+
+color:#94a3b8;
+
+margin-bottom:4px;
+
+}
+
+.info-value{
+
+font-size:20px;
+
+font-weight:bold;
+
 }
 
 .assign-btn{
 
-    width:100%;
+width:100%;
 
-    padding:10px;
+padding:14px;
 
-    border:none;
+border:none;
 
-    border-radius:10px;
+border-radius:14px;
 
-    background:#1976d2;
+cursor:pointer;
 
-    color:white;
+font-size:18px;
 
-    font-weight:bold;
+font-weight:bold;
 
-    cursor:pointer;
+background:
+
+linear-gradient(
+90deg,
+#2563eb,
+#38bdf8
+);
+
+color:white;
+
+transition:.25s;
+
+}
+
+.assign-btn:hover{
+
+transform:scale(1.03);
 
 }
 
 .sidebar{
 
-    display:flex;
+display:flex;
 
-    flex-direction:column;
+flex-direction:column;
 
-    gap:20px;
+gap:25px;
 
 }
 
 .team-box{
 
-    background:white;
+background:
 
-    border-radius:20px;
+rgba(255,255,255,.08);
 
-    padding:20px;
+backdrop-filter:blur(18px);
 
-    box-shadow:
-    0 3px 12px rgba(0,0,0,.08);
+border-radius:24px;
 
-}
+padding:25px;
 
-.dark .team-box{
-    background:#1e1e1e;
-}
+border:
 
-.team-box h2{
-
-    text-align:center;
-
-    margin-bottom:20px;
-}
-
-.slot{
-
-    padding:8px;
-
-    margin-bottom:8px;
-
-    background:#eee;
-
-    border-radius:10px;
+1px solid
+rgba(255,255,255,.08);
 
 }
 
-.dark .slot{
-    background:#333;
+.team-title{
+
+font-size:24px;
+
+font-weight:bold;
+
+text-align:center;
+
+margin-bottom:20px;
+
+color:#60a5fa;
+
 }
+
+.field{
+
+position:relative;
+
+width:100%;
+
+aspect-ratio:1/1;
+
+border-radius:30px;
+
+overflow:hidden;
+
+background:
+
+radial-gradient(
+circle,
+#3ba55d 0%,
+#2f8a4d 45%,
+#25663b 100%
+);
+
+border:
+
+8px solid
+#d6b47b;
+
+box-shadow:
+
+0 10px 30px
+rgba(0,0,0,.35);
+
+}
+
+/* 잔디 줄무늬 */
+
+.field::before{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+background:
+
+repeating-linear-gradient(
+
+45deg,
+
+rgba(255,255,255,.03),
+
+rgba(255,255,255,.03) 18px,
+
+transparent 18px,
+
+transparent 36px
+
+);
+
+}
+
+/* 내야 */
+
+.infield{
+
+position:absolute;
+
+left:50%;
+
+top:58%;
+
+width:240px;
+
+height:240px;
+
+background:#b8844b;
+
+transform:
+
+translate(-50%,-50%)
+rotate(45deg);
+
+border:
+
+5px solid
+#d8b078;
+
+}
+
+/* 홈 */
+
+.home{
+
+position:absolute;
+
+left:50%;
+
+bottom:28px;
+
+width:18px;
+
+height:18px;
+
+background:white;
+
+transform:
+
+translateX(-50%)
+rotate(45deg);
+
+z-index:5;
+
+}
+
+/* 베이스 */
+
+.base{
+
+position:absolute;
+
+width:18px;
+
+height:18px;
+
+background:white;
+
+transform:rotate(45deg);
+
+z-index:5;
+
+}
+
+.first{
+
+right:96px;
+
+bottom:132px;
+
+}
+
+.second{
+
+left:50%;
+
+top:110px;
+
+transform:
+
+translateX(-50%)
+rotate(45deg);
+
+}
+
+.third{
+
+left:96px;
+
+bottom:132px;
+
+}
+
+/* 포지션 */
+
+.position{
+
+position:absolute;
+
+width:82px;
+
+height:82px;
+
+border-radius:50%;
+
+background:
+
+rgba(7,17,29,.92);
+
+border:
+
+2px solid
+rgba(255,255,255,.15);
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+text-align:center;
+
+transition:.25s;
+
+z-index:10;
+
+}
+
+.position:hover{
+
+transform:scale(1.08);
+
+box-shadow:
+
+0 0 25px
+
+rgba(96,165,250,.5);
+
+}
+
+.position-label{
+
+font-size:11px;
+
+color:#7dd3fc;
+
+margin-bottom:2px;
+
+}
+
+.position-player{
+
+font-size:12px;
+
+font-weight:bold;
+
+line-height:1.2;
+
+padding:0 4px;
+
+}
+
+.position-war{
+
+margin-top:3px;
+
+font-size:11px;
+
+color:#facc15;
+
+}
+
+/* ===== 포지션 위치 ===== */
+
+.cf{
+
+left:50%;
+
+top:45px;
+
+transform:translateX(-50%);
+
+}
+
+.lf{
+
+left:60px;
+
+top:110px;
+
+}
+
+.rf{
+
+right:60px;
+
+top:110px;
+
+}
+
+.ss{
+
+left:130px;
+
+top:210px;
+
+}
+
+.secondb{
+
+right:130px;
+
+top:210px;
+
+}
+
+.thirdb{
+
+left:80px;
+
+bottom:155px;
+
+}
+
+.firstb{
+
+right:80px;
+
+bottom:155px;
+
+}
+
+.catcher{
+
+left:50%;
+
+bottom:18px;
+
+transform:translateX(-50%);
+
+}
+
+.dh{
+
+right:10px;
+
+bottom:10px;
+
+}
+
+/* ===== 투수 ===== */
+
+.pitchers{
+
+margin-top:25px;
+
+display:grid;
+
+grid-template-columns:
+
+repeat(3,1fr);
+
+gap:12px;
+
+}
+
+.pitch-box{
+
+background:
+
+rgba(255,255,255,.05);
+
+border-radius:16px;
+
+padding:14px;
+
+text-align:center;
+
+transition:.2s;
+
+}
+
+.pitch-box:hover{
+
+background:
+
+rgba(255,255,255,.09);
+
+}
+
+.pitch-title{
+
+font-size:13px;
+
+color:#93c5fd;
+
+margin-bottom:8px;
+
+}
+
+.pitch-name{
+
+font-weight:bold;
+
+font-size:15px;
+
+margin-bottom:4px;
+
+}
+
+.pitch-war{
+
+font-size:12px;
+
+color:#facc15;
+
+}
+
+/* ===== 모달 ===== */
 
 .modal{
 
-    display:none;
+display:none;
 
-    position:fixed;
+position:fixed;
 
-    left:0;
-    top:0;
+left:0;
 
-    width:100%;
-    height:100%;
+top:0;
 
-    background:rgba(0,0,0,.7);
+width:100%;
+
+height:100%;
+
+background:
+
+rgba(0,0,0,.72);
+
+backdrop-filter:blur(8px);
+
+z-index:9999;
 
 }
 
 .modal-content{
 
-    background:white;
+width:380px;
 
-    width:350px;
+max-width:92%;
 
-    margin:150px auto;
+margin:120px auto;
 
-    padding:20px;
+background:
 
-    border-radius:20px;
+#0f172a;
 
-    text-align:center;
+border-radius:24px;
 
-}
+padding:30px;
 
-.dark .modal-content{
-    background:#1e1e1e;
+border:
+
+1px solid
+
+rgba(255,255,255,.08);
+
+text-align:center;
+
 }
 
 .pos-btn{
 
-    margin:5px;
+margin:6px;
 
-    padding:10px 15px;
+padding:12px 18px;
 
-    border:none;
+border:none;
 
-    border-radius:10px;
+border-radius:12px;
 
-    background:#4caf50;
+cursor:pointer;
 
-    color:white;
+background:
 
-    font-weight:bold;
+linear-gradient(
 
-    cursor:pointer;
+90deg,
+
+#2563eb,
+
+#38bdf8
+
+);
+
+color:white;
+
+font-size:15px;
+
+font-weight:bold;
+
+transition:.2s;
 
 }
 
-@media(max-width:1000px){
+.pos-btn:hover{
 
-    .container{
+transform:scale(1.05);
 
-        grid-template-columns:1fr;
+}
 
-    }
+@media(max-width:1200px){
+
+.container{
+
+grid-template-columns:1fr;
+
+}
+
+.sidebar{
+
+order:-1;
+
+}
+
+}
+
+@media(max-width:700px){
+
+.topbar{
+
+padding:15px;
+
+height:auto;
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+.title{
+
+font-size:28px;
+
+}
+
+.card-area{
+
+grid-template-columns:1fr;
+
+}
+
+.position{
+
+width:64px;
+
+height:64px;
+
+}
+
+.position-player{
+
+font-size:10px;
+
+}
 
 }
 
@@ -275,15 +963,39 @@ body{
 
 <div class="topbar">
 
+<div>
+
 <div class="title">
 
-⚔️ {{ team_name }}
+⚔️ PvP Draft
+
+</div>
+
+<div class="subtitle">
+
+{{ team_name }}
+
+</div>
 
 </div>
 
 <div class="turn">
 
-{{ current_turn }}팀 선택 중
+<div class="turn-badge">
+
+{{ current_turn }} TEAM
+
+</div>
+
+<div class="progress">
+
+<div
+class="progress-fill"
+style="width:{{ (turn_count*100/30)|default(0) }}%;">
+
+</div>
+
+</div>
 
 </div>
 
@@ -291,13 +1003,14 @@ body{
 
 {% if error %}
 
-<div style="
-max-width:1400px;
+<div
+style="
+max-width:1700px;
 margin:20px auto;
-padding:15px;
-background:#ef4444;
-color:white;
-border-radius:12px;
+padding:18px;
+background:#dc2626;
+border-radius:16px;
+font-size:18px;
 font-weight:bold;
 ">
 
@@ -309,7 +1022,7 @@ font-weight:bold;
 
 <div class="container">
 
-<div>
+<div class="left">
 
 <div class="card-area">
 
@@ -331,128 +1044,416 @@ font-weight:bold;
 
 </div>
 
-<div class="player-positions">
+<div class="player-pos">
 
-{{ p.positions }}
-
-</div>
-
-<br>
-
-<div>
-
-{{ p.position|join(", ") }}
+{{ p.positions|join(" / ") }}
 
 </div>
 
-<br>
+<div class="player-info">
+
+<div class="info-box">
+
+<div class="info-title">
+
+AVG
+
+</div>
+
+<div class="info-value">
+
+{% if p.get("AVG") is not none %}
+{{ "%.3f"|format(p.AVG) }}
+{% else %}
+-
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+OPS
+
+</div>
+
+<div class="info-value">
+
+{% if p.get("ops") is not none %}
+{{ "%.3f"|format(p.ops) }}
+{% else %}
+-
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+HR
+
+</div>
+
+<div class="info-value">
+
+{{ p.get("HR","-") }}
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+ERA
+
+</div>
+
+<div class="info-value">
+
+{% if p.get("ERA") is not none %}
+{{ "%.2f"|format(p.ERA) }}
+{% else %}
+-
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+SO
+
+</div>
+
+<div class="info-value">
+
+{{ p.get("SO","-") }}
+
+</div>
+
+</div>
+
+</div>
 
 <button
+
 class="assign-btn"
+
 onclick="openAssign(
 '{{ p.id }}',
 '{{ p.positions|join(",") }}'
 )"
+
 >
 
-선택
+⚾ 드래프트
 
 </button>
 
 </div>
 
 {% endif %}
+
 {% endfor %}
 
 </div>
 
 </div>
-
+    
 <div class="sidebar">
 
 <div class="team-box">
 
-<h2>
+<h2 class="team-title">
 
-🔵 A팀
+{% if current_turn=="A" %}
 
-</h2>
+🔵 A TEAM
 
-{% for pos in ["C","1B","2B","3B","SS","LF","CF","RF","DH"] %}
+{% else %}
 
-<div class="slot">
+🔴 B TEAM
 
-{{ pos }}
-
-:
-
-{{ lineup_a[pos].name if lineup_a[pos] else "-" }}
-
-</div>
-
-{% endfor %}
-
-{% for i in range(3) %}
-
-<div class="slot">
-
-SP{{ i+1 }}
-
-:
-
-{{ lineup_a["SP"][i].name if lineup_a["SP"]|length > i else "-" }}
-
-</div>
-
-{% endfor %}
-
-{% for i in range(3) %}
-
-<div class="slot">
-
-RP{{ i+1 }}
-
-:
-
-{{ lineup_a["RP"][i].name if lineup_a["RP"]|length > i else "-" }}
-
-</div>
-
-{% endfor %}
-
-</div>
-
-<div class="team-box">
-
-<h2>
-
-🔴 B팀
+{% endif %}
 
 </h2>
 
-{% for pos in ["C","1B","2B","3B","SS","LF","CF","RF","DH"] %}
+{% if current_turn=="A" %}
+{% set t=lineup_a %}
+{% else %}
+{% set t=lineup_b %}
+{% endif %}
 
-<div class="slot">
+<div class="field">
 
-{{ pos }}
+<div class="infield"></div>
 
-:
+<div class="home"></div>
 
-{{ lineup_b[pos].name if lineup_b[pos] else "-" }}
+<div class="base first"></div>
+
+<div class="base second"></div>
+
+<div class="base third"></div>
+
+<div class="position cf">
+
+<div class="position-label">
+
+CF
 
 </div>
 
-{% endfor %}
+<div class="position-player">
+
+{{ t.CF.name if t.CF else "-" }}
+
+</div>
+
+{% if t.CF %}
+<div class="position-war">
+{{ "%.1f"|format(t.CF.war) }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="position lf">
+
+<div class="position-label">
+
+LF
+
+</div>
+
+<div class="position-player">
+
+{{ t.LF.name if t.LF else "-" }}
+
+</div>
+
+{% if t.LF %}
+<div class="position-war">
+{{ "%.1f"|format(t.LF.war) }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="position rf">
+
+<div class="position-label">
+
+RF
+
+</div>
+
+<div class="position-player">
+
+{{ t.RF.name if t.RF else "-" }}
+
+</div>
+
+{% if t.RF %}
+<div class="position-war">
+{{ "%.1f"|format(t.RF.war) }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="position ss">
+
+<div class="position-label">
+
+SS
+
+</div>
+
+<div class="position-player">
+
+{{ t.SS.name if t.SS else "-" }}
+
+</div>
+
+{% if t.SS %}
+<div class="position-war">
+{{ "%.1f"|format(t.SS.war) }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="position secondb">
+
+<div class="position-label">
+
+2B
+
+</div>
+
+<div class="position-player">
+
+{{ t["2B"].name if t["2B"] else "-" }}
+
+</div>
+
+{% if t["2B"] %}
+<div class="position-war">
+{{ "%.1f"|format(t["2B"].war) }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="position thirdb">
+
+<div class="position-label">
+
+3B
+
+</div>
+
+<div class="position-player">
+
+{{ t["3B"].name if t["3B"] else "-" }}
+
+</div>
+
+{% if t["3B"] %}
+<div class="position-war">
+{{ "%.1f"|format(t["3B"].war) }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="position firstb">
+
+<div class="position-label">
+
+1B
+
+</div>
+
+<div class="position-player">
+
+{{ t["1B"].name if t["1B"] else "-" }}
+
+</div>
+
+{% if t["1B"] %}
+
+<div class="position-war">
+
+{{ "%.1f"|format(t["1B"].war) }}
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="position catcher">
+
+<div class="position-label">
+
+C
+
+</div>
+
+<div class="position-player">
+
+{{ t.C.name if t.C else "-" }}
+
+</div>
+
+{% if t.C %}
+
+<div class="position-war">
+
+{{ "%.1f"|format(t.C.war) }}
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="position dh">
+
+<div class="position-label">
+
+DH
+
+</div>
+
+<div class="position-player">
+
+{{ t.DH.name if t.DH else "-" }}
+
+</div>
+
+{% if t.DH %}
+
+<div class="position-war">
+
+{{ "%.1f"|format(t.DH.war) }}
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="pitchers">
 
 {% for i in range(3) %}
 
-<div class="slot">
+<div class="pitch-box">
+
+<div class="pitch-title">
 
 SP{{ i+1 }}
 
-:
+</div>
 
-{{ lineup_b["SP"][i].name if lineup_b["SP"]|length > i else "-" }}
+{% if t.SP|length>i %}
+
+<div class="pitch-name">
+
+{{ t.SP[i].name }}
+
+</div>
+
+<div class="pitch-war">
+
+WAR {{ "%.1f"|format(t.SP[i].war) }}
+
+</div>
+
+{% else %}
+
+<div class="pitch-name">
+
+-
+
+</div>
+
+{% endif %}
 
 </div>
 
@@ -460,17 +1461,43 @@ SP{{ i+1 }}
 
 {% for i in range(3) %}
 
-<div class="slot">
+<div class="pitch-box">
+
+<div class="pitch-title">
 
 RP{{ i+1 }}
 
-:
+</div>
 
-{{ lineup_b["RP"][i].name if lineup_b["RP"]|length > i else "-" }}
+{% if t.RP|length>i %}
+
+<div class="pitch-name">
+
+{{ t.RP[i].name }}
+
+</div>
+
+<div class="pitch-war">
+
+WAR {{ "%.1f"|format(t.RP[i].war) }}
+
+</div>
+
+{% else %}
+
+<div class="pitch-name">
+
+-
+
+</div>
+
+{% endif %}
 
 </div>
 
 {% endfor %}
+
+</div>
 
 </div>
 
@@ -482,33 +1509,48 @@ RP{{ i+1 }}
 
 <div class="modal-content">
 
-<h3>
+<h2>
 
 포지션 선택
 
-</h3>
+</h2>
 
 <br>
 
 <form
+
 id="assignForm"
+
 action="/pvp_assign_player"
-method="POST">
+
+method="POST"
+
+>
 
 <input
-type="hidden"
-name="player_id"
-id="playerId">
 
-<div id="positionButtons"></div>
+type="hidden"
+
+name="player_id"
+
+id="playerId"
+
+>
+
+<div id="positionButtons">
+
+</div>
 
 </form>
 
 <br>
 
 <button
+
 class="assign-btn"
+
 onclick="closeModal()"
+
 >
 
 취소
@@ -521,23 +1563,17 @@ onclick="closeModal()"
 
 <script>
 
-function openAssign(
-playerId,
-positions
-){
+function openAssign(playerId, positions){
 
-    document.getElementById(
-        "playerId"
-    ).value = playerId;
+    document.getElementById("playerId").value = playerId;
 
-    let html="";
+    let html = "";
 
-    let posList=
-    positions.split(",");
+    let posList = positions.split(",");
 
     posList.forEach(pos=>{
 
-        html+=`
+        html += `
         <button
         class="pos-btn"
         type="submit"
@@ -554,7 +1590,8 @@ positions
         &&
         !posList.includes("RP")
     ){
-        html+=`
+
+        html += `
         <button
         class="pos-btn"
         type="submit"
@@ -568,23 +1605,147 @@ positions
 
     document.getElementById(
         "positionButtons"
-    ).innerHTML=html;
+    ).innerHTML = html;
 
-    document.getElementById(
-        "assignModal"
-    ).style.display="block";
+    const modal =
+    document.getElementById("assignModal");
+
+    modal.style.display = "block";
+
+    modal.animate([
+
+        {
+            opacity:0,
+            transform:"scale(.8)"
+        },
+
+        {
+            opacity:1,
+            transform:"scale(1)"
+        }
+
+    ],{
+
+        duration:180,
+        fill:"forwards"
+
+    });
 
 }
 
 function closeModal(){
 
-    document.getElementById(
-        "assignModal"
-    ).style.display="none";
+    const modal =
+    document.getElementById("assignModal");
+
+    modal.animate([
+
+        {
+            opacity:1
+        },
+
+        {
+            opacity:0
+        }
+
+    ],{
+
+        duration:150,
+        fill:"forwards"
+
+    });
+
+    setTimeout(()=>{
+
+        modal.style.display="none";
+
+    },150);
 
 }
+
+window.onclick=function(e){
+
+    const modal =
+    document.getElementById("assignModal");
+
+    if(e.target===modal){
+
+        closeModal();
+
+    }
+
+}
+
+/* WAR에 따른 카드 등급 */
+
+document.querySelectorAll(".player-card")
+.forEach(card=>{
+
+    let txt = card.innerText;
+
+    let match =
+    txt.match(/WAR\s*([0-9.]+)/);
+
+    if(!match) return;
+
+    let war =
+    parseFloat(match[1]);
+
+    if(war>=10){
+
+        card.style.border =
+        "2px solid gold";
+
+        card.style.boxShadow =
+        "0 0 35px rgba(255,215,0,.45)";
+
+    }
+
+    else if(war>=8){
+
+        card.style.border =
+        "2px solid #38bdf8";
+
+    }
+
+    else if(war>=6){
+
+        card.style.border =
+        "2px solid #4ade80";
+
+    }
+
+});
+
+document.querySelectorAll(".player-card")
+.forEach((card,i)=>{
+
+    card.animate([
+
+        {
+            opacity:0,
+            transform:"translateY(30px)"
+        },
+
+        {
+            opacity:1,
+            transform:"translateY(0)"
+        }
+
+    ],{
+
+        duration:350,
+
+        delay:i*25,
+
+        fill:"forwards"
+
+    });
+
+});
 
 </script>
 
 </body>
+
 </html>
