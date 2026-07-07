@@ -1114,6 +1114,7 @@ def team_reroll():
     session["allow_next"] = True
 
     return redirect("/next")    
+    
 @app.route("/assign_player", methods=["POST"])
 def assign_player():
 
@@ -1828,15 +1829,12 @@ def result_loading():
     )
 
 def save_record(name, wins, losses, grade):
-
     supabase.table("records").insert({
-
         "name": name,
         "wins": wins,
         "losses": losses,
         "grade": grade,
-        "date": datetime.now().strftime("%Y-%m-%d")
-
+        "mode": session.get("mode", "trait")
     }).execute()
 
 @app.route("/save_record", methods=["POST"])
@@ -1872,25 +1870,32 @@ def ranking():
 
         records = response.data
 
-        print(
-            "LOADED RECORDS:",
-            len(records)
-        )
+        trait_records = [
+            r for r in records
+            if r.get("mode", "trait") == "trait"
+        ]
+
+        classic_records = [
+            r for r in records
+            if r.get("mode") == "classic"
+        ]
+
+        print("Trait:", len(trait_records))
+        print("Classic:", len(classic_records))
 
     except Exception as e:
 
-        print(
-            "RANKING ERROR:",
-            e
-        )
+        print("RANKING ERROR:", e)
 
-        records = []
+        trait_records = []
+        classic_records = []
 
     return render_template(
         "ranking.html",
-        records=records
+        trait_records=trait_records,
+        classic_records=classic_records
     )
-
+    
 @app.route("/pvp_start")
 def pvp_start():
 
