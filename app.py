@@ -51,35 +51,85 @@ BEIJING_2008 = {
 
 def get_team_names():
 
-    era = session.get("actual_era", session.get("era", "2010s"))
+    era = session.get(
+        "actual_era",
+        session.get("era", "2010s")
+    )
 
-    if era == "2000s":
+    # ==========================
+    # 1980s
+    # ==========================
+    if era == "1980s":
+
         return {
-            "Bears": "두산 베어스",
-            "LG": "LG 트윈스",
+
+            "Bears": "OB 베어스",
+            "LG": "MBC 청룡",
             "Lions": "삼성 라이온즈",
-            "Tigers": "KIA 타이거즈",
-            "Eagles": "한화 이글스",
-            "Wyverns": "SK 와이번스",
+            "Tigers": "해태 타이거즈",
+            "Eagles": "빙그레 이글스",
             "Giants": "롯데 자이언츠",
-            "Unicorns": "현대 유니콘스"
+            "Heroes": "삼미 슈퍼스타즈"
         }
 
-    if era == "2010s":
+    # ==========================
+    # 1990s
+    # ==========================
+    if era == "1990s":
+
         return {
+
+            "Bears": "OB 베어스",
+            "LG": "LG 트윈스",
+            "Lions": "삼성 라이온즈",
+            "Tigers": "해태 타이거즈",
+            "Eagles": "한화 이글스",
+            "Giants": "롯데 자이언츠",
+            "Landers": "쌍방울 레이더스",
+            "Heroes": "현대 유니콘스"
+        }
+
+    # ==========================
+    # 2000s
+    # ==========================
+    if era == "2000s":
+
+        return {
+
             "Bears": "두산 베어스",
             "LG": "LG 트윈스",
             "Lions": "삼성 라이온즈",
             "Tigers": "KIA 타이거즈",
             "Eagles": "한화 이글스",
-            "Wyverns": "SK 와이번스",
+            "Landers": "SK 와이번스",
+            "Giants": "롯데 자이언츠",
+            "Heroes": "현대 유니콘스"
+        }
+
+    # ==========================
+    # 2010s
+    # ==========================
+    if era == "2010s":
+
+        return {
+
+            "Bears": "두산 베어스",
+            "LG": "LG 트윈스",
+            "Lions": "삼성 라이온즈",
+            "Tigers": "KIA 타이거즈",
+            "Eagles": "한화 이글스",
+            "Landers": "SK 와이번스",
             "Giants": "롯데 자이언츠",
             "Wiz": "KT 위즈",
             "Dinos": "NC 다이노스",
             "Heroes": "넥센 히어로즈"
         }
 
+    # ==========================
+    # 2020s / all_time
+    # ==========================
     return {
+
         "Bears": "두산 베어스",
         "LG": "LG 트윈스",
         "Lions": "삼성 라이온즈",
@@ -91,7 +141,6 @@ def get_team_names():
         "Dinos": "NC 다이노스",
         "Heroes": "키움 히어로즈"
     }
-
 POSITIONS = [
     "SP", "SP", "SP",
     "RP", "RP", "RP",
@@ -108,7 +157,9 @@ POSITIONS = [
 
 def load_team(team):
 
+    # ==========================
     # Classic Mode
+    # ==========================
     if session.get("mode") == "classic":
 
         path = os.path.join(
@@ -117,7 +168,91 @@ def load_team(team):
             f"{team}.json"
         )
 
-    # 기존 Mode
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+
+    # ==========================
+    # Trait Mode
+    # ==========================
+    elif session.get("mode") == "trait":
+
+        folder = os.path.join(
+            "Data",
+            "kbo_json_v5"
+        )
+
+        era = session.get(
+            "actual_era",
+            session["era"]
+        )
+
+        if era == "1980s":
+            years = range(1982, 1990)
+
+        elif era == "1990s":
+            years = range(1990, 2000)
+
+        elif era == "2000s":
+            years = range(2000, 2010)
+
+        elif era == "2010s":
+            years = range(2010, 2020)
+
+        elif era == "2020s":
+            years = range(2020, 2030)
+
+        else:
+            years = []
+
+        players = []
+
+        for year in years:
+
+            path = os.path.join(
+                folder,
+                f"{team}_{year}.json"
+            )
+
+            if not os.path.exists(path):
+                continue
+
+            with open(
+                path,
+                "r",
+                encoding="utf-8"
+            ) as f:
+
+                players.extend(json.load(f))
+
+        # 같은 선수는 WAR가 가장 높은 시즌만 사용
+        best_players = {}
+
+        for p in players:
+
+            name = p["name"]
+
+            if (
+                name not in best_players
+                or
+                p["war"] > best_players[name]["war"]
+            ):
+
+                best_players[name] = p
+
+        players = list(best_players.values())
+
+        players.sort(
+            key=lambda x: x["war"],
+            reverse=True
+        )
+
+        return players
+
+
+    # ==========================
+    # 기존 Era Mode
+    # ==========================
     else:
 
         era = session.get(
@@ -131,9 +266,9 @@ def load_team(team):
             f"{team}.json"
         )
 
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-    
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -158,6 +293,8 @@ def start():
         )
 
     session["era"] = era
+
+    session["mode"] = trait
     
     session["assigned_this_round"] = 0
 
