@@ -1944,7 +1944,7 @@ def pvp_start():
     session["pvp_turn"] = "A"
 
     session["pvp_round"] = 0
-
+    session["turn_count"] = 0
     session["pvp_pick_count"] = 0
 
     return redirect("/pvp_next")
@@ -2111,6 +2111,8 @@ def pvp_team_view():
             "pvp_actual_era"
         ],
 
+        turn_count=session["turn_count"],
+
         error=error
     )
 
@@ -2236,6 +2238,8 @@ def pvp_assign_player():
 
     session["pvp_pick_count"] += 1
 
+    session["turn_count"] += 1
+
     session.modified = True
 
     # 팀 하나에서 총 6명 선택 완료
@@ -2283,6 +2287,63 @@ def pvp_result():
                 total += lineup[pos]["war"]
 
         return total
+
+    def hitter_war(lineup):
+    
+        total = 0
+    
+        for pos in [
+            "C","1B","2B","3B",
+            "SS","LF","CF","RF","DH"
+        ]:
+            if lineup[pos]:
+                total += lineup[pos]["war"]
+    
+        return round(total,1)
+    
+    
+    def pitcher_war(lineup):
+    
+        total = 0
+    
+        for p in lineup["SP"]:
+            total += p["war"]
+    
+        for p in lineup["RP"]:
+            total += p["war"]
+    
+        return round(total,1)
+    
+    
+    def count_players(lineup):
+    
+        cnt = len(lineup["SP"]) + len(lineup["RP"])
+    
+        for pos in [
+            "C","1B","2B","3B",
+            "SS","LF","CF","RF","DH"
+        ]:
+            if lineup[pos]:
+                cnt += 1
+    
+        return cnt
+    
+    
+    def get_mvp(lineup):
+    
+        players = []
+    
+        players.extend(lineup["SP"])
+        players.extend(lineup["RP"])
+    
+        for pos in [
+            "C","1B","2B","3B",
+            "SS","LF","CF","RF","DH"
+        ]:
+            if lineup[pos]:
+                players.append(lineup[pos])
+    
+        return max(players,key=lambda x:x["war"])
 
 
     war_a = calc_war(lineup_a)
@@ -2437,6 +2498,35 @@ def pvp_result():
         1
     )
 
+    total = final_a + final_b
+
+    if total == 0:
+    
+        winrate_a = 50
+        winrate_b = 50
+    
+    else:
+    
+        winrate_a = round(final_a / total * 100)
+        winrate_b = 100 - winrate_a
+    
+    
+    hitter_a = hitter_war(lineup_a)
+    hitter_b = hitter_war(lineup_b)
+    
+    pitcher_a = pitcher_war(lineup_a)
+    pitcher_b = pitcher_war(lineup_b)
+    
+    turn_count = max(
+        count_players(lineup_a),
+        count_players(lineup_b)
+    )
+    
+    mvp = max(
+        get_mvp(lineup_a),
+        get_mvp(lineup_b),
+        key=lambda x:x["war"]
+    )
 
     if final_a > final_b:
 
@@ -2454,32 +2544,41 @@ def pvp_result():
 
 
     return render_template(
-
+        
         "pvp_result.html",
-
+    
         lineup_a=lineup_a,
         lineup_b=lineup_b,
-
-        base_war_a=round(
-            calc_war(lineup_a),
-            1
-        ),
-
-        base_war_b=round(
-            calc_war(lineup_b),
-            1
-        ),
-
+    
+        base_war_a=round(calc_war(lineup_a),1),
+        base_war_b=round(calc_war(lineup_b),1),
+    
         event_a=event_a,
         event_b=event_b,
-
+    
         form_a=form_a,
         form_b=form_b,
-
+    
         final_a=final_a,
         final_b=final_b,
-
-        winner=winner
+    
+        winner=winner,
+    
+        total_a=round(final_a,1),
+        total_b=round(final_b,1),
+    
+        hitter_a=hitter_a,
+        hitter_b=hitter_b,
+    
+        pitcher_a=pitcher_a,
+        pitcher_b=pitcher_b,
+    
+        winrate_a=winrate_a,
+        winrate_b=winrate_b,
+    
+        turn_count=turn_count,
+    
+        mvp=mvp
     )
     
 if __name__ == "__main__":
