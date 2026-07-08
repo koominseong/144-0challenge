@@ -40,3 +40,72 @@ def calc_potential(overall):
         99,
         overall + random.randint(0, 4)
     )
+
+def import_players(save_id):
+
+    folder = "Data/kbo_json_v5"
+
+    players = {}
+
+    for file in os.listdir(folder):
+        
+        if not file.endswith(".json"):
+            continue
+
+        with open(
+            os.path.join(folder,file),
+            encoding="utf-8"
+        ) as f:
+
+            data = json.load(f)
+
+        for p in data:
+            
+            name = p["name"]
+            
+            if name not in players:
+
+                players[name] = p
+
+            else:
+
+                if p["war"] > players[name]["war"]:
+
+                    players[name] = p
+                    
+    for p in players.values():
+        
+        overall = calc_overall(
+            p["war"]
+        )
+
+        supabase.table(
+            "dynasty_player"
+        ).insert({
+
+            "save_id":save_id,
+
+            "name":p["name"],
+
+            "team":"FA",
+
+            "positions":p["positions"],
+
+            "debut_year":p["Year"],
+
+            "appear_season":calc_season(
+                p["Year"]
+            ),
+
+            "war":p["war"],
+
+            "overall":overall,
+
+            "potential":min(
+                overall+3,
+                99
+            ),
+
+            "drafted":False
+
+        }).execute()
