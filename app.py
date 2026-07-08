@@ -803,7 +803,7 @@ def next_team():
 
         else:
             session["actual_era"] = random.choice(
-                ["2000s", "2010s", "2020s"]
+                ["1980s", "1990s","2000s", "2010s", "2020s"]
             )
 
     else:
