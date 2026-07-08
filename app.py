@@ -247,6 +247,8 @@ def load_team(team):
             reverse=True
         )
 
+        random.shuffle(players)
+
         return players
 
 
