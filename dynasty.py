@@ -1,10 +1,4 @@
-from flask import (
-    render_template,
-    redirect,
-    session,
-    request
-)
-
+from flask import *
 import random
 import json
 import os
@@ -13,48 +7,19 @@ from app import app
 
 
 # ==========================
-# Dynasty Home
+# Dynasty 메인
 # ==========================
 
 @app.route("/dynasty")
 def dynasty():
 
-    # 로그인 안 되어 있으면
-    if "user_id" not in session:
-        return redirect("/login")
-
-    saves = []
-
-    for i in range(1,4):
-
-        path = os.path.join(
-            "Dynasty",
-            session["user_id"],
-            f"save{i}.json"
-        )
-
-        if os.path.exists(path):
-
-            with open(
-                path,
-                "r",
-                encoding="utf-8"
-            ) as f:
-
-                saves.append(json.load(f))
-
-        else:
-
-            saves.append(None)
-
     return render_template(
-        "dynasty_home.html",
-        saves=saves
+        "dynasty_home.html"
     )
 
 
 # ==========================
-# New Dynasty
+# 새 게임
 # ==========================
 
 @app.route("/dynasty/new")
@@ -65,120 +30,89 @@ def dynasty_new():
     )
 
 
+# ==========================
+# 창단
+# ==========================
+
 @app.route(
     "/dynasty/create",
     methods=["POST"]
 )
 def dynasty_create():
 
-    team_name = request.form["team_name"]
+    session["dynasty"] = {
 
-    logo = request.form["logo"]
+        "season":1,
 
-    color = request.form["color"]
-
-    stadium = request.form["stadium"]
-
-    save = {
-
-        "season":2026,
-
-        "team_name":team_name,
-
-        "logo":logo,
-
-        "color":color,
-
-        "stadium":stadium,
-
-        "wins":0,
-
-        "losses":0,
+        "team_name":
+        request.form["team_name"],
 
         "money":500,
 
         "fans":100000,
 
-        "coach_level":1,
+        "wins":0,
 
-        "training":1,
+        "losses":0,
 
-        "medical":1,
-
-        "scout":1,
-
-        "roster":[],
-
-        "prospects":[],
-
-        "history":[]
+        "day":1
 
     }
 
-    folder = os.path.join(
-        "Dynasty",
-        session["user_id"]
+    return redirect(
+        "/dynasty/start"
     )
 
-    os.makedirs(
-        folder,
-        exist_ok=True
-    )
 
-    path = os.path.join(
-        folder,
-        "save1.json"
-    )
+# ==========================
+# 리그 생성
+# ==========================
 
-    with open(
-        path,
-        "w",
-        encoding="utf-8"
-    ) as f:
+@app.route("/dynasty/start")
+def dynasty_start():
 
-        json.dump(
-            save,
-            f,
-            ensure_ascii=False,
-            indent=4
-        )
+    teams=[
+
+        session["dynasty"]["team_name"],
+
+        "LG",
+
+        "두산",
+
+        "삼성",
+
+        "롯데",
+
+        "한화",
+
+        "KIA",
+
+        "KT",
+
+        "NC",
+
+        "SSG"
+
+    ]
+
+    session["dynasty"]["league"]=teams
 
     return redirect(
-        "/dynasty/home/1"
+        "/dynasty/dashboard"
     )
 
 
 # ==========================
-# Continue
+# 대시보드
 # ==========================
 
-@app.route("/dynasty/home/<int:slot>")
-def dynasty_home(slot):
-
-    path = os.path.join(
-
-        "Dynasty",
-
-        session["user_id"],
-
-        f"save{slot}.json"
-
-    )
-
-    with open(
-        path,
-        "r",
-        encoding="utf-8"
-    ) as f:
-
-        save = json.load(f)
+@app.route("/dynasty/dashboard")
+def dynasty_dashboard():
 
     return render_template(
 
         "dynasty_dashboard.html",
 
-        save=save,
-
-        slot=slot
+        dynasty=session["dynasty"]
 
     )
