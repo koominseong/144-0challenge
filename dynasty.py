@@ -40,12 +40,88 @@ def dynasty_new():
 )
 def dynasty_create():
 
-    session["dynasty"] = {
+    user_team = request.form["team_name"]
+
+    logo = request.form["logo"]
+
+    color = request.form["color"]
+
+    stadium = request.form["stadium"]
+
+
+    league = [
+
+        {
+            "name":user_team,
+            "logo":logo,
+            "user":True
+        },
+
+        {
+            "name":"LG 트윈스",
+            "logo":"⚡",
+            "user":False
+        },
+
+        {
+            "name":"두산 베어스",
+            "logo":"🐻",
+            "user":False
+        },
+
+        {
+            "name":"KIA 타이거즈",
+            "logo":"🐯",
+            "user":False
+        },
+
+        {
+            "name":"삼성 라이온즈",
+            "logo":"🦁",
+            "user":False
+        },
+
+        {
+            "name":"롯데 자이언츠",
+            "logo":"🚢",
+            "user":False
+        },
+
+        {
+            "name":"한화 이글스",
+            "logo":"🦅",
+            "user":False
+        },
+
+        {
+            "name":"KT 위즈",
+            "logo":"🪄",
+            "user":False
+        },
+
+        {
+            "name":"NC 다이노스",
+            "logo":"🦕",
+            "user":False
+        },
+
+        {
+            "name":"SSG 랜더스",
+            "logo":"🚀",
+            "user":False
+        }
+
+    ]
+
+
+    random.shuffle(league)
+
+
+    session["dynasty"]={
 
         "season":1,
 
-        "team_name":
-        request.form["team_name"],
+        "week":1,
 
         "money":500,
 
@@ -55,12 +131,39 @@ def dynasty_create():
 
         "losses":0,
 
-        "day":1
+        "logo":logo,
+
+        "color":color,
+
+        "stadium":stadium,
+
+        "team_name":user_team,
+
+        "league":league,
+
+        "roster":[],
+
+        "prospects":[],
+
+        "free_agents":[],
+
+        "history":[]
 
     }
 
-    return redirect(
-        "/dynasty/start"
+    return redirect("/dynasty/draft")
+
+@app.route("/dynasty/draft")
+def dynasty_draft():
+
+    dynasty=session["dynasty"]
+
+    return render_template(
+
+        "dynasty_draft.html",
+
+        dynasty=dynasty
+
     )
 
 
