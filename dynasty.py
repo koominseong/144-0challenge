@@ -3,6 +3,7 @@ import random
 import json
 import os
 
+from dynasty_import import import_players
 from app import app, supabase
 
 
@@ -55,6 +56,8 @@ def dynasty_create():
     )
 
     save_id = result.data[0]["id"]
+
+    import_players(save_id)
 
     session["dynasty_save"] = save_id
 
