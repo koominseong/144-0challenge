@@ -425,6 +425,83 @@ body{
 
 }
 
+/* ===========================
+   포지션 필터
+=========================== */
+
+.filter-bar{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:20px;
+
+}
+
+.filter-btn{
+
+    border:none;
+
+    background:#e5e7eb;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    transition:.2s;
+
+}
+
+.filter-btn:hover{
+
+    background:#1976d2;
+
+    color:white;
+
+}
+
+.dark .filter-btn{
+
+    background:#333;
+
+    color:white;
+
+}
+
+.filter-btn.active{
+
+    background:#1976d2;
+
+    color:white;
+
+}
+
+
+/* ===========================
+   배치 불가 카드
+=========================== */
+
+.player-card.disabled{
+
+    filter:grayscale(100%);
+
+    opacity:.35;
+
+}
+
+.player-card.disabled:hover{
+
+    transform:none;
+
+}
+
 </style>
 
 </head>
@@ -475,13 +552,81 @@ font-weight:bold;
 
 <div>
 
+<div class="filter-bar">
+
+<button class="filter-btn active"
+onclick="filterPlayers('ALL',this)">
+전체
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('SP',this)">
+SP
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('RP',this)">
+RP
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('C',this)">
+C
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('1B',this)">
+1B
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('2B',this)">
+2B
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('3B',this)">
+3B
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('SS',this)">
+SS
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('LF',this)">
+LF
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('CF',this)">
+CF
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('RF',this)">
+RF
+</button>
+
+<button class="filter-btn"
+onclick="filterPlayers('DH',this)">
+DH
+</button>
+
+</div>
+
 <div class="card-area">
 
 {% for p in players %}
 
 {% if p.id not in session["used_players"] %}
 
-<div class="player-card">
+<div
+class="player-card
+{% if p.disabled %}disabled{% endif %}"
+data-pos="{{ p.positions|join(',') }}"
+>
 
 <div class="player-name">
 {{ p.name }}
@@ -581,6 +726,8 @@ font-weight:bold;
 </div>
 {% endif %}
     
+{% if not p.disabled %}
+
 <button
 class="assign-btn"
 type="button"
@@ -590,6 +737,20 @@ onclick="openAssign(
 )">
 배치
 </button>
+
+{% else %}
+
+<button
+class="assign-btn"
+style="
+background:#888;
+cursor:not-allowed;
+"
+disabled>
+배치 불가
+</button>
+
+{% endif %}
 
 {% if session["selected_behavior"] == "cheerleader"
 and not session["boost_player"] %}
@@ -896,6 +1057,51 @@ window.addEventListener("load", () => {
     }
 
 });
+
+// =========================
+// 포지션 필터
+// =========================
+
+function filterPlayers(position, btn){
+
+    document
+    .querySelectorAll(".filter-btn")
+    .forEach(b=>b.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    document
+    .querySelectorAll(".player-card")
+    .forEach(card=>{
+
+        if(position==="ALL"){
+
+            card.style.display="";
+
+            return;
+
+        }
+
+        let positions =
+        card.dataset.pos.split(",");
+
+        if(
+            positions.includes(position)
+        ){
+
+            card.style.display="";
+
+        }
+
+        else{
+
+            card.style.display="none";
+
+        }
+
+    });
+
+}
 
 </script>
 
