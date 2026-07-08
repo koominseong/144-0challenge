@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>KBO Dynasty</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+background:#0f172a;
+
+font-family:-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+sans-serif;
+
+color:white;
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+.container{
+
+width:700px;
+
+background:#1e293b;
+
+border-radius:25px;
+
+padding:45px;
+
+box-shadow:
+0 15px 50px rgba(0,0,0,.35);
+
+}
+
+h1{
+
+font-size:50px;
+
+text-align:center;
+
+margin-bottom:10px;
+
+}
+
+.subtitle{
+
+text-align:center;
+
+color:#94a3b8;
+
+margin-bottom:45px;
+
+font-size:18px;
+
+}
+
+.menu{
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+.btn{
+
+width:100%;
+
+padding:20px;
+
+font-size:23px;
+
+font-weight:bold;
+
+border:none;
+
+border-radius:18px;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+.btn:hover{
+
+transform:translateY(-2px);
+
+}
+
+.new{
+
+background:#2563eb;
+
+color:white;
+
+}
+
+.continue{
+
+background:#16a34a;
+
+color:white;
+
+}
+
+.load{
+
+background:#f59e0b;
+
+color:white;
+
+}
+
+.back{
+
+background:#475569;
+
+color:white;
+
+}
+
+.version{
+
+margin-top:35px;
+
+text-align:center;
+
+color:#64748b;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>
+
+🏆 KBO DYNASTY
+
+</h1>
+
+<div class="subtitle">
+
+감독이 되어 왕조를 건설하라
+
+</div>
+
+<div class="menu">
+
+<button
+
+class="btn new"
+
+onclick="location.href='/dynasty/new'">
+
+🆕 새 게임
+
+</button>
+
+<button
+
+class="btn continue"
+
+onclick="location.href='/dynasty/load'">
+
+▶ 이어하기
+
+</button>
+
+<button
+
+class="btn load"
+
+onclick="location.href='/dynasty/history'">
+
+📜 업적
+
+</button>
+
+<button
+
+class="btn back"
+
+onclick="location.href='/'">
+
+🏠 메인으로
+
+</button>
+
+</div>
+
+<div class="version">
+
+Dynasty Mode Alpha 0.1
+
+</div>
+
+</div>
+
+</body>
+
+</html>
