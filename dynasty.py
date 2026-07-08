@@ -65,7 +65,66 @@ def dynasty_setup():
 
     save_id = session["dynasty_save"]
 
-    return f"Save ID : {save_id}"
+    save = (
+        supabase
+        .table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .single()
+        .execute()
+    ).data
+
+    teams = [
+
+        ("LG 트윈스","⚡"),
+        ("두산 베어스","🐻"),
+        ("KIA 타이거즈","🐯"),
+        ("삼성 라이온즈","🦁"),
+        ("롯데 자이언츠","🚢"),
+        ("한화 이글스","🦅"),
+        ("KT 위즈","🪄"),
+        ("NC 다이노스","🦕"),
+        ("SSG 랜더스","🚀")
+
+    ]
+
+    # 유저 팀 생성
+    supabase.table("dynasty_team").insert({
+
+        "save_id":save_id,
+
+        "team_name":save["team_name"],
+
+        "logo":save["logo"],
+
+        "color":save["color"],
+
+        "stadium":save["stadium"],
+
+        "is_user":True
+
+    }).execute()
+
+    # AI 팀 생성
+    for name, logo in teams:
+
+        supabase.table("dynasty_team").insert({
+
+            "save_id":save_id,
+
+            "team_name":name,
+
+            "logo":logo,
+
+            "color":"Default",
+
+            "stadium":"",
+
+            "is_user":False
+
+        }).execute()
+
+    return redirect("/dynasty/draft")
 
 @app.route("/dynasty/draft")
 def dynasty_draft():
