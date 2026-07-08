@@ -1159,6 +1159,53 @@ def team_view():
 
     players = load_team(session["current_team"])
 
+    # ============================
+    # 현재 배치 가능 여부 계산
+    # ============================
+    
+    lineup = session["lineup"]
+    
+    sp_limit = session.get("sp_limit", 3)
+    rp_limit = session.get("rp_limit", 3)
+    
+    for p in players:
+    
+        p["disabled"] = False
+    
+        positions = p["positions"]
+    
+        possible = False
+    
+        for pos in positions:
+    
+            if pos == "SP":
+    
+                if len(lineup["SP"]) < sp_limit:
+                    possible = True
+    
+            elif pos == "RP":
+    
+                if len(lineup["RP"]) < rp_limit:
+                    possible = True
+
+            else:
+    
+                if lineup[pos] is None:
+                    possible = True
+    
+        # DH는 야수만 가능
+        if (
+            "SP" not in positions
+            and
+            "RP" not in positions
+            and
+            lineup["DH"] is None
+        ):
+            possible = True
+    
+        if not possible:
+            p["disabled"] = True
+
     # Classic Mode
     if session.get("mode") == "classic":
 
