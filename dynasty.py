@@ -282,8 +282,33 @@ def ai_draft():
         1
     )+1
 
-    if session["draft_pick"]>25:
-
+    if session["draft_pick"] > 25:
+        
+        teams = (
+            
+            supabase
+    
+            .table("dynasty_team")
+    
+            .select("*")
+    
+            .eq("save_id", save_id)
+    
+            .execute()
+    
+            .data
+    
+        )
+    
+        from dynasty_lineup import auto_lineup
+    
+        for team in teams:
+    
+            auto_lineup(
+                save_id,
+                team["id"]
+            )
+    
         return redirect("/dynasty/home")
 
     return redirect("/dynasty/draft")
