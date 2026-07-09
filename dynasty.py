@@ -1,489 +1,615 @@
-from flask import (
-    render_template,
-    redirect,
-    session,
-    request
-)
+# dynasty.py - Part1
+# =========================================
+# KBO Dynasty - Main Blueprint
+# Part1 / Part2 / Part3 을 이어 붙이면 완성된다.
+# =========================================
+
+import os
 import random
 import json
-import os
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 
-from dynasty_season import rookie_draft_pool
-from dynasty_import import import_players
-from app import app, supabase
+from supabase import create_client
 
-
-# ==========================
-# Dynasty 메인
-# ==========================
-
-@app.route("/dynasty")
-def dynasty():
-
-    return render_template(
-        "dynasty_home.html"
-    )
-
-
-# ==========================
-# 새 게임
-# ==========================
-
-@app.route("/dynasty/new")
-def dynasty_new():
-
-    return render_template(
-        "dynasty_new.html"
-    )
-
-
-# ==========================
-# 창단
-# ==========================
-
-@app.route(
-    "/dynasty/create",
-    methods=["POST"]
+from dynasty_import import import_players_for_season
+from dynasty_schedule import generate_schedule, get_week_games
+from dynasty_game import simulate_week
+from dynasty_growth import process_offseason_growth
+from dynasty_lineup import auto_generate_lineup
+from dynasty_utils import (
+    get_supabase,
+    AI_TEAM_POOL,
+    calc_team_power,
+    get_standings,
 )
-def dynasty_create():
 
-    data = {
-        "team_name": request.form["team_name"],
-        "logo": request.form["logo"],
-        "color": request.form["color"],
-        "stadium": request.form["stadium"]
-    }
+dynasty_bp = Blueprint("dynasty", __name__)
 
-    result = (
-        supabase
-        .table("dynasty_save")
-        .insert(data)
+SEASON_WEEKS = 24
+DRAFT_ROUNDS = 25
+TEAM_COUNT = 10
+
+
+# =========================================
+# 홈 - 세이브 목록
+# =========================================
+@dynasty_bp.route("/dynasty")
+def dynasty_home():
+    sb = get_supabase()
+    saves = (
+        sb.table("dynasty_save")
+        .select("*")
+        .order("id", desc=True)
         .execute()
+        .data
+    )
+    return render_template("dynasty_home.html", saves=saves)
+
+
+# =========================================
+# 새 게임 생성
+# =========================================
+@dynasty_bp.route("/dynasty/new", methods=["GET", "POST"])
+def dynasty_new():
+    if request.method == "GET":
+        return render_template("dynasty_new.html")
+
+    sb = get_supabase()
+
+    team_name = request.form.get("team_name", "").strip()
+    logo = request.form.get("logo", "⚾").strip()
+    color = request.form.get("color", "#1a5276").strip()
+    stadium = request.form.get("stadium", "").strip()
+
+    if not team_name:
+        return redirect(url_for("dynasty.dynasty_new"))
+    if not stadium:
+        stadium = team_name + " 파크"
+
+    save_row = (
+        sb.table("dynasty_save")
+        .insert(
+            {
+                "team_name": team_name,
+                "logo": logo,
+                "color": color,
+                "stadium": stadium,
+                "season": 1,
+                "week": 0,
+                "finished": False,
+            }
+        )
+        .execute()
+        .data[0]
+    )
+    save_id = save_row["id"]
+
+    teams = []
+    teams.append(
+        {
+            "save_id": save_id,
+            "team_name": team_name,
+            "logo": logo,
+            "color": color,
+            "stadium": stadium,
+            "is_user": True,
+            "wins": 0,
+            "losses": 0,
+            "ties": 0,
+        }
     )
 
-    save_id = result.data[0]["id"]
+    ai_pool = [t for t in AI_TEAM_POOL if t["team_name"] != team_name]
+    random.shuffle(ai_pool)
+    for t in ai_pool[: TEAM_COUNT - 1]:
+        teams.append(
+            {
+                "save_id": save_id,
+                "team_name": t["team_name"],
+                "logo": t["logo"],
+                "color": t["color"],
+                "stadium": t["stadium"],
+                "is_user": False,
+                "wins": 0,
+                "losses": 0,
+                "ties": 0,
+            }
+        )
 
-    import_players(save_id)
+    sb.table("dynasty_team").insert(teams).execute()
 
-    session["dynasty_save"] = save_id
+    import_players_for_season(save_id, 1)
 
-    return redirect("/dynasty/setup")
+    return redirect(url_for("dynasty.dynasty_draft", save_id=save_id))
 
-@app.route("/dynasty/setup")
-def dynasty_setup():
 
-    save_id = session["dynasty_save"]
+# =========================================
+# 드래프트 화면
+# =========================================
+@dynasty_bp.route("/dynasty/draft/<int:save_id>")
+def dynasty_draft(save_id):
+    sb = get_supabase()
 
     save = (
-        supabase
-        .table("dynasty_save")
+        sb.table("dynasty_save")
         .select("*")
         .eq("id", save_id)
-        .single()
         .execute()
-    ).data
+        .data[0]
+    )
 
-    teams = [
-
-        ("LG 트윈스","⚡"),
-        ("두산 베어스","🐻"),
-        ("KIA 타이거즈","🐯"),
-        ("삼성 라이온즈","🦁"),
-        ("롯데 자이언츠","🚢"),
-        ("한화 이글스","🦅"),
-        ("KT 위즈","🪄"),
-        ("NC 다이노스","🦕"),
-        ("SSG 랜더스","🚀")
-
-    ]
-
-    # 유저 팀 생성
-    user = supabase.table(
-        "dynasty_team"
-    ).insert({
-    
-        "save_id":save_id,
-    
-        "team_name":save["team_name"],
-    
-        "logo":save["logo"],
-    
-        "color":save["color"],
-    
-        "stadium":save["stadium"],
-    
-        "is_user":True
-    
-    }).execute()
-    
-    session["dynasty_team"] = user.data[0]["id"]
-
-    # AI 팀 생성
-    for name, logo in teams:
-
-        supabase.table("dynasty_team").insert({
-
-            "save_id":save_id,
-
-            "team_name":name,
-
-            "logo":logo,
-
-            "color":"Default",
-
-            "stadium":"",
-
-            "is_user":False
-
-        }).execute()
-
-    return redirect("/dynasty/draft")
-
-@app.route("/dynasty/draft")
-def dynasty_draft():
-
-    save_id = session["dynasty_save"]
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .order("id")
+        .execute()
+        .data
+    )
 
     players = (
-        supabase
-        .table("dynasty_player")
+        sb.table("dynasty_player")
         .select("*")
         .eq("save_id", save_id)
         .eq("drafted", False)
+        .eq("retired", False)
+        .order("overall", desc=True)
         .execute()
         .data
     )
 
-    random.shuffle(players)
+    user_team = next(t for t in teams if t["is_user"])
 
-    players = players[:24]
-
-    return render_template(
-
-        "dynasty_draft.html",
-
-        players=players,
-
-        round=session.get("draft_round",1),
-
-        pick=session.get("draft_pick",1)
-    )
-
-    from dynasty_schedule import generate_schedule
-
-    generate_schedule(save_id)
-    
-    return redirect("/dynasty/dashboard")
-
-@app.route("/dynasty/draft_pick/<int:player_id>") 
-def dynasty_pick(player_id):
-
-    save_id=session["dynasty_save"] 
-        
-    save_id = session["dynasty_save"]
-    
-    team_id = session["dynasty_team"]
-    
-    supabase.table(
-        "dynasty_roster"
-    ).insert({
-    
-        "save_id": save_id,
-    
-        "team_id": team_id,
-    
-        "player_id": player_id,
-    
-        "role": "Bench",
-    
-        "depth": 1
-    
-    }).execute()
-    
-    supabase.table(
-        "dynasty_player"
-    ).update({
-    
-        "drafted": True
-    
-    }).eq(
-    
-        "id",
-        player_id
-    
-    ).execute()
-    
-    return redirect("/dynasty/ai_draft")
-
-@app.route("/dynasty/ai_draft")
-def ai_draft():
-
-    save_id=session["dynasty_save"]
-
-    teams=(
-        supabase.table(
-            "dynasty_team"
-        )
-        .select("*")
-        .eq("save_id",save_id)
-        .eq("is_user",False)
-        .execute()
-        .data
-    )
-
-    players=(
-        supabase.table(
-            "dynasty_player"
-        )
-        .select("*")
-        .eq("save_id",save_id)
-        .eq("drafted",False)
-        .order(
-            "overall",
-            desc=True
-        )
-        .execute()
-        .data
-    )
-
-    random.shuffle(teams)
-
-    for team in teams:
-
-        if not players:
-            break
-
-        p=players.pop(0)
-
-        supabase.table(
-            "dynasty_roster"
-        ).insert({
-        
-            "save_id": save_id,
-        
-            "team_id": team["id"],
-        
-            "player_id": p["id"],
-        
-            "role": "Bench",
-        
-            "depth": 1
-        
-        }).execute()
-        
-        supabase.table(
-            "dynasty_player"
-        ).update({
-        
-            "drafted": True
-        
-        }).eq(
-        
-            "id",
-            p["id"]
-        
-        ).execute()
-
-    session["draft_pick"]=session.get(
-        "draft_pick",
-        1
-    )+1
-
-    if session["draft_pick"] > 25:
-        
-        teams = (
-            
-            supabase
-    
-            .table("dynasty_team")
-    
-            .select("*")
-    
-            .eq("save_id", save_id)
-    
-            .execute()
-    
-            .data
-    
-        )
-    
-        from dynasty_lineup import auto_lineup
-    
-        for team in teams:
-    
-            auto_lineup(
-                save_id,
-                team["id"]
-            )
-    
-        return redirect("/dynasty/home")
-
-    return redirect("/dynasty/draft")
-
-@app.route("/dynasty/dashboard")
-def dynasty_dashboard():
-
-    save_id = session["dynasty_save"]
-
-    save = (
-        supabase
-        .table("dynasty_save")
-        .select("*")
-        .eq("id", save_id)
-        .single()
-        .execute()
-        .data
-    )
-
-    team = (
-        supabase
-        .table("dynasty_team")
+    roster_rows = (
+        sb.table("dynasty_roster")
         .select("*")
         .eq("save_id", save_id)
-        .eq("is_user", True)
-        .single()
         .execute()
         .data
     )
 
-    roster = (
-        supabase
-        .table("dynasty_roster")
-        .select("role, depth, dynasty_player(*)")
-        .eq("team_id", team["id"])
-        .execute()
-        .data
-    )
+    picked_count = len(roster_rows)
+    current_round = picked_count // TEAM_COUNT + 1
 
     return render_template(
-
-        "dynasty_dashboard.html",
-
+        "dynasty_draft.html",
         save=save,
-
-        team=team,
-
-        roster=roster
-
+        teams=teams,
+        players=players,
+        user_team=user_team,
+        current_round=current_round,
+        total_rounds=DRAFT_ROUNDS,
+        picked_count=picked_count,
     )
 
-@app.route("/dynasty/next_week")
-def next_week():
+# dynasty.py - Part2
 
-    save_id = session["dynasty_save"]
+# =========================================
+# 드래프트 - 유저 픽
+# =========================================
+@dynasty_bp.route("/dynasty/draft/<int:save_id>/pick", methods=["POST"])
+def dynasty_draft_pick(save_id):
+    sb = get_supabase()
 
-    simulate_week(save_id)
+    player_id = int(request.form.get("player_id"))
 
-    save = (
-        supabase
-        .table("dynasty_save")
+    teams = (
+        sb.table("dynasty_team")
         .select("*")
-        .eq("id", save_id)
-        .single()
+        .eq("save_id", save_id)
+        .order("id")
+        .execute()
+        .data
+    )
+    user_team = next(t for t in teams if t["is_user"])
+    ai_teams = [t for t in teams if not t["is_user"]]
+
+    roster_rows = (
+        sb.table("dynasty_roster")
+        .select("*")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+    picked_count = len(roster_rows)
+    current_round = picked_count // TEAM_COUNT + 1
+
+    if current_round > DRAFT_ROUNDS:
+        return redirect(url_for("dynasty.dynasty_draft_finish", save_id=save_id))
+
+    # 유저 픽
+    _draft_player(sb, save_id, user_team["id"], player_id)
+
+    # AI 픽
+    remaining = (
+        sb.table("dynasty_player")
+        .select("id, overall, positions")
+        .eq("save_id", save_id)
+        .eq("drafted", False)
+        .eq("retired", False)
+        .order("overall", desc=True)
+        .limit(80)
         .execute()
         .data
     )
 
-    week = save["week"] + 1
+    random.shuffle(ai_teams)
+    for team in ai_teams:
+        if not remaining:
+            break
+        pool = remaining[: min(8, len(remaining))]
+        pick = random.choice(pool)
+        remaining.remove(pick)
+        _draft_player(sb, save_id, team["id"], pick["id"])
 
-    if week > 24:
+    picked_count = picked_count + TEAM_COUNT
+    if picked_count >= DRAFT_ROUNDS * TEAM_COUNT:
+        return redirect(url_for("dynasty.dynasty_draft_finish", save_id=save_id))
 
-        supabase.table(
-            "dynasty_save"
-        ).update({
+    return redirect(url_for("dynasty.dynasty_draft", save_id=save_id))
 
-            "finished": True
 
-        }).eq(
-
-            "id",
-            save_id
-
-        ).execute()
-
-        return redirect("/dynasty/end_season")
-
-    supabase.table(
-        "dynasty_save"
-    ).update({
-
-        "week": week
-
-    }).eq(
-
-        "id",
-        save_id
-
+def _draft_player(sb, save_id, team_id, player_id):
+    sb.table("dynasty_player").update({"drafted": True}).eq("id", player_id).execute()
+    sb.table("dynasty_roster").insert(
+        {
+            "save_id": save_id,
+            "team_id": team_id,
+            "player_id": player_id,
+            "role": "BENCH",
+            "depth": 99,
+        }
     ).execute()
 
-    return redirect("/dynasty/dashboard")
 
-@app.route("/dynasty/end_season")
-def dynasty_end_season():
+# =========================================
+# 드래프트 종료 → 라인업 + 일정 생성
+# =========================================
+@dynasty_bp.route("/dynasty/draft/<int:save_id>/finish")
+def dynasty_draft_finish(save_id):
+    sb = get_supabase()
 
-    save_id = session["dynasty_save"]
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+
+    for team in teams:
+        auto_generate_lineup(save_id, team["id"])
+
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    generate_schedule(save_id, save["season"], SEASON_WEEKS)
+
+    sb.table("dynasty_save").update({"week": 1}).eq("id", save_id).execute()
+
+    return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+
+
+# =========================================
+# 대시보드
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>")
+def dynasty_dashboard(save_id):
+    sb = get_supabase()
+
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+    user_team = next(t for t in teams if t["is_user"])
+
+    standings = get_standings(teams)
+
+    week_games = get_week_games(save_id, save["season"], save["week"])
+    last_games = (
+        get_week_games(save_id, save["season"], save["week"] - 1)
+        if save["week"] > 1
+        else []
+    )
+
+    team_map = {t["id"]: t for t in teams}
+
+    roster_rows = (
+        sb.table("dynasty_roster")
+        .select("*, dynasty_player(*)")
+        .eq("save_id", save_id)
+        .eq("team_id", user_team["id"])
+        .order("depth")
+        .execute()
+        .data
+    )
 
     return render_template(
-
-        "dynasty_end.html",
-
-        save_id=save_id
-
+        "dynasty_dashboard.html",
+        save=save,
+        teams=teams,
+        team_map=team_map,
+        user_team=user_team,
+        standings=standings,
+        week_games=week_games,
+        last_games=last_games,
+        roster=roster_rows,
+        season_weeks=SEASON_WEEKS,
     )
 
-@app.route("/dynasty/new_season")
-def dynasty_new_season():
+# dynasty.py - Part3
 
-    save_id = session["dynasty_save"]
+# =========================================
+# 다음 주 진행
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/next", methods=["POST"])
+def dynasty_next_week(save_id):
+    sb = get_supabase()
 
     save = (
-
-        supabase
-
-        .table("dynasty_save")
-
+        sb.table("dynasty_save")
         .select("*")
-
         .eq("id", save_id)
-
-        .single()
-
         .execute()
-
-        .data
-
+        .data[0]
     )
 
-    season = save["season"] + 1
+    if save["finished"]:
+        return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
-    supabase.table(
+    week = save["week"]
 
-        "dynasty_save"
+    if week > SEASON_WEEKS:
+        return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
 
-    ).update({
+    simulate_week(save_id, save["season"], week)
 
-        "season": season,
+    new_week = week + 1
+    sb.table("dynasty_save").update({"week": new_week}).eq("id", save_id).execute()
 
-        "week": 1,
+    if new_week > SEASON_WEEKS:
+        return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
 
-        "finished": False
+    return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
-    }).eq(
 
-        "id",
-        save_id
+# =========================================
+# 시즌 종료
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/season_end")
+def dynasty_season_end(save_id):
+    sb = get_supabase()
 
-    ).execute()
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
 
-    generate_schedule(save_id)
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
 
-    return redirect("/dynasty/dashboard")
+    standings = get_standings(teams)
+    champion = standings[0]
+    user_team = next(t for t in teams if t["is_user"])
+    user_rank = next(
+        i + 1 for i, t in enumerate(standings) if t["id"] == user_team["id"]
+    )
 
-@app.route("/dynasty/next_season")
-def dynasty_next_season():
+    return render_template(
+        "dynasty_end.html",
+        save=save,
+        standings=standings,
+        champion=champion,
+        user_team=user_team,
+        user_rank=user_rank,
+    )
 
-    save_id = session["dynasty_save"]
 
-    next_season(save_id)
+# =========================================
+# 다음 시즌 시작
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/next_season", methods=["POST"])
+def dynasty_next_season(save_id):
+    sb = get_supabase()
 
-    return redirect("/dynasty/dashboard")
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    new_season = save["season"] + 1
+
+    process_offseason_growth(save_id)
+
+    import_players_for_season(save_id, new_season)
+
+    sb.table("dynasty_team").update(
+        {"wins": 0, "losses": 0, "ties": 0}
+    ).eq("save_id", save_id).execute()
+
+    sb.table("dynasty_save").update(
+        {"season": new_season, "week": 0}
+    ).eq("id", save_id).execute()
+
+    return redirect(url_for("dynasty.dynasty_rookie_draft", save_id=save_id))
+
+
+# =========================================
+# 신인 드래프트 (시즌2 이후)
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/rookie_draft")
+def dynasty_rookie_draft(save_id):
+    sb = get_supabase()
+
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .order("id")
+        .execute()
+        .data
+    )
+    user_team = next(t for t in teams if t["is_user"])
+
+    players = (
+        sb.table("dynasty_player")
+        .select("*")
+        .eq("save_id", save_id)
+        .eq("drafted", False)
+        .eq("retired", False)
+        .eq("appear_season", save["season"])
+        .order("overall", desc=True)
+        .execute()
+        .data
+    )
+
+    return render_template(
+        "dynasty_draft.html",
+        save=save,
+        teams=teams,
+        players=players,
+        user_team=user_team,
+        current_round=1,
+        total_rounds=5,
+        picked_count=0,
+        rookie_mode=True,
+    )
+
+
+# =========================================
+# 신인 드래프트 픽
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/rookie_pick", methods=["POST"])
+def dynasty_rookie_pick(save_id):
+    sb = get_supabase()
+
+    player_id = int(request.form.get("player_id"))
+
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .order("id")
+        .execute()
+        .data
+    )
+    user_team = next(t for t in teams if t["is_user"])
+    ai_teams = [t for t in teams if not t["is_user"]]
+
+    _draft_player(sb, save_id, user_team["id"], player_id)
+
+    remaining = (
+        sb.table("dynasty_player")
+        .select("id, overall")
+        .eq("save_id", save_id)
+        .eq("drafted", False)
+        .eq("retired", False)
+        .eq("appear_season", save["season"])
+        .order("overall", desc=True)
+        .limit(40)
+        .execute()
+        .data
+    )
+
+    random.shuffle(ai_teams)
+    for team in ai_teams:
+        if not remaining:
+            break
+        pool = remaining[: min(5, len(remaining))]
+        pick = random.choice(pool)
+        remaining.remove(pick)
+        _draft_player(sb, save_id, team["id"], pick["id"])
+
+    return redirect(url_for("dynasty.dynasty_rookie_draft", save_id=save_id))
+
+
+# =========================================
+# 신인 드래프트 종료 → 시즌 시작
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/rookie_finish")
+def dynasty_rookie_finish(save_id):
+    sb = get_supabase()
+
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    teams = (
+        sb.table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+
+    for team in teams:
+        auto_generate_lineup(save_id, team["id"])
+
+    generate_schedule(save_id, save["season"], SEASON_WEEKS)
+
+    sb.table("dynasty_save").update({"week": 1}).eq("id", save_id).execute()
+
+    return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+
+
+# =========================================
+# 세이브 삭제
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/delete", methods=["POST"])
+def dynasty_delete(save_id):
+    sb = get_supabase()
+
+    sb.table("dynasty_roster").delete().eq("save_id", save_id).execute()
+    sb.table("dynasty_schedule").delete().eq("save_id", save_id).execute()
+    sb.table("dynasty_player").delete().eq("save_id", save_id).execute()
+    sb.table("dynasty_team").delete().eq("save_id", save_id).execute()
+    sb.table("dynasty_save").delete().eq("id", save_id).execute()
+
+    return redirect(url_for("dynasty.dynasty_home"))
