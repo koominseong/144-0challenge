@@ -102,6 +102,14 @@ def import_players(save_id):
             overall = calc_overall(
                 p["peak_war"]
             )
+
+            if "SP" in p["positions"] or "RP" in p["positions"]:
+                
+                stat = calc_pitcher(p)
+            
+            else:
+                
+                stat = calc_hitter(p)
     
             potential = min(
                 overall + random.randint(0,4),
@@ -135,6 +143,8 @@ def import_players(save_id):
                 "drafted":False,
     
                 "retired":False
+
+                **stat
     
             }).execute()
 
