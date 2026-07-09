@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="utf-8">
+
+<title>Dynasty</title>
+
+<style>
+
+body{
+
+    font-family:sans-serif;
+
+    background:#f3f6fb;
+
+    padding:30px;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+
+}
+
+.player{
+
+    padding:8px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+button{
+
+    padding:12px 20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>
+
+{{ team.team_name }}
+
+</h1>
+
+Season {{ save.season }}
+
+<br>
+
+Week {{ save.week }}
+
+</div>
+
+<div class="card">
+
+<h2>
+
+현재 로스터
+
+</h2>
+
+{% for p in roster %}
+
+<div class="player">
+
+{{ p.role }}
+
+{% if p.depth > 0 %}
+
+{{ p.depth }}
+
+{% endif %}
+
+-
+
+{{ p.dynasty_player.name }}
+
+(OVR {{ p.dynasty_player.overall }})
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<div class="card">
+
+<a href="/dynasty/next_week">
+
+<button>
+
+▶ 다음 주 진행
+
+</button>
+
+</a>
+
+</div>
+
+</body>
+
+</html>
