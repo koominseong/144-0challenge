@@ -1,0 +1,140 @@
+<!-- templates/dynasty_unlock.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비밀번호 확인 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.lock-card {
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 40px 35px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    animation: pop 0.2s ease-out;
+}
+
+@keyframes pop {
+    from { transform: scale(0.96); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.lock-card .team-logo {
+    font-size: 52px;
+}
+
+.lock-card h1 {
+    font-size: 21px;
+    color: #fff;
+    margin-top: 14px;
+}
+
+.lock-card .sub {
+    font-size: 13px;
+    color: #8899a6;
+    margin-top: 8px;
+}
+
+.lock-icon {
+    font-size: 15px;
+    color: #ffd54f;
+    margin-top: 18px;
+}
+
+.error {
+    background: rgba(239,83,80,0.1);
+    border: 1px solid rgba(239,83,80,0.4);
+    color: #ef9a9a;
+    padding: 11px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-top: 18px;
+}
+
+form {
+    margin-top: 20px;
+}
+
+input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+    background: #0f1419;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 3px;
+}
+
+input[type="password"]:focus {
+    border-color: {{ save.color or '#1a5276' }};
+}
+
+.btn-unlock {
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, {{ save.color or '#1a5276' }}, #2c3e50);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-unlock:hover { opacity: 0.88; }
+
+.home-link {
+    display: block;
+    margin-top: 20px;
+    color: #566573;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.home-link:hover { color: #8899a6; }
+</style>
+</head>
+<body>
+
+<div class="lock-card">
+    <div class="team-logo">{{ save.logo }}</div>
+    <h1>{{ save.team_name }}</h1>
+    <div class="sub">이 세이브는 비밀번호로 보호되어 있습니다</div>
+    <div class="lock-icon">🔒</div>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('dynasty.dynasty_unlock', save_id=save.id) }}">
+        <input type="password" name="password" placeholder="비밀번호" autofocus required>
+        <button type="submit" class="btn-unlock">확인</button>
+    </form>
+
+    <a href="{{ url_for('dynasty.dynasty_home') }}" class="home-link">← 홈으로 돌아가기</a>
+</div>
+
+</body>
+</html>
