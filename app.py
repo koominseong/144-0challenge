@@ -9,6 +9,7 @@ from dynasty_trade_routes import trade_bp
 import os, glob
 from dynasty_import import DATA_DIR
 from dynasty_utils import get_supabase
+from dynasty_fa_routes import fa_bp
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -22,6 +23,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.register_blueprint(dynasty_bp)
 app.register_blueprint(trade_bp)
+app.register_blueprint(fa_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
