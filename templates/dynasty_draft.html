@@ -1,0 +1,315 @@
+<!-- templates/dynasty_draft.html - Part1 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>드래프트 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar .logo { font-size: 34px; }
+
+.topbar h1 { font-size: 20px; color: #fff; }
+
+.topbar .sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 3px;
+}
+
+.topbar .round-info {
+    text-align: right;
+}
+
+.topbar .round-info .round {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffd54f;
+}
+
+.topbar .round-info .picked {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 3px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.controls input[type="text"] {
+    flex: 1;
+    min-width: 180px;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #fff;
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    outline: none;
+}
+
+.controls input[type="text"]:focus { border-color: {{ user_team.color }}; }
+
+.pos-filter {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.pos-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+    color: #8899a6;
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.pos-btn.active {
+    color: #fff;
+    background: {{ user_team.color }};
+    border-color: {{ user_team.color }};
+}
+
+.finish-btn {
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffd54f;
+    background: none;
+    border: 1px solid rgba(255,213,79,0.4);
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.finish-btn:hover { background: rgba(255,213,79,0.08); }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #1a222c;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    text-align: left;
+    padding: 12px 10px;
+    color: #8899a6;
+    font-weight: 600;
+    font-size: 12px;
+    background: #141b23;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 74px;
+}
+
+td {
+    padding: 11px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+tr.player-row:hover { background: rgba(255,255,255,0.04); }
+
+.ovr {
+    display: inline-block;
+    min-width: 34px;
+    text-align: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.ovr-elite { background: #b71c1c; color: #fff; }
+.ovr-good { background: #e65100; color: #fff; }
+.ovr-avg { background: #1565c0; color: #fff; }
+.ovr-low { background: #37474f; color: #cfd8dc; }
+
+.pot { color: #66bb6a; font-size: 12px; }
+
+.pick-btn {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    background: {{ user_team.color }};
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.pick-btn:hover { opacity: 0.85; }
+</style>
+</head>
+
+<!-- templates/dynasty_draft.html - Part2 -->
+<body>
+
+<div class="topbar">
+    <div class="left">
+        <div class="logo">{{ user_team.logo }}</div>
+        <div>
+            <h1>{{ user_team.team_name }} 드래프트</h1>
+            <div class="sub">Season {{ save.season }} · {% if rookie_mode %}신인 드래프트{% else %}창단 드래프트{% endif %}</div>
+        </div>
+    </div>
+    <div class="round-info">
+        <div class="round">Round {{ current_round }} / {{ total_rounds }}</div>
+        <div class="picked">전체 픽 {{ picked_count }}</div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="선수 이름 검색...">
+        <div class="pos-filter" id="posFilter">
+            <button type="button" class="pos-btn active" data-pos="ALL">전체</button>
+            <button type="button" class="pos-btn" data-pos="P">투수</button>
+            <button type="button" class="pos-btn" data-pos="C">포수</button>
+            <button type="button" class="pos-btn" data-pos="1B">1루</button>
+            <button type="button" class="pos-btn" data-pos="2B">2루</button>
+            <button type="button" class="pos-btn" data-pos="3B">3루</button>
+            <button type="button" class="pos-btn" data-pos="SS">유격</button>
+            <button type="button" class="pos-btn" data-pos="LF">좌익</button>
+            <button type="button" class="pos-btn" data-pos="CF">중견</button>
+            <button type="button" class="pos-btn" data-pos="RF">우익</button>
+        </div>
+        {% if rookie_mode %}
+        <a href="{{ url_for('dynasty.dynasty_rookie_finish', save_id=save.id) }}" class="finish-btn">✔ 드래프트 종료</a>
+        {% else %}
+            {% if current_round > total_rounds %}
+            <a href="{{ url_for('dynasty.dynasty_draft_finish', save_id=save.id) }}" class="finish-btn">✔ 드래프트 종료</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>이름</th>
+                <th>포지션</th>
+                <th>OVR</th>
+                <th>POT</th>
+                <th>컨택</th>
+                <th>파워</th>
+                <th>선구</th>
+                <th>주력</th>
+                <th>수비</th>
+                <th>구위</th>
+                <th>제구</th>
+                <th>체력</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="playerBody">
+            {% for p in players %}
+            <tr class="player-row" data-name="{{ p.name }}" data-pos="{{ p.positions }}">
+                <td><strong>{{ p.name }}</strong></td>
+                <td>{{ p.positions }}</td>
+                <td>
+                    <span class="ovr
+                        {% if p.overall >= 80 %}ovr-elite
+                        {% elif p.overall >= 70 %}ovr-good
+                        {% elif p.overall >= 60 %}ovr-avg
+                        {% else %}ovr-low{% endif %}">{{ p.overall }}</span>
+                </td>
+                <td class="pot">{{ p.potential }}</td>
+                {% if 'P' in p.positions %}
+                <td>-</td><td>-</td><td>-</td><td>-</td><td>{{ p.defense }}</td>
+                <td>{{ p.stuff }}</td><td>{{ p.control }}</td><td>{{ p.stamina }}</td>
+                {% else %}
+                <td>{{ p.contact }}</td><td>{{ p.power }}</td><td>{{ p.eye }}</td>
+                <td>{{ p.speed }}</td><td>{{ p.defense }}</td>
+                <td>-</td><td>-</td><td>-</td>
+                {% endif %}
+                <td>
+                    <form method="POST" action="{% if rookie_mode %}{{ url_for('dynasty.dynasty_rookie_pick', save_id=save.id) }}{% else %}{{ url_for('dynasty.dynasty_draft_pick', save_id=save.id) }}{% endif %}">
+                        <input type="hidden" name="player_id" value="{{ p.id }}">
+                        <button type="submit" class="pick-btn">지명</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+const searchInput = document.getElementById("searchInput");
+const posButtons = document.querySelectorAll(".pos-btn");
+const rows = document.querySelectorAll(".player-row");
+
+let currentPos = "ALL";
+
+function applyFilter() {
+    const q = searchInput.value.trim();
+    rows.forEach(function(row) {
+        const name = row.dataset.name;
+        const pos = row.dataset.pos;
+        let show = true;
+        if (q && name.indexOf(q) === -1) show = false;
+        if (currentPos !== "ALL" && pos.indexOf(currentPos) === -1) show = false;
+        row.style.display = show ? "" : "none";
+    });
+}
+
+searchInput.addEventListener("input", applyFilter);
+
+posButtons.forEach(function(btn) {
+    btn.addEventListener("click", function() {
+        posButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentPos = btn.dataset.pos;
+        applyFilter();
+    });
+});
+</script>
+
+</body>
+</html>
