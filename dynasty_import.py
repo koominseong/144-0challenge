@@ -37,7 +37,7 @@ def season_years(season):
 def _load_year_records(years):
     records = []
     for year in years:
-        pattern = os.path.join(Data/kbo_json_v5,f"*_{year}.json")
+        pattern = os.path.join(DATA_DIR, f"*_{year}.json")
         for path in glob.glob(pattern):
             try:
                 with open(path, "r", encoding="utf-8") as f:
