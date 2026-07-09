@@ -1,314 +1,213 @@
+<!-- templates/dynasty_new.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>새 구단 창단</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>새 구단 창단 - KBO Dynasty</title>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
 }
 
-body{
-
-background:#0f172a;
-color:white;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-min-height:100vh;
-
+.header {
+    text-align: center;
+    padding: 45px 20px 30px;
 }
 
-.card{
-
-width:700px;
-
-background:#1e293b;
-
-padding:40px;
-
-border-radius:20px;
-
+.header h1 {
+    font-size: 30px;
+    color: #fff;
 }
 
-h1{
-
-text-align:center;
-
-margin-bottom:35px;
-
+.header .sub {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #8899a6;
 }
 
-label{
-
-display:block;
-
-margin-top:20px;
-
-margin-bottom:8px;
-
-font-size:18px;
-
+.container {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 10px 20px 60px;
 }
 
-input,
-select{
-
-width:100%;
-
-padding:14px;
-
-border:none;
-
-border-radius:10px;
-
-font-size:17px;
-
+.form-card {
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 30px;
 }
 
-button{
-
-margin-top:35px;
-
-width:100%;
-
-padding:18px;
-
-border:none;
-
-border-radius:15px;
-
-background:#2563eb;
-
-color:white;
-
-font-size:20px;
-
-font-weight:bold;
-
-cursor:pointer;
-
+.field {
+    margin-bottom: 24px;
 }
 
-button:hover{
-
-background:#1d4ed8;
-
+.field label {
+    display: block;
+    font-size: 14px;
+    color: #8899a6;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
-.preview{
-
-margin-top:30px;
-
-padding:25px;
-
-border-radius:15px;
-
-background:#334155;
-
-text-align:center;
-
+.field input[type="text"] {
+    width: 100%;
+    padding: 13px 15px;
+    font-size: 15px;
+    color: #fff;
+    background: #0f1419;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
 }
 
-.logo{
-
-font-size:70px;
-
-margin-bottom:10px;
-
+.field input[type="text"]:focus {
+    border-color: #1a5276;
 }
 
+.logo-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+}
+
+.logo-option {
+    font-size: 26px;
+    text-align: center;
+    padding: 10px 0;
+    background: #0f1419;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s;
+}
+
+.logo-option:hover {
+    transform: scale(1.08);
+}
+
+.logo-option.selected {
+    border-color: #ffd54f;
+    background: rgba(255,213,79,0.08);
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+}
+
+.color-option {
+    height: 40px;
+    border-radius: 8px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.color-option:hover {
+    transform: scale(1.08);
+}
+
+.color-option.selected {
+    border-color: #fff;
+}
+
+.preview {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #1a5276, #0f1419);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.preview .p-logo { font-size: 38px; }
+.preview .p-name { font-size: 19px; font-weight: bold; color: #fff; }
+.preview .p-stadium { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+
+.btn-create {
+    width: 100%;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #1a5276, #2c3e50);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-create:hover { opacity: 0.88; }
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #566573;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.back-link:hover { color: #8899a6; }
 </style>
-
 </head>
-
 <body>
 
-<div class="card">
-
-<h1>
-
-🏆 새 구단 창단
-
-</h1>
-
-<form
-action="/dynasty/create"
-method="post">
-
-<label>
-
-구단 이름
-
-</label>
-
-<input
-
-name="team_name"
-
-id="team"
-
-placeholder="예 : 서울 드래곤즈"
-
-required
-
-oninput="updatePreview()">
-
-<label>
-
-엠블럼
-
-</label>
-
-<select
-
-name="logo"
-
-id="logo"
-
-onchange="updatePreview()">
-
-<option>🐲</option>
-
-<option>🦅</option>
-
-<option>🐯</option>
-
-<option>🦁</option>
-
-<option>🐻</option>
-
-<option>🐺</option>
-
-<option>🦈</option>
-
-<option>⚡</option>
-
-<option>🔥</option>
-
-<option>⭐</option>
-
-</select>
-
-<label>
-
-팀 컬러
-
-</label>
-
-<select
-name="color">
-
-<option>Blue</option>
-
-<option>Red</option>
-
-<option>Black</option>
-
-<option>Green</option>
-
-<option>Purple</option>
-
-<option>Orange</option>
-
-</select>
-
-<label>
-
-홈구장
-
-</label>
-
-<select
-name="stadium">
-
-<option>잠실 야구장</option>
-
-<option>고척 스카이돔</option>
-
-<option>대전 한화생명 볼파크</option>
-
-<option>광주 챔피언스필드</option>
-
-<option>사직 야구장</option>
-
-<option>대구 라이온즈파크</option>
-
-<option>수원 KT위즈파크</option>
-
-<option>창원 NC파크</option>
-
-<option>인천 랜더스필드</option>
-
-</select>
-
-<div
-class="preview">
-
-<div
-class="logo"
-id="previewLogo">
-
-🐲
-
+<div class="header">
+    <h1>🏟 새 구단 창단</h1>
+    <div class="sub">구단 이름, 로고, 색상, 홈구장을 정하세요</div>
 </div>
 
-<h2
-id="previewName">
+<div class="container">
+    <form method="POST" action="{{ url_for('dynasty.dynasty_new') }}" class="form-card" id="createForm">
 
-서울 드래곤즈
+        <div class="preview" id="preview">
+            <div class="p-logo" id="pLogo">⚾</div>
+            <div>
+                <div class="p-name" id="pName">구단 이름</div>
+                <div class="p-stadium" id="pStadium">홈구장</div>
+            </div>
+        </div>
 
-</h2>
+        <div class="field">
+            <label>구단 이름</label>
+            <input type="text" name="team_name" id="teamName" placeholder="예: 서울 슈퍼스타즈" maxlength="20" required>
+        </div>
 
-</div>
+        <div class="field">
+            <label>로고</label>
+            <div class="logo-grid" id="logoGrid"></div>
+            <input type="hidden" name="logo" id="logoInput" value="⚾">
+        </div>
 
-<button>
+        <div class="field">
+            <label>팀 컬러</label>
+            <div class="color-grid" id="colorGrid"></div>
+            <input type="hidden" name="color" id="colorInput" value="#1a5276">
+        </div>
 
-창단하기
+        <div class="field">
+            <label>홈구장 (비우면 자동 생성)</label>
+            <input type="text" name="stadium" id="stadiumName" placeholder="예: 잠실 드림파크" maxlength="20">
+        </div>
 
-</button>
+        <button type="submit" class="btn-create">⚾ 창단하고 드래프트 시작</button>
+    </form>
 
-</form>
-
+    <a href="{{ url_for('dynasty.dynasty_home') }}" class="back-link">← 홈으로 돌아가기</a>
 </div>
 
 <script>
-
-function updatePreview(){
-
-let team=document.getElementById("team").value;
-
-let logo=document.getElementById("logo").value;
-
-document.getElementById(
-"previewLogo"
-).innerHTML=logo;
-
-if(team==""){
-
-team="서울 드래곤즈";
-
-}
-
-document.getElementById(
-"previewName"
-).innerHTML=team;
-
-}
-
-</script>
-
-</body>
-
-</html>
+const LOGOS = ["⚾","🐯","🦁","🐻","🐉","🦅","🕊️","🦄","⚓","🔥","⚡","🐋","🌊","🌟","👑","🛡️"];
+const COLORS =
