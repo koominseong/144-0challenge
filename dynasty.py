@@ -1,13 +1,17 @@
 # dynasty.py - Part1
 # =========================================
 # KBO Dynasty - Main Blueprint
-# (드래프트 팝업 지원 버전: AI 픽 결과 + 내 픽 목록)
+# (비밀번호 보호 + FA 연동 버전)
+# 세이브 생성 시 비밀번호 설정 → 접근 시 인증 필요
+# DB 준비: ALTER TABLE dynasty_save ADD COLUMN IF NOT EXISTS password text;
 # Part1 / Part2 / Part3 을 이어 붙이면 완성된다.
 # =========================================
 
 import os
 import random
 import json
+import hashlib
+from functools import wraps
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 
 from supabase import create_client
@@ -17,6 +21,8 @@ from dynasty_schedule import generate_schedule, get_week_games
 from dynasty_game import simulate_week
 from dynasty_growth import process_offseason_growth
 from dynasty_lineup import auto_generate_lineup
+from dynasty_fa import generate_fa_market, ai_sign_fa
+from dynasty_trade import ai_auto_trades
 from dynasty_utils import (
     get_supabase,
     AI_TEAM_POOL,
@@ -29,6 +35,68 @@ dynasty_bp = Blueprint("dynasty", __name__)
 SEASON_WEEKS = 24
 DRAFT_ROUNDS = 25
 TEAM_COUNT = 10
+
+
+# =========================================
+# 비밀번호 해시
+# =========================================
+def _hash_pw(password):
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+
+# =========================================
+# 접근 인증 확인
+# =========================================
+def _is_authed(save_id):
+    return session.get(f"auth_{save_id}") is True
+
+
+# =========================================
+# 인증 필요 데코레이터
+# 라우트 첫 번째 인자가 save_id여야 한다
+# =========================================
+def require_auth(f):
+    @wraps(f)
+    def wrapper(save_id, *args, **kwargs):
+        if not _is_authed(save_id):
+            return redirect(url_for("dynasty.dynasty_unlock", save_id=save_id))
+        return f(save_id, *args, **kwargs)
+    return wrapper
+
+
+# =========================================
+# 비밀번호 입력 화면 / 확인
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/unlock", methods=["GET", "POST"])
+def dynasty_unlock(save_id):
+    sb = get_supabase()
+
+    save_rows = (
+        sb.table("dynasty_save")
+        .select("id, team_name, logo, color, password")
+        .eq("id", save_id)
+        .execute()
+        .data
+    )
+    if not save_rows:
+        return redirect(url_for("dynasty.dynasty_home"))
+    save = save_rows[0]
+
+    # 비밀번호 미설정 세이브는 바로 통과
+    if not save.get("password"):
+        session[f"auth_{save_id}"] = True
+        return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+
+    error = ""
+
+    if request.method == "POST":
+        pw = request.form.get("password", "")
+        if _hash_pw(pw) == save["password"]:
+            session[f"auth_{save_id}"] = True
+            return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+        error = "비밀번호가 올바르지 않습니다."
+
+    return render_template("dynasty_unlock.html", save=save, error=error)
 
 
 # =========================================
@@ -48,7 +116,7 @@ def dynasty_home():
 
 
 # =========================================
-# 새 게임 생성
+# 새 게임 생성 (비밀번호 설정)
 # =========================================
 @dynasty_bp.route("/dynasty/new", methods=["GET", "POST"])
 def dynasty_new():
@@ -61,6 +129,7 @@ def dynasty_new():
     logo = request.form.get("logo", "⚾").strip()
     color = request.form.get("color", "#1a5276").strip()
     stadium = request.form.get("stadium", "").strip()
+    password = request.form.get("password", "").strip()
 
     if not team_name:
         return redirect(url_for("dynasty.dynasty_new"))
@@ -78,12 +147,16 @@ def dynasty_new():
                 "season": 1,
                 "week": 0,
                 "finished": False,
+                "password": _hash_pw(password) if password else None,
             }
         )
         .execute()
         .data[0]
     )
     save_id = save_row["id"]
+
+    # 생성자는 즉시 인증
+    session[f"auth_{save_id}"] = True
 
     teams = []
     teams.append(
@@ -126,10 +199,9 @@ def dynasty_new():
 
 # =========================================
 # 드래프트 화면
-# last_picks: 직전 라운드 전체 팀 픽 (팝업용, session에서 1회성)
-# my_picks: 지금까지 내가 뽑은 선수 (팝업용)
 # =========================================
 @dynasty_bp.route("/dynasty/draft/<int:save_id>")
+@require_auth
 def dynasty_draft(save_id):
     sb = get_supabase()
 
@@ -165,7 +237,7 @@ def dynasty_draft(save_id):
 
     roster_rows = (
         sb.table("dynasty_roster")
-        .select("*")
+        .select("id")
         .eq("save_id", save_id)
         .execute()
         .data
@@ -224,9 +296,10 @@ def _get_my_picks(sb, save_id, team_id):
 # dynasty.py - Part2
 
 # =========================================
-# 드래프트 - 유저 픽 + AI 픽 (픽 결과 session 저장 → 팝업)
+# 드래프트 - 유저 픽 + AI 픽
 # =========================================
 @dynasty_bp.route("/dynasty/draft/<int:save_id>/pick", methods=["POST"])
+@require_auth
 def dynasty_draft_pick(save_id):
     sb = get_supabase()
 
@@ -352,6 +425,7 @@ def _draft_player(sb, save_id, team_id, player_id):
 # 드래프트 종료 → 라인업 + 일정 생성
 # =========================================
 @dynasty_bp.route("/dynasty/draft/<int:save_id>/finish")
+@require_auth
 def dynasty_draft_finish(save_id):
     sb = get_supabase()
 
@@ -387,6 +461,7 @@ def dynasty_draft_finish(save_id):
 # 대시보드
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>")
+@require_auth
 def dynasty_dashboard(save_id):
     sb = get_supabase()
 
@@ -441,12 +516,12 @@ def dynasty_dashboard(save_id):
         season_weeks=SEASON_WEEKS,
     )
 
-# dynasty.py - Part3
 
 # =========================================
 # 다음 주 진행
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/next", methods=["POST"])
+@require_auth
 def dynasty_next_week(save_id):
     sb = get_supabase()
 
@@ -481,6 +556,7 @@ def dynasty_next_week(save_id):
 # 시즌 종료
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/season_end")
+@require_auth
 def dynasty_season_end(save_id):
     sb = get_supabase()
 
@@ -516,11 +592,14 @@ def dynasty_season_end(save_id):
         user_rank=user_rank,
     )
 
+# dynasty.py - Part3
 
 # =========================================
 # 다음 시즌 시작
+# 성장/은퇴 → FA 시장 생성 → AI 트레이드 → AI FA 영입 → 신인 Import
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/next_season", methods=["POST"])
+@require_auth
 def dynasty_next_season(save_id):
     sb = get_supabase()
 
@@ -534,10 +613,19 @@ def dynasty_next_season(save_id):
 
     new_season = save["season"] + 1
 
+    # 1. 성장 / 노쇠 / 은퇴
     process_offseason_growth(save_id)
 
+    # 2. FA 시장 생성 (자격 선수 로스터 해제)
+    generate_fa_market(save_id)
+
+    # 3. AI끼리 트레이드
+    ai_auto_trades(save_id, max_trades=3)
+
+    # 4. 신인 Import
     import_players_for_season(save_id, new_season)
 
+    # 5. 팀 성적 초기화 + 시즌 갱신
     sb.table("dynasty_team").update(
         {"wins": 0, "losses": 0, "ties": 0}
     ).eq("save_id", save_id).execute()
@@ -553,6 +641,7 @@ def dynasty_next_season(save_id):
 # 신인 드래프트 (시즌2 이후)
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/rookie_draft")
+@require_auth
 def dynasty_rookie_draft(save_id):
     sb = get_supabase()
 
@@ -605,9 +694,10 @@ def dynasty_rookie_draft(save_id):
 
 
 # =========================================
-# 신인 드래프트 픽 (픽 결과 session 저장 → 팝업)
+# 신인 드래프트 픽
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/rookie_pick", methods=["POST"])
+@require_auth
 def dynasty_rookie_pick(save_id):
     sb = get_supabase()
 
@@ -690,9 +780,10 @@ def dynasty_rookie_pick(save_id):
 
 
 # =========================================
-# 신인 드래프트 종료 → 시즌 시작
+# 신인 드래프트 종료 → AI FA 영입 → 시즌 시작
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/rookie_finish")
+@require_auth
 def dynasty_rookie_finish(save_id):
     sb = get_supabase()
 
@@ -705,6 +796,9 @@ def dynasty_rookie_finish(save_id):
         .execute()
         .data[0]
     )
+
+    # AI가 남은 FA 영입 (유저는 FA 화면에서 직접 영입 가능)
+    ai_sign_fa(save_id)
 
     teams = (
         sb.table("dynasty_team")
@@ -728,6 +822,7 @@ def dynasty_rookie_finish(save_id):
 # 세이브 삭제
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/delete", methods=["POST"])
+@require_auth
 def dynasty_delete(save_id):
     sb = get_supabase()
 
@@ -736,5 +831,7 @@ def dynasty_delete(save_id):
     sb.table("dynasty_player").delete().eq("save_id", save_id).execute()
     sb.table("dynasty_team").delete().eq("save_id", save_id).execute()
     sb.table("dynasty_save").delete().eq("id", save_id).execute()
+
+    session.pop(f"auth_{save_id}", None)
 
     return redirect(url_for("dynasty.dynasty_home"))
