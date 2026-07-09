@@ -1,4 +1,9 @@
-from flask import render_template, redirect, session
+from flask import (
+    render_template,
+    redirect,
+    session,
+    request
+)
 import random
 import json
 import os
@@ -92,21 +97,25 @@ def dynasty_setup():
     ]
 
     # 유저 팀 생성
-    supabase.table("dynasty_team").insert({
-
+    user = supabase.table(
+        "dynasty_team"
+    ).insert({
+    
         "save_id":save_id,
-
+    
         "team_name":save["team_name"],
-
+    
         "logo":save["logo"],
-
+    
         "color":save["color"],
-
+    
         "stadium":save["stadium"],
-
+    
         "is_user":True
-
+    
     }).execute()
+    
+    session["dynasty_team"] = user.data[0]["id"]
 
     # AI 팀 생성
     for name, logo in teams:
@@ -157,29 +166,46 @@ def dynasty_draft():
         round=session.get("draft_round",1),
 
         pick=session.get("draft_pick",1)
-
     )
 
-@app.route("/dynasty/draft_pick/<int:player_id>")
+@app.route("/dynasty/draft_pick/<int:player_id>") 
 def dynasty_pick(player_id):
 
-    save_id=session["dynasty_save"]
-
+    save_id=session["dynasty_save"] 
+        
+    save_id = session["dynasty_save"]
+    
+    team_id = session["dynasty_team"]
+    
+    supabase.table(
+        "dynasty_roster"
+    ).insert({
+    
+        "save_id": save_id,
+    
+        "team_id": team_id,
+    
+        "player_id": player_id,
+    
+        "role": "Bench",
+    
+        "depth": 1
+    
+    }).execute()
+    
     supabase.table(
         "dynasty_player"
     ).update({
-
-        "team":"USER",
-
-        "drafted":True
-
+    
+        "drafted": True
+    
     }).eq(
-
+    
         "id",
         player_id
-
+    
     ).execute()
-
+    
     return redirect("/dynasty/ai_draft")
 
 @app.route("/dynasty/ai_draft")
@@ -223,18 +249,32 @@ def ai_draft():
         p=players.pop(0)
 
         supabase.table(
+            "dynasty_roster"
+        ).insert({
+        
+            "save_id": save_id,
+        
+            "team_id": team["id"],
+        
+            "player_id": p["id"],
+        
+            "role": "Bench",
+        
+            "depth": 1
+        
+        }).execute()
+        
+        supabase.table(
             "dynasty_player"
         ).update({
-
-            "team":team["team_name"],
-
-            "drafted":True
-
+        
+            "drafted": True
+        
         }).eq(
-
+        
             "id",
             p["id"]
-
+        
         ).execute()
 
     session["draft_pick"]=session.get(
@@ -247,57 +287,3 @@ def ai_draft():
         return redirect("/dynasty/home")
 
     return redirect("/dynasty/draft")
-
-
-# ==========================
-# 리그 생성
-# ==========================
-
-@app.route("/dynasty/start")
-def dynasty_start():
-
-    teams=[
-
-        session["dynasty"]["team_name"],
-
-        "LG",
-
-        "두산",
-
-        "삼성",
-
-        "롯데",
-
-        "한화",
-
-        "KIA",
-
-        "KT",
-
-        "NC",
-
-        "SSG"
-
-    ]
-
-    session["dynasty"]["league"]=teams
-
-    return redirect(
-        "/dynasty/dashboard"
-    )
-
-
-# ==========================
-# 대시보드
-# ==========================
-
-@app.route("/dynasty/dashboard")
-def dynasty_dashboard():
-
-    return render_template(
-
-        "dynasty_dashboard.html",
-
-        dynasty=session["dynasty"]
-
-    )
