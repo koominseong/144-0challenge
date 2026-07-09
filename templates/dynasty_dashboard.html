@@ -1,120 +1,389 @@
+<!-- templates/dynasty_dashboard.html - Part1 -->
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
-<meta charset="utf-8">
-
-<title>Dynasty</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ user_team.team_name }} - Season {{ save.season }}</title>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-body{
-
-    font-family:sans-serif;
-
-    background:#f3f6fb;
-
-    padding:30px;
-
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
 }
 
-.card{
-
-    background:white;
-
-    border-radius:15px;
-
-    padding:20px;
-
-    margin-bottom:20px;
-
-    box-shadow:0 3px 10px rgba(0,0,0,.1);
-
+.topbar {
+    background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
 }
 
-.player{
-
-    padding:8px;
-
-    border-bottom:1px solid #eee;
-
+.topbar .team-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-button{
-
-    padding:12px 20px;
-
+.topbar .logo {
+    font-size: 42px;
 }
 
+.topbar h1 {
+    font-size: 24px;
+    color: #fff;
+}
+
+.topbar .sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 4px;
+}
+
+.topbar .season-info {
+    text-align: right;
+}
+
+.topbar .season-info .season {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.topbar .season-info .week {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 4px;
+}
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 25px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: #1a222c;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.card h2 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    text-align: left;
+    padding: 8px 6px;
+    color: #8899a6;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+td {
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+tr.user-row {
+    background: rgba(255,255,255,0.06);
+}
+
+tr.user-row td {
+    font-weight: bold;
+    color: #ffd54f;
+}
+
+.rank-num {
+    color: #8899a6;
+    width: 24px;
+}
+
+.game-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+}
+
+.game-row .team {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.game-row .team.away {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.game-row .score {
+    font-weight: bold;
+    font-size: 16px;
+    padding: 0 12px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.game-row .vs {
+    color: #8899a6;
+    font-size: 12px;
+    padding: 0 12px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.game-row.user-game {
+    background: rgba(255,213,79,0.08);
+    border-radius: 6px;
+}
+
+.win { color: #4caf50; }
+.loss { color: #ef5350; }
 </style>
-
 </head>
 
+<!-- templates/dynasty_dashboard.html - Part2 -->
 <body>
 
-<div class="card">
+<div class="topbar">
+    <div class="team-info">
+        <div class="logo">{{ user_team.logo }}</div>
+        <div>
+            <h1>{{ user_team.team_name }}</h1>
+            <div class="sub">{{ user_team.stadium }} · {{ user_team.wins }}승 {{ user_team.ties }}무 {{ user_team.losses }}패</div>
+        </div>
+    </div>
+    <div class="season-info">
+        <div class="season">Season {{ save.season }}</div>
+        <div class="week">
+            {% if save.week > season_weeks %}
+                시즌 종료
+            {% else %}
+                Week {{ save.week }} / {{ season_weeks }}
+            {% endif %}
+        </div>
+    </div>
+</div>
 
-<h1>
+<div class="container">
 
-{{ team.team_name }}
+    <!-- 순위표 -->
+    <div class="card">
+        <h2>📊 순위표</h2>
+        <table>
+            <tr>
+                <th></th>
+                <th>팀</th>
+                <th>승</th>
+                <th>무</th>
+                <th>패</th>
+                <th>승률</th>
+                <th>GB</th>
+            </tr>
+            {% for t in standings %}
+            <tr class="{% if t.id == user_team.id %}user-row{% endif %}">
+                <td class="rank-num">{{ loop.index }}</td>
+                <td>{{ t.logo }} {{ t.team_name }}</td>
+                <td>{{ t.wins }}</td>
+                <td>{{ t.ties }}</td>
+                <td>{{ t.losses }}</td>
+                <td>{{ "%.3f"|format(t.pct) }}</td>
+                <td>{{ t.gb }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-</h1>
+    <!-- 경기 -->
+    <div class="card">
+        {% if last_games %}
+        <h2>✅ Week {{ save.week - 1 }} 결과</h2>
+        {% for g in last_games %}
+        {% set home = team_map[g.home_team] %}
+        {% set away = team_map[g.away_team] %}
+        <div class="game-row {% if g.home_team == user_team.id or g.away_team == user_team.id %}user-game{% endif %}">
+            <div class="team away">{{ away.team_name }} {{ away.logo }}</div>
+            <div class="score">
+                <span class="{% if g.away_score > g.home_score %}win{% elif g.away_score < g.home_score %}loss{% endif %}">{{ g.away_score }}</span>
+                :
+                <span class="{% if g.home_score > g.away_score %}win{% elif g.home_score < g.away_score %}loss{% endif %}">{{ g.home_score }}</span>
+            </div>
+            <div class="team">{{ home.logo }} {{ home.team_name }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
 
-Season {{ save.season }}
+        {% if save.week <= season_weeks %}
+        <h2 style="margin-top: 20px;">📅 Week {{ save.week }} 예정</h2>
+        {% for g in week_games %}
+        {% set home = team_map[g.home_team] %}
+        {% set away = team_map[g.away_team] %}
+        <div class="game-row {% if g.home_team == user_team.id or g.away_team == user_team.id %}user-game{% endif %}">
+            <div class="team away">{{ away.team_name }} {{ away.logo }}</div>
+            <div class="vs">VS</div>
+            <div class="team">{{ home.logo }} {{ home.team_name }}</div>
+        </div>
+        {% endfor %}
 
-<br>
+        <form method="POST" action="{{ url_for('dynasty.dynasty_next_week', save_id=save.id) }}" style="margin-top: 20px;">
+            <button type="submit" class="btn-next">▶ 다음 주 진행</button>
+        </form>
+        {% else %}
+        <form method="GET" action="{{ url_for('dynasty.dynasty_season_end', save_id=save.id) }}" style="margin-top: 20px;">
+            <button type="submit" class="btn-next">🏆 시즌 결과 보기</button>
+        </form>
+        {% endif %}
+    </div>
 
-Week {{ save.week }}
+<!-- templates/dynasty_dashboard.html - Part3 -->
+
+    <!-- 로스터 -->
+    <div class="card">
+        <h2>👥 로스터</h2>
+        <table>
+            <tr>
+                <th>역할</th>
+                <th>이름</th>
+                <th>포지션</th>
+                <th>OVR</th>
+            </tr>
+            {% for r in roster %}
+            {% set p = r.dynasty_player %}
+            <tr>
+                <td>
+                    {% if r.role == 'SP' %}선발
+                    {% elif r.role == 'RP' %}불펜
+                    {% elif r.role == 'CP' %}마무리
+                    {% elif r.role == 'START' %}주전
+                    {% else %}벤치
+                    {% endif %}
+                </td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.positions }}</td>
+                <td>
+                    <span class="ovr
+                        {% if p.overall >= 80 %}ovr-elite
+                        {% elif p.overall >= 70 %}ovr-good
+                        {% elif p.overall >= 60 %}ovr-avg
+                        {% else %}ovr-low{% endif %}">
+                        {{ p.overall }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
 </div>
 
-<div class="card">
-
-<h2>
-
-현재 로스터
-
-</h2>
-
-{% for p in roster %}
-
-<div class="player">
-
-{{ p.role }}
-
-{% if p.depth > 0 %}
-
-{{ p.depth }}
-
-{% endif %}
-
--
-
-{{ p.dynasty_player.name }}
-
-(OVR {{ p.dynasty_player.overall }})
-
+<div class="bottombar">
+    <a href="{{ url_for('dynasty.dynasty_home') }}" class="btn-sub">🏠 홈으로</a>
+    <form method="POST" action="{{ url_for('dynasty.dynasty_delete', save_id=save.id) }}"
+          onsubmit="return confirm('정말 이 세이브를 삭제하시겠습니까?');">
+        <button type="submit" class="btn-danger">🗑 세이브 삭제</button>
+    </form>
 </div>
 
-{% endfor %}
+<style>
+.btn-next {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, {{ user_team.color }}, #2c3e50);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
 
-</div>
+.btn-next:hover {
+    opacity: 0.85;
+}
 
-<div class="card">
+.ovr {
+    display: inline-block;
+    min-width: 34px;
+    text-align: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+}
 
-<a href="/dynasty/next_week">
+.ovr-elite { background: #b71c1c; color: #fff; }
+.ovr-good { background: #e65100; color: #fff; }
+.ovr-avg { background: #1565c0; color: #fff; }
+.ovr-low { background: #37474f; color: #cfd8dc; }
 
-<button>
+.bottombar {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-▶ 다음 주 진행
+.btn-sub {
+    color: #8899a6;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
 
-</button>
+.btn-sub:hover {
+    background: rgba(255,255,255,0.06);
+}
 
-</a>
+.btn-danger {
+    color: #ef5350;
+    background: none;
+    font-size: 13px;
+    padding: 10px 18px;
+    border: 1px solid rgba(239,83,80,0.4);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
 
-</div>
+.btn-danger:hover {
+    background: rgba(239,83,80,0.1);
+}
+
+@media (max-width: 1000px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 </body>
-
 </html>
