@@ -6,8 +6,6 @@ from datetime import datetime
 from supabase import create_client
 from dynasty import dynasty_bp
 
-app.register_blueprint(dynasty_bp)
-
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
@@ -18,6 +16,7 @@ supabase = create_client(
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+app.register_blueprint(dynasty_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
