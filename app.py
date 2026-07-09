@@ -4,6 +4,9 @@ import json
 import random
 from datetime import datetime
 from supabase import create_client
+from dynasty import dynasty_bp
+
+app.register_blueprint(dynasty_bp)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
