@@ -1,13 +1,9 @@
 # dynasty_import.py - Part1
 # =========================================
-# KBO Dynasty - 실존 선수 Import (안정화 버전)
-# 데이터 폴더 자동 탐색 + 파일명 유연 매칭 + 로그 출력
-# 우선순위:
-#   1. 환경변수 KBO_DATA_DIR
-#   2. ./data/kbo_json_v5
-#   3. ./kbo_json_v5
-#   4. 프로젝트 전체에서 kbo_json_v5 폴더 검색
-# 파일명에서 4자리 연도(19xx/20xx)를 찾아 매칭 (위치 무관)
+# KBO Dynasty - 실존 선수 Import
+# Season1 = 1982~1989 (80년대 전체)
+# Season2 = 1990~1992, Season3 = 1993~1995 ...
+# 실존 데이터 부족/소진 시 랜덤 생성 선수로 보충
 # =========================================
 
 import os
@@ -18,8 +14,14 @@ import random
 import hashlib
 from dynasty_utils import get_supabase
 
-BASE_YEAR = 1982
+# 시즌 연도 매핑
+SEASON1_YEARS = list(range(1982, 1990))   # 80년대 전체
+NEXT_BASE_YEAR = 1990                      # Season2 시작 연도
 YEARS_PER_SEASON = 3
+
+# 최소 보장 인원 (부족하면 랜덤 생성으로 채움)
+MIN_PLAYERS_FIRST = 280   # 10팀 × 25라운드 = 250 + 여유
+MIN_PLAYERS_NEXT = 50     # 신인 드래프트 풀
 
 BATTER_POS = {"C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH", "OF", "IF"}
 PITCHER_POS = {"P", "SP", "RP", "CP"}
@@ -39,6 +41,7 @@ def find_data_dir():
 
     candidates = [
         os.path.join(_BASE_DIR, "data", "kbo_json_v5"),
+        os.path.join(_BASE_DIR, "Data", "kbo_json_v5"),
         os.path.join(_BASE_DIR, "kbo_json_v5"),
         os.path.join(_BASE_DIR, "data"),
         os.path.join(_BASE_DIR, "static", "data", "kbo_json_v5"),
@@ -47,7 +50,6 @@ def find_data_dir():
         if os.path.isdir(c) and glob.glob(os.path.join(c, "*.json")):
             return c
 
-    # 프로젝트 전체에서 검색 (깊이 4 제한)
     for root, dirs, files in os.walk(_BASE_DIR):
         depth = root[len(_BASE_DIR):].count(os.sep)
         if depth > 4:
@@ -67,7 +69,9 @@ DATA_DIR = find_data_dir()
 # 시즌 → 연도 범위
 # =========================================
 def season_years(season):
-    start = BASE_YEAR + (season - 1) * YEARS_PER_SEASON
+    if season == 1:
+        return SEASON1_YEARS
+    start = NEXT_BASE_YEAR + (season - 2) * YEARS_PER_SEASON
     return list(range(start, start + YEARS_PER_SEASON))
 
 
@@ -81,7 +85,6 @@ def _file_year(path):
 
 # =========================================
 # 특정 연도들의 JSON 전부 로드
-# 파일명 어디에 연도가 있어도 매칭
 # =========================================
 def _load_year_records(years):
     records = []
@@ -96,7 +99,7 @@ def _load_year_records(years):
     matched = [f for f in all_files if _file_year(f) in target]
 
     print(f"[dynasty_import] DATA_DIR={DATA_DIR}")
-    print(f"[dynasty_import] 전체 json={len(all_files)}개, 연도 {years} 매칭={len(matched)}개")
+    print(f"[dynasty_import] 전체 json={len(all_files)}개, 연도 {years[0]}~{years[-1]} 매칭={len(matched)}개")
 
     for path in matched:
         try:
@@ -109,7 +112,6 @@ def _load_year_records(years):
         if isinstance(data, list):
             records.extend(data)
         elif isinstance(data, dict):
-            # {"players": [...]} 형태 대응
             for v in data.values():
                 if isinstance(v, list):
                     records.extend(v)
@@ -134,6 +136,28 @@ def _player_key(rec):
 def _clamp(v, lo=20, hi=99):
     return max(lo, min(hi, int(round(v))))
 
+
+# =========================================
+# 랜덤 선수 생성용 이름 풀
+# =========================================
+SURNAMES = [
+    "김", "이", "박", "최", "정", "강", "조", "윤", "장", "임",
+    "한", "오", "서", "신", "권", "황", "안", "송", "류", "홍",
+    "전", "고", "문", "손", "양", "배", "백", "허", "유", "남",
+]
+
+GIVEN_FIRST = [
+    "민", "성", "정", "재", "동", "현", "승", "진", "태", "종",
+    "영", "상", "병", "광", "용", "석", "창", "기", "우", "형",
+]
+
+GIVEN_SECOND = [
+    "수", "호", "훈", "석", "일", "규", "철", "만", "식", "환",
+    "혁", "준", "범", "권", "빈", "욱", "찬", "율", "국", "섭",
+]
+
+RANDOM_BATTER_POS = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF"]
+
 # dynasty_import.py - Part2
 
 # =========================================
@@ -145,7 +169,7 @@ def _merge_records(recs):
     merged = {
         "name": recs[0].get("name", ""),
         "team": recs[0].get("team", ""),
-        "first_year": recs[0].get("Year", BASE_YEAR),
+        "first_year": recs[0].get("Year", 1982),
         "positions": [],
         "war": 0.0,
         "AVG": None,
@@ -386,10 +410,98 @@ def _positions_str(merged, is_pitcher):
             result.append(p)
     return ",".join(result[:3])
 
+
+# =========================================
+# 랜덤 선수 생성 (실존 데이터 부족 시 보충)
+# =========================================
+def _make_random_name(rng, used_names):
+    for _ in range(60):
+        name = (
+            rng.choice(SURNAMES)
+            + rng.choice(GIVEN_FIRST)
+            + rng.choice(GIVEN_SECOND)
+        )
+        if name not in used_names:
+            used_names.add(name)
+            return name
+    base = rng.choice(SURNAMES) + rng.choice(GIVEN_FIRST) + rng.choice(GIVEN_SECOND)
+    n = 2
+    while f"{base}{n}" in used_names:
+        n += 1
+    name = f"{base}{n}"
+    used_names.add(name)
+    return name
+
+
+def _roll_random_overall(rng):
+    r = rng.random()
+    if r < 0.05:
+        return rng.randint(72, 84)
+    if r < 0.25:
+        return rng.randint(62, 71)
+    if r < 0.65:
+        return rng.randint(52, 61)
+    return rng.randint(40, 51)
+
+
+def _make_random_player(rng, used_names, save_id, season):
+    is_pitcher = rng.random() < 0.42
+    name = _make_random_name(rng, used_names)
+    overall = _roll_random_overall(rng)
+    potential = _clamp(overall + rng.randint(2, 20), overall, 99)
+
+    def v():
+        return _clamp(overall + rng.randint(-10, 10))
+
+    if is_pitcher:
+        positions = "P"
+        stats = {
+            "stuff": v(), "control": v(), "stamina": v(),
+            "defense": _clamp(overall + rng.randint(-15, 5)),
+            "arm": v(),
+            "contact": 25, "power": 25, "eye": 25,
+            "speed": _clamp(40 + rng.randint(-10, 10), 20, 75),
+        }
+    else:
+        main_pos = rng.choice(RANDOM_BATTER_POS)
+        positions = main_pos
+        if rng.random() < 0.3:
+            sub = rng.choice([p for p in RANDOM_BATTER_POS if p != main_pos])
+            positions = main_pos + "," + sub
+        stats = {
+            "contact": v(), "power": v(), "eye": v(),
+            "speed": v(), "defense": v(), "arm": v(),
+            "stuff": 25, "control": 25, "stamina": 25,
+        }
+
+    overall = _calc_overall(stats, is_pitcher)
+
+    return {
+        "save_id": save_id,
+        "name": name,
+        "positions": positions,
+        "overall": overall,
+        "potential": _clamp(max(potential, overall), overall, 99),
+        "war": 0,
+        "appear_season": season,
+        "drafted": False,
+        "retired": False,
+        "contact": stats["contact"],
+        "power": stats["power"],
+        "eye": stats["eye"],
+        "speed": stats["speed"],
+        "defense": stats["defense"],
+        "arm": stats["arm"],
+        "stuff": stats["stuff"],
+        "control": stats["control"],
+        "stamina": stats["stamina"],
+    }
+
 # dynasty_import.py - Part3
 
 # =========================================
 # 시즌 선수 Import (메인 진입점)
+# 실존 선수 로드 → 부족분 랜덤 생성으로 보충
 # =========================================
 def import_players_for_season(save_id, season):
     sb = get_supabase()
@@ -406,14 +518,12 @@ def import_players_for_season(save_id, season):
         print(f"[dynasty_import] season {season} 이미 {existing}명 등록됨 → skip")
         return 0
 
+    min_players = MIN_PLAYERS_FIRST if season == 1 else MIN_PLAYERS_NEXT
+
     years = season_years(season)
     records = _load_year_records(years)
 
-    if not records:
-        print(f"[dynasty_import] season {season}: 로드된 기록 없음 → 0명 등록")
-        return 0
-
-    # 이전 시즌에 이미 등장한 선수 제외
+    # 이전 시즌에 이미 등장한 선수 이름 수집
     prev_players = (
         sb.table("dynasty_player")
         .select("name")
@@ -424,73 +534,83 @@ def import_players_for_season(save_id, season):
     )
     prev_names = {p["name"] for p in prev_players}
 
-    # 선수별 병합
-    grouped = {}
-    skipped_no_name = 0
-    for rec in records:
-        if not isinstance(rec, dict) or not rec.get("name"):
-            skipped_no_name += 1
-            continue
-        key = _player_key(rec)
-        grouped.setdefault(key, []).append(rec)
-
-    print(f"[dynasty_import] 고유 선수={len(grouped)}명 (이름 없음 skip={skipped_no_name})")
-
     seed = f"{save_id}-{season}"
     rng = random.Random(hashlib.md5(seed.encode()).hexdigest())
 
     rows = []
-    used_names = set()
+    used_names = set(prev_names)
     skipped_prev = 0
 
-    for key, recs in grouped.items():
-        merged = _merge_records(recs)
-        name = merged["name"]
-
-        if name in prev_names:
-            skipped_prev += 1
-            continue
-
-        if name in used_names:
-            name = f"{merged['name']}({merged['team']})"
-            if name in used_names:
+    # ---------- 실존 선수 ----------
+    if records:
+        grouped = {}
+        for rec in records:
+            if not isinstance(rec, dict) or not rec.get("name"):
                 continue
-        used_names.add(name)
+            key = _player_key(rec)
+            grouped.setdefault(key, []).append(rec)
 
-        is_pitcher = _is_pitcher(merged)
+        print(f"[dynasty_import] 고유 실존 선수={len(grouped)}명")
 
-        if is_pitcher:
-            stats = _pitcher_stats(merged, rng)
-        else:
-            stats = _batter_stats(merged, rng)
+        for key, recs in grouped.items():
+            merged = _merge_records(recs)
+            name = merged["name"]
 
-        overall = _calc_overall(stats, is_pitcher)
-        potential = _calc_potential(overall, merged, rng)
-        positions = _positions_str(merged, is_pitcher)
+            if name in prev_names:
+                skipped_prev += 1
+                continue
 
-        rows.append(
-            {
-                "save_id": save_id,
-                "name": name,
-                "positions": positions,
-                "overall": overall,
-                "potential": potential,
-                "war": round(merged["war"], 2),
-                "appear_season": season,
-                "drafted": False,
-                "retired": False,
-                "contact": stats["contact"],
-                "power": stats["power"],
-                "eye": stats["eye"],
-                "speed": stats["speed"],
-                "defense": stats["defense"],
-                "arm": stats["arm"],
-                "stuff": stats["stuff"],
-                "control": stats["control"],
-                "stamina": stats["stamina"],
-            }
-        )
+            if name in used_names:
+                name = f"{merged['name']}({merged['team']})"
+                if name in used_names:
+                    continue
+            used_names.add(name)
 
+            is_pitcher = _is_pitcher(merged)
+
+            if is_pitcher:
+                stats = _pitcher_stats(merged, rng)
+            else:
+                stats = _batter_stats(merged, rng)
+
+            overall = _calc_overall(stats, is_pitcher)
+            potential = _calc_potential(overall, merged, rng)
+            positions = _positions_str(merged, is_pitcher)
+
+            rows.append(
+                {
+                    "save_id": save_id,
+                    "name": name,
+                    "positions": positions,
+                    "overall": overall,
+                    "potential": potential,
+                    "war": round(merged["war"], 2),
+                    "appear_season": season,
+                    "drafted": False,
+                    "retired": False,
+                    "contact": stats["contact"],
+                    "power": stats["power"],
+                    "eye": stats["eye"],
+                    "speed": stats["speed"],
+                    "defense": stats["defense"],
+                    "arm": stats["arm"],
+                    "stuff": stats["stuff"],
+                    "control": stats["control"],
+                    "stamina": stats["stamina"],
+                }
+            )
+    else:
+        print(f"[dynasty_import] season {season}: 실존 기록 없음 → 전원 랜덤 생성")
+
+    real_count = len(rows)
+
+    # ---------- 부족분 랜덤 생성 ----------
+    random_count = 0
+    while len(rows) < min_players:
+        rows.append(_make_random_player(rng, used_names, save_id, season))
+        random_count += 1
+
+    # ---------- insert ----------
     inserted = 0
     for i in range(0, len(rows), 100):
         chunk = rows[i : i + 100]
@@ -501,7 +621,7 @@ def import_players_for_season(save_id, season):
             print(f"[dynasty_import] insert 실패 ({i}~{i+len(chunk)}): {e}")
 
     print(
-        f"[dynasty_import] season {season} 완료: 등록={inserted}명, "
-        f"이전시즌중복 skip={skipped_prev}"
+        f"[dynasty_import] season {season} 완료: 등록={inserted}명 "
+        f"(실존={real_count}, 랜덤생성={random_count}, 이전시즌중복 skip={skipped_prev})"
     )
     return inserted
