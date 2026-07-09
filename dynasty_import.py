@@ -422,6 +422,13 @@ def import_players_for_season(save_id, season):
             }
         )
 
+    print("years =", years)
+    print("DATA_DIR =", DATA_DIR)
+    
+    records = _load_year_records(years)
+    
+    print("records =", len(records))
+
     for i in range(0, len(rows), 100):
         sb.table("dynasty_player").insert(rows[i : i + 100]).execute()
 
