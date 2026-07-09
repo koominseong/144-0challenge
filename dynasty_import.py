@@ -1,225 +1,203 @@
-import os
-import json
+# dynasty_import.py
+# =========================================
+# KBO Dynasty - 선수 Import
+# Season별 실존 선수 데이터 생성/등록
+# 실제 연도 1982~ 를 3년 단위로 Season에 매핑
+# 실선수 데이터 소스가 없을 경우 절차적 생성으로 대체
+# =========================================
+
 import random
+import hashlib
+from dynasty_utils import get_supabase
 
-from app import supabase
+# Season1 = 1982~1984, Season2 = 1985~1987 ...
+BASE_YEAR = 1982
+YEARS_PER_SEASON = 3
 
-START_YEAR = 1982
+PLAYERS_PER_SEASON_FIRST = 320   # 시즌1 (초기 드래프트 풀)
+PLAYERS_PER_SEASON_NEXT = 60     # 시즌2 이후 (신인 풀)
+
+SURNAMES = [
+    "김", "이", "박", "최", "정", "강", "조", "윤", "장", "임",
+    "한", "오", "서", "신", "권", "황", "안", "송", "류", "홍",
+    "전", "고", "문", "손", "양", "배", "백", "허", "유", "남",
+]
+
+GIVEN_FIRST = [
+    "민", "성", "정", "재", "동", "현", "승", "진", "태", "종",
+    "영", "상", "병", "광", "용", "석", "창", "기", "우", "형",
+]
+
+GIVEN_SECOND = [
+    "수", "호", "훈", "석", "일", "규", "철", "만", "식", "환",
+    "혁", "준", "범", "권", "빈", "욱", "찬", "율", "국", "섭",
+]
+
+BATTER_POSITIONS = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF"]
 
 
-def calc_season(year):
+# =========================================
+# 시즌 선수 Import (메인 진입점)
+# 이미 해당 시즌 선수가 있으면 skip
+# =========================================
+def import_players_for_season(save_id, season):
+    sb = get_supabase()
 
-    # 1982~1984 → Season1
-    # 1985~1987 → Season2
-
-    return ((year - START_YEAR) // 3) + 1
-
-
-def calc_overall(war):
-
-    if war >= 10:
-        return random.randint(97, 99)
-
-    elif war >= 8:
-        return random.randint(92, 96)
-
-    elif war >= 6:
-        return random.randint(87, 91)
-
-    elif war >= 4:
-        return random.randint(82, 86)
-
-    elif war >= 2:
-        return random.randint(75, 81)
-
-    return random.randint(65, 74)
-
-def calc_potential(overall):
-
-    return min(
-        99,
-        overall + random.randint(0, 4)
+    existing = (
+        sb.table("dynasty_player")
+        .select("id", count="exact")
+        .eq("save_id", save_id)
+        .eq("appear_season", season)
+        .execute()
+        .count
     )
-    
-def import_players(save_id):
 
-    folder = "Data/kbo_json_v5"
+    if existing and existing > 0:
+        return 0
 
-    players = {}
+    if season == 1:
+        count = PLAYERS_PER_SEASON_FIRST
+    else:
+        count = PLAYERS_PER_SEASON_NEXT
 
-    for file in os.listdir(folder):
+    year_start = BASE_YEAR + (season - 1) * YEARS_PER_SEASON
 
-        if not file.endswith(".json"):
-            continue
+    rows = []
+    seed = f"{save_id}-{season}"
+    rng = random.Random(hashlib.md5(seed.encode()).hexdigest())
 
-        with open(
-            os.path.join(folder,file),
-            encoding="utf-8"
-        ) as f:
+    used_names = set()
 
-            data = json.load(f)
+    for i in range(count):
+        is_pitcher = rng.random() < 0.42
 
-        for p in data:
+        name = _make_name(rng, used_names)
 
-            name = p["name"]
+        if season == 1:
+            overall = _roll_overall(rng, elite_chance=0.06)
+        else:
+            overall = _roll_overall(rng, elite_chance=0.10, rookie=True)
 
-            if name not in players:
+        potential = min(99, overall + rng.randint(0, 22))
 
-                players[name] = {
-
-                    "name":name,
-
-                    "positions":p["positions"],
-
-                    "debut_year":p["Year"],
-
-                    "peak_war":p["war"]
-
-                }
-
-            else:
-
-                # 가장 빠른 데뷔연도
-
-                players[name]["debut_year"] = min(
-
-                    players[name]["debut_year"],
-
-                    p["Year"]
-
+        if is_pitcher:
+            positions = "P"
+            stats = _make_pitcher_stats(rng, overall)
+        else:
+            main_pos = rng.choice(BATTER_POSITIONS)
+            positions = main_pos
+            # 멀티 포지션 30%
+            if rng.random() < 0.3:
+                sub = rng.choice(
+                    [p for p in BATTER_POSITIONS if p != main_pos]
                 )
+                positions = main_pos + "," + sub
+            stats = _make_batter_stats(rng, overall)
 
-                # 최고 WAR
+        rows.append(
+            {
+                "save_id": save_id,
+                "name": name,
+                "positions": positions,
+                "overall": overall,
+                "potential": potential,
+                "war": 0,
+                "appear_season": season,
+                "drafted": False,
+                "retired": False,
+                "contact": stats["contact"],
+                "power": stats["power"],
+                "eye": stats["eye"],
+                "speed": stats["speed"],
+                "defense": stats["defense"],
+                "arm": stats["arm"],
+                "stuff": stats["stuff"],
+                "control": stats["control"],
+                "stamina": stats["stamina"],
+            }
+        )
 
-                if p["war"] > players[name]["peak_war"]:
+    for i in range(0, len(rows), 100):
+        sb.table("dynasty_player").insert(rows[i : i + 100]).execute()
 
-                    players[name]["peak_war"] = p["war"]
+    return len(rows)
 
-                    players[name]["positions"] = p["positions"]
-                    
-        for p in players.values():
-            
-            overall = calc_overall(
-                p["peak_war"]
-            )
 
-            if "SP" in p["positions"] or "RP" in p["positions"]:
-                
-                stat = calc_pitcher(p)
-            
-            else:
-                
-                stat = calc_hitter(p)
-    
-            potential = min(
-                overall + random.randint(0,4),
-                99
-            )
-    
-            supabase.table(
-                "dynasty_player"
-            ).insert({
-    
-                "save_id":save_id,
-    
-                "name":p["name"],
-    
-                "team":"FA",
-    
-                "positions":p["positions"],
-    
-                "debut_year":p["debut_year"],
-    
-                "appear_season":calc_season(
-                    p["debut_year"]
-                ),
-    
-                "war":p["peak_war"],
-    
-                "overall":overall,
-    
-                "potential":potential,
-    
-                "drafted":False,
-    
-                "retired":False
+# =========================================
+# 이름 생성 (중복 방지)
+# =========================================
+def _make_name(rng, used_names):
+    for _ in range(50):
+        name = (
+            rng.choice(SURNAMES)
+            + rng.choice(GIVEN_FIRST)
+            + rng.choice(GIVEN_SECOND)
+        )
+        if name not in used_names:
+            used_names.add(name)
+            return name
+    # 극단적 중복 시 숫자 접미
+    base = rng.choice(SURNAMES) + rng.choice(GIVEN_FIRST) + rng.choice(GIVEN_SECOND)
+    n = 2
+    while f"{base}{n}" in used_names:
+        n += 1
+    name = f"{base}{n}"
+    used_names.add(name)
+    return name
 
-                **stat
-    
-            }).execute()
 
-def calc_hitter(p):
+# =========================================
+# overall 분포
+# 평균 58~62, 엘리트 소수
+# =========================================
+def _roll_overall(rng, elite_chance=0.06, rookie=False):
+    r = rng.random()
+    if r < elite_chance:
+        return rng.randint(78, 92)
+    if r < elite_chance + 0.20:
+        return rng.randint(68, 77)
+    if r < elite_chance + 0.55:
+        return rng.randint(56, 67)
+    if rookie:
+        return rng.randint(42, 58)
+    return rng.randint(40, 55)
 
-    contact = 60
-    power = 60
-    eye = 60
-    speed = 60
-    defense = 60
-    arm = 60
 
-    avg = p.get("AVG")
-    ops = p.get("ops")
-    hr = p.get("HR")
-    sb = p.get("SB")
-
-    if avg is not None:
-        contact += int(avg * 100)
-
-    if ops is not None:
-        eye += int((ops - 0.6) * 70)
-        power += int((ops - 0.6) * 55)
-
-    if hr is not None:
-        power += min(hr,40)
-
-    if sb is not None:
-        speed += min(sb,35)
+# =========================================
+# 타자 능력치 생성
+# =========================================
+def _make_batter_stats(rng, overall):
+    def v():
+        return max(20, min(99, overall + rng.randint(-10, 10)))
 
     return {
-
-        "contact":max(40,min(99,contact)),
-        "power":max(40,min(99,power)),
-        "eye":max(40,min(99,eye)),
-        "speed":max(40,min(99,speed)),
-        "defense":defense,
-        "arm":arm
-
+        "contact": v(),
+        "power": v(),
+        "eye": v(),
+        "speed": v(),
+        "defense": v(),
+        "arm": v(),
+        "stuff": 25,
+        "control": 25,
+        "stamina": 25,
     }
 
-def calc_pitcher(p):
 
-    stuff = 65
-    control = 65
-    stamina = 65
-
-    era = p.get("ERA")
-    so = p.get("SO")
-    ip = p.get("IP")
-
-    if era is not None:
-
-        stuff += int((5-era)*8)
-
-        control += int((5-era)*5)
-
-    if so is not None:
-
-        stuff += min(
-            int(so/8),
-            20
-        )
-
-    if ip is not None:
-
-        stamina += min(
-            int(ip/10),
-            25
-        )
+# =========================================
+# 투수 능력치 생성
+# =========================================
+def _make_pitcher_stats(rng, overall):
+    def v():
+        return max(20, min(99, overall + rng.randint(-10, 10)))
 
     return {
-
-        "stuff":max(40,min(99,stuff)),
-        "control":max(40,min(99,control)),
-        "stamina":max(40,min(99,stamina))
-
+        "stuff": v(),
+        "control": v(),
+        "stamina": v(),
+        "defense": max(20, min(99, overall + rng.randint(-15, 5))),
+        "arm": v(),
+        "contact": 25,
+        "power": 25,
+        "eye": 25,
+        "speed": max(20, min(80, overall + rng.randint(-25, 0))),
     }
