@@ -1,6 +1,7 @@
 # dynasty.py - Part1
 # =========================================
 # KBO Dynasty - Main Blueprint
+# (드래프트 팝업 지원 버전: AI 픽 결과 + 내 픽 목록)
 # Part1 / Part2 / Part3 을 이어 붙이면 완성된다.
 # =========================================
 
@@ -125,6 +126,8 @@ def dynasty_new():
 
 # =========================================
 # 드래프트 화면
+# last_picks: 직전 라운드 전체 팀 픽 (팝업용, session에서 1회성)
+# my_picks: 지금까지 내가 뽑은 선수 (팝업용)
 # =========================================
 @dynasty_bp.route("/dynasty/draft/<int:save_id>")
 def dynasty_draft(save_id):
@@ -171,6 +174,9 @@ def dynasty_draft(save_id):
     picked_count = len(roster_rows)
     current_round = picked_count // TEAM_COUNT + 1
 
+    my_picks = _get_my_picks(sb, save_id, user_team["id"])
+    last_picks = session.pop(f"last_picks_{save_id}", None)
+
     return render_template(
         "dynasty_draft.html",
         save=save,
@@ -180,12 +186,45 @@ def dynasty_draft(save_id):
         current_round=current_round,
         total_rounds=DRAFT_ROUNDS,
         picked_count=picked_count,
+        my_picks=my_picks,
+        last_picks=last_picks,
+        rookie_mode=False,
     )
+
+
+# =========================================
+# 내가 뽑은 선수 목록 조회
+# =========================================
+def _get_my_picks(sb, save_id, team_id):
+    rows = (
+        sb.table("dynasty_roster")
+        .select("id, dynasty_player(name, positions, overall, potential)")
+        .eq("save_id", save_id)
+        .eq("team_id", team_id)
+        .order("id")
+        .execute()
+        .data
+    )
+    picks = []
+    for i, r in enumerate(rows):
+        p = r["dynasty_player"]
+        if not p:
+            continue
+        picks.append(
+            {
+                "round": i + 1,
+                "name": p["name"],
+                "positions": p["positions"],
+                "overall": p["overall"],
+                "potential": p["potential"],
+            }
+        )
+    return picks
 
 # dynasty.py - Part2
 
 # =========================================
-# 드래프트 - 유저 픽
+# 드래프트 - 유저 픽 + AI 픽 (픽 결과 session 저장 → 팝업)
 # =========================================
 @dynasty_bp.route("/dynasty/draft/<int:save_id>/pick", methods=["POST"])
 def dynasty_draft_pick(save_id):
@@ -206,7 +245,7 @@ def dynasty_draft_pick(save_id):
 
     roster_rows = (
         sb.table("dynasty_roster")
-        .select("*")
+        .select("id")
         .eq("save_id", save_id)
         .execute()
         .data
@@ -217,13 +256,24 @@ def dynasty_draft_pick(save_id):
     if current_round > DRAFT_ROUNDS:
         return redirect(url_for("dynasty.dynasty_draft_finish", save_id=save_id))
 
+    round_picks = []
+
     # 유저 픽
+    user_pick = _get_player_brief(sb, save_id, player_id)
     _draft_player(sb, save_id, user_team["id"], player_id)
+    round_picks.append(
+        {
+            "team_name": user_team["team_name"],
+            "logo": user_team["logo"],
+            "is_user": True,
+            "player": user_pick,
+        }
+    )
 
     # AI 픽
     remaining = (
         sb.table("dynasty_player")
-        .select("id, overall, positions")
+        .select("id, name, positions, overall, potential")
         .eq("save_id", save_id)
         .eq("drafted", False)
         .eq("retired", False)
@@ -233,20 +283,56 @@ def dynasty_draft_pick(save_id):
         .data
     )
 
-    random.shuffle(ai_teams)
-    for team in ai_teams:
+    shuffled_ai = list(ai_teams)
+    random.shuffle(shuffled_ai)
+    for team in shuffled_ai:
         if not remaining:
             break
         pool = remaining[: min(8, len(remaining))]
         pick = random.choice(pool)
         remaining.remove(pick)
         _draft_player(sb, save_id, team["id"], pick["id"])
+        round_picks.append(
+            {
+                "team_name": team["team_name"],
+                "logo": team["logo"],
+                "is_user": False,
+                "player": {
+                    "name": pick["name"],
+                    "positions": pick["positions"],
+                    "overall": pick["overall"],
+                    "potential": pick["potential"],
+                },
+            }
+        )
 
-    picked_count = picked_count + TEAM_COUNT
+    session[f"last_picks_{save_id}"] = {
+        "round": current_round,
+        "picks": round_picks,
+    }
+
+    picked_count = picked_count + len(round_picks)
     if picked_count >= DRAFT_ROUNDS * TEAM_COUNT:
         return redirect(url_for("dynasty.dynasty_draft_finish", save_id=save_id))
 
     return redirect(url_for("dynasty.dynasty_draft", save_id=save_id))
+
+
+def _get_player_brief(sb, save_id, player_id):
+    p = (
+        sb.table("dynasty_player")
+        .select("name, positions, overall, potential")
+        .eq("save_id", save_id)
+        .eq("id", player_id)
+        .execute()
+        .data[0]
+    )
+    return {
+        "name": p["name"],
+        "positions": p["positions"],
+        "overall": p["overall"],
+        "potential": p["potential"],
+    }
 
 
 def _draft_player(sb, save_id, team_id, player_id):
@@ -268,6 +354,8 @@ def _draft_player(sb, save_id, team_id, player_id):
 @dynasty_bp.route("/dynasty/draft/<int:save_id>/finish")
 def dynasty_draft_finish(save_id):
     sb = get_supabase()
+
+    session.pop(f"last_picks_{save_id}", None)
 
     teams = (
         sb.table("dynasty_team")
@@ -498,6 +586,9 @@ def dynasty_rookie_draft(save_id):
         .data
     )
 
+    my_picks = _get_my_picks(sb, save_id, user_team["id"])
+    last_picks = session.pop(f"last_picks_{save_id}", None)
+
     return render_template(
         "dynasty_draft.html",
         save=save,
@@ -507,12 +598,14 @@ def dynasty_rookie_draft(save_id):
         current_round=1,
         total_rounds=5,
         picked_count=0,
+        my_picks=my_picks,
+        last_picks=last_picks,
         rookie_mode=True,
     )
 
 
 # =========================================
-# 신인 드래프트 픽
+# 신인 드래프트 픽 (픽 결과 session 저장 → 팝업)
 # =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/rookie_pick", methods=["POST"])
 def dynasty_rookie_pick(save_id):
@@ -539,11 +632,22 @@ def dynasty_rookie_pick(save_id):
     user_team = next(t for t in teams if t["is_user"])
     ai_teams = [t for t in teams if not t["is_user"]]
 
+    round_picks = []
+
+    user_pick = _get_player_brief(sb, save_id, player_id)
     _draft_player(sb, save_id, user_team["id"], player_id)
+    round_picks.append(
+        {
+            "team_name": user_team["team_name"],
+            "logo": user_team["logo"],
+            "is_user": True,
+            "player": user_pick,
+        }
+    )
 
     remaining = (
         sb.table("dynasty_player")
-        .select("id, overall")
+        .select("id, name, positions, overall, potential")
         .eq("save_id", save_id)
         .eq("drafted", False)
         .eq("retired", False)
@@ -554,14 +658,33 @@ def dynasty_rookie_pick(save_id):
         .data
     )
 
-    random.shuffle(ai_teams)
-    for team in ai_teams:
+    shuffled_ai = list(ai_teams)
+    random.shuffle(shuffled_ai)
+    for team in shuffled_ai:
         if not remaining:
             break
         pool = remaining[: min(5, len(remaining))]
         pick = random.choice(pool)
         remaining.remove(pick)
         _draft_player(sb, save_id, team["id"], pick["id"])
+        round_picks.append(
+            {
+                "team_name": team["team_name"],
+                "logo": team["logo"],
+                "is_user": False,
+                "player": {
+                    "name": pick["name"],
+                    "positions": pick["positions"],
+                    "overall": pick["overall"],
+                    "potential": pick["potential"],
+                },
+            }
+        )
+
+    session[f"last_picks_{save_id}"] = {
+        "round": 0,
+        "picks": round_picks,
+    }
 
     return redirect(url_for("dynasty.dynasty_rookie_draft", save_id=save_id))
 
@@ -572,6 +695,8 @@ def dynasty_rookie_pick(save_id):
 @dynasty_bp.route("/dynasty/<int:save_id>/rookie_finish")
 def dynasty_rookie_finish(save_id):
     sb = get_supabase()
+
+    session.pop(f"last_picks_{save_id}", None)
 
     save = (
         sb.table("dynasty_save")
