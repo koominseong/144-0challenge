@@ -168,6 +168,10 @@ def dynasty_draft():
 
         pick=session.get("draft_pick",1)
     )
+
+    from dynasty_schedule import generate_schedule
+
+    generate_schedule(save_id)
     
     return redirect("/dynasty/dashboard")
 
@@ -362,6 +366,54 @@ def dynasty_dashboard():
         roster=roster
 
     )
+
+@app.route("/dynasty/next_week")
+def next_week():
+
+    from dynasty_game import simulate_week
+
+    results = simulate_week(save_id)
+
+    save_id=session["dynasty_save"]
+
+    save=(
+
+        supabase
+
+        .table("dynasty_save")
+
+        .select("*")
+
+        .eq("id",save_id)
+
+        .single()
+
+        .execute()
+
+        .data
+
+    )
+
+    week=save["week"]+1
+
+    supabase.table(
+
+        "dynasty_save"
+
+    ).update({
+
+        "week":week
+
+    }).eq(
+
+        "id",
+        save_id
+
+    ).execute()
+
+    return redirect("/dynasty/dashboard")
+
+
 
 @app.route("/dynasty/next_season")
 def dynasty_next_season():
