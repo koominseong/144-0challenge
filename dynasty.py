@@ -1,4 +1,4 @@
-from flask import *
+from flask import render_template, redirect, session
 import random
 import json
 import os
@@ -132,15 +132,121 @@ def dynasty_setup():
 @app.route("/dynasty/draft")
 def dynasty_draft():
 
-    dynasty=session["dynasty"]
+    save_id = session["dynasty_save"]
+
+    players = (
+        supabase
+        .table("dynasty_player")
+        .select("*")
+        .eq("save_id", save_id)
+        .eq("drafted", False)
+        .execute()
+        .data
+    )
+
+    random.shuffle(players)
+
+    players = players[:24]
 
     return render_template(
 
         "dynasty_draft.html",
 
-        dynasty=dynasty
+        players=players,
+
+        round=session.get("draft_round",1),
+
+        pick=session.get("draft_pick",1)
 
     )
+
+@app.route("/dynasty/draft_pick/<int:player_id>")
+def dynasty_pick(player_id):
+
+    save_id=session["dynasty_save"]
+
+    supabase.table(
+        "dynasty_player"
+    ).update({
+
+        "team":"USER",
+
+        "drafted":True
+
+    }).eq(
+
+        "id",
+        player_id
+
+    ).execute()
+
+    return redirect("/dynasty/ai_draft")
+
+@app.route("/dynasty/ai_draft")
+def ai_draft():
+
+    save_id=session["dynasty_save"]
+
+    teams=(
+        supabase.table(
+            "dynasty_team"
+        )
+        .select("*")
+        .eq("save_id",save_id)
+        .eq("is_user",False)
+        .execute()
+        .data
+    )
+
+    players=(
+        supabase.table(
+            "dynasty_player"
+        )
+        .select("*")
+        .eq("save_id",save_id)
+        .eq("drafted",False)
+        .order(
+            "overall",
+            desc=True
+        )
+        .execute()
+        .data
+    )
+
+    random.shuffle(teams)
+
+    for team in teams:
+
+        if not players:
+            break
+
+        p=players.pop(0)
+
+        supabase.table(
+            "dynasty_player"
+        ).update({
+
+            "team":team["team_name"],
+
+            "drafted":True
+
+        }).eq(
+
+            "id",
+            p["id"]
+
+        ).execute()
+
+    session["draft_pick"]=session.get(
+        "draft_pick",
+        1
+    )+1
+
+    if session["draft_pick"]>25:
+
+        return redirect("/dynasty/home")
+
+    return redirect("/dynasty/draft")
 
 
 # ==========================
