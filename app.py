@@ -1515,7 +1515,7 @@ def result():
 
     if session.get("mode") == "classic":
 
-        wins = round(total_war * 2)
+        wins = round(total_war * 1.7)
 
     else:
         
@@ -2000,7 +2000,7 @@ def result_loading():
 
     if session.get("mode") == "classic":
 
-        wins = round(total_war * 2)
+        wins = round(total_war * 1.7)
 
     else:
         
