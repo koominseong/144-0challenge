@@ -6,6 +6,32 @@ from datetime import datetime
 from supabase import create_client
 from dynasty import dynasty_bp
 from dynasty_trade_routes import trade_bp
+import os, glob
+from dynasty_import import DATA_DIR
+from dynasty_utils import get_supabase
+
+@app.route("/dynasty/debug")
+def dynasty_debug():
+    exists = os.path.isdir(DATA_DIR)
+    files = glob.glob(os.path.join(DATA_DIR, "*.json")) if exists else []
+    files_1982 = glob.glob(os.path.join(DATA_DIR, "*_1982.json")) if exists else []
+
+    sb = get_supabase()
+    player_count = (
+        sb.table("dynasty_player")
+        .select("id", count="exact")
+        .execute()
+        .count
+    )
+
+    return {
+        "DATA_DIR": DATA_DIR,
+        "dir_exists": exists,
+        "json_files_total": len(files),
+        "files_1982": [os.path.basename(f) for f in files_1982],
+        "sample_files": [os.path.basename(f) for f in files[:5]],
+        "dynasty_player_count": player_count,
+    }
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
