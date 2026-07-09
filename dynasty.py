@@ -168,6 +168,8 @@ def dynasty_draft():
 
         pick=session.get("draft_pick",1)
     )
+    
+    return redirect("/dynasty/dashboard")
 
 @app.route("/dynasty/draft_pick/<int:player_id>") 
 def dynasty_pick(player_id):
@@ -320,24 +322,34 @@ def dynasty_dashboard():
     save_id = session["dynasty_save"]
 
     save = (
-
         supabase
-
         .table("dynasty_save")
-
         .select("*")
-
         .eq("id", save_id)
-
         .single()
-
         .execute()
-
         .data
-
     )
 
-    rookies = rookie_draft_pool(save_id)
+    team = (
+        supabase
+        .table("dynasty_team")
+        .select("*")
+        .eq("save_id", save_id)
+        .eq("is_user", True)
+        .single()
+        .execute()
+        .data
+    )
+
+    roster = (
+        supabase
+        .table("dynasty_roster")
+        .select("role, depth, dynasty_player(*)")
+        .eq("team_id", team["id"])
+        .execute()
+        .data
+    )
 
     return render_template(
 
@@ -345,7 +357,9 @@ def dynasty_dashboard():
 
         save=save,
 
-        rookies=rookies[:8]
+        team=team,
+
+        roster=roster
 
     )
 
