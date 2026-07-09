@@ -1,34 +1,203 @@
+<!-- templates/dynasty_end.html -->
 <!DOCTYPE html>
-<html>
-
+<html lang="ko">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시즌 종료 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-<meta charset="utf-8">
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
 
-<title>Season End</title>
+.hero {
+    text-align: center;
+    padding: 55px 20px 35px;
+    background: linear-gradient(180deg, {{ champion.color }} 0%, #0f1419 100%);
+}
 
+.hero .trophy { font-size: 60px; }
+
+.hero h1 {
+    font-size: 30px;
+    color: #fff;
+    margin-top: 15px;
+}
+
+.hero .champion-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd54f;
+    margin-top: 12px;
+}
+
+.hero .champion-record {
+    font-size: 15px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 8px;
+}
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+}
+
+.user-result {
+    text-align: center;
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.user-result .rank {
+    font-size: 44px;
+    font-weight: bold;
+    color: {% if user_rank == 1 %}#ffd54f{% elif user_rank <= 3 %}#90caf9{% else %}#8899a6{% endif %};
+}
+
+.user-result .rank-label {
+    font-size: 14px;
+    color: #8899a6;
+    margin-top: 6px;
+}
+
+.user-result .team-line {
+    margin-top: 12px;
+    font-size: 17px;
+    color: #fff;
+}
+
+.card {
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+.card h2 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th {
+    text-align: left;
+    padding: 9px 6px;
+    color: #8899a6;
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+td {
+    padding: 9px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+tr.user-row { background: rgba(255,213,79,0.07); }
+tr.user-row td { font-weight: bold; color: #ffd54f; }
+tr.champ-row td:nth-child(2) { color: #ffd54f; }
+
+.rank-num { color: #8899a6; width: 26px; }
+
+.btn-next-season {
+    display: block;
+    width: 100%;
+    padding: 17px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, {{ user_team.color }}, #2c3e50);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-next-season:hover { opacity: 0.88; }
+
+.home-link {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    color: #566573;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.home-link:hover { color: #8899a6; }
+</style>
 </head>
-
 <body>
 
-<h1>
+<div class="hero">
+    <div class="trophy">🏆</div>
+    <h1>Season {{ save.season }} 종료</h1>
+    <div class="champion-name">{{ champion.logo }} {{ champion.team_name }} 우승!</div>
+    <div class="champion-record">{{ champion.wins }}승 {{ champion.ties }}무 {{ champion.losses }}패 · 승률 {{ "%.3f"|format(champion.pct) }}</div>
+</div>
 
-🎉 시즌 종료
+<div class="container">
 
-</h1>
+    <div class="user-result">
+        <div class="rank">{{ user_rank }}위</div>
+        <div class="rank-label">최종 순위</div>
+        <div class="team-line">
+            {{ user_team.logo }} {{ user_team.team_name }} ·
+            {{ user_team.wins }}승 {{ user_team.ties }}무 {{ user_team.losses }}패
+        </div>
+    </div>
 
-<br>
+    <div class="card">
+        <h2>📊 최종 순위표</h2>
+        <table>
+            <tr>
+                <th></th>
+                <th>팀</th>
+                <th>승</th>
+                <th>무</th>
+                <th>패</th>
+                <th>승률</th>
+                <th>GB</th>
+            </tr>
+            {% for t in standings %}
+            <tr class="{% if t.id == user_team.id %}user-row{% endif %} {% if loop.index == 1 %}champ-row{% endif %}">
+                <td class="rank-num">{{ loop.index }}</td>
+                <td>{{ t.logo }} {{ t.team_name }}{% if loop.index == 1 %} 🏆{% endif %}</td>
+                <td>{{ t.wins }}</td>
+                <td>{{ t.ties }}</td>
+                <td>{{ t.losses }}</td>
+                <td>{{ "%.3f"|format(t.pct) }}</td>
+                <td>{{ t.gb }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-<a href="/dynasty/new_season">
+    <form method="POST" action="{{ url_for('dynasty.dynasty_next_season', save_id=save.id) }}">
+        <button type="submit" class="btn-next-season">⏭ Season {{ save.season + 1 }} 시작 (성장 · 은퇴 · 신인 드래프트)</button>
+    </form>
 
-<button>
+    <a href="{{ url_for('dynasty.dynasty_home') }}" class="home-link">🏠 홈으로</a>
 
-다음 시즌 시작
-
-</button>
-
-</a>
+</div>
 
 </body>
-
 </html>
