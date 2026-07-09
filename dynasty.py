@@ -8,6 +8,7 @@ import random
 import json
 import os
 
+from dynasty_season import rookie_draft_pool
 from dynasty_import import import_players
 from app import app, supabase
 
@@ -312,3 +313,47 @@ def ai_draft():
         return redirect("/dynasty/home")
 
     return redirect("/dynasty/draft")
+
+@app.route("/dynasty/dashboard")
+def dynasty_dashboard():
+
+    save_id = session["dynasty_save"]
+
+    save = (
+
+        supabase
+
+        .table("dynasty_save")
+
+        .select("*")
+
+        .eq("id", save_id)
+
+        .single()
+
+        .execute()
+
+        .data
+
+    )
+
+    rookies = rookie_draft_pool(save_id)
+
+    return render_template(
+
+        "dynasty_dashboard.html",
+
+        save=save,
+
+        rookies=rookies[:8]
+
+    )
+
+@app.route("/dynasty/next_season")
+def dynasty_next_season():
+
+    save_id = session["dynasty_save"]
+
+    next_season(save_id)
+
+    return redirect("/dynasty/dashboard")
