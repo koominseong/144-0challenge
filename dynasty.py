@@ -370,39 +370,44 @@ def dynasty_dashboard():
 @app.route("/dynasty/next_week")
 def next_week():
 
-    from dynasty_game import simulate_week
+    save_id = session["dynasty_save"]
 
-    results = simulate_week(save_id)
+    simulate_week(save_id)
 
-    save_id=session["dynasty_save"]
-
-    save=(
-
+    save = (
         supabase
-
         .table("dynasty_save")
-
         .select("*")
-
-        .eq("id",save_id)
-
+        .eq("id", save_id)
         .single()
-
         .execute()
-
         .data
-
     )
 
-    week=save["week"]+1
+    week = save["week"] + 1
+
+    if week > 24:
+
+        supabase.table(
+            "dynasty_save"
+        ).update({
+
+            "finished": True
+
+        }).eq(
+
+            "id",
+            save_id
+
+        ).execute()
+
+        return redirect("/dynasty/end_season")
 
     supabase.table(
-
         "dynasty_save"
-
     ).update({
 
-        "week":week
+        "week": week
 
     }).eq(
 
@@ -413,7 +418,66 @@ def next_week():
 
     return redirect("/dynasty/dashboard")
 
+@app.route("/dynasty/end_season")
+def dynasty_end_season():
 
+    save_id = session["dynasty_save"]
+
+    return render_template(
+
+        "dynasty_end.html",
+
+        save_id=save_id
+
+    )
+
+@app.route("/dynasty/new_season")
+def dynasty_new_season():
+
+    save_id = session["dynasty_save"]
+
+    save = (
+
+        supabase
+
+        .table("dynasty_save")
+
+        .select("*")
+
+        .eq("id", save_id)
+
+        .single()
+
+        .execute()
+
+        .data
+
+    )
+
+    season = save["season"] + 1
+
+    supabase.table(
+
+        "dynasty_save"
+
+    ).update({
+
+        "season": season,
+
+        "week": 1,
+
+        "finished": False
+
+    }).eq(
+
+        "id",
+        save_id
+
+    ).execute()
+
+    generate_schedule(save_id)
+
+    return redirect("/dynasty/dashboard")
 
 @app.route("/dynasty/next_season")
 def dynasty_next_season():
