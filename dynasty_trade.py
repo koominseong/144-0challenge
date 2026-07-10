@@ -146,6 +146,12 @@ def propose_trade(save_id, my_team_id, target_team_id, my_player_ids, their_play
     auto_generate_lineup(save_id, my_team_id)
     auto_generate_lineup(save_id, target_team_id)
 
+    from dynasty_event import log_event
+    my_names = ", ".join(p["name"] for p in my_players)
+    their_names = ", ".join(p["name"] for p in their_players)
+    log_event(save_id, season, 0, "trade", "🔄",
+              f"트레이드 성사! [{their_names}] ↔ [{my_names}]")
+
     return True, "트레이드가 성사되었습니다!"
 
 
@@ -248,6 +254,10 @@ def ai_auto_trades(save_id, max_trades=3):
         roster_b.remove(pb)
         roster_a.append(pb)
         roster_b.append(pa)
+
+        from dynasty_event import log_event
+        log_event(save_id, season, 0, "trade", "🔄",
+                  f"AI 트레이드: {pa['name']} ↔ {pb['name']}")
 
         trades_done += 1
 
