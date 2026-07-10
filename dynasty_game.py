@@ -274,8 +274,8 @@ def _calc_power(roster):
 def _simulate_game(home_power, away_power):
     home_exp = _expected_runs(home_power["bat"], away_power["pit"])
     away_exp = _expected_runs(away_power["bat"], home_power["pit"])
-
-    home_exp *= 1.05
+    
+    home_exp *= 1.05 + home_power.get("home_adv", 0.0)
 
     home_score = _random_runs(home_exp)
     away_score = _random_runs(away_exp)
