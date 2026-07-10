@@ -76,6 +76,12 @@ def update_fans(save_id):
         except Exception:
             pass
 
+        try:
+            from dynasty_facility import get_facility_effects
+            rate += get_facility_effects(save_id).get(t["id"], {}).get("fan_bonus", 0.0)
+        except Exception:
+            pass
+
         fans = int(fans * (1 + rate))
         fans = max(FAN_MIN, min(FAN_MAX, fans))
 
