@@ -367,7 +367,7 @@ def resolve_fa_bidding(save_id, user_bids):
         )
 
         # 대어 낙찰 이벤트 기록
-        if p["overall"] >= 70:
+        if p["overall"] >= 85:
             try:
                 from dynasty_event import log_event
                 tag = " (잔류)" if from_team == winner_id else ""
