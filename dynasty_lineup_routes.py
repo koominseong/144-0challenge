@@ -77,9 +77,6 @@ def lineup_home(save_id):
     bench = [r for r in roster if r["role"] == "BENCH"]
     minors = [r for r in roster if r["role"] == "MINOR"]
 
-    if new_role not in ("START", "SP", "CP", "RP", "BENCH", "MINOR"):
-        new_role = "BENCH"
-
     msg = request.args.get("msg", "")
 
     return render_template(
