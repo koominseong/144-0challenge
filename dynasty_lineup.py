@@ -1,7 +1,7 @@
 # dynasty_lineup.py
 # =========================================
-# KBO Dynasty - 자동 라인업 생성
-# 주전 9명 + 선발 5 + 불펜 + 마무리 + 벤치
+# KBO Dynasty - 자동 라인업 생성 (일괄 upsert 버전)
+# 팀당 DB 호출 2회 (조회 1 + upsert 1)
 # =========================================
 
 from dynasty_utils import get_supabase
@@ -51,7 +51,8 @@ def auto_generate_lineup(save_id, team_id):
         extra.sort(key=lambda x: -x["overall"])
         need = 9 - len(batters)
         batters += extra[:need]
-        pitchers = [p for p in pitchers if p not in batters[len(batters) - need:]]
+        moved = set(b["roster_id"] for b in batters)
+        pitchers = [p for p in pitchers if p["roster_id"] not in moved]
 
     assignments = {}  # roster_id -> (role, depth)
 
@@ -82,7 +83,6 @@ def auto_generate_lineup(save_id, team_id):
     pitchers.sort(key=lambda x: -x["overall"])
     p_available = [p for p in pitchers if p["roster_id"] not in used]
 
-    # 선발 5
     sp_count = min(5, len(p_available))
     for i in range(sp_count):
         pk = p_available[i]
@@ -91,14 +91,12 @@ def auto_generate_lineup(save_id, team_id):
 
     remaining_p = [p for p in p_available if p["roster_id"] not in used]
 
-    # 마무리 1 (남은 투수 중 최고)
     if remaining_p:
         cp = remaining_p[0]
         used.add(cp["roster_id"])
         assignments[cp["roster_id"]] = ("CP", 1)
         remaining_p = remaining_p[1:]
 
-    # 불펜 최대 6
     rp_count = min(6, len(remaining_p))
     for i in range(rp_count):
         rp = remaining_p[i]
@@ -113,8 +111,20 @@ def auto_generate_lineup(save_id, team_id):
         assignments[p["roster_id"]] = ("BENCH", bench_depth)
         bench_depth += 1
 
-    # ---------- DB 반영 ----------
+    # ---------- DB 일괄 반영 (upsert 1회) ----------
+    id_map = {p["roster_id"]: p["player_id"] for p in players}
+
+    upsert_rows = []
     for roster_id, (role, d) in assignments.items():
-        sb.table("dynasty_roster").update(
-            {"role": role, "depth": d}
-        ).eq("id", roster_id).execute()
+        upsert_rows.append(
+            {
+                "id": roster_id,
+                "save_id": save_id,
+                "team_id": team_id,
+                "player_id": id_map[roster_id],
+                "role": role,
+                "depth": d,
+            }
+        )
+
+    sb.table("dynasty_roster").upsert(upsert_rows).execute()
