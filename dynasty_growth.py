@@ -36,28 +36,6 @@ def process_offseason_growth(save_id):
     current_season = save["season"]
 
     upsert_rows = []  
-
-    # ---------- 시즌 종료 시점 능력치 스냅샷 ----------
-    history_rows = []
-    for row in upsert_rows:
-        history_rows.append(
-            {
-                "save_id": save_id,
-                "player_id": row["id"],
-                "season": current_season,
-                "overall": row["overall"],
-                "contact": row["contact"],
-                "power": row["power"],
-                "eye": row["eye"],
-                "speed": row["speed"],
-                "defense": row["defense"],
-                "arm": row["arm"],
-                "stuff": row["stuff"],
-                "control": row["control"],
-                "stamina": row["stamina"],
-            }
-        )
-
     retired_ids = []
     
     for i in range(0, len(history_rows), 100):
@@ -105,6 +83,27 @@ def process_offseason_growth(save_id):
             }
         )
 
+            # ---------- 시즌 종료 시점 능력치 스냅샷 ----------
+    history_rows = []
+    for row in upsert_rows:
+        history_rows.append(
+            {
+                "save_id": save_id,
+                "player_id": row["id"],
+                "season": current_season,
+                "overall": row["overall"],
+                "contact": row["contact"],
+                "power": row["power"],
+                "eye": row["eye"],
+                "speed": row["speed"],
+                "defense": row["defense"],
+                "arm": row["arm"],
+                "stuff": row["stuff"],
+                "control": row["control"],
+                "stamina": row["stamina"],
+            }
+        )
+
     for i in range(0, len(upsert_rows), 100):
         sb.table("dynasty_player").upsert(upsert_rows[i : i + 100]).execute()
 
@@ -124,7 +123,7 @@ def process_offseason_growth(save_id):
          "message": f"{r['name']} 은퇴 (최고 OVR {r['peak_overall']})"}
         for r in big_retires
     ])
-
+    
     print(
         f"[dynasty_growth] 처리={len(upsert_rows)}명, 은퇴={len(retired_ids)}명"
     )
