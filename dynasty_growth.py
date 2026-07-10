@@ -65,6 +65,24 @@ def process_offseason_growth(save_id):
         coach_bonus = e.get("pit_growth", 0) if is_pitcher_p else e.get("bat_growth", 0)
         if career_years <= 4:
             coach_bonus += e.get("young_growth", 0)
+        if p["id"] in minor_team:
+            coach_bonus += fac_effects.get(minor_team[p["id"]], {}).get("minor_growth", 0)
+
+        try:
+            from dynasty_facility import get_facility_effects
+            fac_effects = get_facility_effects(save_id)
+        except Exception:
+            fac_effects = {}
+    
+        minor_rows = (
+            sb.table("dynasty_roster")
+            .select("player_id, team_id, role")
+            .eq("save_id", save_id)
+            .eq("role", "MINOR")
+            .execute()
+            .data
+        )
+        minor_team = {r["player_id"]: r["team_id"] for r in minor_rows}
 
         updated = _grow_player(p, career_years, coach_bonus)
 
