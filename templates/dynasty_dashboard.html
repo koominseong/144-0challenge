@@ -15,6 +15,35 @@ body {
     min-height: 100vh;
 }
 
+.menubar {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 15px 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e6e6e6;
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.menu-link:hover {
+    background: #202a36;
+    border-color: rgba(255,255,255,0.2);
+}
+    
 .topbar {
     background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
     padding: 20px 30px;
@@ -168,6 +197,13 @@ tr.user-row td {
 <!-- templates/dynasty_dashboard.html - Part2 -->
 <body>
 
+<div class="menubar">
+    <a href="{{ url_for('dynasty_lineup.lineup_home', save_id=save.id) }}" class="menu-link">👥 라인업</a>
+    <a href="{{ url_for('dynasty_trade.trade_home', save_id=save.id) }}" class="menu-link">🔄 트레이드</a>
+    <a href="{{ url_for('dynasty_fa.fa_home', save_id=save.id) }}" class="menu-link">💰 FA 시장</a>
+    <a href="{{ url_for('dynasty_history.history_home', save_id=save.id) }}" class="menu-link">📜 역사</a>
+</div>
+    
 <div class="topbar">
     <div class="team-info">
         <div class="logo">{{ user_team.logo }}</div>
