@@ -580,6 +580,17 @@ def dynasty_dashboard(save_id):
         events=events,
     )
 
+@dynasty_bp.route("/dynasty/<int:save_id>/upgrade/<kind>", methods=["POST"])
+@require_auth
+def dynasty_upgrade(save_id, kind):
+    sb = get_supabase()
+    teams = sb.table("dynasty_team").select("id, is_user").eq("save_id", save_id).execute().data
+    user_team = next(t for t in teams if t["is_user"])
+
+    from dynasty_facility import upgrade
+    upgrade(save_id, user_team["id"], kind)
+
+    return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
 # =========================================
 # 다음 주 진행
