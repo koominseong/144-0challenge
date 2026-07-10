@@ -78,6 +78,11 @@ def record_season_history(save_id):
 
     sb.table("dynasty_history").insert(rows).execute()
 
+    from dynasty_event import log_event
+    champ = standings[0]
+    log_event(save_id, season, 99, "champion", "🏆",
+              f"Season {season} 우승: {champ['team_name']} ({champ['wins']}승 {champ['losses']}패)")
+
     print(f"[dynasty_history] season {season} 기록 완료")
     return len(rows)
 
