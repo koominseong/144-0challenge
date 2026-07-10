@@ -20,7 +20,7 @@ NEXT_BASE_YEAR = 1990                      # Season2 시작 연도
 YEARS_PER_SEASON = 3
 
 # 최소 보장 인원 (부족하면 랜덤 생성으로 채움)
-MIN_PLAYERS_FIRST = 280   # 10팀 × 25라운드 = 250 + 여유
+MIN_PLAYERS_FIRST = 500   # 10팀 × 25라운드 = 250 + 여유
 MIN_PLAYERS_NEXT = 150     # 신인 드래프트 풀
 
 BATTER_POS = {"C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH", "OF", "IF"}
