@@ -287,6 +287,11 @@ tr.user-row td {
         <form method="POST" action="{{ url_for('dynasty.dynasty_next_week', save_id=save.id) }}" style="margin-top: 20px;">
             <button type="submit" class="btn-next">▶ 다음 주 진행</button>
         </form>
+        <form method="POST" action="{{ url_for('dynasty.dynasty_sim_all', save_id=save.id) }}"
+            onsubmit="return confirm('남은 시즌 전체를 한번에 진행합니다. 계속하시겠습니까?');"
+            style="margin-top: 10px;">
+            <button type="submit" class="btn-sim-all">⏩ 시즌 전체 진행</button>
+        </form>
         {% else %}
         <form method="GET" action="{{ url_for('dynasty.dynasty_season_end', save_id=save.id) }}" style="margin-top: 20px;">
             <button type="submit" class="btn-next">🏆 시즌 결과 보기</button>
