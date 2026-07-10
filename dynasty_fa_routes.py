@@ -97,6 +97,9 @@ def fa_bid_submit(save_id):
             continue
         if amount > 0:
             user_bids[pid] = amount
+            
+    print(f"[fa_routes] 폼 수신 키: {[k for k in request.form.keys()]}")
+    print(f"[fa_routes] 파싱된 입찰: {user_bids}") 
 
     results = resolve_fa_bidding(save_id, user_bids)
 
