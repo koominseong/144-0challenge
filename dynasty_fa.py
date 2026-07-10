@@ -276,6 +276,12 @@ def resolve_fa_bidding(save_id, user_bids):
             )
             continue
 
+        if p["overall"] >= 70:
+            from dynasty_event import log_event
+            tag = " (잔류)" if from_team == winner_id else ""
+            log_event(save_id, season, 0, "fa", "💰",
+                      f"FA 대어 {p['name']}(OVR {p['overall']}) → {w['team_name']} 낙찰가 {price}{tag}")
+            
         bids.sort(key=lambda b: -b[2])
         winner_id, price, _ = bids[0]
 
