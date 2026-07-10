@@ -1,34 +1,46 @@
 # dynasty_fa.py - Part1
 # =========================================
-# KBO Dynasty - FA 입찰 시스템
-# 시즌 전 FA 단계: 유저+AI 동시 입찰 → 최고액 낙찰
-# 원소속팀은 유효 입찰액 15% 가산 (충성 보정)
+# KBO Dynasty - FA 입찰 시스템 (안정화 재작성판, 예산 750 기준)
 #
 # 사전 준비 (Supabase SQL Editor):
-#   ALTER TABLE dynasty_team ADD COLUMN IF NOT EXISTS budget int DEFAULT 100;
+#   ALTER TABLE dynasty_team ADD COLUMN IF NOT EXISTS budget int DEFAULT 750;
+#
+#   -- 기존 세이브 즉시 반영:
+#   UPDATE dynasty_team SET budget = 750 WHERE save_id = <내 세이브 id>;
+#
 #   ALTER TABLE dynasty_player ADD COLUMN IF NOT EXISTS fa_from_team bigint;
+#
+# 개선점:
+# 1. AI 예산 방어: 예산이 낮거나 NULL인 AI 팀은 기본 예산으로
+#    보정 후 참여 (전원 유찰 방지)
+# 2. 유저 입찰 사전 검증: 예산 총합 초과 시 가치 낮은 순으로
+#    자동 제외 (조용한 무효 방지)
+# 3. 상세 로그: 유찰 원인 추적 가능
 # =========================================
 
 import random
 from dynasty_utils import get_supabase, get_standings
 from dynasty_trade import trade_value
 
-FA_CAREER_YEARS = 6
-FA_RELEASE_RATE = 0.35
-BASE_BUDGET = 500
-LOYALTY_BONUS = 1.15  # 원소속팀 가산
+FA_CAREER_YEARS = 6        # FA 자격 연차
+FA_RELEASE_RATE = 0.35     # 자격자 중 시장에 나오는 비율
+BASE_BUDGET = 750          # 기본 예산
+LOYALTY_BONUS = 1.15       # 원소속팀 유효 입찰액 가산
+AI_MIN_BUDGET = 300        # AI 예산이 이 밑이면 기본 예산으로 보정
 
 
 # =========================================
 # 기준 몸값 (최소 입찰가)
+# OVR 70 → 약 18, OVR 75 → 약 23, OVR 80 → 약 27
 # =========================================
 def fa_base_price(player, season):
     value = trade_value(player, season)
-    return max(3, int(round(value * 0.04)))
-    
+    return max(3, int(round(value * 0.22)))
+
+
 # =========================================
-# 시즌 예산 리셋 (전년도 순위 기반, 하위팀 우대)
-# 1위 90 ~ 10위 117
+# 시즌 예산 리셋 (next_season에서 호출)
+# 전년도 1위 690 ~ 10위 825 (하위팀 우대)
 # =========================================
 def reset_budgets(save_id):
     sb = get_supabase()
@@ -49,16 +61,16 @@ def reset_budgets(save_id):
         row = dict(t)
         row.pop("pct", None)
         row.pop("gb", None)
-        row["budget"] = BASE_BUDGET - 40 + rank * 8  # 1위 168 ~ 10위 240
+        row["budget"] = BASE_BUDGET - 75 + rank * 15
         rows.append(row)
 
     sb.table("dynasty_team").upsert(rows).execute()
-    print(f"[dynasty_fa] 예산 리셋 완료 ({len(rows)}팀)")
+    print(f"[dynasty_fa] 예산 리셋: {[(r['team_name'], r['budget']) for r in rows]}")
 
 
 # =========================================
 # FA 시장 생성 (next_season에서 호출)
-# 방출 시 원소속팀 기록 (fa_from_team)
+# 방출 시 원소속팀 기록
 # =========================================
 def generate_fa_market(save_id):
     sb = get_supabase()
@@ -81,7 +93,7 @@ def generate_fa_market(save_id):
     )
 
     release_ids = []
-    from_team_updates = {}  # player_id -> team_id
+    from_team_updates = {}
 
     for r in roster_rows:
         p = r["dynasty_player"]
@@ -94,7 +106,6 @@ def generate_fa_market(save_id):
             continue
         if (career_years - FA_CAREER_YEARS) % 3 != 0:
             continue
-
         if random.random() > FA_RELEASE_RATE:
             continue
 
@@ -106,7 +117,6 @@ def generate_fa_market(save_id):
             "id", release_ids[i : i + 50]
         ).execute()
 
-    # 원소속팀 기록 (팀별로 묶어 일괄 update)
     by_team = {}
     for pid, tid in from_team_updates.items():
         by_team.setdefault(tid, []).append(pid)
@@ -163,12 +173,14 @@ def get_fa_players(save_id):
 
 # =========================================
 # FA 입찰 일괄 처리 (핵심)
-# user_bids: {player_id: 입찰액} — 유저가 제출한 입찰
-# 1. 각 FA 선수에 대해 AI 팀들이 관심도/예산에 따라 입찰 생성
-# 2. 유저 입찰 병합
-# 3. 유효 입찰액 = 입찰액 × (원소속팀이면 1.15)
-# 4. 최고 유효액 팀 낙찰, 예산 차감
-# return: 결과 리스트 (사이드바/화면 표시용)
+# user_bids: {player_id: 입찰액}
+#
+# 처리 순서:
+# 0. AI 예산 방어 보정 (낮거나 NULL이면 기본 예산 지급)
+# 1. 유저 입찰 사전 검증 (총합이 예산 초과면 가치 낮은 순 제외)
+# 2. 선수별로 유저+AI 입찰 수집
+# 3. 유효액 = 입찰액 × (원소속팀 1.15)
+# 4. 최고 유효액 낙찰, 예산 차감
 # =========================================
 def resolve_fa_bidding(save_id, user_bids):
     sb = get_supabase()
@@ -193,8 +205,20 @@ def resolve_fa_bidding(save_id, user_bids):
     user_team = next(t for t in teams if t["is_user"])
     ai_team_ids = [t["id"] for t in teams if not t["is_user"]]
 
-    budgets = {t["id"]: (t.get("budget") or 0) for t in teams}
+    # ----- 0. 예산 로드 + AI 예산 방어 보정 -----
+    budgets = {}
+    for t in teams:
+        b = t.get("budget")
+        if b is None:
+            b = 0
+        if not t["is_user"] and b < AI_MIN_BUDGET:
+            print(f"[dynasty_fa] AI 예산 보정: {t['team_name']} {b} → {BASE_BUDGET}")
+            b = BASE_BUDGET
+        budgets[t["id"]] = b
 
+    print(f"[dynasty_fa] 입찰 시작. 예산: {[(team_map[tid]['team_name'], b) for tid, b in budgets.items()]}")
+
+    # ----- 로스터 인원 -----
     roster_rows = (
         sb.table("dynasty_roster")
         .select("team_id")
@@ -207,9 +231,41 @@ def resolve_fa_bidding(save_id, user_bids):
         if r["team_id"] in counts:
             counts[r["team_id"]] += 1
 
+    # ----- FA 명단 -----
     fa_players = get_fa_players(save_id)
     fa_players.sort(key=lambda p: -trade_value(p, season))
+    fa_map = {p["id"]: p for p in fa_players}
 
+    # ----- 1. 유저 입찰 사전 검증 -----
+    valid_bids = {}
+    for pid, amount in user_bids.items():
+        p = fa_map.get(pid)
+        if p is None:
+            print(f"[dynasty_fa] 유저 입찰 무효(시장에 없음): player_id={pid}")
+            continue
+        base = fa_base_price(p, season)
+        if amount < base:
+            print(f"[dynasty_fa] 유저 입찰 무효(최소가 미달): {p['name']} {amount} < {base}")
+            continue
+        valid_bids[pid] = amount
+
+    # 총합 예산 초과 시 가치 낮은 선수부터 제외
+    total = sum(valid_bids.values())
+    user_budget = budgets[user_team["id"]]
+    if total > user_budget:
+        print(f"[dynasty_fa] 유저 입찰 총합 초과: {total} > {user_budget} → 하위 입찰 제외")
+        ordered = sorted(
+            valid_bids.keys(),
+            key=lambda pid: trade_value(fa_map[pid], season),
+        )
+        for pid in ordered:
+            if total <= user_budget:
+                break
+            total -= valid_bids[pid]
+            print(f"[dynasty_fa]   제외: {fa_map[pid]['name']} (입찰 {valid_bids[pid]})")
+            del valid_bids[pid]
+
+    # ----- 2~4. 선수별 입찰 판정 -----
     results = []
     insert_rows = []
 
@@ -219,18 +275,21 @@ def resolve_fa_bidding(save_id, user_bids):
 
         bids = []  # (team_id, 입찰액, 유효액)
 
-        # ----- 유저 입찰 -----
-        user_bid = user_bids.get(p["id"], 0)
-        if user_bid >= base and user_bid <= budgets[user_team["id"]] and counts[user_team["id"]] < 30:
+        # 유저 입찰
+        user_bid = valid_bids.get(p["id"], 0)
+        if (
+            user_bid >= base
+            and user_bid <= budgets[user_team["id"]]
+            and counts[user_team["id"]] < 30
+        ):
             eff = user_bid * (LOYALTY_BONUS if from_team == user_team["id"] else 1.0)
             bids.append((user_team["id"], user_bid, eff))
 
-        # ----- AI 입찰 -----
+        # AI 입찰
         for tid in ai_team_ids:
             if counts[tid] >= 28 or budgets[tid] < base:
                 continue
 
-            # 관심도: OVR 높을수록, 예산 여유 많을수록 참여
             if p["overall"] >= 75:
                 interest = 0.8
             elif p["overall"] >= 65:
@@ -240,14 +299,12 @@ def resolve_fa_bidding(save_id, user_bids):
             else:
                 interest = 0.08
 
-            # 원소속팀은 잔류 시도 확률 상승
             if from_team == tid:
                 interest = min(1.0, interest + 0.25)
 
             if random.random() > interest:
                 continue
 
-            # 입찰액: 기준가 × 1.0~1.6, 예산 한도 내
             bid = int(base * random.uniform(1.0, 1.6))
             bid = min(bid, budgets[tid])
             if bid < base:
@@ -256,7 +313,7 @@ def resolve_fa_bidding(save_id, user_bids):
             eff = bid * (LOYALTY_BONUS if from_team == tid else 1.0)
             bids.append((tid, bid, eff))
 
-        # ----- 낙찰 -----
+        # 낙찰 판정
         if not bids:
             results.append(
                 {
@@ -275,12 +332,6 @@ def resolve_fa_bidding(save_id, user_bids):
             )
             continue
 
-        if p["overall"] >= 70:
-            from dynasty_event import log_event
-            tag = " (잔류)" if from_team == winner_id else ""
-            log_event(save_id, season, 0, "fa", "💰",
-                      f"FA 대어 {p['name']}(OVR {p['overall']}) → {w['team_name']} 낙찰가 {price}{tag}")
-            
         bids.sort(key=lambda b: -b[2])
         winner_id, price, _ = bids[0]
 
@@ -313,6 +364,18 @@ def resolve_fa_bidding(save_id, user_bids):
                 "loyalty": from_team == winner_id,
             }
         )
+
+        # 대어 낙찰 이벤트 기록
+        if p["overall"] >= 70:
+            try:
+                from dynasty_event import log_event
+                tag = " (잔류)" if from_team == winner_id else ""
+                log_event(
+                    save_id, season, 0, "fa", "💰",
+                    f"FA {p['name']}(OVR {p['overall']}) → {w['team_name']} 낙찰가 {price}{tag}",
+                )
+            except Exception:
+                pass
 
     # ----- DB 일괄 반영 -----
     for i in range(0, len(insert_rows), 100):
