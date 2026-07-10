@@ -31,6 +31,23 @@ def process_offseason_growth(save_id):
         .execute()
         .data[0]
     )
+
+    # (players, save 조회 다음에)
+    try:
+        from dynasty_staff import get_staff_effects
+        staff_effects = get_staff_effects(save_id)
+    except Exception:
+        staff_effects = {}
+
+    roster_map_rows = (
+        sb.table("dynasty_roster")
+        .select("player_id, team_id")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+    player_team = {r["player_id"]: r["team_id"] for r in roster_map_rows}
+
     current_season = save["season"]
 
     upsert_rows = []
@@ -42,8 +59,14 @@ def process_offseason_growth(save_id):
             continue
 
         career_years = current_season - p["appear_season"] + 1
+        
+        e = staff_effects.get(player_team.get(p["id"]), {})
+        is_pitcher_p = "P" in (p["positions"] or "")
+        coach_bonus = e.get("pit_growth", 0) if is_pitcher_p else e.get("bat_growth", 0)
+        if career_years <= 4:
+            coach_bonus += e.get("young_growth", 0)
 
-        updated = _grow_player(p, career_years)
+        updated = _grow_player(p, career_years, coach_bonus)
 
         # 커리어 최고 능력치 갱신
         prev_peak = p.get("peak_overall") or p["overall"]
@@ -125,7 +148,7 @@ def process_offseason_growth(save_id):
 # =========================================
 # 개별 선수 성장/노쇠
 # =========================================
-def _grow_player(p, career_years):
+def _grow_player(p, career_years, coach_bonus=0):
     overall = p["overall"]
     potential = p["potential"] if p["potential"] else overall
 
@@ -148,6 +171,8 @@ def _grow_player(p, career_years):
         if random.random() < 0.2:
             decline = random.randint(0, 1)
         delta = -decline
+
+    delta += coach_bonus
 
     stats = ["contact", "power", "eye", "speed", "defense", "arm"]
     if is_pitcher:
