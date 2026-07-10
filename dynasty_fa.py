@@ -27,7 +27,14 @@ FA_RELEASE_RATE = 0.35     # 자격자 중 시장에 나오는 비율
 BASE_BUDGET = 750          # 기본 예산
 LOYALTY_BONUS = 1.15       # 원소속팀 유효 입찰액 가산
 AI_MIN_BUDGET = 300        # AI 예산이 이 밑이면 기본 예산으로 보정
+# 상단 상수 (추가/변경)
+MAX_ROSTER = 50            # 절대 상한
+OFFSEASON_ROSTER = 45      # 오프시즌 정리 목표
+AI_BID_CAP = 48            # AI는 이 인원 미만일 때만 입찰
 
+# resolve_fa_bidding 안에서 두 곳 수정:
+#   유저 조건: counts[user_team["id"]] < 30  →  < MAX_ROSTER
+#   AI 조건:   counts[tid] >= 28             →  >= AI_BID_CAP
 
 # =========================================
 # 기준 몸값 (최소 입찰가)
@@ -393,3 +400,37 @@ def resolve_fa_bidding(save_id, user_bids):
     signed = sum(1 for r in results if r["signed"])
     print(f"[dynasty_fa] FA 입찰 완료: 낙찰={signed} / 전체={len(results)}")
     return results
+
+# =========================================
+# 오프시즌 인원 정리: 팀당 45명으로 (하위 OVR부터 방출)
+# =========================================
+def release_surplus_players(save_id):
+    sb = get_supabase()
+
+    roster_rows = (
+        sb.table("dynasty_roster")
+        .select("id, team_id, dynasty_player(overall)")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+
+    by_team = {}
+    for r in roster_rows:
+        if r["dynasty_player"]:
+            by_team.setdefault(r["team_id"], []).append(r)
+
+    release_ids = []
+    for tid, rows in by_team.items():
+        if len(rows) <= OFFSEASON_ROSTER:
+            continue
+        rows.sort(key=lambda r: r["dynasty_player"]["overall"])
+        surplus = len(rows) - OFFSEASON_ROSTER
+        release_ids += [r["id"] for r in rows[:surplus]]
+
+    for i in range(0, len(release_ids), 50):
+        sb.table("dynasty_roster").delete().in_(
+            "id", release_ids[i : i + 50]
+        ).execute()
+
+    print(f"[dynasty_fa] 오프시즌 정리 방출={len(release_ids)}명")
