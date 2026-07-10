@@ -213,6 +213,7 @@ tr.user-row td {
 <body>
 
 <div class="menubar">
+    <a href="{{ url_for('dynasty_staff.staff_home', save_id=save.id) }}" class="menu-link">🧢 코칭스태프</a>
     <a href="{{ url_for('dynasty_lineup.lineup_home', save_id=save.id) }}" class="menu-link">👥 라인업</a>
     <a href="{{ url_for('dynasty_training.training_home', save_id=save.id) }}" class="menu-link">🏋️ 육성</a>
     <a href="{{ url_for('dynasty_trade.trade_home', save_id=save.id) }}" class="menu-link">🔄 트레이드</a>
