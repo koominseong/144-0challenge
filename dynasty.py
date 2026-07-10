@@ -559,7 +559,7 @@ def dynasty_dashboard(save_id):
 
     from dynasty_event import get_recent_events
     events = get_recent_events(save_id)
-
+    
     return render_template(
         "dynasty_dashboard.html",
         save=save,
@@ -571,6 +571,7 @@ def dynasty_dashboard(save_id):
         last_games=last_games,
         roster=roster_rows,
         season_weeks=SEASON_WEEKS,
+        events=events,
     )
 
 
