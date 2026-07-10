@@ -559,6 +559,12 @@ def dynasty_dashboard(save_id):
 
     from dynasty_event import get_recent_events
     events = get_recent_events(save_id)
+
+    from dynasty_facility import upgrade_cost, MAX_LEVEL
+    stadium_level = user_team.get("stadium_level") or 1
+    facility_level = user_team.get("facility_level") or 1
+    stadium_cost = upgrade_cost("stadium", stadium_level)
+    facility_cost = upgrade_cost("facility", facility_level)
     
     return render_template(
         "dynasty_dashboard.html",
