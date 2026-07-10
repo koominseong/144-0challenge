@@ -1,9 +1,6 @@
 # dynasty_lineup_routes.py
 # =========================================
-# KBO Dynasty - 라인업 수동 편집 화면/라우트
-# app.py에 아래 2줄 추가:
-#   from dynasty_lineup_routes import lineup_bp
-#   app.register_blueprint(lineup_bp)
+# KBO Dynasty - 라인업 수동 편집 (1군/2군 체제)
 # =========================================
 
 from flask import Blueprint, render_template, request, redirect, url_for
@@ -16,9 +13,6 @@ lineup_bp = Blueprint("dynasty_lineup", __name__)
 ROLE_ORDER = {"START": 0, "SP": 1, "CP": 2, "RP": 3, "BENCH": 4, "MINOR": 5}
 
 
-# =========================================
-# 라인업 화면
-# =========================================
 @lineup_bp.route("/dynasty/<int:save_id>/lineup")
 def lineup_home(save_id):
     sb = get_supabase()
@@ -66,16 +60,21 @@ def lineup_home(save_id):
             }
         )
 
-    minors = [r for r in roster if r["role"] == "MINOR"]
-
     roster.sort(key=lambda x: (ROLE_ORDER.get(x["role"], 9), x["depth"]))
-    
+
     starters = [r for r in roster if r["role"] == "START"]
     sps = [r for r in roster if r["role"] == "SP"]
     cps = [r for r in roster if r["role"] == "CP"]
     rps = [r for r in roster if r["role"] == "RP"]
     bench = [r for r in roster if r["role"] == "BENCH"]
     minors = [r for r in roster if r["role"] == "MINOR"]
+
+    # 어떤 역할에도 안 잡힌 선수 방어 (구버전 depth=99 BENCH 등)
+    known = {"START", "SP", "CP", "RP", "BENCH", "MINOR"}
+    others = [r for r in roster if r["role"] not in known]
+    minors = minors + others
+
+    first_team_count = len(starters) + len(sps) + len(cps) + len(rps) + len(bench)
 
     msg = request.args.get("msg", "")
 
@@ -89,37 +88,22 @@ def lineup_home(save_id):
         rps=rps,
         bench=bench,
         minors=minors,
-        msg=msg,
-    )
-    msg = request.args.get("msg", "")
-
-    return render_template(
-        "dynasty_lineup.html",
-        save=save,
-        user_team=user_team,
-        starters=starters,
-        sps=sps,
-        cps=cps,
-        rps=rps,
-        bench=bench,
+        first_team_count=first_team_count,
+        total_count=len(roster),
         msg=msg,
     )
 
 
-# =========================================
-# 역할 변경
-# =========================================
 @lineup_bp.route("/dynasty/<int:save_id>/lineup/set_role", methods=["POST"])
 def lineup_set_role(save_id):
     sb = get_supabase()
 
     roster_id = int(request.form.get("roster_id"))
-    new_role = request.form.get("role", "BENCH")
+    new_role = request.form.get("role", "MINOR")
 
-    if new_role not in ("START", "SP", "CP", "RP", "BENCH"):
-        new_role = "BENCH"
+    if new_role not in ("START", "SP", "CP", "RP", "BENCH", "MINOR"):
+        new_role = "MINOR"
 
-    # 해당 역할 마지막 순번으로 배치
     teams = (
         sb.table("dynasty_team")
         .select("id, is_user")
@@ -147,9 +131,6 @@ def lineup_set_role(save_id):
     return redirect(url_for("dynasty_lineup.lineup_home", save_id=save_id))
 
 
-# =========================================
-# 자동 라인업 재생성
-# =========================================
 @lineup_bp.route("/dynasty/<int:save_id>/lineup/auto", methods=["POST"])
 def lineup_auto(save_id):
     sb = get_supabase()
