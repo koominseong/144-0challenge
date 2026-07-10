@@ -882,40 +882,16 @@ def dynasty_rookie_pick(save_id):
 # =========================================
 # 신인 드래프트 종료 → AI FA 영입 → 시즌 시작
 # =========================================
+# =========================================
+# 신인 드래프트 종료 → FA 입찰 단계로 이동
+# =========================================
 @dynasty_bp.route("/dynasty/<int:save_id>/rookie_finish")
 @require_auth
 def dynasty_rookie_finish(save_id):
-    sb = get_supabase()
-
     session.pop(f"last_picks_{save_id}", None)
     session.pop(f"rookie_picked_{save_id}", None)
 
-    save = (
-        sb.table("dynasty_save")
-        .select("*")
-        .eq("id", save_id)
-        .execute()
-        .data[0]
-    )
-
-    ai_sign_fa(save_id)
-
-    teams = (
-        sb.table("dynasty_team")
-        .select("*")
-        .eq("save_id", save_id)
-        .execute()
-        .data
-    )
-
-    for team in teams:
-        auto_generate_lineup(save_id, team["id"])
-
-    generate_schedule(save_id, save["season"], SEASON_WEEKS)
-
-    sb.table("dynasty_save").update({"week": 1}).eq("id", save_id).execute()
-
-    return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+    return redirect(url_for("dynasty_fa.fa_bid", save_id=save_id))
 
 
 # =========================================
