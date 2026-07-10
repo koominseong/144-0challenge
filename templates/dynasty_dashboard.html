@@ -314,6 +314,22 @@ tr.user-row td {
         {% endif %}
     </div>
 
+    <!-- 뉴스 -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <h2>📰 리그 뉴스</h2>
+        {% if events %}
+            {% for e in events %}
+            <div style="display:flex; gap:10px; align-items:center; padding:8px 4px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:13px;">
+                <span style="font-size:16px;">{{ e.icon }}</span>
+                <span style="flex:1; color:#e6e6e6;">{{ e.message }}</span>
+                <span style="color:#566573; font-size:11px;">S{{ e.season }}{% if e.week and e.week < 99 %} W{{ e.week }}{% endif %}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="color:#566573; font-size:13px; padding:14px 4px;">아직 소식이 없습니다.</div>
+        {% endif %}
+    </div>
+
 <!-- templates/dynasty_dashboard.html - Part3 -->
 
     <!-- 로스터 -->
