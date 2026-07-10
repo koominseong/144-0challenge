@@ -557,6 +557,9 @@ def dynasty_dashboard(save_id):
         .data
     )
 
+    from dynasty_event import get_recent_events
+    events = get_recent_events(save_id)
+
     return render_template(
         "dynasty_dashboard.html",
         save=save,
