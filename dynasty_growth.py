@@ -13,8 +13,7 @@ from dynasty_utils import get_supabase
 
 # =========================================
 # 오프시즌 처리 전체
-# =========================================
-def process_offseason_growth(save_id):
+# =========================================def process_offseason_growth(save_id):
     sb = get_supabase()
 
     players = (
@@ -35,12 +34,10 @@ def process_offseason_growth(save_id):
     )
     current_season = save["season"]
 
-    upsert_rows = []  
+    upsert_rows = []
     retired_ids = []
-    
-    for i in range(0, len(history_rows), 100):
-        sb.table("dynasty_player_history").insert(history_rows[i : i + 100]).execute()
 
+    # 선수 성장 처리
     for p in players:
         if p["appear_season"] > current_season:
             continue
@@ -83,7 +80,7 @@ def process_offseason_growth(save_id):
             }
         )
 
-            # ---------- 시즌 종료 시점 능력치 스냅샷 ----------
+    # ---------- 시즌 종료 시점 능력치 스냅샷 ----------
     history_rows = []
     for row in upsert_rows:
         history_rows.append(
@@ -104,28 +101,53 @@ def process_offseason_growth(save_id):
             }
         )
 
+    # 선수 정보 저장
     for i in range(0, len(upsert_rows), 100):
-        sb.table("dynasty_player").upsert(upsert_rows[i : i + 100]).execute()
+        sb.table("dynasty_player").upsert(upsert_rows[i:i + 100]).execute()
 
+    # 히스토리 저장
+    for i in range(0, len(history_rows), 100):
+        sb.table("dynasty_player_history").insert(history_rows[i:i + 100]).execute()
+
+    # 은퇴 선수 로스터 제거
     for i in range(0, len(retired_ids), 50):
-        chunk = retired_ids[i : i + 50]
-        sb.table("dynasty_roster").delete().eq("save_id", save_id).in_(
-            "player_id", chunk
-        ).execute()
+        chunk = retired_ids[i:i + 50]
+        (
+            sb.table("dynasty_roster")
+            .delete()
+            .eq("save_id", save_id)
+            .in_("player_id", chunk)
+            .execute()
+        )
 
+    # 은퇴 이벤트 기록
     from dynasty_event import log_events
+
     big_retires = [
-        r for r in upsert_rows
+        r
+        for r in upsert_rows
         if r["retired"] and (r.get("peak_overall") or 0) >= 72
     ]
-    log_events(save_id, [
-        {"season": current_season, "week": 0, "type": "retire", "icon": "👋",
-         "message": f"{r['name']} 은퇴 (최고 OVR {r['peak_overall']})"}
-        for r in big_retires
-    ])
-    
+
+    if big_retires:
+        log_events(
+            save_id,
+            [
+                {
+                    "season": current_season,
+                    "week": 0,
+                    "type": "retire",
+                    "icon": "👋",
+                    "message": f"{r['name']} 은퇴 (최고 OVR {r['peak_overall']})",
+                }
+                for r in big_retires
+            ],
+        )
+
     print(
-        f"[dynasty_growth] 처리={len(upsert_rows)}명, 은퇴={len(retired_ids)}명"
+        f"[dynasty_growth] 처리={len(upsert_rows)}명, "
+        f"히스토리={len(history_rows)}건, "
+        f"은퇴={len(retired_ids)}명"
     )
 
 
