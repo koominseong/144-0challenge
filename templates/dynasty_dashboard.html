@@ -224,7 +224,8 @@ tr.user-row td {
         <div class="logo">{{ user_team.logo }}</div>
         <div>
             <h1>{{ user_team.team_name }}</h1>
-            <div class="sub">{{ user_team.stadium }} · {{ user_team.wins }}승 {{ user_team.ties }}무 {{ user_team.losses }}패</div>
+            <div class="sub">{{ user_team.stadium }} · {{ user_team.wins }}승 {{ user_team.ties }}무 {{ user_team.losses }}패 · 👥 팬 {{ "{:,}".format(user_team.fans or 10000) }} · 💰 {{ user_team.budget or 0 }}
+            </div>
         </div>
     </div>
     <div class="season-info">
