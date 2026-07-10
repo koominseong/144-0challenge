@@ -50,7 +50,7 @@ def log_events(save_id, events):
 # =========================================
 # 최근 이벤트 조회 (대시보드용)
 # =========================================
-def get_recent_events(save_id, limit=12):
+def get_recent_events(save_id, limit=50):
     sb = get_supabase()
     return (
         sb.table("dynasty_event")
