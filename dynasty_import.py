@@ -433,31 +433,39 @@ def _make_random_name(rng, used_names):
     return name
 
 
+# =========================================
+# [교체] 랜덤 선수 overall 분포 (실존 선수 수준으로 상향)
+# 엘리트 8%, 상위 25%, 중위 45%, 하위 22%
+# =========================================
 def _roll_random_overall(rng):
     r = rng.random()
-    if r < 0.05:
-        return rng.randint(72, 84)
-    if r < 0.25:
-        return rng.randint(62, 71)
-    if r < 0.65:
-        return rng.randint(52, 61)
-    return rng.randint(40, 51)
+    if r < 0.08:
+        return rng.randint(78, 90)
+    if r < 0.33:
+        return rng.randint(65, 80)
+    if r < 0.78:
+        return rng.randint(55, 70)
+    return rng.randint(46, 65)
 
-
+# =========================================
+# [교체] 랜덤 선수 생성 (능력치 하향 재계산 방지)
+# 목표 overall을 정하고 개별 능력치를 그 주변에 배치한 뒤
+# overall은 재계산하지 않고 목표값 유지
+# =========================================
 def _make_random_player(rng, used_names, save_id, season):
     is_pitcher = rng.random() < 0.42
     name = _make_random_name(rng, used_names)
     overall = _roll_random_overall(rng)
-    potential = _clamp(overall + rng.randint(2, 20), overall, 99)
+    potential = _clamp(overall + rng.randint(3, 20), overall, 99)
 
-    def v():
-        return _clamp(overall + rng.randint(-10, 10))
+    def v(spread=8):
+        return _clamp(overall + rng.randint(-spread, spread))
 
     if is_pitcher:
         positions = "P"
         stats = {
             "stuff": v(), "control": v(), "stamina": v(),
-            "defense": _clamp(overall + rng.randint(-15, 5)),
+            "defense": _clamp(overall + rng.randint(-12, 4)),
             "arm": v(),
             "contact": 25, "power": 25, "eye": 25,
             "speed": _clamp(40 + rng.randint(-10, 10), 20, 75),
@@ -474,14 +482,12 @@ def _make_random_player(rng, used_names, save_id, season):
             "stuff": 25, "control": 25, "stamina": 25,
         }
 
-    overall = _calc_overall(stats, is_pitcher)
-
     return {
         "save_id": save_id,
         "name": name,
         "positions": positions,
         "overall": overall,
-        "potential": _clamp(max(potential, overall), overall, 99),
+        "potential": potential,
         "war": 0,
         "appear_season": season,
         "drafted": False,
