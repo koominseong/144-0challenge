@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>육성 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.topbar { background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%); padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 10; }
+.topbar .left { display: flex; align-items: center; gap: 12px; }
+.topbar .logo { font-size: 34px; }
+.topbar h1 { font-size: 20px; color: #fff; }
+.topbar .sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+.budget-box { text-align: right; }
+.budget-box .b-label { font-size: 12px; color: rgba(255,255,255,0.7); }
+.budget-box .b-value { font-size: 22px; font-weight: bold; color: #ffd54f; margin-top: 2px; }
+.back-btn { color: #fff; text-decoration: none; font-size: 14px; padding: 10px 18px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; margin-left: 15px; }
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+.container { max-width: 1000px; margin: 0 auto; padding: 20px 20px 60px; }
+.alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
+.alert.ok { background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.4); color: #81c784; }
+.alert.fail { background: rgba(239,83,80,0.1); border: 1px solid rgba(239,83,80,0.4); color: #ef9a9a; }
+.notice { background: #1a222c; border: 1px solid rgba(144,202,249,0.25); border-radius: 10px; padding: 13px 17px; font-size: 12.5px; color: #90caf9; margin-bottom: 18px; line-height: 1.6; }
+.player-card { display: flex; align-items: center; gap: 14px; background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 15px 18px; margin-bottom: 10px; flex-wrap: wrap; }
+.player-card.done { opacity: 0.5; }
+.p-name { font-weight: bold; color: #fff; font-size: 15px; min-width: 90px; }
+.p-name a { color: #fff; text-decoration: none; }
+.p-name a:hover { color: #90caf9; }
+.p-meta { color: #8899a6; font-size: 12px; min-width: 120px; }
+.ovr { display: inline-block; min-width: 34px; text-align: center; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+.ovr-elite { background: #b71c1c; color: #fff; }
+.ovr-good { background: #e65100; color: #fff; }
+.ovr-avg { background: #1565c0; color: #fff; }
+.ovr-low { background: #37474f; color: #cfd8dc; }
+.pot { color: #66bb6a; font-size: 12px; }
+.train-form { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+.stat-select { padding: 8px 10px; font-size: 13px; color: #e6e6e6; background: #0f1419; border: 1px solid rgba(255,255,255,0.15); border-radius: 7px; outline: none; }
+.train-btn { padding: 9px 18px; font-size: 13px; font-weight: bold; color: #fff; background: {{ user_team.color }}; border: none; border-radius: 7px; cursor: pointer; }
+.train-btn:hover { opacity: 0.85; }
+.done-tag { margin-left: auto; font-size: 12px; color: #8899a6; border: 1px solid rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 7px; }
+.empty { text-align: center; padding: 60px 20px; color: #566573; background: #1a222c; border-radius: 12px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="left">
+        <div class="logo">🏋️</div>
+        <div>
+            <h1>선수 육성</h1>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }} · 회당 {{ cost }}</div>
+        </div>
+    </div>
+    <div style="display:flex; align-items:center;">
+        <div class="budget-box">
+            <div class="b-label">내 예산</div>
+            <div class="b-value">{{ budget }}</div>
+        </div>
+        <a href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}" class="back-btn">← 대시보드</a>
+    </div>
+</div>
+
+<div class="container">
+
+    {% if msg %}
+    <div class="alert {% if ok == '1' %}ok{% else %}fail{% endif %}">{{ msg }}</div>
+    {% endif %}
+
+    <div class="notice">
+        2군 선수를 시즌당 1회 육성할 수 있습니다 (비용 {{ cost }}). 결과: 🌟 대성공 +4~6 (20%, 4년차 이하 30%) / ✅ 성공 +2~3 (50%) / 😓 미미 +0~1 (30%). 잠재력(POT)을 크게 넘어서는 성장은 불가능합니다.
+    </div>
+
+    {% if minors %}
+        {% for p in minors %}
+        <div class="player-card {% if p.trained %}done{% endif %}">
+            <span class="p-name">
+                <a href="{{ url_for('dynasty_player.player_detail', save_id=save.id, player_id=p.id) }}">{{ p.name }}</a>
+            </span>
+            <span class="p-meta">{{ p.positions }} · {{ p.career_years }}년차</span>
+            <span class="ovr
+                {% if p.overall >= 80 %}ovr-elite
+                {% elif p.overall >= 70 %}ovr-good
+                {% elif p.overall >= 60 %}ovr-avg
+                {% else %}ovr-low{% endif %}">{{ p.overall }}</span>
+            <span class="pot">POT {{ p.potential }}</span>
+
+            {% if p.trained %}
+            <span class="done-tag">이번 시즌 육성 완료</span>
+            {% else %}
+            <form class="train-form" method="POST" action="{{ url_for('dynasty_training.training_run', save_id=save.id) }}">
+                <input type="hidden" name="player_id" value="{{ p.id }}">
+                <select name="stat" class="stat-select">
+                    {% for key, label in p.stats_options.items() %}
+                    <option value="{{ key }}">{{ label }} ({{ p[key] }})</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="train-btn">육성 ({{ cost }})</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">2군에 선수가 없습니다.<br>라인업에서 선수를 2군으로 내리면 육성할 수 있습니다.</div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
