@@ -613,6 +613,9 @@ def dynasty_next_season(save_id):
 
     new_season = save["season"] + 1
 
+    from dynasty_history import record_season_history
+    record_season_history(save_id)
+
     # 1. 성장 / 노쇠 / 은퇴
     process_offseason_growth(save_id)
 
