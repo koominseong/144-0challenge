@@ -317,6 +317,28 @@ tr.user-row td {
         {% endif %}
     </div>
 
+    <!-- 시설 투자 -->
+    <div class="card" style="grid-column: 1 / -1; display:flex; gap:30px; flex-wrap:wrap; align-items:center;">
+        <div style="flex:1; min-width:260px;">
+            <div style="font-size:14px; color:#fff; font-weight:bold;">🏟 구장 Lv{{ stadium_level }} / {{ max_level }}</div>
+            <div style="font-size:12px; color:#8899a6; margin-top:4px;">팬 증가 +{{ stadium_level - 1 }}%p · 홈 어드밴티지 +{{ "%.1f"|format((stadium_level - 1) * 0.5) }}%p</div>
+            {% if stadium_cost %}
+            <form method="POST" action="{{ url_for('dynasty.dynasty_upgrade', save_id=save.id, kind='stadium') }}" style="margin-top:8px;">
+                <button type="submit" class="menu-link" style="cursor:pointer;">⬆ 업그레이드 ({{ stadium_cost }})</button>
+            </form>
+            {% else %}<div style="font-size:12px; color:#ffd54f; margin-top:8px;">최고 레벨</div>{% endif %}
+        </div>
+        <div style="flex:1; min-width:260px;">
+            <div style="font-size:14px; color:#fff; font-weight:bold;">🏕 2군 시설 Lv{{ facility_level }} / {{ max_level }}</div>
+            <div style="font-size:12px; color:#8899a6; margin-top:4px;">2군 성장 +{{ (facility_level - 1) // 2 }} · 육성 대성공 +{{ (facility_level - 1) * 2 }}%p</div>
+            {% if facility_cost %}
+            <form method="POST" action="{{ url_for('dynasty.dynasty_upgrade', save_id=save.id, kind='facility') }}" style="margin-top:8px;">
+                <button type="submit" class="menu-link" style="cursor:pointer;">⬆ 업그레이드 ({{ facility_cost }})</button>
+            </form>
+            {% else %}<div style="font-size:12px; color:#ffd54f; margin-top:8px;">최고 레벨</div>{% endif %}
+        </div>
+    </div>
+    
     <!-- 뉴스 -->
     <div class="card" style="grid-column: 1 / -1;">
         <h2>📰 리그 뉴스</h2>
