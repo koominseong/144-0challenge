@@ -35,8 +35,33 @@ def process_offseason_growth(save_id):
     )
     current_season = save["season"]
 
-    upsert_rows = []
+    upsert_rows = []  
+
+    # ---------- 시즌 종료 시점 능력치 스냅샷 ----------
+    history_rows = []
+    for row in upsert_rows:
+        history_rows.append(
+            {
+                "save_id": save_id,
+                "player_id": row["id"],
+                "season": current_season,
+                "overall": row["overall"],
+                "contact": row["contact"],
+                "power": row["power"],
+                "eye": row["eye"],
+                "speed": row["speed"],
+                "defense": row["defense"],
+                "arm": row["arm"],
+                "stuff": row["stuff"],
+                "control": row["control"],
+                "stamina": row["stamina"],
+            }
+        )
+
     retired_ids = []
+    
+    for i in range(0, len(history_rows), 100):
+        sb.table("dynasty_player_history").insert(history_rows[i : i + 100]).execute()
 
     for p in players:
         if p["appear_season"] > current_season:
