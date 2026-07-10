@@ -1,8 +1,10 @@
 # dynasty_growth.py
 # =========================================
-# KBO Dynasty - 오프시즌 성장 / 노쇠 / 은퇴
+# KBO Dynasty - 오프시즌 성장 / 노쇠 / 은퇴 (최종 통합본)
 # + 시즌별 능력치 스냅샷 (dynasty_player_history)
 # + peak_overall / retired_season 기록
+# + 감독/코치 성장 보정 (Phase 3, dynasty_staff)
+# + 2군 시설 성장 보정 (Phase 4, dynasty_facility)
 # =========================================
 
 import random
@@ -31,12 +33,14 @@ def process_offseason_growth(save_id):
         .execute()
         .data[0]
     )
+    current_season = save["season"]
 
-    # (players, save 조회 다음에)
+    # ---------- 스태프(감독/코치) 성장 보정 로드 ----------
     try:
         from dynasty_staff import get_staff_effects
         staff_effects = get_staff_effects(save_id)
-    except Exception:
+    except Exception as ex:
+        print(f"[dynasty_growth] 스태프 효과 skip: {ex}")
         staff_effects = {}
 
     roster_map_rows = (
@@ -48,7 +52,23 @@ def process_offseason_growth(save_id):
     )
     player_team = {r["player_id"]: r["team_id"] for r in roster_map_rows}
 
-    current_season = save["season"]
+    # ---------- 2군 시설 성장 보정 로드 ----------
+    try:
+        from dynasty_facility import get_facility_effects
+        fac_effects = get_facility_effects(save_id)
+    except Exception as ex:
+        print(f"[dynasty_growth] 시설 효과 skip: {ex}")
+        fac_effects = {}
+
+    minor_rows = (
+        sb.table("dynasty_roster")
+        .select("player_id, team_id, role")
+        .eq("save_id", save_id)
+        .eq("role", "MINOR")
+        .execute()
+        .data
+    )
+    minor_team = {r["player_id"]: r["team_id"] for r in minor_rows}
 
     upsert_rows = []
     retired_ids = []
@@ -59,30 +79,17 @@ def process_offseason_growth(save_id):
             continue
 
         career_years = current_season - p["appear_season"] + 1
-        
+
+        # 코치 보정: 타자→타격코치 / 투수→투수코치, 육성가 감독은 4년차 이하 +1
         e = staff_effects.get(player_team.get(p["id"]), {})
         is_pitcher_p = "P" in (p["positions"] or "")
         coach_bonus = e.get("pit_growth", 0) if is_pitcher_p else e.get("bat_growth", 0)
         if career_years <= 4:
             coach_bonus += e.get("young_growth", 0)
+
+        # 2군 시설 보정: 2군 소속 선수만
         if p["id"] in minor_team:
             coach_bonus += fac_effects.get(minor_team[p["id"]], {}).get("minor_growth", 0)
-
-        try:
-            from dynasty_facility import get_facility_effects
-            fac_effects = get_facility_effects(save_id)
-        except Exception:
-            fac_effects = {}
-    
-        minor_rows = (
-            sb.table("dynasty_roster")
-            .select("player_id, team_id, role")
-            .eq("save_id", save_id)
-            .eq("role", "MINOR")
-            .execute()
-            .data
-        )
-        minor_team = {r["player_id"]: r["team_id"] for r in minor_rows}
 
         updated = _grow_player(p, career_years, coach_bonus)
 
@@ -164,7 +171,7 @@ def process_offseason_growth(save_id):
 
 
 # =========================================
-# 개별 선수 성장/노쇠
+# 개별 선수 성장/노쇠 (coach_bonus: 스태프+시설 성장 보정)
 # =========================================
 def _grow_player(p, career_years, coach_bonus=0):
     overall = p["overall"]
@@ -190,6 +197,7 @@ def _grow_player(p, career_years, coach_bonus=0):
             decline = random.randint(0, 1)
         delta = -decline
 
+    # 스태프/시설 보정 (성장기엔 상승폭 확대, 하락기엔 하락 완화)
     delta += coach_bonus
 
     stats = ["contact", "power", "eye", "speed", "defense", "arm"]
