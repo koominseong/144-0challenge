@@ -68,6 +68,14 @@ def update_fans(save_id):
 
         rate += stars.get(t["id"], 0) * 0.03
 
+        # (rate += stars... 다음에)
+        try:
+            from dynasty_staff import get_staff_effects
+            _fx = get_staff_effects(save_id)
+            rate += _fx.get(t["id"], {}).get("fan_bonus", 0.0)
+        except Exception:
+            pass
+
         fans = int(fans * (1 + rate))
         fans = max(FAN_MIN, min(FAN_MAX, fans))
 
