@@ -1,4 +1,5 @@
 <!-- templates/dynasty_lineup.html -->
+<!-- (1군/2군 체제 + 선수 상세 링크 통합본) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -91,6 +92,21 @@ body {
     color: #81c784;
 }
 
+.count-bar {
+    display: flex;
+    gap: 20px;
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 13px 20px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #8899a6;
+}
+
+.count-bar strong { color: #fff; }
+.count-bar .warn { color: #ffb74d; }
+
 .card {
     background: #1a222c;
     border: 1px solid rgba(255,255,255,0.06);
@@ -136,7 +152,16 @@ body {
 .player-item .p-name {
     flex: 1;
     font-weight: 600;
+}
+
+.player-item .p-name a {
     color: #fff;
+    text-decoration: none;
+}
+
+.player-item .p-name a:hover {
+    color: #90caf9;
+    text-decoration: underline;
 }
 
 .player-item .p-pos {
@@ -216,10 +241,18 @@ body {
     <div class="alert">✅ {{ msg }}</div>
     {% endif %}
 
+    <div class="count-bar">
+        <span>1군 <strong class="{% if first_team_count > 28 %}warn{% endif %}">{{ first_team_count }}</strong> / 28</span>
+        <span>2군 <strong>{{ minors|length }}</strong></span>
+        <span>전체 <strong>{{ total_count }}</strong>명</span>
+    </div>
+
     {% macro player_row(p) %}
     <div class="player-item">
         <span class="p-depth">{{ p.depth }}</span>
-        <span class="p-name">{{ p.name }}</span>
+        <span class="p-name">
+            <a href="{{ url_for('dynasty_player.player_detail', save_id=save.id, player_id=p.player_id) }}">{{ p.name }}</a>
+        </span>
         <span class="p-pos">{{ p.positions }}</span>
         <span class="ovr
             {% if p.overall >= 80 %}ovr-elite
@@ -255,7 +288,7 @@ body {
         </div>
 
         <div class="card">
-            <h2>🔥 마무리 / 불펜 <span class="count">{{ cps|length + rps|length }}</span></h2>
+            <h2>🔥 마무리 / 불펜 <span class="count">{{ cps|length + rps|length }} / 7</span></h2>
             {% for p in cps %}{{ player_row(p) }}{% endfor %}
             {% for p in rps %}{{ player_row(p) }}{% endfor %}
             {% if not cps and not rps %}<div class="empty-line">불펜 투수가 없습니다.</div>{% endif %}
@@ -263,7 +296,7 @@ body {
     </div>
 
     <div class="card">
-        <h2>🪑 벤치 <span class="count">{{ bench|length }}</span></h2>
+        <h2>🪑 벤치 <span class="count">{{ bench|length }} / 7</span></h2>
         {% for p in bench %}{{ player_row(p) }}{% endfor %}
         {% if not bench %}<div class="empty-line">벤치 선수가 없습니다.</div>{% endif %}
     </div>
