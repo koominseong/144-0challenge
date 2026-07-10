@@ -578,6 +578,11 @@ def dynasty_dashboard(save_id):
         roster=roster_rows,
         season_weeks=SEASON_WEEKS,
         events=events,
+        stadium_level=stadium_level,
+        facility_level=facility_level,
+        stadium_cost=stadium_cost,
+        facility_cost=facility_cost,
+        max_level=MAX_LEVEL
     )
 
 @dynasty_bp.route("/dynasty/<int:save_id>/upgrade/<kind>", methods=["POST"])
