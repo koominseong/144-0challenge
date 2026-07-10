@@ -711,6 +711,9 @@ def dynasty_next_season(save_id):
     init_staff_market(save_id)
     pay_staff_salaries(save_id)
     ai_hire_staff(save_id)
+
+    from dynasty_facility import ai_upgrade_facilities
+    ai_upgrade_facilities(save_id)
     
     # 2. 성장 / 노쇠 / 은퇴
     process_offseason_growth(save_id)
