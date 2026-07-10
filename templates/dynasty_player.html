@@ -1,0 +1,354 @@
+<!-- templates/dynasty_player.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ player.name }} - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+.topbar h1 { font-size: 20px; color: #fff; }
+
+.topbar .sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 3px;
+}
+
+.back-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 25px 20px 60px;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.profile .p-left { display: flex; align-items: center; gap: 18px; }
+
+.profile .p-ovr {
+    font-size: 40px;
+    font-weight: bold;
+    min-width: 90px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.ovr-elite { background: #b71c1c; color: #fff; }
+.ovr-good { background: #e65100; color: #fff; }
+.ovr-avg { background: #1565c0; color: #fff; }
+.ovr-low { background: #37474f; color: #cfd8dc; }
+
+.profile .p-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.hof-badge {
+    display: inline-block;
+    font-size: 13px;
+    color: #ffd54f;
+    border: 1px solid rgba(255,213,79,0.5);
+    padding: 3px 10px;
+    border-radius: 7px;
+    margin-left: 10px;
+}
+
+.retired-badge {
+    display: inline-block;
+    font-size: 13px;
+    color: #8899a6;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 3px 10px;
+    border-radius: 7px;
+    margin-left: 10px;
+}
+
+.profile .p-meta {
+    font-size: 14px;
+    color: #8899a6;
+    margin-top: 8px;
+    line-height: 1.7;
+}
+
+.card {
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* 능력치 바 */
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 11px;
+}
+
+.stat-row .s-label {
+    min-width: 44px;
+    font-size: 13px;
+    color: #8899a6;
+}
+
+.stat-row .s-bar {
+    flex: 1;
+    height: 14px;
+    background: #0f1419;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.stat-row .s-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #1565c0, #42a5f5);
+}
+
+.stat-row .s-fill.high { background: linear-gradient(90deg, #b71c1c, #ef5350); }
+.stat-row .s-fill.mid { background: linear-gradient(90deg, #e65100, #ffa726); }
+
+.stat-row .s-value {
+    min-width: 32px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+}
+
+/* 시즌별 변화 표 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    text-align: center;
+    padding: 8px 6px;
+    color: #8899a6;
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+td {
+    text-align: center;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+td.season-col { color: #8899a6; }
+td.ovr-col { font-weight: bold; color: #fff; }
+
+.diff-up { color: #66bb6a; font-size: 11px; }
+.diff-down { color: #ef5350; font-size: 11px; }
+
+/* OVR 추이 그래프 */
+.chart-wrap { padding: 10px 0; }
+
+.empty-msg {
+    color: #566573;
+    font-size: 13px;
+    padding: 16px 0;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>
+        <h1>선수 정보</h1>
+        <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}</div>
+    </div>
+    <a href="javascript:history.back()" class="back-btn">← 뒤로</a>
+</div>
+
+<div class="container">
+
+    <!-- 프로필 -->
+    <div class="profile">
+        <div class="p-left">
+            <div class="p-ovr
+                {% if player.overall >= 80 %}ovr-elite
+                {% elif player.overall >= 70 %}ovr-good
+                {% elif player.overall >= 60 %}ovr-avg
+                {% else %}ovr-low{% endif %}">{{ player.overall }}</div>
+            <div>
+                <div class="p-name">
+                    {{ player.name }}
+                    {% if is_hof %}<span class="hof-badge">🏛 명예의 전당</span>{% endif %}
+                    {% if player.retired %}<span class="retired-badge">은퇴</span>{% endif %}
+                </div>
+                <div class="p-meta">
+                    {{ player.positions }} ·
+                    {% if current_team %}{{ current_team.logo }} {{ current_team.team_name }}{% else %}무소속{% endif %}
+                    {% if current_role %} · {% if current_role == 'MINOR' %}2군{% elif current_role == 'START' %}주전{% elif current_role == 'SP' %}선발{% elif current_role == 'CP' %}마무리{% elif current_role == 'RP' %}불펜{% else %}벤치{% endif %}{% endif %}
+                    <br>
+                    {{ career_years }}년차 · Season {{ player.appear_season }} 등장
+                    {% if player.retired_season %} · Season {{ player.retired_season }} 은퇴{% endif %}
+                    · 최고 OVR {{ player.peak_overall or player.overall }} · POT {{ player.potential }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 현재 능력치 -->
+    <div class="card">
+        <h2>📊 능력치</h2>
+        {% macro stat_bar(label, value) %}
+        <div class="stat-row">
+            <span class="s-label">{{ label }}</span>
+            <div class="s-bar">
+                <div class="s-fill {% if value >= 75 %}high{% elif value >= 60 %}mid{% endif %}"
+                     style="width: {{ value }}%;"></div>
+            </div>
+            <span class="s-value">{{ value }}</span>
+        </div>
+        {% endmacro %}
+
+        {% if is_pitcher %}
+            {{ stat_bar('구위', player.stuff) }}
+            {{ stat_bar('제구', player.control) }}
+            {{ stat_bar('체력', player.stamina) }}
+            {{ stat_bar('수비', player.defense) }}
+            {{ stat_bar('송구', player.arm) }}
+        {% else %}
+            {{ stat_bar('컨택', player.contact) }}
+            {{ stat_bar('파워', player.power) }}
+            {{ stat_bar('선구', player.eye) }}
+            {{ stat_bar('주력', player.speed) }}
+            {{ stat_bar('수비', player.defense) }}
+            {{ stat_bar('송구', player.arm) }}
+        {% endif %}
+    </div>
+
+    <!-- OVR 추이 그래프 -->
+    <div class="card">
+        <h2>📈 OVR 추이</h2>
+        {% if history and history|length >= 2 %}
+        <div class="chart-wrap">
+            <svg viewBox="0 0 600 180" width="100%" preserveAspectRatio="xMidYMid meet">
+                {% set min_ovr = history|map(attribute='overall')|min - 5 %}
+                {% set max_ovr = history|map(attribute='overall')|max + 5 %}
+                {% set range = max_ovr - min_ovr if max_ovr != min_ovr else 1 %}
+                {% set n = history|length %}
+                {% set pts = [] %}
+                {% for h in history %}
+                    {% set x = 40 + (loop.index0 / (n - 1)) * 530 %}
+                    {% set y = 160 - ((h.overall - min_ovr) / range) * 140 %}
+                    {% set _ = pts.append(x ~ ',' ~ y) %}
+                {% endfor %}
+                <polyline points="{{ pts|join(' ') }}" fill="none"
+                          stroke="{{ user_team.color }}" stroke-width="2.5"/>
+                {% for h in history %}
+                    {% set x = 40 + (loop.index0 / (n - 1)) * 530 %}
+                    {% set y = 160 - ((h.overall - min_ovr) / range) * 140 %}
+                    <circle cx="{{ x }}" cy="{{ y }}" r="4" fill="#ffd54f"/>
+                    <text x="{{ x }}" y="{{ y - 10 }}" text-anchor="middle"
+                          font-size="11" fill="#e6e6e6">{{ h.overall }}</text>
+                    <text x="{{ x }}" y="176" text-anchor="middle"
+                          font-size="10" fill="#8899a6">S{{ h.season }}</text>
+                {% endfor %}
+            </svg>
+        </div>
+        {% else %}
+        <div class="empty-msg">아직 기록된 시즌 변화가 없습니다. (시즌 종료 시마다 기록됩니다)</div>
+        {% endif %}
+    </div>
+
+    <!-- 시즌별 상세 -->
+    <div class="card">
+        <h2>📋 시즌별 능력치</h2>
+        {% if history %}
+        <table>
+            <tr>
+                <th>시즌</th>
+                <th>OVR</th>
+                {% if is_pitcher %}
+                <th>구위</th><th>제구</th><th>체력</th><th>수비</th><th>송구</th>
+                {% else %}
+                <th>컨택</th><th>파워</th><th>선구</th><th>주력</th><th>수비</th><th>송구</th>
+                {% endif %}
+            </tr>
+            {% for h in history %}
+            <tr>
+                <td class="season-col">S{{ h.season }}</td>
+                <td class="ovr-col">
+                    {{ h.overall }}
+                    {% if not loop.first %}
+                        {% set prev = history[loop.index0 - 1].overall %}
+                        {% if h.overall > prev %}<span class="diff-up">▲{{ h.overall - prev }}</span>
+                        {% elif h.overall < prev %}<span class="diff-down">▼{{ prev - h.overall }}</span>{% endif %}
+                    {% endif %}
+                </td>
+                {% if is_pitcher %}
+                <td>{{ h.stuff }}</td><td>{{ h.control }}</td><td>{{ h.stamina }}</td>
+                <td>{{ h.defense }}</td><td>{{ h.arm }}</td>
+                {% else %}
+                <td>{{ h.contact }}</td><td>{{ h.power }}</td><td>{{ h.eye }}</td>
+                <td>{{ h.speed }}</td><td>{{ h.defense }}</td><td>{{ h.arm }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="empty-msg">아직 기록된 시즌이 없습니다.</div>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
