@@ -51,6 +51,7 @@ def lineup_home(save_id):
         roster.append(
             {
                 "roster_id": r["id"],
+                "player_id": p["id"],   
                 "role": r["role"],
                 "depth": r["depth"],
                 "name": p["name"],
