@@ -570,16 +570,14 @@ def dynasty_sim_all(save_id):
     if save["finished"]:
         return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
-    week = save["week"]
+    from dynasty_game import simulate_rest_of_season
+    simulate_rest_of_season(save_id, save["season"], save["week"])
 
-    while week <= SEASON_WEEKS:
-        simulate_week(save_id, save["season"], week)
-        week += 1
-
-    sb.table("dynasty_save").update({"week": week}).eq("id", save_id).execute()
+    sb.table("dynasty_save").update(
+        {"week": SEASON_WEEKS + 1}
+    ).eq("id", save_id).execute()
 
     return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
-
 # =========================================
 # 시즌 종료
 # =========================================
