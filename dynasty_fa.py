@@ -24,7 +24,7 @@ LOYALTY_BONUS = 1.15  # 원소속팀 가산
 # =========================================
 def fa_base_price(player, season):
     value = trade_value(player, season)
-    return max(3, int(round(value * 0.22)))
+    return max(3, int(round(value * 0.04)))
     
 # =========================================
 # 시즌 예산 리셋 (전년도 순위 기반, 하위팀 우대)
