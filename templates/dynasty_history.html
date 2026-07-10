@@ -1,0 +1,251 @@
+<!-- templates/dynasty_history.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리그 역사 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar .logo { font-size: 34px; }
+.topbar h1 { font-size: 20px; color: #fff; }
+
+.topbar .sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 3px;
+}
+
+.back-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 25px 20px 60px;
+}
+
+.card {
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 22px;
+}
+
+.card h2 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* 우승 횟수 */
+.title-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.title-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #141b23;
+    border: 1px solid rgba(255,213,79,0.2);
+    border-radius: 10px;
+    padding: 12px 18px;
+}
+
+.title-item .t-logo { font-size: 26px; }
+.title-item .t-name { font-size: 14px; font-weight: 600; color: #fff; }
+.title-item .t-count {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffd54f;
+}
+
+/* 시즌별 기록 */
+.season-block {
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.season-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: #141b23;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.season-header:hover { background: #182029; }
+
+.season-header .s-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.season-header .s-champ {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #ffd54f;
+}
+
+.season-body {
+    display: none;
+    padding: 5px 18px 14px;
+}
+
+.season-block.open .season-body { display: block; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    text-align: left;
+    padding: 8px 6px;
+    color: #8899a6;
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+td {
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+tr.user-row { background: rgba(255,213,79,0.07); }
+tr.user-row td { font-weight: bold; color: #ffd54f; }
+
+.rank-num { color: #8899a6; width: 26px; }
+
+.empty-msg {
+    text-align: center;
+    color: #566573;
+    padding: 50px 0;
+    font-size: 15px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="left">
+        <div class="logo">📜</div>
+        <div>
+            <h1>리그 역사</h1>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}</div>
+        </div>
+    </div>
+    <a href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}" class="back-btn">← 대시보드</a>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <h2>🏆 통산 우승</h2>
+        {% if titles %}
+        <div class="title-list">
+            {% for t in titles %}
+            <div class="title-item">
+                <span class="t-logo">{{ t.logo }}</span>
+                <span class="t-name">{{ t.team_name }}</span>
+                <span class="t-count">★{{ t.titles }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-msg">아직 완료된 시즌이 없습니다.</div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>📅 시즌별 기록</h2>
+        {% if history %}
+            {% for s in history %}
+            <div class="season-block {% if loop.first %}open{% endif %}">
+                <div class="season-header" onclick="this.parentElement.classList.toggle('open')">
+                    <span class="s-title">Season {{ s.season }}</span>
+                    {% if s.champion %}
+                    <span class="s-champ">{{ s.champion.logo }} {{ s.champion.team_name }} 우승 🏆</span>
+                    {% endif %}
+                </div>
+                <div class="season-body">
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>팀</th>
+                            <th>승</th>
+                            <th>무</th>
+                            <th>패</th>
+                        </tr>
+                        {% for r in s.rows %}
+                        <tr class="{% if r.team_id == user_team.id %}user-row{% endif %}">
+                            <td class="rank-num">{{ r.rank }}</td>
+                            <td>{{ r.logo }} {{ r.team_name }}{% if r.champion %} 🏆{% endif %}</td>
+                            <td>{{ r.wins }}</td>
+                            <td>{{ r.ties }}</td>
+                            <td>{{ r.losses }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-msg">아직 완료된 시즌이 없습니다.<br>첫 시즌을 끝까지 진행해보세요!</div>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
