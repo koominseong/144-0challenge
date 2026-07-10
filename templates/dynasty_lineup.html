@@ -1,0 +1,273 @@
+<!-- templates/dynasty_lineup.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>라인업 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar .logo { font-size: 34px; }
+.topbar h1 { font-size: 20px; color: #fff; }
+
+.topbar .sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 3px;
+}
+
+.topbar .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.auto-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #90caf9;
+    background: none;
+    border: 1px solid rgba(144,202,249,0.4);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.auto-btn:hover { background: rgba(144,202,249,0.08); }
+
+.back-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 25px 20px 60px;
+}
+
+.alert {
+    padding: 13px 18px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(76,175,80,0.12);
+    border: 1px solid rgba(76,175,80,0.4);
+    color: #81c784;
+}
+
+.card {
+    background: #1a222c;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card h2 .count {
+    font-size: 12px;
+    color: #8899a6;
+    font-weight: normal;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+}
+
+.player-item:last-child { border-bottom: none; }
+
+.player-item .p-depth {
+    color: #566573;
+    font-size: 12px;
+    min-width: 22px;
+}
+
+.player-item .p-name {
+    flex: 1;
+    font-weight: 600;
+    color: #fff;
+}
+
+.player-item .p-pos {
+    color: #8899a6;
+    font-size: 12px;
+    min-width: 60px;
+}
+
+.ovr {
+    display: inline-block;
+    min-width: 34px;
+    text-align: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.ovr-elite { background: #b71c1c; color: #fff; }
+.ovr-good { background: #e65100; color: #fff; }
+.ovr-avg { background: #1565c0; color: #fff; }
+.ovr-low { background: #37474f; color: #cfd8dc; }
+
+.pot { color: #66bb6a; font-size: 12px; min-width: 30px; }
+
+.role-select {
+    padding: 7px 10px;
+    font-size: 13px;
+    color: #e6e6e6;
+    background: #0f1419;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 7px;
+    outline: none;
+    cursor: pointer;
+}
+
+.role-select:focus { border-color: {{ user_team.color }}; }
+
+.empty-line {
+    color: #566573;
+    font-size: 13px;
+    padding: 12px 8px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 800px) {
+    .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="left">
+        <div class="logo">{{ user_team.logo }}</div>
+        <div>
+            <h1>라인업 관리</h1>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}</div>
+        </div>
+    </div>
+    <div class="actions">
+        <form method="POST" action="{{ url_for('dynasty_lineup.lineup_auto', save_id=save.id) }}">
+            <button type="submit" class="auto-btn">⚙ 자동 라인업</button>
+        </form>
+        <a href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}" class="back-btn">← 대시보드</a>
+    </div>
+</div>
+
+<div class="container">
+
+    {% if msg %}
+    <div class="alert">✅ {{ msg }}</div>
+    {% endif %}
+
+    {% macro player_row(p) %}
+    <div class="player-item">
+        <span class="p-depth">{{ p.depth }}</span>
+        <span class="p-name">{{ p.name }}</span>
+        <span class="p-pos">{{ p.positions }}</span>
+        <span class="ovr
+            {% if p.overall >= 80 %}ovr-elite
+            {% elif p.overall >= 70 %}ovr-good
+            {% elif p.overall >= 60 %}ovr-avg
+            {% else %}ovr-low{% endif %}">{{ p.overall }}</span>
+        <span class="pot">{{ p.potential }}</span>
+        <form method="POST" action="{{ url_for('dynasty_lineup.lineup_set_role', save_id=save.id) }}">
+            <input type="hidden" name="roster_id" value="{{ p.roster_id }}">
+            <select name="role" class="role-select" onchange="this.form.submit()">
+                <option value="START" {% if p.role == 'START' %}selected{% endif %}>주전</option>
+                <option value="SP" {% if p.role == 'SP' %}selected{% endif %}>선발</option>
+                <option value="CP" {% if p.role == 'CP' %}selected{% endif %}>마무리</option>
+                <option value="RP" {% if p.role == 'RP' %}selected{% endif %}>불펜</option>
+                <option value="BENCH" {% if p.role == 'BENCH' %}selected{% endif %}>벤치</option>
+            </select>
+        </form>
+    </div>
+    {% endmacro %}
+
+    <div class="card">
+        <h2>⚾ 주전 야수 <span class="count">{{ starters|length }} / 9</span></h2>
+        {% for p in starters %}{{ player_row(p) }}{% endfor %}
+        {% if not starters %}<div class="empty-line">주전 야수가 없습니다.</div>{% endif %}
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h2>🎯 선발 투수 <span class="count">{{ sps|length }} / 5</span></h2>
+            {% for p in sps %}{{ player_row(p) }}{% endfor %}
+            {% if not sps %}<div class="empty-line">선발 투수가 없습니다.</div>{% endif %}
+        </div>
+
+        <div class="card">
+            <h2>🔥 마무리 / 불펜 <span class="count">{{ cps|length + rps|length }}</span></h2>
+            {% for p in cps %}{{ player_row(p) }}{% endfor %}
+            {% for p in rps %}{{ player_row(p) }}{% endfor %}
+            {% if not cps and not rps %}<div class="empty-line">불펜 투수가 없습니다.</div>{% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🪑 벤치 <span class="count">{{ bench|length }}</span></h2>
+        {% for p in bench %}{{ player_row(p) }}{% endfor %}
+        {% if not bench %}<div class="empty-line">벤치 선수가 없습니다.</div>{% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
