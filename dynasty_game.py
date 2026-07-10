@@ -192,6 +192,16 @@ def _load_teams_and_powers(sb, save_id):
     for t in teams:
         powers[t["id"]] = _calc_power(by_team.get(t["id"], []))
 
+    try:
+        from dynasty_staff import get_staff_effects
+        effects = get_staff_effects(save_id)
+        for tid, e in effects.items():
+            if tid in powers:
+                powers[tid]["bat"] *= (1 + e["sim"])
+                powers[tid]["pit"] *= (1 + e["sim"])
+    except Exception as ex:
+        print(f"[dynasty_game] 스태프 효과 skip: {ex}")
+
     return teams, powers
 
 
