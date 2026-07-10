@@ -15,7 +15,7 @@ from dynasty_trade import trade_value
 
 FA_CAREER_YEARS = 6
 FA_RELEASE_RATE = 0.35
-BASE_BUDGET = 100
+BASE_BUDGET = 250
 LOYALTY_BONUS = 1.15  # 원소속팀 가산
 
 
@@ -24,9 +24,8 @@ LOYALTY_BONUS = 1.15  # 원소속팀 가산
 # =========================================
 def fa_base_price(player, season):
     value = trade_value(player, season)
-    return max(5, int(round(value * 0.4)))
-
-
+    return max(3, int(round(value * 0.22)))
+    
 # =========================================
 # 시즌 예산 리셋 (전년도 순위 기반, 하위팀 우대)
 # 1위 90 ~ 10위 117
@@ -50,7 +49,7 @@ def reset_budgets(save_id):
         row = dict(t)
         row.pop("pct", None)
         row.pop("gb", None)
-        row["budget"] = BASE_BUDGET - 13 + rank * 3
+        row["budget"] = BASE_BUDGET - 40 + rank * 8  # 1위 168 ~ 10위 240
         rows.append(row)
 
     sb.table("dynasty_team").upsert(rows).execute()
