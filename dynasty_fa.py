@@ -15,7 +15,7 @@ from dynasty_trade import trade_value
 
 FA_CAREER_YEARS = 6
 FA_RELEASE_RATE = 0.35
-BASE_BUDGET = 250
+BASE_BUDGET = 500
 LOYALTY_BONUS = 1.15  # 원소속팀 가산
 
 
