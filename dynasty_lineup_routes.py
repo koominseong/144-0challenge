@@ -13,7 +13,7 @@ from dynasty_lineup import auto_generate_lineup
 
 lineup_bp = Blueprint("dynasty_lineup", __name__)
 
-ROLE_ORDER = {"START": 0, "SP": 1, "CP": 2, "RP": 3, "BENCH": 4}
+ROLE_ORDER = {"START": 0, "SP": 1, "CP": 2, "RP": 3, "BENCH": 4, "MINOR": 5}
 
 
 # =========================================
@@ -66,14 +66,34 @@ def lineup_home(save_id):
             }
         )
 
-    roster.sort(key=lambda x: (ROLE_ORDER.get(x["role"], 9), x["depth"]))
+    minors = [r for r in roster if r["role"] == "MINOR"]
 
+    roster.sort(key=lambda x: (ROLE_ORDER.get(x["role"], 9), x["depth"]))
+    
     starters = [r for r in roster if r["role"] == "START"]
     sps = [r for r in roster if r["role"] == "SP"]
     cps = [r for r in roster if r["role"] == "CP"]
     rps = [r for r in roster if r["role"] == "RP"]
     bench = [r for r in roster if r["role"] == "BENCH"]
+    minors = [r for r in roster if r["role"] == "MINOR"]
 
+    if new_role not in ("START", "SP", "CP", "RP", "BENCH", "MINOR"):
+        new_role = "BENCH"
+
+    msg = request.args.get("msg", "")
+
+    return render_template(
+        "dynasty_lineup.html",
+        save=save,
+        user_team=user_team,
+        starters=starters,
+        sps=sps,
+        cps=cps,
+        rps=rps,
+        bench=bench,
+        minors=minors,
+        msg=msg,
+    )
     msg = request.args.get("msg", "")
 
     return render_template(
