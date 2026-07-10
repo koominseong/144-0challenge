@@ -1,0 +1,209 @@
+<!-- templates/dynasty_hof.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>명예의 전당 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
+
+.hero {
+    text-align: center;
+    padding: 50px 20px 35px;
+    background: linear-gradient(180deg, #2c2410 0%, #0f1419 100%);
+    border-bottom: 1px solid rgba(255,213,79,0.15);
+}
+
+.hero .icon { font-size: 54px; }
+
+.hero h1 {
+    font-size: 30px;
+    color: #ffd54f;
+    margin-top: 12px;
+    letter-spacing: 2px;
+}
+
+.hero .sub {
+    font-size: 14px;
+    color: #8899a6;
+    margin-top: 10px;
+}
+
+.hero .criteria {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #b0a15c;
+    border: 1px solid rgba(255,213,79,0.25);
+    border-radius: 8px;
+    padding: 8px 16px;
+    line-height: 1.6;
+}
+
+.topnav {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 16px 20px 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.back-btn {
+    color: #8899a6;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 9px 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 25px 20px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.plaque {
+    background: linear-gradient(160deg, #262013 0%, #1a222c 55%);
+    border: 1px solid rgba(255,213,79,0.3);
+    border-radius: 14px;
+    padding: 22px;
+    position: relative;
+    transition: transform 0.15s, border-color 0.15s;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.plaque:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,213,79,0.6);
+}
+
+.plaque .laurel {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-size: 24px;
+    opacity: 0.85;
+}
+
+.plaque .p-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffd54f;
+}
+
+.plaque .p-pos {
+    font-size: 13px;
+    color: #8899a6;
+    margin-top: 4px;
+}
+
+.plaque .p-stats {
+    display: flex;
+    gap: 18px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,213,79,0.15);
+}
+
+.p-stat .ps-label {
+    font-size: 11px;
+    color: #8899a6;
+}
+
+.p-stat .ps-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 3px;
+}
+
+.p-stat .ps-value.gold { color: #ffd54f; }
+
+.plaque .p-era {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6d7a86;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 70px 20px;
+    color: #566573;
+    font-size: 15px;
+    background: #1a222c;
+    border-radius: 14px;
+    line-height: 1.8;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="icon">🏛</div>
+    <h1>명예의 전당</h1>
+    <div class="sub">{{ user_team.team_name }} 리그 · Season {{ save.season }}</div>
+    <div class="criteria">
+        헌액 기준 — 커리어 최고 OVR 82 이상<br>또는 최고 OVR 75 이상 + 12시즌 이상 활약
+    </div>
+</div>
+
+<div class="topnav">
+    <a href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}" class="back-btn">← 대시보드</a>
+</div>
+
+<div class="container">
+
+    {% if inductees %}
+        {% for p in inductees %}
+        <a class="plaque" href="{{ url_for('dynasty_player.player_detail', save_id=save.id, player_id=p.id) }}">
+            <div class="laurel">🏅</div>
+            <div class="p-name">{{ p.name }}</div>
+            <div class="p-pos">{{ p.positions }}</div>
+            <div class="p-stats">
+                <div class="p-stat">
+                    <div class="ps-label">최고 OVR</div>
+                    <div class="ps-value gold">{{ p.peak_overall or p.overall }}</div>
+                </div>
+                <div class="p-stat">
+                    <div class="ps-label">활약 기간</div>
+                    <div class="ps-value">{{ p.career_years }}시즌</div>
+                </div>
+                <div class="p-stat">
+                    <div class="ps-label">통산 WAR</div>
+                    <div class="ps-value">{{ p.war }}</div>
+                </div>
+            </div>
+            <div class="p-era">
+                Season {{ p.appear_season }} ~ Season {{ p.retired_season or '?' }}
+            </div>
+        </a>
+        {% endfor %}
+    {% else %}
+        <div class="empty">
+            아직 명예의 전당에 헌액된 선수가 없습니다.<br>
+            위대한 커리어를 남기고 은퇴한 선수가 나오면 이곳에 모셔집니다.
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
