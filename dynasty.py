@@ -720,6 +720,9 @@ def dynasty_next_season(save_id):
     # 4. AI끼리 트레이드
     ai_auto_trades(save_id, max_trades=3)
 
+    from dynasty_training import ai_auto_training
+    ai_auto_training(save_id)
+
     # 5. 신인 Import
     import_players_for_season(save_id, new_season)
 
