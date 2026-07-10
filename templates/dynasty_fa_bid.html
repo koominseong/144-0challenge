@@ -1,0 +1,465 @@
+<!-- templates/dynasty_fa_bid.html - Part1 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FA 입찰 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%);
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar .logo { font-size: 34px; }
+.topbar h1 { font-size: 20px; color: #fff; }
+
+.topbar .sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 3px;
+}
+
+.budget-box {
+    text-align: right;
+}
+
+.budget-box .b-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+}
+
+.budget-box .b-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffd54f;
+    margin-top: 2px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 20px 120px;
+}
+
+.notice {
+    background: #1a222c;
+    border: 1px solid rgba(144,202,249,0.25);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #90caf9;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #1a222c;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    text-align: left;
+    padding: 12px 10px;
+    color: #8899a6;
+    font-weight: 600;
+    font-size: 12px;
+    background: #141b23;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+td {
+    padding: 11px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+tr.fa-row:hover { background: rgba(255,255,255,0.04); }
+
+tr.my-fa {
+    background: rgba(255,213,79,0.06);
+}
+
+.ovr {
+    display: inline-block;
+    min-width: 34px;
+    text-align: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.ovr-elite { background: #b71c1c; color: #fff; }
+.ovr-good { background: #e65100; color: #fff; }
+.ovr-avg { background: #1565c0; color: #fff; }
+.ovr-low { background: #37474f; color: #cfd8dc; }
+
+.career { color: #8899a6; font-size: 12px; }
+.base-price { color: #90caf9; font-weight: 600; }
+
+.from-badge {
+    font-size: 11px;
+    color: #8899a6;
+}
+
+.loyalty-badge {
+    display: inline-block;
+    font-size: 11px;
+    color: #ffd54f;
+    border: 1px solid rgba(255,213,79,0.4);
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 6px;
+}
+
+.bid-input {
+    width: 90px;
+    padding: 8px 10px;
+    font-size: 14px;
+    text-align: right;
+    color: #fff;
+    background: #0f1419;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 7px;
+    outline: none;
+}
+
+.bid-input:focus { border-color: {{ user_team.color }}; }
+
+.bid-input.active {
+    border-color: #ffd54f;
+    background: rgba(255,213,79,0.05);
+}
+
+/* ===== 하단 고정 제출 바 ===== */
+.submit-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #141b23;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    align-items: center;
+    z-index: 20;
+}
+
+.submit-bar .sums {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.sum-item .s-label { font-size: 11px; color: #8899a6; }
+.sum-item .s-value { font-size: 18px; font-weight: bold; color: #fff; margin-top: 2px; }
+.sum-item .s-value.over { color: #ef5350; }
+
+.btn-submit {
+    padding: 13px 40px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, {{ user_team.color }}, #2c3e50);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-submit:hover { opacity: 0.88; }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ===== 결과 화면 ===== */
+.result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+    background: #1a222c;
+}
+
+.result-item:first-child { border-radius: 12px 12px 0 0; }
+.result-item:last-child { border-radius: 0 0 12px 12px; border-bottom: none; }
+
+.result-item.user-win {
+    background: rgba(255,213,79,0.1);
+}
+
+.result-item .r-name {
+    font-weight: 600;
+    color: #fff;
+    min-width: 90px;
+}
+
+.result-item .r-pos {
+    color: #8899a6;
+    font-size: 12px;
+    min-width: 44px;
+}
+
+.result-item .r-arrow { color: #566573; }
+
+.result-item .r-team {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.result-item.user-win .r-team { color: #ffd54f; font-weight: bold; }
+
+.result-item .r-price {
+    color: #90caf9;
+    font-weight: 600;
+}
+
+.result-item .r-unsigned {
+    flex: 1;
+    color: #566573;
+    font-size: 13px;
+}
+
+.btn-start {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 30px auto 0;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, {{ user_team.color }}, #2c3e50);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-start:hover { opacity: 0.88; }
+
+.empty-msg {
+    text-align: center;
+    color: #566573;
+    padding: 60px 0;
+    font-size: 15px;
+    background: #1a222c;
+    border-radius: 12px;
+}
+</style>
+</head>
+
+<!-- templates/dynasty_fa_bid.html - Part2 -->
+<body>
+
+<div class="topbar">
+    <div class="left">
+        <div class="logo">💰</div>
+        <div>
+            <h1>FA {% if results %}입찰 결과{% else %}입찰{% endif %}</h1>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}</div>
+        </div>
+    </div>
+    <div class="budget-box">
+        <div class="b-label">내 예산</div>
+        <div class="b-value">{{ budget }}</div>
+    </div>
+</div>
+
+<div class="container">
+
+{% if results %}
+    <!-- ============ 결과 화면 ============ -->
+    <div class="notice">
+        입찰 결과입니다. 원소속팀 잔류 낙찰에는 🏠 표시가 붙습니다.
+    </div>
+
+    {% for r in results %}
+    <div class="result-item {% if r.signed and r.is_user %}user-win{% endif %}">
+        <span class="r-name">{{ r.player.name }}</span>
+        <span class="r-pos">{{ r.player.positions }}</span>
+        <span class="ovr
+            {% if r.player.overall >= 80 %}ovr-elite
+            {% elif r.player.overall >= 70 %}ovr-good
+            {% elif r.player.overall >= 60 %}ovr-avg
+            {% else %}ovr-low{% endif %}">{{ r.player.overall }}</span>
+        <span class="r-arrow">→</span>
+        {% if r.signed %}
+        <span class="r-team">
+            {{ r.logo }} {{ r.team_name }}
+            {% if r.loyalty %}🏠{% endif %}
+            {% if r.is_user %}(내 팀!){% endif %}
+        </span>
+        <span class="r-price">{{ r.price }}</span>
+        {% else %}
+        <span class="r-unsigned">유찰 (입찰 팀 없음)</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <form method="POST" action="{{ url_for('dynasty_fa.fa_start_season', save_id=save.id) }}">
+        <button type="submit" class="btn-start">⚾ Season {{ save.season }} 개막</button>
+    </form>
+
+{% else %}
+    <!-- ============ 입찰 입력 화면 ============ -->
+    <div class="notice">
+        영입을 원하는 선수에게 입찰액을 입력하세요. 최소 입찰가 이상이어야 하며, 총 입찰액이 예산을 넘으면 제출할 수 없습니다.<br>
+        모든 팀이 동시에 입찰하고 <strong>가장 높은 금액</strong>을 부른 팀이 낙찰됩니다. 원소속팀은 입찰액에 <strong>15% 가산점</strong>을 받습니다. (🏠 = 내 팀 출신 FA)
+    </div>
+
+    {% if fa_players %}
+    <form method="POST" action="{{ url_for('dynasty_fa.fa_bid_submit', save_id=save.id) }}" id="bidForm">
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>포지션</th>
+                    <th>연차</th>
+                    <th>OVR</th>
+                    <th>원소속</th>
+                    <th>최소가</th>
+                    <th>내 입찰액</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in fa_players %}
+                <tr class="fa-row {% if p.is_my_fa %}my-fa{% endif %}">
+                    <td><strong>{{ p.name }}</strong>{% if p.is_my_fa %}<span class="loyalty-badge">🏠 내 팀 FA</span>{% endif %}</td>
+                    <td>{{ p.positions }}</td>
+                    <td class="career">{{ p.career_years }}년차</td>
+                    <td>
+                        <span class="ovr
+                            {% if p.overall >= 80 %}ovr-elite
+                            {% elif p.overall >= 70 %}ovr-good
+                            {% elif p.overall >= 60 %}ovr-avg
+                            {% else %}ovr-low{% endif %}">{{ p.overall }}</span>
+                    </td>
+                    <td class="from-badge">
+                        {% if p.from_team %}{{ p.from_team.logo }} {{ p.from_team.team_name }}{% else %}-{% endif %}
+                    </td>
+                    <td class="base-price">{{ p.base_price }}</td>
+                    <td>
+                        <input type="number" class="bid-input" name="bid_{{ p.id }}"
+                               min="{{ p.base_price }}" step="1" placeholder="-"
+                               data-base="{{ p.base_price }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="submit-bar">
+            <div class="sums">
+                <div class="sum-item">
+                    <div class="s-label">입찰 선수</div>
+                    <div class="s-value" id="bidCount">0명</div>
+                </div>
+                <div class="sum-item">
+                    <div class="s-label">총 입찰액</div>
+                    <div class="s-value" id="bidTotal">0</div>
+                </div>
+                <div class="sum-item">
+                    <div class="s-label">내 예산</div>
+                    <div class="s-value">{{ budget }}</div>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">📨 입찰 제출</button>
+        </div>
+    </form>
+    {% else %}
+    <div class="empty-msg">이번 오프시즌 FA 선수가 없습니다.</div>
+    <form method="POST" action="{{ url_for('dynasty_fa.fa_start_season', save_id=save.id) }}">
+        <button type="submit" class="btn-start">⚾ Season {{ save.season }} 개막</button>
+    </form>
+    {% endif %}
+
+{% endif %}
+
+</div>
+
+{% if fa_players %}
+<script>
+const inputs = document.querySelectorAll(".bid-input");
+const bidCount = document.getElementById("bidCount");
+const bidTotal = document.getElementById("bidTotal");
+const submitBtn = document.getElementById("submitBtn");
+const budget = {{ budget }};
+
+function update() {
+    let count = 0;
+    let total = 0;
+
+    inputs.forEach(function(inp) {
+        const v = parseInt(inp.value, 10);
+        if (!isNaN(v) && v > 0) {
+            count += 1;
+            total += v;
+            inp.classList.add("active");
+        } else {
+            inp.classList.remove("active");
+        }
+    });
+
+    bidCount.textContent = count + "명";
+    bidTotal.textContent = total;
+
+    if (total > budget) {
+        bidTotal.classList.add("over");
+        submitBtn.disabled = true;
+    } else {
+        bidTotal.classList.remove("over");
+        submitBtn.disabled = false;
+    }
+}
+
+inputs.forEach(inp => inp.addEventListener("input", update));
+
+document.getElementById("bidForm").addEventListener("submit", function(e) {
+    let invalid = null;
+    inputs.forEach(function(inp) {
+        const v = parseInt(inp.value, 10);
+        const base = parseInt(inp.dataset.base, 10);
+        if (!isNaN(v) && v > 0 && v < base) invalid = inp;
+    });
+    if (invalid) {
+        e.preventDefault();
+        alert("최소 입찰가보다 낮은 입찰이 있습니다: " + invalid.dataset.base + " 이상 입력하세요.");
+        invalid.focus();
+    }
+});
+</script>
+{% endif %}
+
+</body>
+</html>
