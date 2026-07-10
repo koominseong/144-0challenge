@@ -30,7 +30,7 @@ AI_MIN_BUDGET = 300        # AI 예산이 이 밑이면 기본 예산으로 보�
 # 상단 상수 (추가/변경)
 MAX_ROSTER = 50            # 절대 상한
 OFFSEASON_ROSTER = 45      # 오프시즌 정리 목표
-AI_BID_CAP = 48            # AI는 이 인원 미만일 때만 입찰
+AI_BID_CAP = 55            # AI는 이 인원 미만일 때만 입찰
 
 # resolve_fa_bidding 안에서 두 곳 수정:
 #   유저 조건: counts[user_team["id"]] < 30  →  < MAX_ROSTER
@@ -176,15 +176,13 @@ def get_fa_players(save_id):
 
     return [p for p in players if p["id"] not in rostered_ids]
 
-# dynasty_fa.py - Part2
-
 # =========================================
 # FA 입찰 일괄 처리 (핵심)
 # user_bids: {player_id: 입찰액}
 #
 # 처리 순서:
 # 0. AI 예산 방어 보정 (낮거나 NULL이면 기본 예산 지급)
-# 1. 유저 입찰 사전 검증 (총합이 예산 초과면 가치 낮은 순 제외)
+# 1. 유저 입찰 사전 검증 (최소가 미달 제외, 총합 초과 시 가치 낮은 순 제외)
 # 2. 선수별로 유저+AI 입찰 수집
 # 3. 유효액 = 입찰액 × (원소속팀 1.15)
 # 4. 최고 유효액 낙찰, 예산 차감
@@ -282,19 +280,15 @@ def resolve_fa_bidding(save_id, user_bids):
 
         bids = []  # (team_id, 입찰액, 유효액)
 
-        # 유저 입찰
+        # 유저 입찰 (인원 제한 없음, 예산만 검사)
         user_bid = valid_bids.get(p["id"], 0)
-        if (
-            user_bid >= base
-            and user_bid <= budgets[user_team["id"]]
-            and counts[user_team["id"]] < 30
-        ):
+        if user_bid >= base and user_bid <= budgets[user_team["id"]]:
             eff = user_bid * (LOYALTY_BONUS if from_team == user_team["id"] else 1.0)
             bids.append((user_team["id"], user_bid, eff))
 
-        # AI 입찰
+        # AI 입찰 (AI_BID_CAP 미만 인원 팀만 참여)
         for tid in ai_team_ids:
-            if counts[tid] >= 28 or budgets[tid] < base:
+            if counts[tid] >= AI_BID_CAP or budgets[tid] < base:
                 continue
 
             if p["overall"] >= 75:
@@ -400,6 +394,7 @@ def resolve_fa_bidding(save_id, user_bids):
     signed = sum(1 for r in results if r["signed"])
     print(f"[dynasty_fa] FA 입찰 완료: 낙찰={signed} / 전체={len(results)}")
     return results
+
 
 # =========================================
 # 오프시즌 인원 정리: 팀당 45명으로 (하위 OVR부터 방출)
