@@ -99,6 +99,11 @@ def train_player(save_id, team_id, player_id, stat):
     # ----- 육성 판정 -----
     career_years = season - p["appear_season"] + 1
     big_chance = 0.20 + (0.10 if career_years <= 4 else 0)
+    try:
+        from dynasty_facility import get_facility_effects
+        big_chance += get_facility_effects(save_id).get(team_id, {}).get("training_crit", 0.0)
+    except Exception:
+        pass
 
     r = random.random()
     if r < big_chance:
