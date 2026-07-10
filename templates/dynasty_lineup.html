@@ -235,6 +235,7 @@ body {
                 <option value="CP" {% if p.role == 'CP' %}selected{% endif %}>마무리</option>
                 <option value="RP" {% if p.role == 'RP' %}selected{% endif %}>불펜</option>
                 <option value="BENCH" {% if p.role == 'BENCH' %}selected{% endif %}>벤치</option>
+                <option value="MINOR" {% if p.role == 'MINOR' %}selected{% endif %}>2군</option>
             </select>
         </form>
     </div>
@@ -265,6 +266,12 @@ body {
         <h2>🪑 벤치 <span class="count">{{ bench|length }}</span></h2>
         {% for p in bench %}{{ player_row(p) }}{% endfor %}
         {% if not bench %}<div class="empty-line">벤치 선수가 없습니다.</div>{% endif %}
+    </div>
+
+    <div class="card">
+        <h2>🏕 2군 <span class="count">{{ minors|length }}</span></h2>
+        {% for p in minors %}{{ player_row(p) }}{% endfor %}
+        {% if not minors %}<div class="empty-line">2군 선수가 없습니다.</div>{% endif %}
     </div>
 
 </div>
