@@ -706,6 +706,11 @@ def dynasty_next_season(save_id):
     from dynasty_finance import update_fans, grant_season_budget
     update_fans(save_id)
     grant_season_budget(save_id)
+
+    from dynasty_staff import init_staff_market, pay_staff_salaries, ai_hire_staff
+    init_staff_market(save_id)
+    pay_staff_salaries(save_id)
+    ai_hire_staff(save_id)
     
     # 2. 성장 / 노쇠 / 은퇴
     process_offseason_growth(save_id)
