@@ -1,4 +1,5 @@
 <!-- templates/dynasty_trade.html - Part1 -->
+<!-- (티어 표시 + 티어 규칙 반영 판정 예상 버전) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -77,6 +78,17 @@ body {
     color: #ef9a9a;
 }
 
+.rule-notice {
+    background: #1a222c;
+    border: 1px solid rgba(144,202,249,0.25);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: #90caf9;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
 .team-select {
     display: flex;
     gap: 8px;
@@ -139,7 +151,6 @@ body {
 }
 
 .player-item:hover { background: rgba(255,255,255,0.04); }
-
 .player-item.checked { background: rgba(255,213,79,0.09); }
 
 .player-item input[type="checkbox"] {
@@ -156,8 +167,24 @@ body {
 
 .player-item .p-pos {
     color: #8899a6;
-    min-width: 55px;
+    min-width: 50px;
 }
+
+.tier {
+    display: inline-block;
+    min-width: 22px;
+    text-align: center;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.tier-S { background: #6a1b9a; color: #fff; }
+.tier-A { background: #b71c1c; color: #fff; }
+.tier-B { background: #e65100; color: #fff; }
+.tier-C { background: #1565c0; color: #fff; }
+.tier-D { background: #37474f; color: #cfd8dc; }
 
 .ovr {
     display: inline-block;
@@ -167,12 +194,9 @@ body {
     border-radius: 4px;
     font-weight: bold;
     font-size: 11px;
+    background: #141b23;
+    color: #e6e6e6;
 }
-
-.ovr-elite { background: #b71c1c; color: #fff; }
-.ovr-good { background: #e65100; color: #fff; }
-.ovr-avg { background: #1565c0; color: #fff; }
-.ovr-low { background: #37474f; color: #cfd8dc; }
 
 .p-value {
     color: #66bb6a;
@@ -205,6 +229,11 @@ body {
     </div>
     {% endif %}
 
+    <div class="rule-notice">
+        <strong>티어 규칙</strong> — S(80+) / A(72~79) / B(64~71) / C(56~63) / D(~55)<br>
+        같은 등급끼리는 가치만 맞으면 교환 가능. <strong>1등급 위</strong> 선수를 받으려면 <strong>5명 이상</strong> 제시 + 가치 20% 추가 충족. <strong>2등급 이상 위</strong>는 교환 불가.
+    </div>
+
     <div class="team-select">
         {% for t in ai_teams %}
         <a href="{{ url_for('dynasty_trade.trade_home', save_id=save.id, target=t.id) }}"
@@ -225,14 +254,14 @@ body {
                 <div class="player-list">
                     {% for p in my_roster %}
                     <label class="player-item">
-                        <input type="checkbox" name="my_players" value="{{ p.id }}" class="my-check" data-value="{{ p.value }}">
+                        <input type="checkbox" name="my_players" value="{{ p.id }}" class="my-check"
+                               data-value="{{ p.value }}" data-ovr="{{ p.overall }}">
                         <span class="p-name">{{ p.name }}</span>
                         <span class="p-pos">{{ p.positions }}</span>
-                        <span class="ovr
-                            {% if p.overall >= 80 %}ovr-elite
-                            {% elif p.overall >= 70 %}ovr-good
-                            {% elif p.overall >= 60 %}ovr-avg
-                            {% else %}ovr-low{% endif %}">{{ p.overall }}</span>
+                        <span class="tier tier-{% if p.overall >= 80 %}S{% elif p.overall >= 72 %}A{% elif p.overall >= 64 %}B{% elif p.overall >= 56 %}C{% else %}D{% endif %}">
+                            {% if p.overall >= 80 %}S{% elif p.overall >= 72 %}A{% elif p.overall >= 64 %}B{% elif p.overall >= 56 %}C{% else %}D{% endif %}
+                        </span>
+                        <span class="ovr">{{ p.overall }}</span>
                         <span class="p-value">{{ p.value }}</span>
                     </label>
                     {% endfor %}
@@ -245,14 +274,14 @@ body {
                 <div class="player-list">
                     {% for p in their_roster %}
                     <label class="player-item">
-                        <input type="checkbox" name="their_players" value="{{ p.id }}" class="their-check" data-value="{{ p.value }}">
+                        <input type="checkbox" name="their_players" value="{{ p.id }}" class="their-check"
+                               data-value="{{ p.value }}" data-ovr="{{ p.overall }}">
                         <span class="p-name">{{ p.name }}</span>
                         <span class="p-pos">{{ p.positions }}</span>
-                        <span class="ovr
-                            {% if p.overall >= 80 %}ovr-elite
-                            {% elif p.overall >= 70 %}ovr-good
-                            {% elif p.overall >= 60 %}ovr-avg
-                            {% else %}ovr-low{% endif %}">{{ p.overall }}</span>
+                        <span class="tier tier-{% if p.overall >= 80 %}S{% elif p.overall >= 72 %}A{% elif p.overall >= 64 %}B{% elif p.overall >= 56 %}C{% else %}D{% endif %}">
+                            {% if p.overall >= 80 %}S{% elif p.overall >= 72 %}A{% elif p.overall >= 64 %}B{% elif p.overall >= 56 %}C{% else %}D{% endif %}
+                        </span>
+                        <span class="ovr">{{ p.overall }}</span>
                         <span class="p-value">{{ p.value }}</span>
                     </label>
                     {% endfor %}
@@ -303,22 +332,16 @@ body {
     gap: 28px;
 }
 
-.sum-label {
-    font-size: 12px;
-    color: #8899a6;
-}
+.sum-label { font-size: 12px; color: #8899a6; }
 
 .sum-value {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     color: #fff;
     margin-top: 3px;
 }
 
-.sum-arrow {
-    font-size: 20px;
-    color: #566573;
-}
+.sum-arrow { font-size: 20px; color: #566573; }
 
 .btn-propose {
     padding: 14px 30px;
@@ -351,38 +374,82 @@ const myValueEl = document.getElementById("myValue");
 const theirValueEl = document.getElementById("theirValue");
 const verdictEl = document.getElementById("verdict");
 
-function update() {
-    let mv = 0, tv = 0;
+const JUMP_MIN = 5;
 
-    myChecks.forEach(function(c) {
+function tierRank(ovr) {
+    if (ovr >= 80) return 4;  // S
+    if (ovr >= 72) return 3;  // A
+    if (ovr >= 64) return 2;  // B
+    if (ovr >= 56) return 1;  // C
+    return 0;                 // D
+}
+
+function collect(checks) {
+    const arr = [];
+    checks.forEach(function(c) {
         c.closest(".player-item").classList.toggle("checked", c.checked);
-        if (c.checked) mv += parseFloat(c.dataset.value);
+        if (c.checked) {
+            arr.push({
+                value: parseFloat(c.dataset.value),
+                ovr: parseInt(c.dataset.ovr, 10)
+            });
+        }
     });
-    theirChecks.forEach(function(c) {
-        c.closest(".player-item").classList.toggle("checked", c.checked);
-        if (c.checked) tv += parseFloat(c.dataset.value);
-    });
+    return arr;
+}
+
+function setVerdict(text, cls) {
+    verdictEl.textContent = text;
+    verdictEl.classList.remove("v-good", "v-risky", "v-bad");
+    if (cls) verdictEl.classList.add(cls);
+}
+
+function update() {
+    const mine = collect(myChecks);
+    const theirs = collect(theirChecks);
+
+    let mv = mine.reduce((s, p) => s + p.value, 0);
+    const tv = theirs.reduce((s, p) => s + p.value, 0);
 
     myValueEl.textContent = mv.toFixed(1);
     theirValueEl.textContent = tv.toFixed(1);
 
-    verdictEl.classList.remove("v-good", "v-risky", "v-bad");
-
-    if (mv === 0 || tv === 0) {
-        verdictEl.textContent = "-";
+    if (mine.length === 0 || theirs.length === 0) {
+        setVerdict("-", null);
         return;
     }
 
-    const ratio = mv / tv;
-    if (ratio >= 0.95) {
-        verdictEl.textContent = "수락 유력";
-        verdictEl.classList.add("v-good");
-    } else if (ratio >= 0.85) {
-        verdictEl.textContent = "반반";
-        verdictEl.classList.add("v-risky");
+    // 1. 티어 규칙
+    const myBest = Math.max(...mine.map(p => tierRank(p.ovr)));
+    const theirBest = Math.max(...theirs.map(p => tierRank(p.ovr)));
+    const gap = theirBest - myBest;
+
+    if (gap >= 2) {
+        setVerdict("등급차 초과 · 불가", "v-bad");
+        return;
+    }
+    if (gap === 1 && mine.length < JUMP_MIN) {
+        setVerdict("인원 부족 (" + mine.length + "/" + JUMP_MIN + ")", "v-bad");
+        return;
+    }
+
+    // 2. 인원수 페널티
+    const countDiff = mine.length - theirs.length;
+    if (countDiff > 0) {
+        mv *= Math.max(0.7, 1.0 - countDiff * 0.12);
+    }
+
+    // 3. 티어 점프 시 가치 20% 추가 요구
+    const required = gap === 1 ? 1.2 : 1.0;
+
+    const ratio = tv > 0 ? mv / tv : 0;
+
+    if (ratio >= 1.0 * required) {
+        setVerdict("수락 유력", "v-good");
+    } else if (ratio >= 0.9 * required) {
+        setVerdict("반반", "v-risky");
     } else {
-        verdictEl.textContent = "거절 예상";
-        verdictEl.classList.add("v-bad");
+        setVerdict("거절 예상", "v-bad");
     }
 }
 
