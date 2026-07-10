@@ -175,7 +175,9 @@ def _execute_trade(sb, save_id, team_a, team_b, a_player_ids, b_player_ids):
 
 
 # =========================================
-# AI끼리 자동 트레이드 (같은 티어끼리만)
+# AI끼리 자동 트레이드 (매칭 완화 버전)
+# 티어 대신 OVR 차 6 이내 + 가치 차 25% 이내
+# 시도 횟수 30회로 확대
 # =========================================
 def ai_auto_trades(save_id, max_trades=3):
     sb = get_supabase()
@@ -220,7 +222,7 @@ def ai_auto_trades(save_id, max_trades=3):
     trades_done = 0
     attempts = 0
 
-    while trades_done < max_trades and attempts < 10:
+    while trades_done < max_trades and attempts < 30:
         attempts += 1
 
         candidates_teams = [tid for tid in ai_teams if len(by_team.get(tid, [])) >= 15]
@@ -232,16 +234,20 @@ def ai_auto_trades(save_id, max_trades=3):
         roster_a = by_team[team_a]
         roster_b = by_team[team_b]
 
-        pa = random.choice(roster_a)
-        va = trade_value(pa, season)
-        tier_a = player_tier(pa["overall"])
+        # 트레이드 대상: 주전급~준주전 위주 (너무 하위는 의미 없음)
+        pool_a = [p for p in roster_a if p["overall"] >= 55]
+        if not pool_a:
+            continue
 
-        # 같은 티어 + 비슷한 가치만 매칭
+        pa = random.choice(pool_a)
+        va = trade_value(pa, season)
+
+        # OVR 차 6 이내 + 가치 차 25% 이내
         matches = [
             pb
             for pb in roster_b
-            if player_tier(pb["overall"]) == tier_a
-            and abs(trade_value(pb, season) - va) <= va * 0.15
+            if abs(pb["overall"] - pa["overall"]) <= 6
+            and abs(trade_value(pb, season) - va) <= va * 0.25
         ]
         if not matches:
             continue
@@ -250,20 +256,22 @@ def ai_auto_trades(save_id, max_trades=3):
 
         _execute_trade(sb, save_id, team_a, team_b, [pa["id"]], [pb["id"]])
 
+        try:
+            from dynasty_event import log_event
+            log_event(save_id, season, 0, "trade", "🔄",
+                      f"트레이드: {pa['name']}(OVR {pa['overall']}) ↔ {pb['name']}(OVR {pb['overall']})")
+        except Exception:
+            pass
+
         roster_a.remove(pa)
         roster_b.remove(pb)
         roster_a.append(pb)
         roster_b.append(pa)
 
-        from dynasty_event import log_event
-        log_event(save_id, season, 0, "trade", "🔄",
-                  f"AI 트레이드: {pa['name']} ↔ {pb['name']}")
-
         trades_done += 1
 
-    print(f"[dynasty_trade] AI 트레이드 성사={trades_done}건")
+    print(f"[dynasty_trade] AI 트레이드 성사={trades_done}건 (시도 {attempts}회)")
     return trades_done
-
 
 # =========================================
 # 헬퍼
