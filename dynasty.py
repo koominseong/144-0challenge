@@ -20,7 +20,7 @@ from dynasty_schedule import generate_schedule, get_week_games
 from dynasty_game import simulate_week, simulate_rest_of_season
 from dynasty_growth import process_offseason_growth
 from dynasty_lineup import auto_generate_lineup
-from dynasty_fa import generate_fa_market, reset_budgets, resolve_fa_bidding
+from dynasty_fa import generate_fa_market, reset_budgets, resolve_fa_bidding, release_surplus_players
 from dynasty_trade import ai_auto_trades
 from dynasty_history import record_season_history
 from dynasty_utils import (
@@ -706,6 +706,8 @@ def dynasty_next_season(save_id):
 
     # 3. FA 시장 생성
     generate_fa_market(save_id)
+
+    release_surplus_players(save_id)
 
     # 4. AI끼리 트레이드
     ai_auto_trades(save_id, max_trades=3)
