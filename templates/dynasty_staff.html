@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코칭스태프 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.topbar { background: linear-gradient(135deg, {{ user_team.color }} 0%, #0f1419 100%); padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 10; }
+.topbar .left { display: flex; align-items: center; gap: 12px; }
+.topbar .logo { font-size: 34px; }
+.topbar h1 { font-size: 20px; color: #fff; }
+.topbar .sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+.budget-box { text-align: right; }
+.budget-box .b-label { font-size: 12px; color: rgba(255,255,255,0.7); }
+.budget-box .b-value { font-size: 22px; font-weight: bold; color: #ffd54f; margin-top: 2px; }
+.back-btn { color: #fff; text-decoration: none; font-size: 14px; padding: 10px 18px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; margin-left: 15px; }
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+.container { max-width: 1050px; margin: 0 auto; padding: 20px 20px 60px; }
+.alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
+.alert.ok { background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.4); color: #81c784; }
+.alert.fail { background: rgba(239,83,80,0.1); border: 1px solid rgba(239,83,80,0.4); color: #ef9a9a; }
+.section-title { font-size: 16px; color: #fff; margin: 22px 0 12px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.staff-card { display: flex; align-items: center; gap: 14px; background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 15px 18px; margin-bottom: 10px; flex-wrap: wrap; }
+.staff-card.mine-card { border-color: rgba(255,213,79,0.35); background: linear-gradient(160deg, #232013 0%, #1a222c 60%); }
+.grade { display: inline-block; min-width: 30px; text-align: center; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 14px; }
+.grade-S { background: #6a1b9a; color: #fff; }
+.grade-A { background: #b71c1c; color: #fff; }
+.grade-B { background: #e65100; color: #fff; }
+.grade-C { background: #37474f; color: #cfd8dc; }
+.s-name { font-weight: bold; color: #fff; font-size: 16px; min-width: 70px; }
+.s-role { font-size: 13px; color: #90caf9; min-width: 70px; }
+.s-style { font-size: 12px; color: #ffd54f; }
+.s-effect { font-size: 12px; color: #66bb6a; }
+.s-desc { font-size: 12px; color: #8899a6; flex-basis: 100%; padding-left: 44px; }
+.s-salary { font-size: 14px; font-weight: bold; color: #90caf9; margin-left: auto; }
+.s-team { font-size: 12px; color: #8899a6; margin-left: auto; }
+.hire-btn { padding: 9px 20px; font-size: 13px; font-weight: bold; color: #fff; background: {{ user_team.color }}; border: none; border-radius: 7px; cursor: pointer; margin-left: 12px; }
+.hire-btn:hover { opacity: 0.85; }
+.empty-line { color: #566573; font-size: 13px; padding: 14px 4px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="left">
+        <div class="logo">🧢</div>
+        <div>
+            <h1>코칭스태프</h1>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}</div>
+        </div>
+    </div>
+    <div style="display:flex; align-items:center;">
+        <div class="budget-box">
+            <div class="b-label">내 예산</div>
+            <div class="b-value">{{ budget }}</div>
+        </div>
+        <a href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}" class="back-btn">← 대시보드</a>
+    </div>
+</div>
+
+<div class="container">
+
+    {% if msg %}
+    <div class="alert {% if ok == '1' %}ok{% else %}fail{% endif %}">{{ msg }}</div>
+    {% endif %}
+
+    {% macro staff_row(s, show_hire, mine_style) %}
+    <div class="staff-card {% if mine_style %}mine-card{% endif %}">
+        <span class="grade grade-{{ s.grade }}">{{ s.grade }}</span>
+        <span class="s-name">{{ s.name }}</span>
+        <span class="s-role">{{ s.role_kr }}</span>
+        {% if s.style %}<span class="s-style">「{{ s.style }}」</span>{% endif %}
+        <span class="s-effect">{{ s.effect }}</span>
+        {% if show_hire %}
+        <span class="s-salary">연봉 {{ s.salary }}</span>
+        <form method="POST" action="{{ url_for('dynasty_staff.staff_hire', save_id=save.id) }}" style="display:inline;">
+            <input type="hidden" name="staff_id" value="{{ s.id }}">
+            <button type="submit" class="hire-btn">영입</button>
+        </form>
+        {% elif s.team %}
+        <span class="s-team">{{ s.team.logo }} {{ s.team.team_name }} · 연봉 {{ s.salary }}</span>
+        {% else %}
+        <span class="s-salary">연봉 {{ s.salary }}</span>
+        {% endif %}
+        {% if s.style_desc %}
+        <span class="s-desc">시너지: {{ s.style_desc }}</span>
+        {% endif %}
+    </div>
+    {% endmacro %}
+
+    <div class="section-title">🏠 내 코칭스태프</div>
+    {% if mine %}
+        {% for s in mine %}{{ staff_row(s, False, True) }}{% endfor %}
+    {% else %}
+        <div class="empty-line">고용된 스태프가 없습니다. 아래 시장에서 영입하세요. (같은 역할 영입 시 기존 인물은 자동 방출)</div>
+    {% endif %}
+
+    <div class="section-title">📋 영입 시장</div>
+    {% if market %}
+        {% for s in market %}{{ staff_row(s, True, False) }}{% endfor %}
+    {% else %}
+        <div class="empty-line">시장에 남은 인물이 없습니다.</div>
+    {% endif %}
+
+    <div class="section-title">🏟 타 구단 스태프</div>
+    {% if others %}
+        {% for s in others %}{{ staff_row(s, False, False) }}{% endfor %}
+    {% else %}
+        <div class="empty-line">타 구단 소속 스태프가 없습니다.</div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
