@@ -1,8 +1,6 @@
 # dynasty_fa.py
 # =========================================
-# KBO Dynasty - FA 시스템
-# 시즌 종료 후 FA 자격 선수 발생
-# 유저 영입 / AI 자동 영입
+# KBO Dynasty - FA 시스템 (일괄 처리 버전)
 # =========================================
 
 import random
@@ -10,14 +8,13 @@ from dynasty_utils import get_supabase
 from dynasty_lineup import auto_generate_lineup
 from dynasty_trade import trade_value
 
-FA_CAREER_YEARS = 6  # FA 자격 연차
-FA_RELEASE_RATE = 0.35  # FA 자격자 중 실제 시장에 나오는 비율
+FA_CAREER_YEARS = 6
+FA_RELEASE_RATE = 0.35
 
 
 # =========================================
 # FA 시장 생성 (오프시즌 호출)
-# 자격 선수 일부를 로스터에서 해제
-# return: FA 선수 리스트
+# 자격 선수 일부를 로스터에서 일괄 해제
 # =========================================
 def generate_fa_market(save_id):
     sb = get_supabase()
@@ -39,6 +36,7 @@ def generate_fa_market(save_id):
         .data
     )
 
+    release_ids = []
     fa_players = []
 
     for r in roster_rows:
@@ -50,23 +48,26 @@ def generate_fa_market(save_id):
 
         if career_years < FA_CAREER_YEARS:
             continue
-        # FA 재자격: 6년차 이후 3년 주기
         if (career_years - FA_CAREER_YEARS) % 3 != 0:
             continue
 
         if random.random() > FA_RELEASE_RATE:
             continue
 
-        # 로스터에서 해제
-        sb.table("dynasty_roster").delete().eq("id", r["id"]).execute()
+        release_ids.append(r["id"])
         fa_players.append(p)
 
+    # 일괄 삭제 (50개 단위)
+    for i in range(0, len(release_ids), 50):
+        chunk = release_ids[i : i + 50]
+        sb.table("dynasty_roster").delete().in_("id", chunk).execute()
+
+    print(f"[dynasty_fa] FA 시장 방출={len(fa_players)}명")
     return fa_players
 
 
 # =========================================
 # 현재 FA 시장 조회
-# (드래프트 완료 && 로스터 미소속 && 은퇴 아님 && 등장 완료)
 # =========================================
 def get_fa_players(save_id):
     sb = get_supabase()
@@ -144,8 +145,8 @@ def sign_fa_player(save_id, team_id, player_id):
 
 
 # =========================================
-# AI 자동 FA 영입
-# 로스터 적은 팀 우선, 상위 FA부터 확률 영입
+# AI 자동 FA 영입 (일괄 처리)
+# 로스터 조회 1회 → 메모리에서 배분 → insert 일괄
 # =========================================
 def ai_sign_fa(save_id):
     sb = get_supabase()
@@ -168,31 +169,29 @@ def ai_sign_fa(save_id):
     )
     ai_team_ids = [t["id"] for t in teams if not t["is_user"]]
 
+    # 팀별 로스터 인원 한 번에 조회
+    roster_rows = (
+        sb.table("dynasty_roster")
+        .select("team_id")
+        .eq("save_id", save_id)
+        .execute()
+        .data
+    )
+    counts = {tid: 0 for tid in ai_team_ids}
+    for r in roster_rows:
+        if r["team_id"] in counts:
+            counts[r["team_id"]] += 1
+
     fa_players = get_fa_players(save_id)
     fa_players.sort(key=lambda p: -trade_value(p, season))
 
-    signed = 0
+    insert_rows = []
 
     for p in fa_players:
-        # 로스터 인원 파악
-        counts = {}
-        for tid in ai_team_ids:
-            c = (
-                sb.table("dynasty_roster")
-                .select("id", count="exact")
-                .eq("save_id", save_id)
-                .eq("team_id", tid)
-                .execute()
-                .count
-            )
-            counts[tid] = c
-
-        # 25명 미만 팀만 영입 시도
         needy = [tid for tid in ai_team_ids if counts[tid] < 25]
         if not needy:
             break
 
-        # 상위 FA일수록 영입 확률 높음
         if p["overall"] >= 75:
             prob = 0.9
         elif p["overall"] >= 65:
@@ -205,12 +204,11 @@ def ai_sign_fa(save_id):
         if random.random() > prob:
             continue
 
-        # 인원 적은 팀에 가중치
         needy.sort(key=lambda tid: counts[tid])
         pool = needy[: min(3, len(needy))]
         target = random.choice(pool)
 
-        sb.table("dynasty_roster").insert(
+        insert_rows.append(
             {
                 "save_id": save_id,
                 "team_id": target,
@@ -218,11 +216,13 @@ def ai_sign_fa(save_id):
                 "role": "BENCH",
                 "depth": 99,
             }
-        ).execute()
+        )
+        counts[target] += 1
 
-        signed += 1
+    # 일괄 insert
+    for i in range(0, len(insert_rows), 100):
+        sb.table("dynasty_roster").insert(insert_rows[i : i + 100]).execute()
 
-    for tid in ai_team_ids:
-        auto_generate_lineup(save_id, tid)
-
-    return signed
+    # 라인업 재생성은 rookie_finish에서 전 팀 대상으로 이미 실행되므로 여기선 생략
+    print(f"[dynasty_fa] AI FA 영입={len(insert_rows)}명")
+    return len(insert_rows)
