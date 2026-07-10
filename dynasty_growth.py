@@ -89,6 +89,17 @@ def process_offseason_growth(save_id):
             "player_id", chunk
         ).execute()
 
+    from dynasty_event import log_events
+    big_retires = [
+        r for r in upsert_rows
+        if r["retired"] and (r.get("peak_overall") or 0) >= 72
+    ]
+    log_events(save_id, [
+        {"season": current_season, "week": 0, "type": "retire", "icon": "👋",
+         "message": f"{r['name']} 은퇴 (최고 OVR {r['peak_overall']})"}
+        for r in big_retires
+    ])
+
     print(
         f"[dynasty_growth] 처리={len(upsert_rows)}명, 은퇴={len(retired_ids)}명"
     )
