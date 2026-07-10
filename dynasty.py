@@ -551,6 +551,34 @@ def dynasty_next_week(save_id):
 
     return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
+# =========================================
+# 시즌 전체 일괄 진행 (남은 주차 전부 시뮬레이션)
+# =========================================
+@dynasty_bp.route("/dynasty/<int:save_id>/sim_all", methods=["POST"])
+@require_auth
+def dynasty_sim_all(save_id):
+    sb = get_supabase()
+
+    save = (
+        sb.table("dynasty_save")
+        .select("*")
+        .eq("id", save_id)
+        .execute()
+        .data[0]
+    )
+
+    if save["finished"]:
+        return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+
+    week = save["week"]
+
+    while week <= SEASON_WEEKS:
+        simulate_week(save_id, save["season"], week)
+        week += 1
+
+    sb.table("dynasty_save").update({"week": week}).eq("id", save_id).execute()
+
+    return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
 
 # =========================================
 # 시즌 종료
