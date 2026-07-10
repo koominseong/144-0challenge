@@ -11,6 +11,7 @@ from dynasty_import import DATA_DIR
 from dynasty_utils import get_supabase
 from dynasty_fa_routes import fa_bp
 from dynasty_lineup_routes import lineup_bp
+from dynasty_history_routes import history_bp
 
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -27,6 +28,7 @@ app.register_blueprint(dynasty_bp)
 app.register_blueprint(trade_bp)
 app.register_blueprint(fa_bp)
 app.register_blueprint(lineup_bp)
+app.register_blueprint(history_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
