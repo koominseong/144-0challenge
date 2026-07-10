@@ -202,6 +202,14 @@ def _load_teams_and_powers(sb, save_id):
     except Exception as ex:
         print(f"[dynasty_game] 스태프 효과 skip: {ex}")
 
+    try:
+        from dynasty_facility import get_facility_effects
+        fac = get_facility_effects(save_id)
+        for tid in powers:
+            powers[tid]["home_adv"] = fac.get(tid, {}).get("home_adv", 0.0)
+    except Exception as ex:
+        print(f"[dynasty_game] 시설 효과 skip: {ex}")
+
     return teams, powers
 
 
