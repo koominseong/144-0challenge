@@ -237,6 +237,17 @@ tr.user-row td { font-weight: bold; color: #ffd54f; }
                         </tr>
                         {% endfor %}
                     </table>
+                    {% if awards_by_season.get(s.season) %}
+                    <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);">
+                        {% for a in awards_by_season[s.season] %}
+                        <div style="display:flex; gap:8px; padding:4px 0; font-size:12.5px;">
+                            <span style="color:#ffd54f; min-width:130px;">🎖 {{ a.award_kr }}</span>
+                            <span style="color:#fff; font-weight:600;">{{ a.player_name }}</span>
+                            <span style="color:#8899a6;">{{ a.team_name }} · {{ a.detail }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
