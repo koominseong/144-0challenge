@@ -41,10 +41,17 @@ def history_home(save_id):
     history = get_history(save_id)
     titles = get_title_counts(save_id)
 
+    from dynasty_award import get_awards
+    awards_rows = get_awards(save_id)
+    awards_by_season = {}
+    for a in awards_rows:
+        awards_by_season.setdefault(a["season"], []).append(a)
+
     return render_template(
         "dynasty_history.html",
         save=save,
         user_team=user_team,
         history=history,
         titles=titles,
+        awards_by_season=awards_by_season,
     )
