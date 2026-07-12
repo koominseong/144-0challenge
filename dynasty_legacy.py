@@ -193,39 +193,75 @@ def rival_fan_bonus(save_id, season):
 
     teams = (
         sb.table("dynasty_team")
-        .select("id, is_user")
+        .select("id")
         .eq("save_id", save_id)
         .execute()
         .data
     )
+    team_ids = [t["id"] for t in teams]
 
+    # 통산 경기 1회 조회
     games = (
         sb.table("dynasty_schedule")
-        .select("home_team, away_team, home_score, away_score")
+        .select("season, home_team, away_team, home_score, away_score, played")
         .eq("save_id", save_id)
-        .eq("season", season)
         .eq("played", True)
         .execute()
         .data
     )
 
+    # 통산 상대전적 집계
+    career = {}  # (a,b) 정렬 tuple -> {a_wins, b_wins, games}
+    season_rec = {}
+    for g in games:
+        a, b = g["home_team"], g["away_team"]
+        key = (min(a, b), max(a, b))
+        rec = career.setdefault(key, [0, 0, 0])  # [작은쪽 승, 큰쪽 승, 경기수]
+        rec[2] += 1
+
+        if g["home_score"] > g["away_score"]:
+            winner = a
+        elif g["away_score"] > g["home_score"]:
+            winner = b
+        else:
+            winner = None
+
+        if winner == key[0]:
+            rec[0] += 1
+        elif winner == key[1]:
+            rec[1] += 1
+
+        if g["season"] == season and winner is not None:
+            srec = season_rec.setdefault(key, [0, 0])
+            if winner == key[0]:
+                srec[0] += 1
+            else:
+                srec[1] += 1
+
+    # 팀별 라이벌 = 10경기+ 중 승률 차 최소 상대
     bonus = {}
-    for t in teams:
-        rival, _, _ = get_rival(save_id, t["id"])
-        if not rival:
-            continue
-        w = l = 0
-        for g in games:
-            pair = {g["home_team"], g["away_team"]}
-            if pair != {t["id"], rival["id"]}:
+    for tid in team_ids:
+        best = None
+        best_tension = 999
+        for key, rec in career.items():
+            if tid not in key or rec[2] < 10:
                 continue
-            my_s = g["home_score"] if g["home_team"] == t["id"] else g["away_score"]
-            op_s = g["away_score"] if g["home_team"] == t["id"] else g["home_score"]
-            if my_s > op_s:
-                w += 1
-            elif op_s > my_s:
-                l += 1
-        if w > l:
-            bonus[t["id"]] = 0.02
+            decided = rec[0] + rec[1]
+            if decided == 0:
+                continue
+            tension = abs(rec[0] - rec[1]) / decided
+            if tension < best_tension:
+                best_tension = tension
+                best = key
+
+        if best is None:
+            continue
+
+        srec = season_rec.get(best)
+        if not srec:
+            continue
+        my_idx = 0 if tid == best[0] else 1
+        if srec[my_idx] > srec[1 - my_idx]:
+            bonus[tid] = 0.02
 
     return bonus
