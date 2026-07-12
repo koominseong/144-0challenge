@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포스트시즌 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.hero { text-align: center; padding: 40px 20px 25px; background: linear-gradient(180deg, #1a2634 0%, #0f1419 100%); }
+.hero h1 { font-size: 28px; color: #ffd54f; letter-spacing: 2px; }
+.hero .sub { font-size: 14px; color: #8899a6; margin-top: 8px; }
+.container { max-width: 700px; margin: 0 auto; padding: 25px 20px 60px; }
+.series-card { background: #1a222c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+.series-card.active { border-color: rgba(255,213,79,0.5); }
+.series-card.done { opacity: 0.75; }
+.s-round { font-size: 13px; color: #90caf9; font-weight: bold; margin-bottom: 12px; }
+.s-match { display: flex; align-items: center; justify-content: space-between; }
+.s-team { flex: 1; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; color: #fff; }
+.s-team.right { justify-content: flex-end; }
+.s-team.winner { color: #ffd54f; }
+.s-score { font-size: 26px; font-weight: bold; padding: 0 20px; color: #fff; }
+.s-need { text-align: center; font-size: 11px; color: #566573; margin-top: 8px; }
+.champion-box { text-align: center; background: linear-gradient(160deg, #2c2410, #1a222c); border: 1px solid rgba(255,213,79,0.4); border-radius: 16px; padding: 35px 20px; margin-bottom: 20px; }
+.champion-box .c-trophy { font-size: 50px; }
+.champion-box .c-name { font-size: 24px; font-weight: bold; color: #ffd54f; margin-top: 12px; }
+.btn { display: block; width: 100%; padding: 15px; font-size: 16px; font-weight: bold; color: #fff; background: linear-gradient(135deg, {{ user_team.color }}, #2c3e50); border: none; border-radius: 10px; cursor: pointer; text-align: center; text-decoration: none; }
+.btn:hover { opacity: 0.88; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>🏟 POSTSEASON</h1>
+    <div class="sub">Season {{ save.season }}</div>
+</div>
+
+<div class="container">
+
+    {% if champion %}
+    <div class="champion-box">
+        <div class="c-trophy">🏆</div>
+        <div class="c-name">{{ champion.logo }} {{ champion.team_name }} 한국시리즈 우승!</div>
+    </div>
+    {% endif %}
+
+    {% for s in series %}
+    <div class="series-card {% if not s.finished %}active{% else %}done{% endif %}">
+        <div class="s-round">{{ s.round_kr }} ({{ s.need }}선승제)</div>
+        <div class="s-match">
+            <div class="s-team {% if s.winner == s.team_a %}winner{% endif %}">
+                {{ s.ta.logo }} {{ s.ta.team_name }}
+            </div>
+            <div class="s-score">{{ s.wins_a }} : {{ s.wins_b }}</div>
+            <div class="s-team right {% if s.winner == s.team_b %}winner{% endif %}">
+                {{ s.tb.team_name }} {{ s.tb.logo }}
+            </div>
+        </div>
+        {% if s.w %}<div class="s-need">✅ {{ s.w.team_name }} 시리즈 승리</div>{% endif %}
+    </div>
+    {% endfor %}
+
+    {% if done %}
+    <a href="{{ url_for('dynasty.dynasty_season_end', save_id=save.id) }}" class="btn">📋 시즌 최종 결과 보기</a>
+    {% else %}
+    <form method="POST" action="{{ url_for('dynasty_ps.ps_next', save_id=save.id) }}">
+        <button type="submit" class="btn">▶ 다음 경기 진행</button>
+    </form>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
