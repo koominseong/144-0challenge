@@ -85,6 +85,9 @@ def player_detail(save_id, player_id):
 
     is_hof = _check_hof(player)
 
+    from dynasty_award import get_awards
+    my_awards = [a for a in get_awards(save_id) if a["player_id"] == player_id]
+
     return render_template(
         "dynasty_player.html",
         save=save,
@@ -96,6 +99,7 @@ def player_detail(save_id, player_id):
         is_pitcher=is_pitcher,
         career_years=career_years,
         is_hof=is_hof,
+        my_awards=my_awards,
     )
 
 
