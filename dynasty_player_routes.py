@@ -154,15 +154,25 @@ def hof(save_id):
     )
 
 
-def _check_hof(p):
+def _check_hof(p, awards_count=None):
     if not p.get("retired"):
         return False
     peak = p.get("peak_overall") or p["overall"]
     career = None
     if p.get("retired_season"):
         career = p["retired_season"] - p["appear_season"] + 1
+
+    # 능력치 기준
     if peak >= HOF_PEAK:
         return True
     if peak >= HOF_PEAK_LONG and career and career >= HOF_CAREER_LONG:
         return True
+
+    # 수상 기준
+    if awards_count:
+        if awards_count.get("MVP", 0) >= 1:
+            return True
+        if awards_count.get("GG_BAT", 0) + awards_count.get("GG_PIT", 0) >= 3:
+            return True
+
     return False
