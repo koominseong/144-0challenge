@@ -585,6 +585,7 @@ def dynasty_dashboard(save_id):
         facility_level=facility_level,
         stadium_cost=stadium_cost,
         facility_cost=facility_cost,
+        leaders=leaders,
         max_level=MAX_LEVEL
     )
 
