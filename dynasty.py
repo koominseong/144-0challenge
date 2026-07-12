@@ -565,6 +565,9 @@ def dynasty_dashboard(save_id):
     facility_level = user_team.get("facility_level") or 1
     stadium_cost = upgrade_cost("stadium", stadium_level)
     facility_cost = upgrade_cost("facility", facility_level)
+
+    from dynasty_stats import get_season_leaders
+    leaders = get_season_leaders(save_id, save["season"], limit=3)
     
     return render_template(
         "dynasty_dashboard.html",
