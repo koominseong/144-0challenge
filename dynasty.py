@@ -706,9 +706,19 @@ def dynasty_season_end(save_id):
         .execute()
         .data
     )
-
+    
     standings = get_standings(teams)
-    champion = standings[0]
+    team_map_local = {t["id"]: t for t in teams}
+
+    ks_id = save.get("ks_champion")
+    if ks_id and ks_id in team_map_local:
+        champion = team_map_local[ks_id]
+        champion.setdefault("pct", next(
+            (s["pct"] for s in standings if s["id"] == ks_id), 0.0
+        ))
+    else:
+        champion = standings[0]
+        
     user_team = next(t for t in teams if t["is_user"])
     user_rank = next(
         i + 1 for i, t in enumerate(standings) if t["id"] == user_team["id"]
