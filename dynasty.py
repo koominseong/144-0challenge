@@ -568,6 +568,10 @@ def dynasty_dashboard(save_id):
 
     from dynasty_stats import get_season_leaders
     leaders = get_season_leaders(save_id, save["season"], limit=3)
+
+    from dynasty_legacy import get_rival, get_retired_numbers
+    rival, rival_w, rival_l = get_rival(save_id, user_team["id"])
+    retired_numbers = get_retired_numbers(save_id, user_team["id"])
     
     return render_template(
         "dynasty_dashboard.html",
@@ -586,7 +590,10 @@ def dynasty_dashboard(save_id):
         stadium_cost=stadium_cost,
         facility_cost=facility_cost,
         leaders=leaders,
-        max_level=MAX_LEVEL
+        max_level=MAX_LEVEL,
+        rival=rival, rival_w=rival_w, 
+        rival_l=rival_l, 
+        retired_numbers=retired_numbers
     )
 
 @dynasty_bp.route("/dynasty/<int:save_id>/upgrade/<kind>", methods=["POST"])
