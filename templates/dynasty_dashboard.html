@@ -317,6 +317,27 @@ tr.user-row td {
         {% endif %}
     </div>
 
+    <!-- 라이벌 & 영구결번 -->
+    <div class="card" style="grid-column: 1 / -1; display:flex; gap:30px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:250px;">
+            <div style="font-size:14px; color:#fff; font-weight:bold;">⚔ 라이벌</div>
+            {% if rival %}
+            <div style="font-size:13px; color:#e6e6e6; margin-top:6px;">{{ rival.logo }} {{ rival.team_name }} · 통산 <span style="color:#66bb6a;">{{ rival_w }}승</span> <span style="color:#ef5350;">{{ rival_l }}패</span></div>
+            <div style="font-size:11px; color:#8899a6; margin-top:4px;">시즌 라이벌전 우세 시 팬 +2%</div>
+            {% else %}<div style="font-size:12px; color:#566573; margin-top:6px;">아직 라이벌이 없습니다.</div>{% endif %}
+        </div>
+        <div style="flex:1.5; min-width:250px;">
+            <div style="font-size:14px; color:#fff; font-weight:bold;">🔒 영구결번</div>
+            {% if retired_numbers %}
+            <div style="margin-top:6px;">
+                {% for rn in retired_numbers %}
+                <span style="display:inline-block; font-size:12px; color:#ffd54f; border:1px solid rgba(255,213,79,0.4); padding:3px 10px; border-radius:7px; margin:2px 4px 0 0;">{{ rn.player_name }} · {{ rn.seasons_played }}시즌</span>
+                {% endfor %}
+            </div>
+            {% else %}<div style="font-size:12px; color:#566573; margin-top:6px;">아직 영구결번 선수가 없습니다. (한 팀 8시즌+ 활약, 최고 OVR 75+ 은퇴 시)</div>{% endif %}
+        </div>
+    </div>
+
     <!-- 시설 투자 -->
     <div class="card" style="grid-column: 1 / -1; display:flex; gap:30px; flex-wrap:wrap; align-items:center;">
         <div style="flex:1; min-width:260px;">
