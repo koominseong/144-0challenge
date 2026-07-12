@@ -36,6 +36,13 @@ def update_fans(save_id):
     )
     standings = get_standings(teams)
 
+    try:
+        from dynasty_legacy import rival_fan_bonus
+        save_row = sb.table("dynasty_save").select("season").eq("id", save_id).execute().data[0]
+        rv_bonus = rival_fan_bonus(save_id, save_row["season"])
+    except Exception:
+        rv_bonus = {}
+
     # 팀별 스타 수 (OVR 80+ 로스터 보유)
     roster_rows = (
         sb.table("dynasty_roster")
