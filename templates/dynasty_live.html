@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>감독 모드 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.container { max-width: 640px; margin: 0 auto; padding: 20px 16px 50px; }
+
+.scoreboard { background: #1a222c; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
+.sb-team { flex: 1; text-align: center; }
+.sb-team .t-logo { font-size: 30px; }
+.sb-team .t-name { font-size: 13px; color: #8899a6; margin-top: 4px; }
+.sb-team .t-score { font-size: 38px; font-weight: bold; color: #fff; margin-top: 4px; }
+.sb-mid { text-align: center; min-width: 110px; }
+.sb-mid .inning { font-size: 18px; font-weight: bold; color: #ffd54f; }
+.sb-mid .outs { font-size: 12px; color: #8899a6; margin-top: 6px; }
+
+.diamond-wrap { display: flex; justify-content: center; padding: 18px 0 6px; }
+.diamond { position: relative; width: 130px; height: 130px; }
+.base { position: absolute; width: 34px; height: 34px; background: #232d3a; border: 1px solid rgba(255,255,255,0.15); transform: rotate(45deg); border-radius: 5px; }
+.base.on { background: #e65100; border-color: #ffb74d; }
+.base.b2 { top: 0; left: 48px; }
+.base.b3 { top: 48px; left: 0; }
+.base.b1 { top: 48px; left: 96px; }
+.base-label { position: absolute; font-size: 10px; color: #cfd8dc; width: 90px; text-align: center; }
+.bl2 { top: -16px; left: 20px; }
+.bl3 { top: 56px; left: -78px; text-align: right; }
+.bl1 { top: 56px; left: 118px; text-align: left; }
+
+.status-bar { display: flex; gap: 10px; margin-top: 12px; }
+.status-box { flex: 1; background: #1a222c; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 11px 13px; font-size: 12.5px; }
+.status-box .s-label { color: #8899a6; font-size: 11px; }
+.status-box .s-value { color: #fff; font-weight: 600; margin-top: 3px; }
+
+.decision { background: linear-gradient(160deg, #232013, #1a222c); border: 1px solid rgba(255,213,79,0.4); border-radius: 14px; padding: 18px; margin-top: 14px; }
+.decision h2 { font-size: 15px; color: #ffd54f; margin-bottom: 12px; }
+.dec-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.dec-btn { padding: 13px 8px; font-size: 14px; font-weight: bold; border-radius: 9px; cursor: pointer; border: none; color: #fff; }
+.dec-btn.primary { background: {{ user_team.color }}; }
+.dec-btn.alt { background: #2c3e50; }
+.dec-btn.warn { background: #6d4c41; }
+.dec-btn:hover { opacity: 0.85; }
+.dec-btn:disabled { opacity: 0.3; cursor: default; }
+
+.log-card { background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px; margin-top: 14px; }
+.log-card h2 { font-size: 14px; color: #fff; margin-bottom: 10px; }
+.log-line { font-size: 12.5px; padding: 4px 2px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #b0bec5; }
+.log-line:first-child { color: #fff; font-weight: 600; }
+
+.final-box { text-align: center; background: linear-gradient(160deg, #10261a, #1a222c); border: 1px solid rgba(102,187,106,0.4); border-radius: 14px; padding: 26px; margin-top: 14px; }
+.final-box .f-title { font-size: 20px; font-weight: bold; color: #81c784; }
+.btn-home { display: block; margin-top: 16px; padding: 13px; text-align: center; font-size: 14px; font-weight: bold; color: #fff; background: {{ user_team.color }}; border-radius: 9px; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 스코어보드 -->
+    <div class="scoreboard">
+        <div class="sb-team">
+            <div class="t-logo">{{ away.logo }}</div>
+            <div class="t-name">{{ away.team_name }}</div>
+            <div class="t-score">{{ state.a_score }}</div>
+        </div>
+        <div class="sb-mid">
+            {% if state.pending == 'finished' %}
+            <div class="inning">경기 종료</div>
+            {% else %}
+            <div class="inning">{{ state.inning }}회{{ '초' if state.half == 'top' else '말' }}</div>
+            <div class="outs">{{ state.outs }} OUT</div>
+            {% endif %}
+        </div>
+        <div class="sb-team">
+            <div class="t-logo">{{ home.logo }}</div>
+            <div class="t-name">{{ home.team_name }}</div>
+            <div class="t-score">{{ state.h_score }}</div>
+        </div>
+    </div>
+
+    {% if state.pending != 'finished' %}
+    <!-- 다이아몬드 -->
+    <div class="diamond-wrap">
+        <div class="diamond">
+            <div class="base b2 {% if state.bases[1] %}on{% endif %}"></div>
+            <div class="base b3 {% if state.bases[2] %}on{% endif %}"></div>
+            <div class="base b1 {% if state.bases[0] %}on{% endif %}"></div>
+            {% if base_names[1] %}<div class="base-label bl2">{{ base_names[1] }}</div>{% endif %}
+            {% if base_names[2] %}<div class="base-label bl3">{{ base_names[2] }}</div>{% endif %}
+            {% if base_names[0] %}<div class="base-label bl1">{{ base_names[0] }}</div>{% endif %}
+        </div>
+    </div>
+
+    <!-- 현재 상황 -->
+    <div class="status-bar">
+        {% if next_batter %}
+        <div class="status-box">
+            <div class="s-label">타석</div>
+            <div class="s-value">{{ next_batter.name }} (OVR {{ next_batter.overall }})</div>
+        </div>
+        {% endif %}
+        {% if cur_pitcher %}
+        <div class="status-box">
+            <div class="s-label">투수</div>
+            <div class="s-value">{{ cur_pitcher.name }} · {{ cur_pitcher.ip }}이닝</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 결정 패널 -->
+    <div class="decision">
+        {% if state.pending == 'offense' %}
+        <h2>⚔ 공격 작전 — 찬스 상황!</h2>
+        <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+            <div class="dec-btns">
+                <button class="dec-btn primary" name="action" value="swing">💪 강공</button>
+                <button class="dec-btn alt" name="action" value="bunt" {% if state.outs >= 2 %}disabled{% endif %}>🥢 번트</button>
+                <button class="dec-btn warn" name="action" value="steal" {% if not can_steal %}disabled{% endif %}>💨 도루</button>
+            </div>
+        </form>
+        {% elif state.pending == 'pitching' %}
+        <h2>🧢 투수 운용 — 이닝 시작</h2>
+        <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+            <div class="dec-btns">
+                <button class="dec-btn primary" name="action" value="pitch_keep">✊ 계속</button>
+                <button class="dec-btn alt" name="action" value="pitch_rp">🔄 불펜 투입</button>
+                <button class="dec-btn warn" name="action" value="pitch_cp">🧯 마무리 등판</button>
+            </div>
+        </form>
+        {% else %}
+        <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+            <div class="dec-btns">
+                <button class="dec-btn primary" name="action" value="swing">▶ 진행</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+    {% else %}
+    <!-- 경기 종료 -->
+    <div class="final-box">
+        <div class="f-title">
+            {% if state.h_score == state.a_score %}무승부
+            {% elif (state.h_score > state.a_score and user_team.id == home.id) or (state.a_score > state.h_score and user_team.id == away.id) %}🎉 승리!
+            {% else %}패배{% endif %}
+        </div>
+        <a class="btn-home" href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}">대시보드로</a>
+    </div>
+    {% endif %}
+
+    <!-- 로그 -->
+    <div class="log-card">
+        <h2>📋 경기 기록</h2>
+        {% for line in state.log | reverse %}
+        <div class="log-line">{{ line }}</div>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>
