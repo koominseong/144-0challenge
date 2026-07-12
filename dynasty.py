@@ -625,6 +625,9 @@ def dynasty_next_week(save_id):
     if week > SEASON_WEEKS:
         return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
 
+    from dynasty_injury import process_weekly_events
+    process_weekly_events(save_id, save["season"], week)
+
     simulate_week(save_id, save["season"], week)
 
     new_week = week + 1
