@@ -24,7 +24,7 @@ from dynasty_trade import trade_value
 
 FA_CAREER_YEARS = 6        # FA 자격 연차
 FA_RELEASE_RATE = 0.35     # 자격자 중 시장에 나오는 비율
-BASE_BUDGET = 750          # 기본 예산
+BASE_BUDGET = 1000          # 기본 예산
 LOYALTY_BONUS = 1.15       # 원소속팀 유효 입찰액 가산
 AI_MIN_BUDGET = 300        # AI 예산이 이 밑이면 기본 예산으로 보정
 # 상단 상수 (추가/변경)
