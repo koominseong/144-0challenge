@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기록실 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.hero { text-align: center; padding: 42px 20px 28px; background: linear-gradient(180deg, #131c26 0%, #0f1419 100%); }
+.hero .icon { font-size: 46px; }
+.hero h1 { font-size: 26px; color: #fff; margin-top: 10px; letter-spacing: 2px; }
+.hero .sub { font-size: 13px; color: #8899a6; margin-top: 8px; }
+.topnav { max-width: 1100px; margin: 0 auto; padding: 14px 20px 0; display: flex; justify-content: flex-end; }
+.back-btn { color: #8899a6; text-decoration: none; font-size: 14px; padding: 9px 16px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; }
+.back-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.container { max-width: 1100px; margin: 0 auto; padding: 22px 20px 60px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.board { background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 18px; }
+.board h2 { font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.entry { display: flex; align-items: center; gap: 10px; padding: 7px 4px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+.entry:last-child { border-bottom: none; }
+.entry .rank { min-width: 22px; color: #566573; font-size: 12px; }
+.entry:nth-child(2) .rank { color: #ffd54f; font-weight: bold; }
+.entry .name { flex: 1; font-weight: 600; }
+.entry .name a { color: #fff; text-decoration: none; }
+.entry .name a:hover { color: #90caf9; }
+.entry .retired-mark { font-size: 10px; color: #8899a6; border: 1px solid rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 4px; margin-left: 5px; }
+.entry .pos { color: #8899a6; font-size: 11px; min-width: 34px; }
+.entry .val { font-weight: bold; color: #ffd54f; min-width: 50px; text-align: right; }
+.entry .seasons { color: #566573; font-size: 11px; min-width: 44px; text-align: right; }
+.empty-line { color: #566573; font-size: 12.5px; padding: 12px 4px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="icon">📚</div>
+    <h1>기 록 실</h1>
+    <div class="sub">{{ user_team.team_name }} 리그 · Season {{ save.season }} 기준 통산 기록</div>
+</div>
+
+<div class="topnav">
+    <a href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}" class="back-btn">← 대시보드</a>
+</div>
+
+<div class="container">
+    {% for b in boards %}
+    <div class="board">
+        <h2>{{ b.title }}</h2>
+        {% for e in b.entries %}
+        <div class="entry">
+            <span class="rank">{{ loop.index }}</span>
+            <span class="name">
+                <a href="{{ url_for('dynasty_player.player_detail', save_id=save.id, player_id=e.player_id) }}">{{ e.name }}</a>
+                {% if e.retired %}<span class="retired-mark">은퇴</span>{% endif %}
+            </span>
+            <span class="pos">{{ e.positions }}</span>
+            <span class="val">{{ e.value }}</span>
+            <span class="seasons">{{ e.seasons }}시즌</span>
+        </div>
+        {% else %}
+        <div class="empty-line">아직 기록이 없습니다.</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
