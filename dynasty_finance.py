@@ -74,6 +74,7 @@ def update_fans(save_id):
             rate = -0.08
 
         rate += stars.get(t["id"], 0) * 0.03
+        rate += rv_bonus.get(t["id"], 0.0)
 
         # (rate += stars... 다음에)
         try:
