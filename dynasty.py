@@ -645,6 +645,15 @@ def dynasty_next_week(save_id):
 
     return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
+@dynasty_bp.route("/dynasty/<int:save_id>/sim_mode", methods=["POST"])
+@require_auth
+def dynasty_sim_mode(save_id):
+    sb = get_supabase()
+    mode = request.form.get("mode", "detail")
+    if mode not in ("detail", "fast"):
+        mode = "detail"
+    sb.table("dynasty_save").update({"sim_mode": mode}).eq("id", save_id).execute()
+    return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
 # =========================================
 # 시즌 전체 일괄 진행
