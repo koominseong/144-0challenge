@@ -210,3 +210,32 @@ def flush_stats(save_id, season, acc):
         ).execute()
 
     print(f"[dynasty_stats] 기록 반영={len(upserts)}명")
+
+# =========================================
+# 시즌 리더 조회
+# =========================================
+def get_season_leaders(save_id, season, limit=5):
+    sb = get_supabase()
+
+    rows = (
+        sb.table("dynasty_player_stats")
+        .select("*, dynasty_player(name, positions)")
+        .eq("save_id", save_id)
+        .eq("season", season)
+        .execute()
+        .data
+    )
+
+    def top(key):
+        s = sorted(rows, key=lambda r: -r[key])[:limit]
+        return [r for r in s if r[key] > 0]
+
+    return {
+        "hr": top("hr"),
+        "rbi": top("rbi"),
+        "hits": top("hits"),
+        "sb": top("sb"),
+        "wins": top("wins"),
+        "saves": top("saves"),
+        "so": top("so"),
+    }
