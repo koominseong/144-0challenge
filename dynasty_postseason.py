@@ -6,7 +6,7 @@
 # =========================================
 
 from dynasty_utils import get_supabase, get_standings
-from dynasty_game import _load_teams_and_powers, _simulate_game
+from dynasty_game import _load_all, _play_game
 
 ROUND_ORDER = ["WC", "SEMI", "PO", "KS"]
 ROUND_KR = {"WC": "와일드카드", "SEMI": "준플레이오프", "PO": "플레이오프", "KS": "한국시리즈"}
@@ -78,20 +78,24 @@ def play_next_game(save_id, season):
 
     series_list = get_series_list(save_id, season)
     current = next((s for s in series_list if not s["finished"]), None)
-
     if current is None:
         return None, True
 
-    teams, powers = _load_teams_and_powers(sb, save_id)
+    from dynasty_game import _load_all, _play_game
+
+    teams, rosters, mods = _load_all(sb, save_id)
     team_map = {t["id"]: t for t in teams}
 
     a_id, b_id = current["team_a"], current["team_b"]
-    pa = powers.get(a_id, {"bat": 50.0, "pit": 50.0})
-    pb = powers.get(b_id, {"bat": 50.0, "pit": 50.0})
+    game_no = current["wins_a"] + current["wins_b"]  # 시리즈 몇 차전 (선발 로테이션용)
 
-    # 홈 어드밴티지: 상위 시드(team_a) 기준, 무승부 재경기
+    # 타석 단위 시뮬, 무승부 시 재경기
     while True:
-        sa, sb_score = _simulate_game(pa, pb)
+        sa, sb_score = _play_game(
+            rosters.get(a_id), rosters.get(b_id),
+            mods.get(a_id, {}), mods.get(b_id, {}),
+            game_no, {}, a_id, b_id,
+        )
         if sa != sb_score:
             break
 
