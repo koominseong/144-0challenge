@@ -634,7 +634,7 @@ def dynasty_next_week(save_id):
     sb.table("dynasty_save").update({"week": new_week}).eq("id", save_id).execute()
 
     if new_week > SEASON_WEEKS:
-        return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
+        return redirect(url_for("dynasty_ps.ps_home", save_id=save_id))
 
     return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
@@ -663,8 +663,8 @@ def dynasty_sim_all(save_id):
     sb.table("dynasty_save").update(
         {"week": SEASON_WEEKS + 1}
     ).eq("id", save_id).execute()
-
-    return redirect(url_for("dynasty.dynasty_season_end", save_id=save_id))
+    
+    return redirect(url_for("dynasty_ps.ps_home", save_id=save_id))
 
 
 # =========================================
@@ -775,6 +775,10 @@ def dynasty_next_season(save_id):
 
     sb.table("dynasty_save").update(
         {"season": new_season, "week": 0}
+    ).eq("id", save_id).execute()
+
+    sb.table("dynasty_save").update(
+        {"season": new_season, "week": 0, "ks_champion": None}
     ).eq("id", save_id).execute()
 
     # 신인 드래프트 픽 카운터 초기화
