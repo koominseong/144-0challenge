@@ -355,6 +355,25 @@ tr.user-row td {
         {% endif %}
     </div>
 
+    <!-- 시즌 리더 -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <h2>👑 시즌 리더</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:14px;">
+            {% for key, title in [('hr','홈런'), ('rbi','타점'), ('hits','안타'), ('sb','도루'), ('wins','다승'), ('saves','세이브'), ('so','탈삼진')] %}
+            <div>
+                <div style="font-size:12px; color:#8899a6; margin-bottom:6px;">{{ title }}</div>
+                {% for r in leaders[key] %}
+                <div style="font-size:12.5px; padding:3px 0; color:{% if loop.first %}#ffd54f{% else %}#e6e6e6{% endif %};">
+                    {{ loop.index }}. {{ r.dynasty_player.name }} <strong>{{ r[key] }}</strong>
+                </div>
+                {% else %}
+                <div style="font-size:12px; color:#566573;">-</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
 <!-- templates/dynasty_dashboard.html - Part3 -->
 
     <!-- 로스터 -->
