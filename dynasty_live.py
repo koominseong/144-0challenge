@@ -162,6 +162,11 @@ def needs_decision(state, ctx):
 # action: None(강공) | "bunt" | "steal"
 # return: 사건 텍스트
 # =========================================
+# =========================================
+# 한 타석 진행 (자동 판정)
+# action: None(강공) | "bunt" | "steal"
+# return: 사건 텍스트
+# =========================================
 def play_at_bat(state, ctx, action=None):
     off, def_ = offense_defense(state)
     off_team = ctx[off]
@@ -182,23 +187,23 @@ def play_at_bat(state, ctx, action=None):
     def_id = state["home_id"] if def_ == "home" else state["away_id"]
 
     mod = ctx["home_mod"] if off == "home" else ctx["away_mod"]
-    bat_mod = mod.get("sim", 0.0) + (0.02 + ctx["home_mod"].get("home_adv", 0.0) if off == "home" else 0.0)
+    bat_mod = mod.get("sim", 0.0) + ((0.02 + ctx["home_mod"].get("home_adv", 0.0)) if off == "home" else 0.0)
 
     acc = state["acc"]
-    _ensure_acc(acc, batter, off_id)
-    _ensure_acc(acc, pitcher, def_id)
+    bs = _ensure_acc(acc, batter, off_id)
+    ps = _ensure_acc(acc, pitcher, def_id)
 
     log_prefix = f"{state['inning']}회{'초' if state['half']=='top' else '말'}"
 
     # ---------- 도루 지시 ----------
     if action == "steal" and state["bases"][0] and not state["bases"][1]:
         runner = ctx["players"][state["bases"][0]]
+        rs = _ensure_acc(acc, runner, off_id)
         spd = runner["speed"] or 40
-        success = random.random() < min(0.9, 0.45 + (spd - 50) * 0.008)
-        if success:
+        if random.random() < min(0.9, 0.45 + (spd - 50) * 0.008):
             state["bases"][1] = state["bases"][0]
             state["bases"][0] = None
-            acc[runner["id"]]["sb"] += 1
+            rs["sb"] += 1
             return f"{log_prefix} 💨 {runner['name']} 도루 성공!"
         else:
             state["bases"][0] = None
@@ -208,14 +213,12 @@ def play_at_bat(state, ctx, action=None):
     # ---------- 번트 ----------
     if action == "bunt" and any(state["bases"]) and state["outs"] < 2:
         state[order_key] += 1
-        # 성공률: 컨택 기반 + 승부사 감독 보정
         succ = 0.72 + ((batter["contact"] or 50) - 50) * 0.002
-        if success_bunt := (random.random() < succ):
-            # 주자 일괄 한 베이스 진루, 타자 아웃
+        if random.random() < succ:
             runs = 0
             if state["bases"][2]:
                 runs += 1
-                acc[batter["id"]]["rbi"] += 1
+                bs["rbi"] += 1
                 state["bases"][2] = None
             if state["bases"][1]:
                 state["bases"][2] = state["bases"][1]
@@ -239,7 +242,7 @@ def play_at_bat(state, ctx, action=None):
 
     if result == "K":
         state["outs"] += 1
-        acc[pitcher["id"]]["so"] += 1
+        ps["so"] += 1
         return f"{log_prefix} {batter['name']} 삼진"
 
     if result == "OUT":
@@ -247,7 +250,7 @@ def play_at_bat(state, ctx, action=None):
         if state["outs"] < 3 and state["bases"][2] and random.random() < 0.2:
             runner = ctx["players"][state["bases"][2]]
             state["bases"][2] = None
-            acc[batter["id"]]["rbi"] += 1
+            bs["rbi"] += 1
             _add_runs(state, off, 1)
             return f"{log_prefix} {batter['name']} 희생타 → {runner['name']} 득점"
         return f"{log_prefix} {batter['name']} 범타"
@@ -258,7 +261,7 @@ def play_at_bat(state, ctx, action=None):
             if state["bases"][1]:
                 if state["bases"][2]:
                     runs += 1
-                    acc[batter["id"]]["rbi"] += 1
+                    bs["rbi"] += 1
                 state["bases"][2] = state["bases"][1]
             state["bases"][1] = state["bases"][0]
         state["bases"][0] = batter["id"]
@@ -270,9 +273,9 @@ def play_at_bat(state, ctx, action=None):
 
     # 안타류
     advance = {"1B": 1, "2B": 2, "3B": 3, "HR": 4}[result]
-    acc[batter["id"]]["hits"] += 1
+    bs["hits"] += 1
     if result == "HR":
-        acc[batter["id"]]["hr"] += 1
+        bs["hr"] += 1
 
     runs = 0
     for base_idx in (2, 1, 0):
@@ -285,13 +288,13 @@ def play_at_bat(state, ctx, action=None):
         state["bases"][base_idx] = None
         if new_idx >= 3:
             runs += 1
-            acc[batter["id"]]["rbi"] += 1
+            bs["rbi"] += 1
         else:
             state["bases"][new_idx] = rid
 
     if advance >= 4:
         runs += 1
-        acc[batter["id"]]["rbi"] += 1
+        bs["rbi"] += 1
     else:
         state["bases"][advance - 1] = batter["id"]
 
