@@ -731,6 +731,9 @@ def dynasty_next_season(save_id):
     # 1. 시즌 역사 기록 (성적 리셋 전!)
     record_season_history(save_id)
 
+    from dynasty_award import grant_awards
+    grant_awards(save_id)
+
     # 1.5 팬 변동 + 예산 지급
     from dynasty_finance import update_fans, grant_season_budget
     update_fans(save_id)
