@@ -137,13 +137,29 @@ def hof(save_id):
         .data
     )
 
+    # 선수별 수상 집계 (MVP 1회 / GG 3회 자동 헌액용)
+    try:
+        from dynasty_award import get_awards
+        all_awards = get_awards(save_id)
+    except Exception:
+        all_awards = []
+
+    award_map = {}
+    for a in all_awards:
+        m = award_map.setdefault(a["player_id"], {})
+        m[a["award"]] = m.get(a["award"], 0) + 1
+
     inductees = []
     for p in retired:
-        if _check_hof(p):
+        if _check_hof(p, award_map.get(p["id"])):
             p["career_years"] = (
                 (p.get("retired_season") or save["season"])
                 - p["appear_season"] + 1
             )
+            # 명판에 대표 수상 표시용
+            m = award_map.get(p["id"], {})
+            p["mvp_count"] = m.get("MVP", 0)
+            p["gg_count"] = m.get("GG_BAT", 0) + m.get("GG_PIT", 0)
             inductees.append(p)
 
     return render_template(
