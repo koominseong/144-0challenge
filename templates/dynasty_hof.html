@@ -194,6 +194,12 @@ body {
             <div class="p-era">
                 Season {{ p.appear_season }} ~ Season {{ p.retired_season or '?' }}
             </div>
+            {% if p.mvp_count or p.gg_count %}
+            <div style="margin-top:6px; font-size:11px; color:#ffd54f;">
+                {% if p.mvp_count %}MVP ×{{ p.mvp_count }}{% endif %}
+                {% if p.gg_count %} GG ×{{ p.gg_count }}{% endif %}
+            </div>
+            {% endif %}
         </a>
         {% endfor %}
     {% else %}
