@@ -252,6 +252,7 @@ body {
         <span class="p-depth">{{ p.depth }}</span>
         <span class="p-name">
             <a href="{{ url_for('dynasty_player.player_detail', save_id=save.id, player_id=p.player_id) }}">{{ p.name }}</a>
+            {% if p.injured %}<span style="font-size:11px; color:#ef5350; border:1px solid rgba(239,83,80,0.4); padding:1px 6px; border-radius:5px;">🤕 W{{ p.injured_until }} 복귀</span>{% endif %}
         </span>
         <span class="p-pos">{{ p.positions }}</span>
         <span class="ovr
