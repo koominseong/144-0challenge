@@ -743,6 +743,11 @@ def dynasty_next_season(save_id):
 
     from dynasty_facility import ai_upgrade_facilities
     ai_upgrade_facilities(save_id)
+
+    sb_tmp = get_supabase()
+    sb_tmp.table("dynasty_player").update(
+        {"injured_season": None, "injured_until_week": None}
+    ).eq("save_id", save_id).not_.is_("injured_season", "null").execute()
     
     # 2. 성장 / 노쇠 / 은퇴
     process_offseason_growth(save_id)
