@@ -33,6 +33,11 @@ def simulate_week(save_id, season, week):
         return
 
     teams, powers = _load_teams_and_powers(sb, save_id)
+
+    from dynasty_stats import load_lineups, record_game, flush_stats
+    lineups = load_lineups(sb, save_id)
+    stats_acc = {}
+    
     team_map = {t["id"]: t for t in teams}
 
     game_upserts = []
@@ -61,9 +66,12 @@ def simulate_week(save_id, season, week):
         )
 
         _apply_result(team_map[home_id], team_map[away_id], home_score, away_score)
+        record_game(stats_acc, lineups, home_id, away_id, home_score, away_score, week)
 
     sb.table("dynasty_schedule").upsert(game_upserts).execute()
     _upsert_teams(sb, teams)
+    
+    flush_stats(save_id, season, stats_acc)
 
 
 # =========================================
