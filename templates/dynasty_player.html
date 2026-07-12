@@ -240,6 +240,13 @@ td.ovr-col { font-weight: bold; color: #fff; }
                     {% if player.retired_season %} · Season {{ player.retired_season }} 은퇴{% endif %}
                     · 최고 OVR {{ player.peak_overall or player.overall }} · POT {{ player.potential }}
                 </div>
+                {% if my_awards %}
+                <div style="margin-top:8px;">
+                    {% for a in my_awards %}
+                    <span style="display:inline-block; font-size:11px; color:#ffd54f; border:1px solid rgba(255,213,79,0.4); padding:2px 8px; border-radius:6px; margin:2px 3px 0 0;">🎖 S{{ a.season }} {{ a.award_kr }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
