@@ -306,6 +306,20 @@ tr.user-row td {
         <form method="POST" action="{{ url_for('dynasty.dynasty_next_week', save_id=save.id) }}" style="margin-top: 20px;">
             <button type="submit" class="btn-next">▶ 다음 주 진행</button>
         </form>
+        <form method="POST" action="{{ url_for('dynasty.dynasty_sim_mode', save_id=save.id) }}" style="margin-top:10px; display:flex; gap:8px;">
+        <button type="submit" name="mode" value="detail"
+            style="flex:1; padding:9px; font-size:12px; border-radius:7px; cursor:pointer;
+            {% if save.sim_mode != 'fast' %}background:{{ user_team.color }}; color:#fff; border:none;
+            {% else %}background:none; color:#8899a6; border:1px solid rgba(255,255,255,0.15);{% endif %}">
+            ⚾ 정밀 (타석 단위)
+        </button>
+        <button type="submit" name="mode" value="fast"
+            style="flex:1; padding:9px; font-size:12px; border-radius:7px; cursor:pointer;
+            {% if save.sim_mode == 'fast' %}background:{{ user_team.color }}; color:#fff; border:none;
+            {% else %}background:none; color:#8899a6; border:1px solid rgba(255,255,255,0.15);{% endif %}">
+            ⚡ 빠름 (자동)
+           </button>
+        </form>
         <form method="POST" action="{{ url_for('dynasty.dynasty_sim_all', save_id=save.id) }}"
             onsubmit="return confirm('남은 시즌 전체를 한번에 진행합니다. 계속하시겠습니까?');"
             style="margin-top: 10px;">
