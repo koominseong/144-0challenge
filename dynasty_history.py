@@ -27,15 +27,15 @@ from dynasty_utils import get_supabase, get_standings
 # =========================================
 def record_season_history(save_id):
     sb = get_supabase()
-
     save = (
         sb.table("dynasty_save")
-        .select("season")
+        .select("season, ks_champion")
         .eq("id", save_id)
         .execute()
         .data[0]
     )
     season = save["season"]
+    ks_champion = save.get("ks_champion")
 
     # 중복 기록 방지
     existing = (
@@ -56,11 +56,12 @@ def record_season_history(save_id):
         .execute()
         .data
     )
-
     standings = get_standings(teams)
 
     rows = []
     for i, t in enumerate(standings):
+        # 챔피언 = KS 우승팀 (포스트시즌 미진행 세이브는 정규 1위)
+        is_champ = (t["id"] == ks_champion) if ks_champion else (i == 0)
         rows.append(
             {
                 "save_id": save_id,
@@ -72,20 +73,25 @@ def record_season_history(save_id):
                 "wins": t["wins"],
                 "losses": t["losses"],
                 "ties": t["ties"],
-                "champion": i == 0,
+                "champion": is_champ,
             }
         )
 
     sb.table("dynasty_history").insert(rows).execute()
 
-    from dynasty_event import log_event
-    champ = standings[0]
-    log_event(save_id, season, 99, "champion", "🏆",
-              f"Season {season} 우승: {champ['team_name']} ({champ['wins']}승 {champ['losses']}패)")
+    # 우승 뉴스: KS 미진행(구버전 세이브)일 때만 여기서 기록
+    # (KS 진행 시엔 dynasty_postseason이 이미 우승 뉴스를 남김 → 중복 방지)
+    if not ks_champion:
+        try:
+            from dynasty_event import log_event
+            champ = standings[0]
+            log_event(save_id, season, 99, "champion", "🏆",
+                      f"Season {season} 우승: {champ['team_name']} ({champ['wins']}승 {champ['losses']}패)")
+        except Exception:
+            pass
 
-    print(f"[dynasty_history] season {season} 기록 완료")
+    print(f"[dynasty_history] season {season} 기록 완료 (KS우승={ks_champion})")
     return len(rows)
-
 
 # =========================================
 # 전체 역사 조회 (시즌별 그룹)
