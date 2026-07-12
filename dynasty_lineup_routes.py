@@ -58,6 +58,11 @@ def lineup_home(save_id):
                 "positions": p["positions"],
                 "overall": p["overall"],
                 "potential": p["potential"],
+                "injured": (
+                    p.get("injured_season") == save["season"]
+                    and (p.get("injured_until_week") or 0) > save["week"]
+                ),
+                "injured_until": p.get("injured_until_week")
             }
         )
 
