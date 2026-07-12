@@ -755,6 +755,9 @@ def dynasty_next_season(save_id):
     # 2. 성장 / 노쇠 / 은퇴
     process_offseason_growth(save_id)
 
+    from dynasty_legacy import grant_retired_numbers
+    grant_retired_numbers(save_id)
+
     # 3. FA 시장 생성
     generate_fa_market(save_id)
 
