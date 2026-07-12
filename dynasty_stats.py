@@ -163,11 +163,8 @@ def _record_pitching(acc, lineup, team_id, won, lost, close, runs_allowed, week)
 def flush_stats(save_id, season, acc):
     if not acc:
         return
-
     sb = get_supabase()
-
     player_ids = list(acc.keys())
-
     existing = {}
     for i in range(0, len(player_ids), 100):
         rows = (
@@ -181,7 +178,6 @@ def flush_stats(save_id, season, acc):
         )
         for r in rows:
             existing[r["player_id"]] = r
-
     upserts = []
     for pid, s in acc.items():
         prev = existing.get(pid)
@@ -204,12 +200,17 @@ def flush_stats(save_id, season, acc):
             row["id"] = prev["id"]
         upserts.append(row)
 
-    for i in range(0, len(upserts), 100):
-        sb.table("dynasty_player_stats").upsert(
-            upserts[i : i + 100], on_conflict="save_id,player_id,season"
-        ).execute()
+    # 기존 행(update)과 신규 행(insert) 분리 반영
+    updates = [r for r in upserts if "id" in r]
+    inserts = [r for r in upserts if "id" not in r]
 
-    print(f"[dynasty_stats] 기록 반영={len(upserts)}명")
+    for i in range(0, len(updates), 100):
+        sb.table("dynasty_player_stats").upsert(updates[i : i + 100]).execute()
+
+    for i in range(0, len(inserts), 100):
+        sb.table("dynasty_player_stats").insert(inserts[i : i + 100]).execute()
+
+    print(f"[dynasty_stats] 기록 반영: 갱신={len(updates)}, 신규={len(inserts)}")
 
 # =========================================
 # 시즌 리더 조회
