@@ -10,7 +10,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from dynasty_utils import get_supabase
 from dynasty_staff import (
     init_staff_market, hire_staff, fire_staff,
-    STYLE_DESC, TRAIT_DESC, SYNERGY, ROLE_KR,
+    STYLE_DESC, TRAIT_DESC, PERSON_SYNERGY, ROLE_KR,
     GRADE_SIM, GRADE_GROWTH,
 )
 
@@ -45,7 +45,6 @@ def staff_home(save_id):
         else:
             s["effect"] = "등급 비례 효과"
         s["team"] = team_map.get(s["team_id"]) if s["team_id"] else None
-        # 화면용 이름 정리 (동명이인 구분자 제거)
         s["disp_name"] = s["name"].rstrip("2")
 
     mine = [s for s in staff if s["team_id"] == user_team["id"]]
@@ -57,14 +56,51 @@ def staff_home(save_id):
     mine.sort(key=lambda s: ROLE_ORDER.get(s["role"], 9))
     others.sort(key=lambda s: (s["team_id"], ROLE_ORDER.get(s["role"], 9)))
 
-    # 내 팀 시너지 발동 현황
+    # ----- 내 팀 발동 시너지 -----
     my_manager = next((s for s in mine if s["role"] == "MANAGER"), None)
+    my_names = {s["name"] for s in mine}
     synergies = []
     if my_manager:
         for s in mine:
-            syn = SYNERGY.get((my_manager["style"], s["role"]))
-            if syn:
-                synergies.append({"coach": s["disp_name"], "name": syn[0], "desc": syn[1]})
+            duo = PERSON_SYNERGY.get((my_manager["name"], s["name"]))
+            if duo:
+                synergies.append({"coach": s["disp_name"], "name": duo[0], "desc": duo[1]})
+
+    # ----- 영입 시장 궁합 배지 -----
+    for s in market:
+        s["duo_hint"] = None
+        if my_manager and s["role"] != "MANAGER":
+            duo = PERSON_SYNERGY.get((my_manager["name"], s["name"]))
+            if duo:
+                s["duo_hint"] = duo[0]
+        elif s["role"] == "MANAGER":
+            # 감독 후보: 내 현재 코치들과 몇 개 터지는지
+            cnt = sum(1 for c in mine if (s["name"], c["name"]) in PERSON_SYNERGY)
+            if cnt:
+                s["duo_hint"] = f"보유 코치와 시너지 {cnt}건"
+
+    # ----- 시너지 도감 -----
+    # 상태: active(발동 중) / possible(감독 보유, 코치가 시장에 있음) / other(그 외)
+    staff_by_name = {s["name"]: s for s in staff}
+    codex = []
+    for (mg, ch), (title, desc, _fx) in PERSON_SYNERGY.items():
+        m = staff_by_name.get(mg)
+        c = staff_by_name.get(ch)
+        if my_manager and mg == my_manager["name"] and ch in my_names:
+            status = "active"
+        elif my_manager and mg == my_manager["name"] and c and c["team_id"] is None:
+            status = "possible"
+        else:
+            status = "other"
+        codex.append({
+            "manager": mg, "coach": ch.rstrip("2"),
+            "coach_role": ROLE_KR.get(c["role"], "?") if c else "?",
+            "title": title, "desc": desc, "status": status,
+            "m_where": (team_map.get(m["team_id"], {}).get("team_name") if m and m["team_id"] else "시장") if m else "-",
+            "c_where": (team_map.get(c["team_id"], {}).get("team_name") if c and c["team_id"] else "시장") if c else "-",
+        })
+    status_order = {"active": 0, "possible": 1, "other": 2}
+    codex.sort(key=lambda x: (status_order[x["status"]], x["manager"]))
 
     msg = request.args.get("msg", "")
     ok = request.args.get("ok", "")
@@ -77,7 +113,9 @@ def staff_home(save_id):
         market=market,
         others=others,
         synergies=synergies,
+        codex=codex,
         my_style=my_manager["style"] if my_manager else None,
+        my_manager_name=my_manager["disp_name"] if my_manager else None,
         budget=user_team.get("budget") or 0,
         msg=msg,
         ok=ok,
