@@ -43,9 +43,9 @@ def live_action(save_id, live_id):
     action = request.form.get("action", "swing")
     ph_id = request.form.get("ph_id", type=int)
     rp_id = request.form.get("rp_id", type=int)
-    live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id, rp_id=rp_id)
+    slot = request.form.get("slot", type=int)
+    live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id, rp_id=rp_id, user_action_slot=slot)
     return _render(save_id, live_row)
-
 
 def _render(save_id, live_row):
     sb = get_supabase()
@@ -163,4 +163,5 @@ def _render(save_id, live_row):
         send_runner=send_runner,
         mvp=state.get("mvp"),
         highlights=state.get("hl", []),
+        my_lineup=lineup_view(us) if us else [],
     )
