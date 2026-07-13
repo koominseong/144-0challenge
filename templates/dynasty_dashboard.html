@@ -300,16 +300,16 @@ tr.user-row td {
             <div class="team away">{{ away.team_name }} {{ away.logo }}</div>
             <div class="vs">VS</div>
             <div class="team">{{ home.logo }} {{ home.team_name }}</div>
+            {% if not g.played and (g.home_team == user_team.id or g.away_team == user_team.id) %}
+            <a href="{{ url_for('dynasty_live.live_enter', save_id=save.id, schedule_id=g.id) }}"
+               style="font-size:11px; color:#ffd54f; border:1px solid rgba(255,213,79,0.4); padding:3px 9px; border-radius:6px; text-decoration:none; margin-left:8px; white-space:nowrap;">🎮 감독</a>
+            {% endif %}
         </div>
         {% endfor %}
 
         <form method="POST" action="{{ url_for('dynasty.dynasty_next_week', save_id=save.id) }}" style="margin-top: 20px;">
             <button type="submit" class="btn-next">▶ 다음 주 진행</button>
         </form>
-        {% if not g.played and (g.home_team == user_team.id or g.away_team == user_team.id) %}
-        <a href="{{ url_for('dynasty_live.live_enter', save_id=save.id, schedule_id=g.id) }}"
-           style="font-size:11px; color:#ffd54f; border:1px solid rgba(255,213,79,0.4); padding:3px 9px; border-radius:6px; text-decoration:none;">🎮 감독 모드</a>
-        {% endif %}
         <form method="POST" action="{{ url_for('dynasty.dynasty_sim_all', save_id=save.id) }}"
             onsubmit="return confirm('남은 시즌 전체를 한번에 진행합니다. 계속하시겠습니까?');"
             style="margin-top: 10px;">
