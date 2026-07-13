@@ -149,8 +149,9 @@ def needs_decision(state, ctx):
         if any(state["bases"]) and state["outs"] < 2 and score_diff <= 3:
             return "offense"
     else:
-        # 수비: 이닝 첫 타석 전에만 투수 결정
-        if state["outs"] == 0 and not any(state["bases"]):
+        # 수비: 이닝 첫 타석 전 1회만
+        mark = f"{state['inning']}-{state['half']}"
+        if state["outs"] == 0 and not any(state["bases"]) and state.get("pitch_done") != mark:
             return "pitching"
 
     return None
@@ -517,6 +518,8 @@ def progress(save_id, live_id, user_action=None):
             state[pit_outs_key] = 0
             state[used_cp_key] = True
             state["log"].append(f"🧯 마무리 등판: {team['cp']['name']}")
+
+        state["pitch_done"] = f"{state['inning']}-{state['half']}"
         state["pending"] = None
 
     # ----- 유저 공격 작전 → 해당 타석 1회 실행 -----
