@@ -126,6 +126,9 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% if s.style_desc %}<span class="s-desc">효과: {{ s.style_desc }}</span>{% endif %}
         {% if s.trait_desc %}<span class="s-desc">특성: {{ s.trait_desc }}</span>{% endif %}
     </div>
+    {% for d in s.duo_list %}
+        <span class="s-desc" style="color:#ce93d8;">⚡ {{ d }}</span>
+        {% endfor %}
     {% endmacro %}
 
     <div class="section-title">🏠 내 코칭스태프</div>
