@@ -46,6 +46,15 @@ def staff_home(save_id):
             s["effect"] = "등급 비례 효과"
         s["team"] = team_map.get(s["team_id"]) if s["team_id"] else None
         s["disp_name"] = s["name"].rstrip("2")
+     
+        # 이 인물이 얽힌 시너지 목록
+        duos = []
+        for (mg, ch), (title, desc, _fx) in PERSON_SYNERGY.items():
+            if s["name"] == ch and s["role"] != "MANAGER":
+                duos.append(f"「{title}」 {mg} 감독과 — {desc}")
+            elif s["name"] == mg and s["role"] == "MANAGER":
+                duos.append(f"「{title}」 {ch.rstrip('2')} 코치와 — {desc}")
+        s["duo_list"] = duos
 
     mine = [s for s in staff if s["team_id"] == user_team["id"]]
     market = [s for s in staff if s["team_id"] is None]
