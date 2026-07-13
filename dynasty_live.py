@@ -91,12 +91,33 @@ def load_context(save_id, state):
     home = rosters.get(state["home_id"])
     away = rosters.get(state["away_id"])
 
+    # 벤치 로드 (대타용)
+    bench_rows = (
+        sb.table("dynasty_roster")
+        .select("team_id, dynasty_player(*)")
+        .eq("save_id", save_id)
+        .eq("role", "BENCH")
+        .in_("team_id", [state["home_id"], state["away_id"]])
+        .execute()
+        .data
+    )
+    bench_map = {state["home_id"]: [], state["away_id"]: []}
+    for r in bench_rows:
+        p = r["dynasty_player"]
+        if p and not p["retired"]:
+            bench_map[r["team_id"]].append(p)
+
+    if home:
+        home["bench"] = bench_map.get(state["home_id"], [])
+    if away:
+        away["bench"] = bench_map.get(state["away_id"], [])
+
     # player_id → player dict 색인
     players = {}
     for team in (home, away):
         if not team:
             continue
-        for p in team["batters"] + team["sps"] + team["rps"]:
+        for p in team["batters"] + team["sps"] + team["rps"] + team.get("bench", []):
             players[p["id"]] = p
         if team["cp"]:
             players[team["cp"]["id"]] = team["cp"]
@@ -164,7 +185,10 @@ def play_at_bat(state, ctx, action=None):
     def_team = ctx[def_]
 
     order_key = "h_order" if off == "home" else "a_order"
-    batter = off_team["batters"][state[order_key] % len(off_team["batters"])]
+    slot = state[order_key] % len(off_team["batters"])
+    over = state.get("ph_over", {}).get(off, {})
+    over_id = over.get(str(slot))
+    batter = ctx["players"][over_id] if over_id else off_team["batters"][slot]
 
     pitcher_key = "h_pitcher" if def_ == "home" else "a_pitcher"
     pitcher = ctx["players"][state[pitcher_key]]
@@ -230,6 +254,15 @@ def play_at_bat(state, ctx, action=None):
     # ---------- 일반 타석 ----------
     state[order_key] += 1
     result = _plate_appearance(batter, pitcher, fatigue, bat_mod)
+
+    # 수비 시프트 (유저 수비 시에만)
+    if state.get("shift") and def_ == user_side(state, ctx):
+        if result == "1B" and random.random() < 0.22:
+            result = "OUT"
+            state["log"].append(f"{log_prefix} 🛡 시프트가 타구를 삼킴!")
+        elif result == "OUT" and random.random() < 0.08:
+            result = "1B"
+            state["log"].append(f"{log_prefix} ⚠ 시프트 빈 곳으로 안타...")
 
     if result == "K":
         state["outs"] += 1
@@ -465,7 +498,7 @@ def finish_live_game(save_id, live_row, state, ctx):
 # user_action: None | "bunt" | "steal" | "swing"
 #              | "pitch_keep" | "pitch_rp" | "pitch_cp"
 # =========================================
-def progress(save_id, live_id, user_action=None):
+def progress(save_id, live_id, user_action=None, ph_id=None):
     sb = get_supabase()
 
     live_row = (
@@ -516,6 +549,30 @@ def progress(save_id, live_id, user_action=None):
         if advance_if_needed(state, ctx) == "game_over":
             finish_live_game(save_id, live_row, state, ctx)
             return _reload(sb, live_id)
+
+    # ----- 시프트 토글 (타석 소비 안 함) -----
+    if user_action in ("shift_on", "shift_off") and us:
+        state["shift"] = (user_action == "shift_on")
+        state["log"].append("🛡 수비 시프트 " + ("가동" if state["shift"] else "해제"))
+        # pending 유지 → 같은 타석에서 투수 결정 계속
+
+    # ----- 대타 투입 (교체 후 그 타석 강공 진행) -----
+    if user_action == "ph" and us and ph_id:
+        team = ctx[us]
+        order_key = "h_order" if us == "home" else "a_order"
+        slot = state[order_key] % len(team["batters"])
+        used = state.setdefault("used_ph", [])
+        sub = next((p for p in team.get("bench", []) if p["id"] == ph_id and p["id"] not in used), None)
+        if sub:
+            state.setdefault("ph_over", {}).setdefault(us, {})[str(slot)] = sub["id"]
+            used.append(sub["id"])
+            state["log"].append(f"🔁 대타 {sub['name']} 투입")
+            txt = play_at_bat(state, ctx, None)
+            state["log"].append(txt)
+            state["pending"] = None
+            if advance_if_needed(state, ctx) == "game_over":
+                finish_live_game(save_id, live_row, state, ctx)
+                return _reload(sb, live_id)
 
     # ----- 유저 공격 작전 → 해당 타석 1회 실행 -----
     if user_action in ("bunt", "steal", "swing") and us:
