@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>튜토리얼 - KBO Dynasty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.topbar { background: linear-gradient(135deg, #1565c0 0%, #0f1419 100%); padding: 22px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.1); }
+.topbar h1 { font-size: 22px; color: #fff; }
+.topbar .sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+.back-btn { color: #fff; text-decoration: none; font-size: 14px; padding: 10px 18px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; }
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+.container { max-width: 860px; margin: 0 auto; padding: 25px 20px 70px; }
+.toc { background: #1a222c; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; }
+.toc a { display: inline-block; color: #90caf9; text-decoration: none; font-size: 13px; margin: 4px 14px 4px 0; }
+.toc a:hover { color: #fff; }
+.sec { background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; scroll-margin-top: 20px; }
+.sec h2 { font-size: 17px; color: #ffd54f; margin-bottom: 14px; }
+.sec h3 { font-size: 14px; color: #90caf9; margin: 16px 0 8px; }
+.sec p { font-size: 13.5px; line-height: 1.75; color: #cfd8dc; margin-bottom: 8px; }
+.sec ul { margin: 6px 0 10px 18px; }
+.sec li { font-size: 13.5px; line-height: 1.75; color: #cfd8dc; }
+.kw { color: #ffd54f; font-weight: 600; }
+.tip { background: rgba(102,187,106,0.08); border: 1px solid rgba(102,187,106,0.3); border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #a5d6a7; margin: 10px 0; }
+.warn { background: rgba(239,83,80,0.07); border: 1px solid rgba(239,83,80,0.3); border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #ef9a9a; margin: 10px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 8px 0 12px; }
+th { text-align: left; padding: 7px 8px; color: #8899a6; border-bottom: 1px solid rgba(255,255,255,0.1); }
+td { padding: 7px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #cfd8dc; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>
+        <h1>📘 KBO Dynasty 튜토리얼</h1>
+        <div class="sub">1982년, 당신의 왕조가 시작됩니다</div>
+    </div>
+    <a href="{{ url_for('dynasty.dynasty_home') }}" class="back-btn">← 홈으로</a>
+</div>
+
+<div class="container">
+
+    <div class="toc">
+        <a href="#start">1. 시작하기</a>
+        <a href="#season">2. 시즌 흐름</a>
+        <a href="#roster">3. 로스터/라인업</a>
+        <a href="#live">4. 감독 모드</a>
+        <a href="#growth">5. 육성과 성장</a>
+        <a href="#staff">6. 코칭스태프 & 시너지</a>
+        <a href="#money">7. 예산/팬/시설</a>
+        <a href="#fa">8. FA & 트레이드</a>
+        <a href="#legacy">9. 포스트시즌 & 기록</a>
+    </div>
+
+    <div class="sec" id="start">
+        <h2>1. 시작하기</h2>
+        <p>새 왕조를 생성하면 <span class="kw">1982년(Season 1)</span>에서 출발합니다. 팀을 고르고 <span class="kw">창단 드래프트(25라운드)</span>로 초기 선수단을 구성합니다. 시대별 실존 KBO 선수들이 드래프트 풀에 등장하며, 시즌이 흐르면 그 시대의 신인들이 새로 유입됩니다.</p>
+        <p>세이브에는 비밀번호가 걸리며, 진행은 전부 자동 저장됩니다.</p>
+        <div class="tip">💡 드래프트에서는 OVR(현재 능력)만 보지 말고 POT(잠재력)이 높은 어린 선수를 섞어 뽑으세요. 육성 시스템의 재료가 됩니다.</div>
+    </div>
+
+    <div class="sec" id="season">
+        <h2>2. 시즌 흐름</h2>
+        <p>한 시즌은 <span class="kw">24주</span>, 10개 구단 체제입니다. 대시보드에서 <span class="kw">▶ 다음 주 진행</span>을 누르면 한 주의 모든 경기가 시뮬레이션되고, <span class="kw">⏩ 시즌 전체 진행</span>으로 남은 시즌을 한번에 돌릴 수도 있습니다.</p>
+        <ul>
+            <li>매주: 경기 결과 → 순위 갱신 → 부상/각성 이벤트 → 개인 기록 누적</li>
+            <li>시즌 종료: 포스트시즌 → 어워드 → 팬/예산 정산 → 오프시즌(성장·은퇴·FA·드래프트)</li>
+        </ul>
+        <p>경기 시뮬 방식은 <span class="kw">정밀 모드</span>(타석 단위, 개인 기록이 실제 사건에서 발생)와 <span class="kw">빠른 모드</span>(전력 기반)를 토글할 수 있습니다.</p>
+    </div>
+
+    <div class="sec" id="roster">
+        <h2>3. 로스터/라인업</h2>
+        <p>1군은 <span class="kw">28인</span>: 주전 야수 9 / 선발 5 / 마무리 1 / 불펜 6 / 벤치 7. 나머지는 <span class="kw">2군(MINOR)</span>으로 내려갑니다.</p>
+        <ul>
+            <li><span class="kw">라인업</span> 메뉴에서 타순과 보직을 조정합니다.</li>
+            <li>2군 선수는 경기에 나오지 않는 대신 <span class="kw">육성</span> 대상이 됩니다.</li>
+            <li>오프시즌에 45인을 초과하는 인원은 자동 정리됩니다.</li>
+        </ul>
+    </div>
+
+    <div class="sec" id="live">
+        <h2>4. 감독 모드 (라이브 경기)</h2>
+        <p>대시보드의 이번 주 내 팀 경기에 <span class="kw">🎮 감독</span> 배지가 뜹니다. 누르면 그 경기를 타석 단위로 직접 지휘합니다.</p>
+        <h3>공격 지시</h3>
+        <ul>
+            <li><span class="kw">💪 강공</span> — 기본 타격</li>
+            <li><span class="kw">🥢 번트</span> — 주자 진루 (2아웃엔 불가)</li>
+            <li><span class="kw">💨 도루</span> — 1루 주자, 주력 의존</li>
+            <li><span class="kw">🏃 히트앤런</span> — 성공 시 주자 3루행, 삼진 시 협살 위험</li>
+            <li><span class="kw">🔁 대타 / 🏃 대주자</span> — 벤치 소모, 재출전 불가</li>
+            <li>단타 때 주자가 2루에 멈추면 <span class="kw">보내! / 멈춰!</span> 주루 판단이 뜹니다.</li>
+        </ul>
+        <h3>수비 지시</h3>
+        <ul>
+            <li><span class="kw">✊ 계속 / 🔄 불펜 지명 / 🧯 마무리</span> — 투수 운용</li>
+            <li><span class="kw">🚶 고의4구</span> — 강타자 거르기 (1루 주자 있으면 불가)</li>
+            <li><span class="kw">🛡 시프트</span> — 상대 단타 -22%, 대신 역효과 8%</li>
+            <li><span class="kw">🧤 대수비</span> — 수비력 보강 (호수비 확률에 반영)</li>
+        </ul>
+        <p>화면에는 <span class="kw">승리 확률 게이지</span>, 양팀 라인업, 실시간 박스스코어, 선수 컨디션(🔥/❄)이 표시됩니다. 경기가 끝나면 결과·개인 기록이 정식 반영되고, 경기 MVP와 하이라이트가 나옵니다.</p>
+        <div class="warn">⚠ 감독 모드 경기를 끝내지 않고 "다음 주 진행"을 누르면 그 경기는 자동 시뮬로 처리됩니다.</div>
+        <div class="tip">💡 감독 모드로 직접 승리하면 팬이 추가로 늘어납니다 (승리 +0.3%).</div>
+    </div>
+
+    <div class="sec" id="growth">
+        <h2>5. 육성과 성장</h2>
+        <p>선수는 매 오프시즌 성장·정체·노쇠 곡선을 탑니다: <span class="kw">1~4년차 성장기 → 5~8년차 전성기 → 9년차+ 하락기</span>. 잠재력(POT)이 천장입니다.</p>
+        <ul>
+            <li><span class="kw">육성</span> 메뉴: 2군 선수를 시즌당 1회, 비용 30으로 특정 능력치 훈련. 대성공(+4~6) 확률은 어린 선수와 2군 시설 레벨이 높을수록 올라갑니다.</li>
+            <li>시즌 중 낮은 확률로 <span class="kw">각성</span>(능력 상승)과 <span class="kw">부상</span>(2~4주 이탈)이 발생합니다.</li>
+        </ul>
+    </div>
+
+    <div class="sec" id="staff">
+        <h2>6. 코칭스태프 & 시너지</h2>
+        <p>실존 KBO 감독·코치를 영입합니다. 역할은 <span class="kw">감독 / 타격 / 투수 / 수비 / 불펜 / 주루 / 배터리</span> 7종. 등급(S/A/B/C)에 따라 연봉(80/55/35/20)이 매 시즌 자동 차감되며, 예산이 부족하면 자동 해임됩니다.</p>
+        <table>
+            <tr><th>감독 스타일</th><th>효과</th></tr>
+            <tr><td>승부사</td><td>베테랑 팀(평균 7년차↑) 전력 +2.5%</td></tr>
+            <tr><td>지장</td><td>전력 +1.5%</td></tr>
+            <tr><td>덕장</td><td>시즌 팬 증가율 +3%p</td></tr>
+            <tr><td>육성가</td><td>4년차 이하 성장 +1</td></tr>
+            <tr><td>데이터</td><td>전력 +1% · 접전 유리</td></tr>
+        </table>
+        <p>코치는 역할 효과에 더해 <span class="kw">✦ 고유 특성</span>(예: 그린라이트 = 도루 +5%p)을 가집니다. 그리고 실제 역사에서 함께했던 감독-코치 조합을 맞추면 <span class="kw">⚡ 듀오 시너지</span>가 발동합니다 (예: 김성근 × 박경완 「SK 왕조 배터리」).</p>
+        <ul>
+            <li>스태프 화면의 <span class="kw">📖 시너지 도감</span>에서 전체 조합과 달성 상태를 확인하세요.</li>
+            <li>영입 시장 카드에도 내 감독과의 궁합 배지가 뜹니다.</li>
+            <li>AI 구단도 시너지를 노리고, 하위권 팀은 오프시즌에 감독을 경질합니다 — 노리던 감독이 시장에 풀릴 수 있습니다.</li>
+        </ul>
+    </div>
+
+    <div class="sec" id="money">
+        <h2>7. 예산 / 팬 / 시설</h2>
+        <p>시즌 시작 시 예산 = <span class="kw">기본 400 + 순위 보상(하위팀 우대) + 팬 수익(팬/100)</span>. 지출처는 FA 입찰, 육성, 스태프 연봉, 시설 투자입니다.</p>
+        <ul>
+            <li><span class="kw">팬</span>: 성적(우승 +25%), 스타 보유(OVR 80+ 1명당 +3%), 덕장 감독, 구장 레벨, 라이벌전 우세로 증감</li>
+            <li><span class="kw">구장 Lv1~5</span>: 팬 증가 + 홈 어드밴티지</li>
+            <li><span class="kw">2군 시설 Lv1~5</span>: 2군 성장 보정 + 육성 대성공 확률</li>
+        </ul>
+        <div class="tip">💡 하위권일수록 순위 보상이 크므로, 리빌딩 시즌에는 시설과 육성에 투자하는 게 정석입니다.</div>
+    </div>
+
+    <div class="sec" id="fa">
+        <h2>8. FA & 트레이드</h2>
+        <ul>
+            <li><span class="kw">FA</span>: 오프시즌에 FA 시장이 열리고 입찰 경쟁. 원소속팀은 유효 입찰액 ×1.15 프리미엄. 예산 한도 내 최고액이 낙찰.</li>
+            <li><span class="kw">트레이드</span>: 시즌 중 타 구단과 선수 교환. 선수 가치는 OVR 기반으로 산출되며 AI끼리도 트레이드가 일어납니다.</li>
+            <li><span class="kw">신인 드래프트</span>: 매 오프시즌 5라운드, 전년 순위 역순.</li>
+        </ul>
+    </div>
+
+    <div class="sec" id="legacy">
+        <h2>9. 포스트시즌 & 기록</h2>
+        <p>정규시즌 후 <span class="kw">와일드카드 → 준PO → PO → 한국시리즈(7전)</span>. KS 우승팀이 그 시즌의 챔피언으로 역사에 남습니다.</p>
+        <ul>
+            <li><span class="kw">어워드</span>: MVP, 신인왕, 골든글러브, 홈런왕/다승왕/세이브왕</li>
+            <li><span class="kw">명예의 전당</span>: 커리어 조건(최고 OVR, 시즌 수, 수상)을 채운 은퇴 선수 헌액</li>
+            <li><span class="kw">영구결번</span>: 한 팀 8시즌+ 활약, 최고 OVR 75+ 은퇴 시</li>
+            <li><span class="kw">기록실</span>: 통산 8부문 TOP10</li>
+        </ul>
+        <p>목표는 하나 — 당신만의 <span class="kw">왕조</span>를 세우는 것.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
