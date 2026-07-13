@@ -191,6 +191,16 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                     <button name="action" value="ph">🔁 대타</button>
                 </div>
                 {% endif %}
+                {% if bench and state.bases[0] %}
+                <div class="sub-row">
+                    <select name="ph_id">
+                        {% for p in bench %}
+                        <option value="{{ p.id }}">{{ p.name }} {{ p.cond }} (주력용 · OVR {{ p.overall }})</option>
+                        {% endfor %}
+                    </select>
+                    <button name="action" value="pr" style="background:#00695c;">🏃 대주자 (1루)</button>
+                </div>
+                {% endif %}
             </form>
         </div>
         {% elif state.pending == 'pitching' %}
@@ -210,6 +220,21 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                         {% endfor %}
                     </select>
                     <button name="action" value="pitch_rp">🔄 불펜 투입</button>
+                </div>
+                {% endif %}
+                {% if bench %}
+                <div class="sub-row">
+                    <select name="slot">
+                        {% for r in my_lineup %}
+                        <option value="{{ loop.index0 }}">{{ r.num }}번 {{ r.name }} (OVR {{ r.overall }})</option>
+                        {% endfor %}
+                    </select>
+                    <select name="ph_id">
+                        {% for p in bench %}
+                        <option value="{{ p.id }}">{{ p.name }} {{ p.cond }} (OVR {{ p.overall }})</option>
+                        {% endfor %}
+                    </select>
+                    <button name="action" value="ds" style="background:#37474f;">🧤 대수비</button>
                 </div>
                 {% endif %}
                 <div class="shift-line">
