@@ -117,11 +117,18 @@ def load_context(save_id, state):
         away["bench"] = bench_map.get(state["away_id"], [])
 
     # 수비력: 타자진 평균 OVR (호수비 확률에 사용)
-    for team in (home, away):
-        if team and team["batters"]:
-            team["def_avg"] = sum(p["overall"] for p in team["batters"]) / len(team["batters"])
-        elif team:
-            team["def_avg"] = 60
+    # 수비력: 라인업 평균 OVR (대수비 오버라이드 반영)
+    for side_key, team in (("home", home), ("away", away)):
+        if not team or not team["batters"]:
+            if team:
+                team["def_avg"] = 60
+            continue
+        over = (state.get("ph_over") or {}).get(side_key, {})
+        vals = []
+        for i, p in enumerate(team["batters"]):
+            oid = over.get(str(i))
+            vals.append((players_pre.get(oid, p) if oid else p)["overall"])
+        team["def_avg"] = sum(vals) / len(vals)
 
     players = {}
     for team in (home, away):
@@ -705,7 +712,7 @@ def finish_live_game(save_id, live_row, state, ctx):
 #   수비: pitch_keep | pitch_rp(+rp_id) | pitch_cp | ibb
 #   토글: shift_on | shift_off
 # =========================================
-def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None):
+def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_action_slot=None):
     sb = get_supabase()
 
     live_row = (
@@ -773,6 +780,44 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None):
                 state["pending"] = None
                 if _after_play():
                     return _finish()
+
+    # ----- 대주자 (1루 주자 교체, 타석 소비 안 함) -----
+    if user_action == "pr" and us and ph_id and state["pending"] == "offense":
+        team = ctx[us]
+        rid = state["bases"][0]
+        used = state.setdefault("used_ph", [])
+        sub = next((p for p in team.get("bench", []) if p["id"] == ph_id and p["id"] not in used), None)
+        if rid and sub:
+            # 교체된 주자의 타순 슬롯 찾기 (오버라이드 포함)
+            over = state.setdefault("ph_over", {}).setdefault(us, {})
+            slot = None
+            for i, p in enumerate(team["batters"]):
+                cur_id = over.get(str(i), p["id"]) if isinstance(over.get(str(i)), int) else (over.get(str(i)) or p["id"])
+                if cur_id == rid:
+                    slot = i
+                    break
+            if slot is not None:
+                over[str(slot)] = sub["id"]
+            used.append(sub["id"])
+            state["bases"][0] = sub["id"]
+            state["log"].append(f"🏃 대주자 {sub['name']} 투입 (1루)")
+        # pending 유지 → 이어서 도루/히트앤런 지시 가능
+
+    # ----- 대수비 (라인업 슬롯 교체, 타석 소비 안 함) -----
+    if user_action == "ds" and us and ph_id and state["pending"] == "pitching":
+        team = ctx[us]
+        slot = request_slot = None
+        try:
+            request_slot = int(user_action_slot) if user_action_slot is not None else None
+        except (TypeError, ValueError):
+            request_slot = None
+        used = state.setdefault("used_ph", [])
+        sub = next((p for p in team.get("bench", []) if p["id"] == ph_id and p["id"] not in used), None)
+        if sub and request_slot is not None and 0 <= request_slot < len(team["batters"]):
+            state.setdefault("ph_over", {}).setdefault(us, {})[str(request_slot)] = sub["id"]
+            used.append(sub["id"])
+            state["log"].append(f"🧤 대수비 {sub['name']} 투입 ({request_slot + 1}번 자리)")
+        # pending 유지 → 이어서 투수 결정
 
     # ----- 공격 작전 -----
     if user_action in ("swing", "bunt", "steal", "hitrun") and us and state["pending"] == "offense":
