@@ -94,6 +94,9 @@ def dynasty_unlock(save_id):
 
     return render_template("dynasty_unlock.html", save=save, error=error)
 
+@dynasty_bp.route("/dynasty/tutorial")
+def dynasty_tutorial():
+    return render_template("dynasty_tutorial.html")
 
 # =========================================
 # 홈 - 세이브 목록
