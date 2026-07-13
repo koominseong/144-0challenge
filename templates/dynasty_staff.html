@@ -24,10 +24,9 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .syn-box { background: linear-gradient(160deg, #1a1030, #1a222c); border: 1px solid rgba(171,71,188,0.4); border-radius: 12px; padding: 15px 18px; margin-bottom: 18px; }
 .syn-box .syn-title { font-size: 14px; font-weight: bold; color: #ce93d8; margin-bottom: 8px; }
 .syn-line { font-size: 12.5px; color: #e1bee7; padding: 3px 0; }
-.section-title { font-size: 16px; color: #fff; margin: 22px 0 12px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.section-title { font-size: 16px; color: #fff; margin: 22px 0 12px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; }
 .staff-card { display: flex; align-items: center; gap: 14px; background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 15px 18px; margin-bottom: 10px; flex-wrap: wrap; }
 .staff-card.mine-card { border-color: rgba(255,213,79,0.35); background: linear-gradient(160deg, #232013 0%, #1a222c 60%); }
-.staff-card.syn-on { border-color: rgba(171,71,188,0.5); }
 .grade { display: inline-block; min-width: 30px; text-align: center; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 14px; }
 .grade-S { background: #6a1b9a; color: #fff; }
 .grade-A { background: #b71c1c; color: #fff; }
@@ -38,6 +37,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .s-style { font-size: 12px; color: #ffd54f; }
 .s-trait { font-size: 12px; color: #80cbc4; }
 .s-effect { font-size: 12px; color: #66bb6a; }
+.duo-badge { font-size: 11px; color: #ce93d8; border: 1px solid rgba(171,71,188,0.5); padding: 2px 8px; border-radius: 6px; }
 .s-desc { font-size: 12px; color: #8899a6; flex-basis: 100%; padding-left: 44px; }
 .s-salary { font-size: 14px; font-weight: bold; color: #90caf9; margin-left: auto; }
 .s-team { font-size: 12px; color: #8899a6; margin-left: auto; }
@@ -46,6 +46,20 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .fire-btn { padding: 8px 16px; font-size: 12px; font-weight: bold; color: #ef5350; background: none; border: 1px solid rgba(239,83,80,0.4); border-radius: 7px; cursor: pointer; margin-left: 12px; }
 .fire-btn:hover { background: rgba(239,83,80,0.1); }
 .empty-line { color: #566573; font-size: 13px; padding: 14px 4px; }
+.toggle-btn { font-size: 12px; color: #ce93d8; background: none; border: 1px solid rgba(171,71,188,0.4); padding: 6px 14px; border-radius: 7px; cursor: pointer; }
+.codex { display: none; }
+.codex.open { display: block; }
+.cx-card { display: flex; align-items: center; gap: 12px; background: #1a222c; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 11px 15px; margin-bottom: 8px; flex-wrap: wrap; font-size: 13px; }
+.cx-card.active { border-color: rgba(171,71,188,0.6); background: linear-gradient(160deg, #1a1030, #1a222c); }
+.cx-card.possible { border-color: rgba(255,213,79,0.35); }
+.cx-status { font-size: 11px; padding: 3px 9px; border-radius: 6px; min-width: 58px; text-align: center; font-weight: bold; }
+.cx-status.st-active { background: #6a1b9a; color: #fff; }
+.cx-status.st-possible { background: rgba(255,213,79,0.15); color: #ffd54f; border: 1px solid rgba(255,213,79,0.4); }
+.cx-status.st-other { background: #263238; color: #78909c; }
+.cx-title { font-weight: bold; color: #ce93d8; min-width: 120px; }
+.cx-duo { color: #e6e6e6; min-width: 170px; }
+.cx-desc { color: #8899a6; font-size: 12px; }
+.cx-where { margin-left: auto; color: #566573; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -55,7 +69,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <div class="logo">🧢</div>
         <div>
             <h1>코칭스태프</h1>
-            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}{% if my_style %} · 감독 스타일 「{{ my_style }}」{% endif %}</div>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}{% if my_manager_name %} · {{ my_manager_name }} 감독 「{{ my_style }}」{% endif %}</div>
         </div>
     </div>
     <div style="display:flex; align-items:center;">
@@ -75,7 +89,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 
     {% if synergies %}
     <div class="syn-box">
-        <div class="syn-title">⚡ 발동 중인 시너지</div>
+        <div class="syn-title">⚡ 발동 중인 시너지 ({{ synergies|length }}건)</div>
         {% for sy in synergies %}
         <div class="syn-line">「{{ sy.name }}」 {{ sy.coach }} — {{ sy.desc }}</div>
         {% endfor %}
@@ -89,6 +103,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <span class="s-role">{{ s.role_kr }}</span>
         {% if s.style %}<span class="s-style">「{{ s.style }}」</span>{% endif %}
         {% if s.trait %}<span class="s-trait">✦ {{ s.trait }}</span>{% endif %}
+        {% if s.duo_hint %}<span class="duo-badge">⚡ {{ s.duo_hint }}</span>{% endif %}
         <span class="s-effect">{{ s.effect }}</span>
         {% if show_hire %}
         <span class="s-salary">연봉 {{ s.salary }}</span>
@@ -108,12 +123,8 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% else %}
         <span class="s-salary">연봉 {{ s.salary }}</span>
         {% endif %}
-        {% if s.style_desc %}
-        <span class="s-desc">효과: {{ s.style_desc }}</span>
-        {% endif %}
-        {% if s.trait_desc %}
-        <span class="s-desc">특성: {{ s.trait_desc }}</span>
-        {% endif %}
+        {% if s.style_desc %}<span class="s-desc">효과: {{ s.style_desc }}</span>{% endif %}
+        {% if s.trait_desc %}<span class="s-desc">특성: {{ s.trait_desc }}</span>{% endif %}
     </div>
     {% endmacro %}
 
@@ -123,6 +134,24 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
     {% else %}
         <div class="empty-line">고용된 스태프가 없습니다. 아래 시장에서 영입하세요.</div>
     {% endif %}
+
+    <div class="section-title">
+        <span>📖 시너지 도감</span>
+        <button class="toggle-btn" onclick="document.getElementById('codex').classList.toggle('open'); this.textContent = this.textContent === '펼치기' ? '접기' : '펼치기';">펼치기</button>
+    </div>
+    <div id="codex" class="codex">
+        {% for c in codex %}
+        <div class="cx-card {{ c.status }}">
+            <span class="cx-status st-{{ c.status }}">
+                {% if c.status == 'active' %}발동 중{% elif c.status == 'possible' %}영입 가능{% else %}미보유{% endif %}
+            </span>
+            <span class="cx-title">「{{ c.title }}」</span>
+            <span class="cx-duo">{{ c.manager }} 감독 × {{ c.coach }} ({{ c.coach_role }})</span>
+            <span class="cx-desc">{{ c.desc }}</span>
+            <span class="cx-where">감독: {{ c.m_where }} / 코치: {{ c.c_where }}</span>
+        </div>
+        {% endfor %}
+    </div>
 
     <div class="section-title">📋 영입 시장</div>
     {% if market %}
