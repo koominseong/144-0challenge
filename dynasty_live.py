@@ -132,12 +132,21 @@ def load_context(save_id, state):
         if team["cp"]:
             players[team["cp"]["id"]] = team["cp"]
 
+ # 스태프 상세 효과 (라이브 반영용)
+    try:
+        from dynasty_staff import get_staff_effects
+        fx = get_staff_effects(save_id)
+    except Exception:
+        fx = {}
+
     return {
         "team_map": team_map,
         "home": home,
         "away": away,
         "home_mod": mods.get(state["home_id"], {}),
         "away_mod": mods.get(state["away_id"], {}),
+        "home_fx": fx.get(state["home_id"], {}),
+        "away_fx": fx.get(state["away_id"], {}),
         "players": players,
     }
 
@@ -269,8 +278,16 @@ def play_at_bat(state, ctx, action=None):
     pit_outs_key = "h_pit_outs" if def_ == "home" else "a_pit_outs"
     stamina = pitcher["stamina"] or 50
     max_outs = int(12 + stamina * 0.21)
-    fatigue = min(0.25, max(0.0, (state[pit_outs_key] - max_outs * 0.7) / 60))
+    
+    def_fx = ctx["home_fx"] if def_ == "home" else ctx["away_fx"]
+    off_fx = ctx["home_fx"] if off == "home" else ctx["away_fx"]
 
+    pit_outs_key = "h_pit_outs" if def_ == "home" else "a_pit_outs"
+    stamina = pitcher["stamina"] or 50
+    max_outs = int(12 + stamina * 0.21) + def_fx.get("sp_outs", 0)
+    fatigue = min(0.25, max(0.0, (state[pit_outs_key] - max_outs * 0.7) / 60))
+    fatigue *= (1 - def_fx.get("sp_fatigue_cut", 0.0))
+    
     off_id = state["home_id"] if off == "home" else state["away_id"]
     def_id = state["home_id"] if def_ == "home" else state["away_id"]
 
@@ -278,6 +295,7 @@ def play_at_bat(state, ctx, action=None):
     bat_mod = mod.get("sim", 0.0) + ((0.02 + ctx["home_mod"].get("home_adv", 0.0)) if off == "home" else 0.0)
     # 컨디션 반영 (타자 컨디션 - 투수 컨디션)
     bat_mod += (_cond(state, batter["id"]) - _cond(state, pitcher["id"])) * 0.004
+    bat_mod += off_fx.get("bat_mod", 0.0) - def_fx.get("so_bonus", 0.0)
 
     acc = state["acc"]
     bs = _ensure_acc(acc, batter, off_id)
@@ -309,7 +327,8 @@ def play_at_bat(state, ctx, action=None):
         runner = ctx["players"][state["bases"][0]]
         rs = _ensure_acc(acc, runner, off_id)
         spd = (runner["speed"] or 40) + _cond(state, runner["id"])
-        if random.random() < min(0.9, 0.45 + (spd - 50) * 0.008):
+        steal_p = 0.45 + (spd - 50) * 0.008 + off_fx.get("steal_bonus", 0.0) - def_fx.get("opp_steal_cut", 0.0)
+        if random.random() < min(0.9, max(0.1, steal_p)):
             state["bases"][1] = state["bases"][0]
             state["bases"][0] = None
             rs["sb"] += 1
@@ -322,7 +341,7 @@ def play_at_bat(state, ctx, action=None):
     # ---------- 번트 ----------
     if action == "bunt" and any(state["bases"]) and state["outs"] < 2:
         state[order_key] += 1
-        succ = 0.72 + ((batter["contact"] or 50) - 50) * 0.002
+        succ = 0.72 + ((batter["contact"] or 50) - 50) * 0.002 + off_fx.get("bunt_bonus", 0.0)
         if random.random() < succ:
             runs = 0
             if state["bases"][2]:
@@ -352,18 +371,25 @@ def play_at_bat(state, ctx, action=None):
     state[order_key] += 1
     result = _plate_appearance(batter, pitcher, fatigue, bat_mod + (0.015 if hitrun else 0.0))
 
+    # 불펜코치: 구원 등판 투수 보정 (선발이 아니면)
+    def_team_obj = ctx[def_]
+    sp_today = def_team_obj["sps"][state["week"] % len(def_team_obj["sps"])] if def_team_obj["sps"] else None
+    if sp_today and pitcher["id"] != sp_today["id"]:
+        bat_mod -= def_fx.get("rp_boost", 0) * 0.004
+
     # 수비 시프트 (유저 수비 시)
     if state.get("shift") and def_ == us:
-        if result == "1B" and random.random() < 0.22:
+        my_fx = def_fx
+        if result == "1B" and random.random() < 0.22 + my_fx.get("shift_plus", 0.0):
             result = "OUT"
             state["log"].append(f"{log_prefix} 🛡 시프트가 타구를 삼킴!")
-        elif result == "OUT" and random.random() < 0.08:
+        elif result == "OUT" and random.random() < max(0.02, 0.08 - my_fx.get("shift_backfire_cut", 0.0)):
             result = "1B"
             state["log"].append(f"{log_prefix} ⚠ 시프트 빈 곳으로 안타...")
 
     # 호수비 (수비팀 평균 OVR 기반, 안타 강탈)
     if result in ("1B", "2B"):
-        def_avg = def_team.get("def_avg", 60)
+        def_avg = def_team.get("def_avg", 60) + def_fx.get("def_bonus", 0)
         if def_avg > 62 and random.random() < (def_avg - 62) * 0.004:
             result = "OUT"
             state["log"].append(f"{log_prefix} ✨ 호수비! 안타성 타구를 걷어냄")
@@ -477,7 +503,8 @@ def try_send_runner(state, ctx):
     runner = ctx["players"][rid]
     def_avg = ctx[def_].get("def_avg", 60)
     spd = (runner["speed"] or 40) + _cond(state, rid)
-    succ = 0.55 + (spd - 50) * 0.01 - (def_avg - 60) * 0.005
+    off_fx = ctx["home_fx"] if off == "home" else ctx["away_fx"]
+    succ = 0.55 + (spd - 50) * 0.01 - (def_avg - 60) * 0.005 + off_fx.get("send_bonus", 0.0)
 
     log_prefix = f"{state['inning']}회{'초' if state['half']=='top' else '말'}"
     if random.random() < max(0.15, min(0.92, succ)):
@@ -543,7 +570,8 @@ def auto_manage_pitcher(state, ctx, side):
         return
 
     stamina = pitcher["stamina"] or 50
-    max_outs = int(12 + stamina * 0.21)
+    fx = ctx["home_fx"] if side == "home" else ctx["away_fx"]
+    max_outs = int(12 + stamina * 0.21) + fx.get("rp_outs", 0) + fx.get("sp_outs", 0)
     if state[pit_outs_key] >= max_outs and team["rps"]:
         idx = min(len(team["rps"]) - 1, (state[pit_outs_key] - max_outs) // 6)
         state[pitcher_key] = team["rps"][idx]["id"]
