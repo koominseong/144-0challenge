@@ -621,3 +621,74 @@ def ai_hire_staff(save_id):
 
     print(f"[dynasty_staff] AI 고용={hired_count}명")
     return hired_count
+
+# =========================================
+# AI 감독 경질 (오프시즌, next_season에서 호출)
+# 직전 시즌 순위 하위권 확률 경질: 8위 30% / 9위 45% / 10위 60%
+# 단, 부임 첫 시즌은 면책. 경질된 감독은 시장으로.
+# =========================================
+def ai_fire_managers(save_id):
+    sb = get_supabase()
+
+    save = sb.table("dynasty_save").select("season").eq("id", save_id).execute().data[0]
+    season = save["season"]
+
+    teams = sb.table("dynasty_team").select("*").eq("save_id", save_id).execute().data
+    ranked = sorted(
+        teams,
+        key=lambda t: ((t["wins"] + 0.5 * t["ties"]) / max(1, t["wins"] + t["losses"] + t["ties"])),
+        reverse=True,
+    )
+
+    fire_prob = {}
+    n = len(ranked)
+    for i, t in enumerate(ranked):
+        rank = i + 1
+        if rank == n:
+            fire_prob[t["id"]] = 0.6
+        elif rank == n - 1:
+            fire_prob[t["id"]] = 0.45
+        elif rank == n - 2:
+            fire_prob[t["id"]] = 0.3
+
+    managers = (
+        sb.table("dynasty_staff")
+        .select("*")
+        .eq("save_id", save_id)
+        .eq("role", "MANAGER")
+        .not_.is_("team_id", "null")
+        .execute()
+        .data
+    )
+
+    team_map = {t["id"]: t for t in teams}
+    events = []
+    fired = 0
+
+    for m in managers:
+        t = team_map.get(m["team_id"])
+        if not t or t["is_user"]:
+            continue  # 유저 감독은 유저가 직접 방출
+        p = fire_prob.get(t["id"], 0.0)
+        if p <= 0:
+            continue
+        if m.get("hired_season") == season:
+            continue  # 부임 첫 시즌 면책
+        if random.random() < p:
+            sb.table("dynasty_staff").update(
+                {"team_id": None, "hired_season": None}
+            ).eq("id", m["id"]).execute()
+            fired += 1
+            events.append(
+                {"save_id": save_id, "season": season, "week": 99,
+                 "icon": "🪑", "message": f"{t['team_name']}, 성적 부진으로 {m['name'].rstrip('2')} 감독 경질"}
+            )
+
+    if events:
+        try:
+            sb.table("dynasty_event").insert(events).execute()
+        except Exception as ex:
+            print(f"[dynasty_staff] 경질 뉴스 기록 skip: {ex}")
+
+    print(f"[dynasty_staff] AI 감독 경질={fired}명")
+    return fired
