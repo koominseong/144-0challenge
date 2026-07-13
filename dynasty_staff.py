@@ -1,9 +1,8 @@
-# dynasty_staff.py - 전체 교체본 Part1
+# dynasty_staff.py - 최종 전체본 Part1
 # =========================================
-# KBO Dynasty - 감독/코칭스태프 (확장판)
+# KBO Dynasty - 감독/코칭스태프 (실존 인연 시너지판)
 # 역할: MANAGER / HITTING / PITCHING / DEFENSE / BULLPEN / BASERUN / BATTERY
-# + 인물별 고유 특성(trait) / 감독-코치 시너지 / 방출(fire_staff)
-# 실존 KBO 역대 감독·코치 기반
+# 고유 특성(trait) + 실존 듀오 시너지(PERSON_SYNERGY) + 방출(fire_staff)
 # =========================================
 
 import random
@@ -11,82 +10,191 @@ from dynasty_utils import get_supabase
 
 # ---- 감독 풀 (이름, 등급, 스타일) ----
 MANAGER_POOL = [
+    # S급
     ("김응용", "S", "승부사"), ("김성근", "S", "지장"),
     ("김인식", "S", "덕장"),   ("김태형", "S", "승부사"),
     ("이강철", "S", "지장"),
+    # A급
     ("김영덕", "A", "승부사"), ("강병철", "A", "덕장"),
     ("이광환", "A", "데이터"), ("김재박", "A", "지장"),
     ("선동열", "A", "지장"),   ("김경문", "A", "승부사"),
     ("류중일", "A", "덕장"),   ("제리 로이스터", "A", "승부사"),
     ("트레이 힐만", "A", "데이터"), ("김원형", "A", "지장"),
+    # B급
     ("백인천", "B", "승부사"), ("조범현", "B", "데이터"),
-    ("염경엽", "A", "데이터"), ("이만수", "B", "육성가"),
+    ("염경엽", "B", "데이터"), ("이만수", "B", "육성가"),
     ("한용덕", "B", "육성가"), ("김기태", "B", "덕장"),
-    ("이승엽", "C", "승부사"), ("박진만", "B", "지장"),
+    ("이승엽", "B", "승부사"), ("박진만", "B", "지장"),
     ("최원호", "B", "육성가"), ("이순철", "B", "승부사"),
-    ("카를로스 수베로", "B", "데이터"),
+    ("카를로스 수베로", "B", "데이터"), ("이범호", "B", "승부사"),
+    ("이동욱", "B", "데이터"), ("맷 윌리엄스", "B", "데이터"),
+    ("조원우", "B", "지장"),   ("양승호", "B", "육성가"),
+    ("어우홍", "B", "덕장"),   ("김동엽", "B", "승부사"),
+    ("김진영", "B", "승부사"), ("김성한", "B", "승부사"),
+    ("이희수", "B", "덕장"),
+    # C급
     ("허문회", "C", "데이터"), ("박영길", "C", "승부사"),
     ("유백만", "C", "육성가"), ("정동진", "C", "덕장"),
     ("홍원기", "C", "육성가"), ("강인권", "C", "덕장"),
     ("김진욱", "C", "육성가"), ("래리 서튼", "C", "덕장"),
-    ("류지현", "C", "지장"),
+    ("류지현", "C", "지장"),   ("김종국", "C", "지장"),
+    ("허삼영", "C", "데이터"), ("서영무", "C", "지장"),
+    ("강태정", "C", "덕장"),   ("천보성", "C", "지장"),
+    ("이광은", "C", "승부사"), ("유남호", "C", "덕장"),
+    ("서정환", "C", "지장"),   ("김명성", "C", "덕장"),
+    ("우용득", "C", "육성가"), ("박종훈", "C", "육성가"),
+    ("공필성", "C", "승부사"), ("배성서", "C", "덕장"),
+    ("한동화", "C", "지장"),   ("박현식", "C", "승부사"),
+    ("김용철", "C", "육성가"), ("신용균", "C", "덕장"),
 ]
 
 # ---- 코치 풀 (이름, 역할, 등급, 특성) ----
 COACH_POOL = [
     # 타격코치
     ("장효조", "HITTING", "S", "타격의 달인"),
+    ("양준혁", "HITTING", "S", "타격의 달인"),
     ("김용희", "HITTING", "A", "장타 혁명"),
     ("이정훈", "HITTING", "A", "정교한 타격"),
     ("장종훈", "HITTING", "A", "장타 혁명"),
     ("이병규", "HITTING", "A", "정교한 타격"),
     ("정경배", "HITTING", "A", "선구안 전도사"),
+    ("이호준", "HITTING", "A", "장타 혁명"),
+    ("이대호", "HITTING", "A", "장타 혁명"),
     ("박흥식", "HITTING", "B", "선구안 전도사"),
     ("김무관", "HITTING", "B", "정교한 타격"),
     ("김한수", "HITTING", "B", "장타 혁명"),
     ("박정태", "HITTING", "B", "정교한 타격"),
     ("박용택", "HITTING", "B", "타격의 달인"),
     ("홍성흔", "HITTING", "B", "장타 혁명"),
+    ("박한이", "HITTING", "B", "정교한 타격"),
+    ("서용빈", "HITTING", "B", "정교한 타격"),
+    ("유한준", "HITTING", "B", "선구안 전도사"),
+    ("김태균", "HITTING", "B", "장타 혁명"),
+    ("장성호", "HITTING", "B", "선구안 전도사"),
+    ("마해영", "HITTING", "B", "장타 혁명"),
     ("김재현", "HITTING", "C", "선구안 전도사"),
     ("강동우", "HITTING", "C", "정교한 타격"),
+    ("정성훈", "HITTING", "C", "선구안 전도사"),
+    ("이택근", "HITTING", "C", "정교한 타격"),
     # 투수코치
     ("최동원", "PITCHING", "S", "에이스 메이커"),
-    ("선우대식", "PITCHING", "C", "제구 마스터"),
     ("김시진", "PITCHING", "A", "제구 마스터"),
     ("양상문", "PITCHING", "A", "에이스 메이커"),
     ("정민철", "PITCHING", "A", "강철 어깨"),
     ("송진우", "PITCHING", "A", "강철 어깨"),
     ("정민태", "PITCHING", "A", "에이스 메이커"),
+    ("정명원", "PITCHING", "A", "제구 마스터"),
+    ("윤학길", "PITCHING", "A", "강철 어깨"),
     ("손혁", "PITCHING", "B", "제구 마스터"),
     ("이상군", "PITCHING", "B", "강철 어깨"),
     ("한희민", "PITCHING", "B", "제구 마스터"),
     ("조계현", "PITCHING", "B", "에이스 메이커"),
-    ("이강철(코치)", "PITCHING", "B", "제구 마스터"),  # 감독과 동명이인 방지용, 화면에선 '이강철(코치)'로 표시해도 됨
     ("배영수", "PITCHING", "B", "강철 어깨"),
     ("구대성", "PITCHING", "B", "에이스 메이커"),
+    ("최일언", "PITCHING", "B", "제구 마스터"),
+    ("김수경", "PITCHING", "B", "제구 마스터"),
+    ("가득염", "PITCHING", "B", "강철 어깨"),
+    ("이대진", "PITCHING", "B", "에이스 메이커"),
+    ("손민한", "PITCHING", "B", "제구 마스터"),
+    ("윤석민", "PITCHING", "B", "제구 마스터"),
+    ("서재응", "PITCHING", "B", "제구 마스터"),
+    ("김병현", "PITCHING", "B", "에이스 메이커"),
     ("오봉옥", "PITCHING", "C", "제구 마스터"),
+    ("선우대식", "PITCHING", "C", "제구 마스터"),
+    ("이상목", "PITCHING", "C", "강철 어깨"),
+    ("박명환", "PITCHING", "C", "에이스 메이커"),
+    ("박충식", "PITCHING", "C", "강철 어깨"),
     # 수비코치
     ("김민재", "DEFENSE", "A", "그물 수비"),
-    ("류지현(코치)", "DEFENSE", "A", "시프트 설계자"),
+    ("류지현2", "DEFENSE", "A", "시프트 설계자"),
+    ("유지훤", "DEFENSE", "B", "그물 수비"),
     ("김민호", "DEFENSE", "B", "그물 수비"),
     ("손시헌", "DEFENSE", "B", "시프트 설계자"),
-    ("박진만(코치)", "DEFENSE", "B", "그물 수비"),
+    ("박진만2", "DEFENSE", "B", "그물 수비"),
+    ("김재걸", "DEFENSE", "B", "그물 수비"),
+    ("정근우", "DEFENSE", "B", "시프트 설계자"),
+    ("김호", "DEFENSE", "B", "그물 수비"),
     ("박기혁", "DEFENSE", "C", "그물 수비"),
+    ("권용관", "DEFENSE", "C", "그물 수비"),
+    ("오대석", "DEFENSE", "C", "그물 수비"),
     # 불펜코치
+    ("오승환", "BULLPEN", "S", "필승조 조련"),
+    ("임창용", "BULLPEN", "A", "필승조 조련"),
     ("정우람", "BULLPEN", "A", "필승조 조련"),
+    ("진필중", "BULLPEN", "B", "필승조 조련"),
     ("권오준", "BULLPEN", "B", "마당쇠 육성"),
     ("정재훈", "BULLPEN", "B", "필승조 조련"),
+    ("조웅천", "BULLPEN", "B", "필승조 조련"),
+    ("류택현", "BULLPEN", "B", "마당쇠 육성"),
     ("강영식", "BULLPEN", "C", "마당쇠 육성"),
+    ("이혜천", "BULLPEN", "C", "마당쇠 육성"),
     # 주루코치
+    ("이종범", "BASERUN", "S", "그린라이트"),
+    ("김일권", "BASERUN", "A", "그린라이트"),
     ("전준호", "BASERUN", "A", "그린라이트"),
     ("이종욱", "BASERUN", "B", "폭주 기관차"),
     ("정수성", "BASERUN", "B", "그린라이트"),
+    ("김주찬", "BASERUN", "B", "그린라이트"),
+    ("이용규", "BASERUN", "B", "폭주 기관차"),
     ("이대형", "BASERUN", "C", "폭주 기관차"),
     # 배터리코치
+    ("박경완", "BATTERY", "S", "볼배합 아티스트"),
     ("진갑용", "BATTERY", "A", "도루 저지 특화"),
     ("조인성", "BATTERY", "A", "볼배합 아티스트"),
+    ("이만수2", "BATTERY", "A", "볼배합 아티스트"),
     ("김동수", "BATTERY", "B", "볼배합 아티스트"),
+    ("김정민", "BATTERY", "B", "도루 저지 특화"),
+    ("유승안", "BATTERY", "B", "도루 저지 특화"),
+    ("장채근", "BATTERY", "B", "도루 저지 특화"),
     ("강성우", "BATTERY", "C", "도루 저지 특화"),
+    ("채상병", "BATTERY", "C", "볼배합 아티스트"),
+]
+
+# ---- 실존 인연 듀오 시너지 (감독, 코치) → (칭호, 설명, 효과) ----
+PERSON_SYNERGY = {
+    ("김응용", "조계현"): ("해태 왕조", "전력 +2%", {"sim": 0.02}),
+    ("김응용", "김일권"): ("해태 기동력", "도루 +5%p", {"steal_bonus": 0.05}),
+    ("김응용", "이종범"): ("바람의 시대", "도루 +5%p · 추가 진루 +4%p", {"steal_bonus": 0.05, "send_bonus": 0.04}),
+    ("김성근", "박경완"): ("SK 왕조 배터리", "상대 도루 -6%p · 삼진 +0.6%p", {"opp_steal_cut": 0.06, "so_bonus": 0.006}),
+    ("김성근", "정경배"): ("김성근 사단", "타자 성장 +1", {"bat_growth": 1}),
+    ("김성근", "가득염"): ("벌떼 야구", "불펜 지속 +2 · 등판 보정 +1", {"rp_outs": 2, "rp_boost": 1}),
+    ("김성근", "조웅천"): ("무한 불펜", "불펜 지속 +2", {"rp_outs": 2}),
+    ("김인식", "장종훈"): ("한화의 자존심", "타자 성장 +1 · 팬 +1%p", {"bat_growth": 1, "fan_bonus": 0.01}),
+    ("김인식", "정민철"): ("국가대표 마운드", "선발 지속 +2", {"sp_outs": 2}),
+    ("김인식", "구대성"): ("야생마와 국민감독", "불펜 등판 보정 +2", {"rp_boost": 2}),
+    ("김태형", "조인성"): ("미러클 두산", "상대 도루 -5%p · 전력 +1%", {"opp_steal_cut": 0.05, "sim": 0.01}),
+    ("김태형", "정재훈"): ("화수분 불펜", "불펜 등판 보정 +2", {"rp_boost": 2}),
+    ("김태형", "이대호"): ("조선의 4번타자", "타격 보정 +0.6%", {"bat_mod": 0.006}),
+    ("선동열", "진갑용"): ("삼성 왕조 배터리", "삼진 +0.8%p", {"so_bonus": 0.008}),
+    ("선동열", "오승환"): ("끝판대장 시대", "불펜 등판 보정 +3", {"rp_boost": 3}),
+    ("선동열", "이종범"): ("해태 레전드", "도루 +5%p · 전력 +0.5%", {"steal_bonus": 0.05, "sim": 0.005}),
+    ("류중일", "김한수"): ("삼성 라이온즈 왕조", "전력 +1.5% · 타자 성장 +1", {"sim": 0.015, "bat_growth": 1}),
+    ("류중일", "오승환"): ("왕조의 뒷문", "불펜 등판 보정 +3", {"rp_boost": 3}),
+    ("류중일", "박한이"): ("꾸준함의 미학", "타자 성장 +1", {"bat_growth": 1}),
+    ("김경문", "전준호"): ("공격 야구", "도루 +5%p · 추가 진루 +5%p", {"steal_bonus": 0.05, "send_bonus": 0.05}),
+    ("김경문", "이종욱"): ("두산 육상부", "도루 +6%p", {"steal_bonus": 0.06}),
+    ("이강철", "유한준"): ("마법 같은 KT", "전력 +1.5%", {"sim": 0.015}),
+    ("염경엽", "정수성"): ("발야구 히어로즈", "도루 +6%p", {"steal_bonus": 0.06}),
+    ("염경엽", "박흥식"): ("넥센 타선 부활", "타자 성장 +1", {"bat_growth": 1}),
+    ("김기태", "서용빈"): ("의리 야구", "팬 +2%p · 전력 +0.5%", {"fan_bonus": 0.02, "sim": 0.005}),
+    ("김기태", "장성호"): ("KIA 타선 재건", "타자 성장 +1", {"bat_growth": 1}),
+    ("이광환", "서용빈"): ("1994 신바람", "타격 보정 +0.5% · 팬 +1%p", {"bat_mod": 0.005, "fan_bonus": 0.01}),
+    ("이광환", "류택현"): ("스타 시스템", "불펜 지속 +2", {"rp_outs": 2}),
+    ("트레이 힐만", "박경완"): ("2018 비상", "전력 +1.5%", {"sim": 0.015}),
+    ("조범현", "박경완"): ("배터리 교과서", "상대 도루 -6%p", {"opp_steal_cut": 0.06}),
+    ("한용덕", "송진우"): ("한화 레전드 마운드", "선발 지속 +2 · 투수 성장 +1", {"sp_outs": 2, "pit_growth": 1}),
+    ("김진욱", "임창용"): ("애니콜 재림", "불펜 등판 보정 +2", {"rp_boost": 2}),
+    ("강병철", "최동원"): ("1984년의 기적", "선발 지속 +3", {"sp_outs": 3}),
+    ("강병철", "윤학길"): ("고독한 황태자", "선발 지속 +2", {"sp_outs": 2}),
+    ("김영덕", "장효조"): ("삼성 황금타선", "타격 보정 +0.6%", {"bat_mod": 0.006}),
+    ("백인천", "박정태"): ("롯데 자이언츠 혼", "타자 성장 +1", {"bat_growth": 1}),
+    ("제리 로이스터", "가득염"): ("No Fear", "전력 +1% · 팬 +1%p", {"sim": 0.01, "fan_bonus": 0.01}),
+    ("이순철", "이대형"): ("발끝의 예술", "도루 +5%p", {"steal_bonus": 0.05}),
+    ("김성한", "이대진"): ("타이거즈 혼", "선발 지속 +2", {"sp_outs": 2}),
+    ("서영무", "장효조"): ("원조 삼성", "타격 보정 +0.5%", {"bat_mod": 0.005}),
+    ("김재박", "정명원"): ("현대 왕조 마운드", "선발 지속 +2 · 삼진 +0.4%p", {"sp_outs": 2, "so_bonus": 0.004}),
+    ("김재박", "유지훤"): ("현대 왕조 내야", "수비력 +3", {"def_bonus": 3}),
+    ("이만수", "박경완"): ("포수 왕국", "상대 도루 -5%p", {"opp_steal_cut": 0.05}),
 ]
 
 ALL_ROLES = ["MANAGER", "HITTING", "PITCHING", "DEFENSE", "BULLPEN", "BASERUN", "BATTERY"]
@@ -94,7 +202,7 @@ ALL_ROLES = ["MANAGER", "HITTING", "PITCHING", "DEFENSE", "BULLPEN", "BASERUN", 
 GRADE_SALARY = {"S": 80, "A": 55, "B": 35, "C": 20}
 GRADE_SIM = {"S": 0.03, "A": 0.02, "B": 0.01, "C": 0.0}
 GRADE_GROWTH = {"S": 2, "A": 1, "B": 1, "C": 0}
-GRADE_MULT = {"S": 2.0, "A": 1.5, "B": 1.0, "C": 0.5}   # 신규 코치 효과 배율
+GRADE_MULT = {"S": 2.0, "A": 1.5, "B": 1.0, "C": 0.5}
 
 STYLE_DESC = {
     "승부사": "베테랑 팀(평균 7년차↑) 전력 +2.5%",
@@ -104,7 +212,6 @@ STYLE_DESC = {
     "데이터": "전력 +1% · 접전 승부 유리",
 }
 
-# ---- 고유 특성 효과 (등급 배율 GRADE_MULT 적용) ----
 TRAIT_DESC = {
     "타격의 달인":   "팀 타격 +0.6%",
     "장타 혁명":     "타자 성장 시 파워 추가 +1",
@@ -121,16 +228,6 @@ TRAIT_DESC = {
     "폭주 기관차":   "추가 진루(3루 도전) 성공 +7%p",
 }
 
-# ---- 감독-코치 시너지 (감독 스타일 × 코치 역할) ----
-SYNERGY = {
-    ("승부사", "BULLPEN"): ("벼랑끝 필승조", "불펜코치 효과 2배"),
-    ("지장", "DEFENSE"): ("수비의 완성", "수비코치 효과 2배"),
-    ("데이터", "BATTERY"): ("볼배합 데이터화", "배터리코치 효과 2배"),
-    ("육성가", "HITTING"): ("타격 육성 시스템", "타자 성장 추가 +1"),
-    ("육성가", "PITCHING"): ("투수 육성 시스템", "투수 성장 추가 +1"),
-    ("덕장", "BASERUN"): ("신바람 야구", "주루 효과 1.5배 · 팬 +1%p"),
-}
-
 ROLE_KR = {
     "MANAGER": "감독", "HITTING": "타격코치", "PITCHING": "투수코치",
     "DEFENSE": "수비코치", "BULLPEN": "불펜코치",
@@ -139,18 +236,13 @@ ROLE_KR = {
 
 
 # =========================================
-# 스태프 시장 초기화 + 신규 인물 증분 추가
-# (기존 세이브도 새 풀 인원이 자동 유입되도록 이름 기준 diff)
+# 스태프 시장 초기화 + 신규 인물 증분 유입 (이름 기준 diff)
 # =========================================
 def init_staff_market(save_id):
     sb = get_supabase()
 
     existing = (
-        sb.table("dynasty_staff")
-        .select("name")
-        .eq("save_id", save_id)
-        .execute()
-        .data
+        sb.table("dynasty_staff").select("name").eq("save_id", save_id).execute().data
     )
     have = {s["name"] for s in existing}
 
@@ -173,32 +265,21 @@ def init_staff_market(save_id):
         )
 
     if rows:
-        sb.table("dynasty_staff").insert(rows).execute()
+        for i in range(0, len(rows), 100):
+            sb.table("dynasty_staff").insert(rows[i : i + 100]).execute()
         print(f"[dynasty_staff] 신규 인물 추가={len(rows)}명")
     return len(rows)
 
-# dynasty_staff.py - 전체 교체본 Part2
+# dynasty_staff.py - 최종 전체본 Part2
 
 # =========================================
-# 팀별 스태프 효과 계산 (특성 + 시너지 포함)
-# return: {team_id: effects dict}
+# 팀별 스태프 효과 계산 (특성 + 실존 듀오 시너지)
 # effects 키:
-#   sim, bat_growth, pit_growth, young_growth, fan_bonus, clutch   (기존)
-#   bat_mod        : 라이브 타격 보정 (타격의 달인/선구안)
-#   bunt_bonus     : 번트 성공률 가산
-#   power_growth   : 타자 성장 시 파워 추가
-#   so_bonus       : 삼진 유도 가산
-#   sp_outs        : 선발 지속력 (+아웃)
-#   sp_fatigue_cut : 선발 피로 완화 (0~1 배율 감소)
-#   def_bonus      : 수비력 가산 (호수비)
-#   shift_plus     : 시프트 성공 가산
-#   shift_backfire_cut : 시프트 역효과 감소
-#   rp_boost       : 불펜 등판 능력 가산
-#   rp_outs        : 불펜 지속력 (+아웃)
-#   steal_bonus    : 도루 성공 가산
-#   send_bonus     : 추가 진루 성공 가산
-#   opp_steal_cut  : 상대 도루 성공 감소
-#   synergies      : [(이름, 설명)] 발동 중인 시너지
+#   sim, bat_growth, pit_growth, young_growth, fan_bonus, clutch
+#   bat_mod, bunt_bonus, power_growth, so_bonus,
+#   sp_outs, sp_fatigue_cut, def_bonus, shift_plus, shift_backfire_cut,
+#   rp_boost, rp_outs, steal_bonus, send_bonus, opp_steal_cut,
+#   synergies: [(칭호, 설명)]
 # =========================================
 def _empty_effects():
     return {
@@ -261,11 +342,13 @@ def get_staff_effects(save_id):
                 season - p["appear_season"] + 1
             )
 
-    # 팀별 감독 스타일 (시너지 판정용)
+    # 팀별 감독 (시너지 판정용)
     manager_style = {}
+    manager_name = {}
     for s in staff:
         if s["role"] == "MANAGER":
             manager_style[s["team_id"]] = s["style"]
+            manager_name[s["team_id"]] = s["name"]
 
     effects = {}
     for s in staff:
@@ -293,45 +376,45 @@ def get_staff_effects(save_id):
                 e["sim"] += 0.025 if avg >= 7 else 0.005
             continue
 
-        # ----- 코치 공통: 시너지 배율 -----
-        style = manager_style.get(tid)
-        syn = SYNERGY.get((style, s["role"])) if style else None
-        syn_mult = 1.0
-        if syn:
-            if s["role"] in ("BULLPEN", "DEFENSE", "BATTERY"):
-                syn_mult = 2.0
-            elif s["role"] == "BASERUN":
-                syn_mult = 1.5
-                e["fan_bonus"] += 0.01
-            e["synergies"].append(syn)
-
-        # ----- 역할 기본 효과 -----
+        # ----- 코치 역할 기본 효과 (등급 배율) -----
         if s["role"] == "HITTING":
-            e["bat_growth"] += GRADE_GROWTH[grade] + (1 if syn else 0)
+            e["bat_growth"] += GRADE_GROWTH[grade]
         elif s["role"] == "PITCHING":
-            e["pit_growth"] += GRADE_GROWTH[grade] + (1 if syn else 0)
+            e["pit_growth"] += GRADE_GROWTH[grade]
         elif s["role"] == "DEFENSE":
-            e["def_bonus"] += round(2 * mult * syn_mult)
-            e["shift_backfire_cut"] += 0.01 * mult * syn_mult
+            e["def_bonus"] += round(2 * mult)
+            e["shift_backfire_cut"] += 0.01 * mult
         elif s["role"] == "BULLPEN":
-            e["rp_outs"] += round(2 * mult * syn_mult)
-            e["rp_boost"] += round(1 * mult * syn_mult)
+            e["rp_outs"] += round(2 * mult)
+            e["rp_boost"] += round(1 * mult)
         elif s["role"] == "BASERUN":
-            e["steal_bonus"] += 0.03 * mult * syn_mult
-            e["send_bonus"] += 0.03 * mult * syn_mult
+            e["steal_bonus"] += 0.03 * mult
+            e["send_bonus"] += 0.03 * mult
         elif s["role"] == "BATTERY":
-            e["opp_steal_cut"] += 0.04 * mult * syn_mult
-            e["so_bonus"] += 0.004 * mult * syn_mult
+            e["opp_steal_cut"] += 0.04 * mult
+            e["so_bonus"] += 0.004 * mult
 
         # ----- 고유 특성 -----
         trait = s.get("trait")
         if trait in TRAIT_EFFECT:
             key, base = TRAIT_EFFECT[trait]
-            val = base * mult * syn_mult
+            val = base * mult
             if isinstance(base, int):
                 e[key] += round(val)
             else:
                 e[key] += val
+
+        # ----- 실존 인연 듀오 시너지 -----
+        mname = manager_name.get(tid)
+        duo = PERSON_SYNERGY.get((mname, s["name"])) if mname else None
+        if duo:
+            title, desc, fx = duo
+            for k, v in fx.items():
+                if isinstance(e.get(k), bool):
+                    e[k] = e[k] or bool(v)
+                else:
+                    e[k] = e.get(k, 0) + v
+            e["synergies"].append((title, f"{mname} × {s['name'].rstrip('2')} — {desc}"))
 
     return effects
 
@@ -361,18 +444,16 @@ def fire_staff(save_id, team_id, staff_id):
         {"team_id": None, "hired_season": None}
     ).eq("id", staff_id).execute()
 
-    return True, f"{s['name']} {ROLE_KR.get(s['role'], s['role'])} 방출. (지급한 연봉은 환불되지 않음)"
+    return True, f"{s['name'].rstrip('2')} {ROLE_KR.get(s['role'], s['role'])} 방출. (지급한 연봉은 환불되지 않음)"
 
 
 # =========================================
-# 스태프 연봉 지급 (기존과 동일 로직)
+# 스태프 연봉 지급 (예산 부족 시 고연봉부터 자동 해임)
 # =========================================
 def pay_staff_salaries(save_id):
     sb = get_supabase()
 
-    teams = (
-        sb.table("dynasty_team").select("*").eq("save_id", save_id).execute().data
-    )
+    teams = sb.table("dynasty_team").select("*").eq("save_id", save_id).execute().data
 
     staff = (
         sb.table("dynasty_staff")
@@ -413,7 +494,7 @@ def pay_staff_salaries(save_id):
 
 
 # =========================================
-# 고용 (유저) — 기존과 동일, 역할만 확장 자동 대응
+# 고용 (유저) — 같은 역할 기존 인원 자동 방출
 # =========================================
 def hire_staff(save_id, team_id, staff_id):
     sb = get_supabase()
@@ -433,7 +514,7 @@ def hire_staff(save_id, team_id, staff_id):
     s = s[0]
 
     if s["team_id"] is not None:
-        return False, f"{s['name']}은(는) 이미 다른 팀 소속입니다."
+        return False, f"{s['name'].rstrip('2')}은(는) 이미 다른 팀 소속입니다."
 
     current = (
         sb.table("dynasty_staff")
@@ -464,25 +545,22 @@ def hire_staff(save_id, team_id, staff_id):
         {"budget": budget - s["salary"]}
     ).eq("id", team_id).execute()
 
-    return True, f"{s['name']} 영입! (연봉 {s['salary']} 즉시 지급, 이후 매 시즌 자동 차감)"
+    return True, f"{s['name'].rstrip('2')} 영입! (연봉 {s['salary']} 즉시 지급, 이후 매 시즌 자동 차감)"
 
 
 # =========================================
-# AI 자동 고용 — 핵심 3역할 우선, 여유 있으면 신규 역할도
+# AI 자동 고용 — 핵심 3역할 우선(예산 15%), 부가 4역할(예산 8%)
+# AI도 자기 감독과 듀오 시너지가 있는 코치를 우선 선택
 # =========================================
 def ai_hire_staff(save_id):
     sb = get_supabase()
 
     save = sb.table("dynasty_save").select("season").eq("id", save_id).execute().data[0]
 
-    teams = (
-        sb.table("dynasty_team").select("*").eq("save_id", save_id).execute().data
-    )
+    teams = sb.table("dynasty_team").select("*").eq("save_id", save_id).execute().data
     ai_teams = [t for t in teams if not t["is_user"]]
 
-    staff = (
-        sb.table("dynasty_staff").select("*").eq("save_id", save_id).execute().data
-    )
+    staff = sb.table("dynasty_staff").select("*").eq("save_id", save_id).execute().data
 
     market = [s for s in staff if s["team_id"] is None]
     hired_count = 0
@@ -495,11 +573,13 @@ def ai_hire_staff(save_id):
     EXTRA = ("BULLPEN", "DEFENSE", "BATTERY", "BASERUN")
 
     for t in ai_teams:
-        have = {s["role"] for s in staff if s["team_id"] == t["id"]}
+        my_staff = [s for s in staff if s["team_id"] == t["id"]]
+        have = {s["role"] for s in my_staff}
+        mgr = next((s for s in my_staff if s["role"] == "MANAGER"), None)
+
         for role in CORE + EXTRA:
             if role in have:
                 continue
-            # 핵심 역할은 예산 15%, 부가 역할은 8% 이내 연봉만
             ratio = 0.15 if role in CORE else 0.08
             cap = budgets[t["id"]] * ratio
             candidates = [
@@ -507,7 +587,16 @@ def ai_hire_staff(save_id):
             ]
             if not candidates:
                 continue
-            pick = candidates[0]
+
+            # 듀오 시너지 후보 우선
+            pick = None
+            if mgr:
+                for c in candidates:
+                    if (mgr["name"], c["name"]) in PERSON_SYNERGY:
+                        pick = c
+                        break
+            if pick is None:
+                pick = candidates[0]
             market.remove(pick)
 
             sb.table("dynasty_staff").update(
@@ -516,6 +605,9 @@ def ai_hire_staff(save_id):
 
             budgets[t["id"]] -= pick["salary"]
             hired_count += 1
+
+            if role == "MANAGER":
+                mgr = pick
 
     rows = []
     for t in ai_teams:
