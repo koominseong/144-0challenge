@@ -40,7 +40,8 @@ def live_enter(save_id, schedule_id):
 @live_bp.route("/dynasty/<int:save_id>/live/<int:live_id>/action", methods=["POST"])
 def live_action(save_id, live_id):
     action = request.form.get("action", "swing")
-    live_row = progress(save_id, live_id, user_action=action)
+    ph_id = request.form.get("ph_id", type=int)
+    live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id)
     return _render(save_id, live_row)
 
 
@@ -53,12 +54,10 @@ def _render(save_id, live_row):
     away = ctx["team_map"][state["away_id"]]
     us = user_side(state, ctx)
 
-    # 주자 이름
     base_names = []
     for rid in state["bases"]:
         base_names.append(ctx["players"][rid]["name"] if rid else None)
 
-    # 현재 투수/타자 정보 (결정 화면용)
     off = "away" if state["half"] == "top" else "home"
     def_ = "home" if off == "away" else "away"
 
@@ -72,11 +71,36 @@ def _render(save_id, live_row):
             "ip": f"{outs_thrown // 3}.{outs_thrown % 3}",
         }
 
+    # 양팀 라인업 (대타 오버라이드 반영 + 현재 타순 표시)
+    def lineup_view(side):
+        team = ctx[side]
+        if not team:
+            return []
+        ok = "h_order" if side == "home" else "a_order"
+        cur_slot = state[ok] % len(team["batters"]) if team["batters"] else -1
+        over = state.get("ph_over", {}).get(side, {})
+        rows = []
+        for i, p in enumerate(team["batters"]):
+            shown = ctx["players"].get(over.get(str(i)), p)
+            rows.append({
+                "num": i + 1, "name": shown["name"], "overall": shown["overall"],
+                "positions": shown.get("positions") or "",
+                "at_bat": (i == cur_slot and side == off),
+                "sub": str(i) in over,
+            })
+        return rows
+
     next_batter = None
-    if ctx[off] and ctx[off]["batters"]:
-        ok = "h_order" if off == "home" else "a_order"
-        b = ctx[off]["batters"][state[ok] % len(ctx[off]["batters"])]
-        next_batter = {"name": b["name"], "overall": b["overall"]}
+    lv = lineup_view(off)
+    for r in lv:
+        if r["at_bat"]:
+            next_batter = {"name": r["name"], "overall": r["overall"]}
+
+    # 유저 벤치 (미사용 대타만)
+    used_ph = state.get("used_ph", [])
+    bench = []
+    if us:
+        bench = [p for p in ctx[us].get("bench", []) if p["id"] not in used_ph]
 
     save = sb.table("dynasty_save").select("*").eq("id", save_id).execute().data[0]
 
@@ -88,8 +112,14 @@ def _render(save_id, live_row):
         home=home,
         away=away,
         user_team=home if us == "home" else away,
+        user_is_offense=(us == off),
         base_names=base_names,
         cur_pitcher=cur_pitcher,
         next_batter=next_batter,
         can_steal=bool(state["bases"][0] and not state["bases"][1]),
+        away_lineup=lineup_view("away"),
+        home_lineup=lineup_view("home"),
+        away_pitchers=ctx["away"]["sps"] + ctx["away"]["rps"] + ([ctx["away"]["cp"]] if ctx["away"]["cp"] else []),
+        home_pitchers=ctx["home"]["sps"] + ctx["home"]["rps"] + ([ctx["home"]["cp"]] if ctx["home"]["cp"] else []),
+        bench=bench,
     )
