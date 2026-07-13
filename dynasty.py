@@ -768,6 +768,9 @@ def dynasty_next_season(save_id):
     update_fans(save_id)
     grant_season_budget(save_id)
 
+    from dynasty_staff import ai_fire_managers
+    ai_fire_managers(save_id)
+
     from dynasty_staff import init_staff_market, pay_staff_salaries, ai_hire_staff
     init_staff_market(save_id)
     pay_staff_salaries(save_id)
