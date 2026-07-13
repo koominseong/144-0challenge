@@ -142,19 +142,9 @@ def needs_decision(state, ctx):
         return None
 
     off, def_ = offense_defense(state)
-
-    score_diff = abs(state["h_score"] - state["a_score"])
-
     if off == us:
-        if any(state["bases"]) and state["outs"] < 2 and score_diff <= 3:
-            return "offense"
-    else:
-        # 수비: 이닝 첫 타석 전 1회만
-        mark = f"{state['inning']}-{state['half']}"
-        if state["outs"] == 0 and not any(state["bases"]) and state.get("pitch_done") != mark:
-            return "pitching"
-
-    return None
+        return "offense"
+    return "pitching"
 
 # dynasty_live.py - Part2
 
@@ -500,6 +490,7 @@ def progress(save_id, live_id, user_action=None):
         state["pending"] = None
 
     # ----- 유저 투수 결정 반영 -----
+   # ----- 유저 투수 결정 → 해당 타석 1회 실행 ----
     if user_action in ("pitch_keep", "pitch_rp", "pitch_cp") and us:
         team = ctx[us]
         pitcher_key = "h_pitcher" if us == "home" else "a_pitcher"
@@ -519,8 +510,12 @@ def progress(save_id, live_id, user_action=None):
             state[used_cp_key] = True
             state["log"].append(f"🧯 마무리 등판: {team['cp']['name']}")
 
-        state["pitch_done"] = f"{state['inning']}-{state['half']}"
+        txt = play_at_bat(state, ctx, None)
+        state["log"].append(txt)
         state["pending"] = None
+        if advance_if_needed(state, ctx) == "game_over":
+            finish_live_game(save_id, live_row, state, ctx)
+            return _reload(sb, live_id)
 
     # ----- 유저 공격 작전 → 해당 타석 1회 실행 -----
     if user_action in ("bunt", "steal", "swing") and us:
