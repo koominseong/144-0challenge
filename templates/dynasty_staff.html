@@ -21,23 +21,30 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
 .alert.ok { background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.4); color: #81c784; }
 .alert.fail { background: rgba(239,83,80,0.1); border: 1px solid rgba(239,83,80,0.4); color: #ef9a9a; }
+.syn-box { background: linear-gradient(160deg, #1a1030, #1a222c); border: 1px solid rgba(171,71,188,0.4); border-radius: 12px; padding: 15px 18px; margin-bottom: 18px; }
+.syn-box .syn-title { font-size: 14px; font-weight: bold; color: #ce93d8; margin-bottom: 8px; }
+.syn-line { font-size: 12.5px; color: #e1bee7; padding: 3px 0; }
 .section-title { font-size: 16px; color: #fff; margin: 22px 0 12px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .staff-card { display: flex; align-items: center; gap: 14px; background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 15px 18px; margin-bottom: 10px; flex-wrap: wrap; }
 .staff-card.mine-card { border-color: rgba(255,213,79,0.35); background: linear-gradient(160deg, #232013 0%, #1a222c 60%); }
+.staff-card.syn-on { border-color: rgba(171,71,188,0.5); }
 .grade { display: inline-block; min-width: 30px; text-align: center; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 14px; }
 .grade-S { background: #6a1b9a; color: #fff; }
 .grade-A { background: #b71c1c; color: #fff; }
 .grade-B { background: #e65100; color: #fff; }
 .grade-C { background: #37474f; color: #cfd8dc; }
 .s-name { font-weight: bold; color: #fff; font-size: 16px; min-width: 70px; }
-.s-role { font-size: 13px; color: #90caf9; min-width: 70px; }
+.s-role { font-size: 13px; color: #90caf9; min-width: 76px; }
 .s-style { font-size: 12px; color: #ffd54f; }
+.s-trait { font-size: 12px; color: #80cbc4; }
 .s-effect { font-size: 12px; color: #66bb6a; }
 .s-desc { font-size: 12px; color: #8899a6; flex-basis: 100%; padding-left: 44px; }
 .s-salary { font-size: 14px; font-weight: bold; color: #90caf9; margin-left: auto; }
 .s-team { font-size: 12px; color: #8899a6; margin-left: auto; }
 .hire-btn { padding: 9px 20px; font-size: 13px; font-weight: bold; color: #fff; background: {{ user_team.color }}; border: none; border-radius: 7px; cursor: pointer; margin-left: 12px; }
 .hire-btn:hover { opacity: 0.85; }
+.fire-btn { padding: 8px 16px; font-size: 12px; font-weight: bold; color: #ef5350; background: none; border: 1px solid rgba(239,83,80,0.4); border-radius: 7px; cursor: pointer; margin-left: 12px; }
+.fire-btn:hover { background: rgba(239,83,80,0.1); }
 .empty-line { color: #566573; font-size: 13px; padding: 14px 4px; }
 </style>
 </head>
@@ -48,7 +55,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <div class="logo">🧢</div>
         <div>
             <h1>코칭스태프</h1>
-            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}</div>
+            <div class="sub">{{ user_team.team_name }} · Season {{ save.season }}{% if my_style %} · 감독 스타일 「{{ my_style }}」{% endif %}</div>
         </div>
     </div>
     <div style="display:flex; align-items:center;">
@@ -66,12 +73,22 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
     <div class="alert {% if ok == '1' %}ok{% else %}fail{% endif %}">{{ msg }}</div>
     {% endif %}
 
-    {% macro staff_row(s, show_hire, mine_style) %}
+    {% if synergies %}
+    <div class="syn-box">
+        <div class="syn-title">⚡ 발동 중인 시너지</div>
+        {% for sy in synergies %}
+        <div class="syn-line">「{{ sy.name }}」 {{ sy.coach }} — {{ sy.desc }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% macro staff_row(s, show_hire, mine_style, show_fire) %}
     <div class="staff-card {% if mine_style %}mine-card{% endif %}">
         <span class="grade grade-{{ s.grade }}">{{ s.grade }}</span>
-        <span class="s-name">{{ s.name }}</span>
+        <span class="s-name">{{ s.disp_name }}</span>
         <span class="s-role">{{ s.role_kr }}</span>
         {% if s.style %}<span class="s-style">「{{ s.style }}」</span>{% endif %}
+        {% if s.trait %}<span class="s-trait">✦ {{ s.trait }}</span>{% endif %}
         <span class="s-effect">{{ s.effect }}</span>
         {% if show_hire %}
         <span class="s-salary">연봉 {{ s.salary }}</span>
@@ -79,34 +96,44 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
             <input type="hidden" name="staff_id" value="{{ s.id }}">
             <button type="submit" class="hire-btn">영입</button>
         </form>
+        {% elif show_fire %}
+        <span class="s-salary">연봉 {{ s.salary }}</span>
+        <form method="POST" action="{{ url_for('dynasty_staff.staff_fire', save_id=save.id) }}" style="display:inline;"
+              onsubmit="return confirm('{{ s.disp_name }} {{ s.role_kr }}을(를) 방출하시겠습니까? 지급한 연봉은 환불되지 않습니다.');">
+            <input type="hidden" name="staff_id" value="{{ s.id }}">
+            <button type="submit" class="fire-btn">🗑 방출</button>
+        </form>
         {% elif s.team %}
         <span class="s-team">{{ s.team.logo }} {{ s.team.team_name }} · 연봉 {{ s.salary }}</span>
         {% else %}
         <span class="s-salary">연봉 {{ s.salary }}</span>
         {% endif %}
         {% if s.style_desc %}
-        <span class="s-desc">시너지: {{ s.style_desc }}</span>
+        <span class="s-desc">효과: {{ s.style_desc }}</span>
+        {% endif %}
+        {% if s.trait_desc %}
+        <span class="s-desc">특성: {{ s.trait_desc }}</span>
         {% endif %}
     </div>
     {% endmacro %}
 
     <div class="section-title">🏠 내 코칭스태프</div>
     {% if mine %}
-        {% for s in mine %}{{ staff_row(s, False, True) }}{% endfor %}
+        {% for s in mine %}{{ staff_row(s, False, True, True) }}{% endfor %}
     {% else %}
-        <div class="empty-line">고용된 스태프가 없습니다. 아래 시장에서 영입하세요. (같은 역할 영입 시 기존 인물은 자동 방출)</div>
+        <div class="empty-line">고용된 스태프가 없습니다. 아래 시장에서 영입하세요.</div>
     {% endif %}
 
     <div class="section-title">📋 영입 시장</div>
     {% if market %}
-        {% for s in market %}{{ staff_row(s, True, False) }}{% endfor %}
+        {% for s in market %}{{ staff_row(s, True, False, False) }}{% endfor %}
     {% else %}
         <div class="empty-line">시장에 남은 인물이 없습니다.</div>
     {% endif %}
 
     <div class="section-title">🏟 타 구단 스태프</div>
     {% if others %}
-        {% for s in others %}{{ staff_row(s, False, False) }}{% endfor %}
+        {% for s in others %}{{ staff_row(s, False, False, False) }}{% endfor %}
     {% else %}
         <div class="empty-line">타 구단 소속 스태프가 없습니다.</div>
     {% endif %}
