@@ -19,6 +19,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .lp.atbat { background: rgba(255,213,79,0.12); color: #ffd54f; border-radius: 5px; }
 .lp.subbed .nm::after { content: " 🔁"; font-size: 10px; }
 .side .sec { font-size: 11px; color: #566573; margin: 10px 0 4px; }
+.bx { font-size: 11px; color: #90a4ae; padding: 3px 2px; border-bottom: 1px solid rgba(255,255,255,0.03); }
 
 .scoreboard { background: #1a222c; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
 .sb-team { flex: 1; text-align: center; }
@@ -28,6 +29,11 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .sb-mid { text-align: center; min-width: 110px; }
 .sb-mid .inning { font-size: 18px; font-weight: bold; color: #ffd54f; }
 .sb-mid .outs { font-size: 12px; color: #8899a6; margin-top: 6px; }
+
+.wp-bar { margin-top: 12px; background: #10161d; border: 1px solid rgba(255,255,255,0.08); border-radius: 9px; padding: 10px 14px; }
+.wp-bar .wp-label { font-size: 11px; color: #8899a6; display: flex; justify-content: space-between; }
+.wp-track { height: 10px; background: #263238; border-radius: 5px; margin-top: 6px; overflow: hidden; }
+.wp-fill { height: 100%; background: linear-gradient(90deg, {{ user_team.color }}, #ffd54f); border-radius: 5px; transition: width 0.4s; }
 
 .diamond-wrap { display: flex; justify-content: center; padding: 18px 0 6px; }
 .diamond { position: relative; width: 130px; height: 130px; }
@@ -47,20 +53,22 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .status-box .s-value { color: #fff; font-weight: 600; margin-top: 3px; }
 
 .decision { background: linear-gradient(160deg, #232013, #1a222c); border: 1px solid rgba(255,213,79,0.4); border-radius: 14px; padding: 18px; margin-top: 14px; }
+.decision.run { border-color: rgba(102,187,106,0.6); }
 .decision h2 { font-size: 15px; color: #ffd54f; margin-bottom: 12px; }
-.dec-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.dec-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
 .dec-btn { padding: 13px 8px; font-size: 14px; font-weight: bold; border-radius: 9px; cursor: pointer; border: none; color: #fff; }
 .dec-btn.primary { background: {{ user_team.color }}; }
 .dec-btn.alt { background: #2c3e50; }
 .dec-btn.warn { background: #6d4c41; }
+.dec-btn.green { background: #2e7d32; }
 .dec-btn:hover { opacity: 0.85; }
 .dec-btn:disabled { opacity: 0.3; cursor: default; }
 
-.ph-row { display: flex; gap: 8px; margin-top: 12px; }
-.ph-row select { flex: 1; padding: 10px; font-size: 13px; background: #10161d; color: #e6e6e6; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; }
-.ph-row button { padding: 10px 16px; font-size: 13px; font-weight: bold; color: #fff; background: #4527a0; border: none; border-radius: 8px; cursor: pointer; }
+.sub-row { display: flex; gap: 8px; margin-top: 12px; }
+.sub-row select { flex: 1; padding: 10px; font-size: 13px; background: #10161d; color: #e6e6e6; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; }
+.sub-row button { padding: 10px 16px; font-size: 13px; font-weight: bold; color: #fff; background: #4527a0; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; }
 
-.shift-line { margin-top: 12px; font-size: 12.5px; color: #8899a6; display: flex; align-items: center; gap: 10px; }
+.shift-line { margin-top: 12px; font-size: 12.5px; color: #8899a6; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .shift-btn { padding: 7px 14px; font-size: 12px; font-weight: bold; border-radius: 7px; border: 1px solid rgba(255,255,255,0.2); background: none; color: #b0bec5; cursor: pointer; }
 .shift-btn.on { border-color: #66bb6a; color: #81c784; }
 
@@ -70,28 +78,30 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .log-line:first-child { color: #fff; font-weight: 600; }
 
 .final-box { text-align: center; background: linear-gradient(160deg, #10261a, #1a222c); border: 1px solid rgba(102,187,106,0.4); border-radius: 14px; padding: 26px; margin-top: 14px; }
-.final-box .f-title { font-size: 20px; font-weight: bold; color: #81c784; }
-.btn-home { display: block; margin-top: 16px; padding: 13px; text-align: center; font-size: 14px; font-weight: bold; color: #fff; background: {{ user_team.color }}; border-radius: 9px; text-decoration: none; }
+.final-box .f-title { font-size: 22px; font-weight: bold; color: #81c784; }
+.final-box .f-mvp { margin-top: 14px; font-size: 14px; color: #ffd54f; }
+.final-box .f-hl { margin-top: 10px; font-size: 12px; color: #90a4ae; }
+.btn-home { display: block; margin-top: 18px; padding: 13px; text-align: center; font-size: 14px; font-weight: bold; color: #fff; background: {{ user_team.color }}; border-radius: 9px; text-decoration: none; }
 </style>
 </head>
 <body>
 
 <div class="wrap">
 
-    <!-- 원정 로스터 -->
+    <!-- 원정 사이드 -->
     <div class="side">
         <h3>{{ away.logo }} {{ away.team_name }}</h3>
         {% for r in away_lineup %}
         <div class="lp {% if r.at_bat %}atbat{% endif %} {% if r.sub %}subbed{% endif %}">
-            <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }}</span><span class="ov">{{ r.overall }}</span>
+            <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }} {{ r.cond }}</span><span class="ov">{{ r.overall }}</span>
         </div>
         {% endfor %}
-        <div class="sec">투수진</div>
-        {% for p in away_pitchers %}
-        <div class="lp {% if cur_pitcher and state.half == 'bot' is false and false %}{% endif %}">
-            <span class="nm">{{ p.name }}</span><span class="ov">{{ p.overall }}</span>
-        </div>
+        {% if box_away %}
+        <div class="sec">📊 오늘 기록</div>
+        {% for v in box_away %}
+        <div class="bx">{{ v.name }} — {% if v.so or v.saves %}{{ v.so }}K{% if v.saves %} S{% endif %}{% else %}{{ v.hits }}안타{% if v.hr %} {{ v.hr }}홈런{% endif %}{% if v.rbi %} {{ v.rbi }}타점{% endif %}{% if v.sb %} {{ v.sb }}도루{% endif %}{% endif %}</div>
         {% endfor %}
+        {% endif %}
     </div>
 
     <!-- 중앙 -->
@@ -107,7 +117,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                 <div class="inning">경기 종료</div>
                 {% else %}
                 <div class="inning">{{ state.inning }}회{{ '초' if state.half == 'top' else '말' }}</div>
-                <div class="outs">{{ state.outs }} OUT{% if state.shift %} · 🛡시프트{% endif %}</div>
+                <div class="outs">{{ state.outs }} OUT{% if state.shift %} · 🛡{% endif %}</div>
                 {% endif %}
             </div>
             <div class="sb-team">
@@ -118,6 +128,12 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         </div>
 
         {% if state.pending != 'finished' %}
+        <!-- 승률 게이지 -->
+        <div class="wp-bar">
+            <div class="wp-label"><span>{{ user_team.team_name }} 승리 확률</span><span>{{ wp }}%</span></div>
+            <div class="wp-track"><div class="wp-fill" style="width: {{ wp }}%;"></div></div>
+        </div>
+
         <div class="diamond-wrap">
             <div class="diamond">
                 <div class="base b2 {% if state.bases[1] %}on{% endif %}"></div>
@@ -133,7 +149,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
             {% if next_batter %}
             <div class="status-box">
                 <div class="s-label">타석</div>
-                <div class="s-value">{{ next_batter.name }} (OVR {{ next_batter.overall }})</div>
+                <div class="s-value">{{ next_batter.name }} {{ next_batter.cond }} (OVR {{ next_batter.overall }})</div>
             </div>
             {% endif %}
             {% if cur_pitcher %}
@@ -144,34 +160,58 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
             {% endif %}
         </div>
 
+        <!-- 결정 패널 -->
+        {% if state.pending == 'running' %}
+        <div class="decision run">
+            <h2>🏃 주루 판단 — {{ send_runner }} 3루 도전!</h2>
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                <div class="dec-btns">
+                    <button class="dec-btn green" name="action" value="send">👉 보내!</button>
+                    <button class="dec-btn alt" name="action" value="hold">✋ 멈춰!</button>
+                </div>
+            </form>
+        </div>
+        {% elif state.pending == 'offense' %}
         <div class="decision">
-            {% if state.pending == 'offense' %}
             <h2>⚔ 공격 — {{ next_batter.name if next_batter else '' }} 타석</h2>
             <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
                 <div class="dec-btns">
                     <button class="dec-btn primary" name="action" value="swing">💪 강공</button>
                     <button class="dec-btn alt" name="action" value="bunt" {% if state.outs >= 2 or not (state.bases[0] or state.bases[1] or state.bases[2]) %}disabled{% endif %}>🥢 번트</button>
                     <button class="dec-btn warn" name="action" value="steal" {% if not can_steal %}disabled{% endif %}>💨 도루</button>
+                    <button class="dec-btn green" name="action" value="hitrun" {% if not state.bases[0] or state.outs >= 2 %}disabled{% endif %}>🏃 히트앤런</button>
                 </div>
                 {% if bench %}
-                <div class="ph-row">
+                <div class="sub-row">
                     <select name="ph_id">
                         {% for p in bench %}
-                        <option value="{{ p.id }}">{{ p.name }} ({{ p.positions }} · OVR {{ p.overall }})</option>
+                        <option value="{{ p.id }}">{{ p.name }} {{ p.cond }} ({{ p.positions }} · OVR {{ p.overall }})</option>
                         {% endfor %}
                     </select>
                     <button name="action" value="ph">🔁 대타</button>
                 </div>
                 {% endif %}
             </form>
-            {% elif state.pending == 'pitching' %}
-            <h2>🧢 수비 — 이 타석 투수 선택</h2>
+        </div>
+        {% elif state.pending == 'pitching' %}
+        <div class="decision">
+            <h2>🧢 수비 — 이 타석 운용</h2>
             <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
                 <div class="dec-btns">
                     <button class="dec-btn primary" name="action" value="pitch_keep">✊ 계속</button>
-                    <button class="dec-btn alt" name="action" value="pitch_rp">🔄 불펜 투입</button>
-                    <button class="dec-btn warn" name="action" value="pitch_cp">🧯 마무리 등판</button>
+                    <button class="dec-btn warn" name="action" value="pitch_cp" {% if not cp_available %}disabled{% endif %}>🧯 마무리</button>
+                    <button class="dec-btn alt" name="action" value="ibb" {% if state.bases[0] %}disabled{% endif %}>🚶 고의4구</button>
                 </div>
+                {% if rps %}
+                <div class="sub-row">
+                    <select name="rp_id">
+                        {% for p in rps %}
+                        <option value="{{ p.id }}">{{ p.name }} {{ p.cond }} (OVR {{ p.overall }})</option>
+                        {% endfor %}
+                    </select>
+                    <button name="action" value="pitch_rp">🔄 불펜 투입</button>
+                </div>
+                {% endif %}
                 <div class="shift-line">
                     수비 시프트:
                     {% if state.shift %}
@@ -182,21 +222,30 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                     <span style="font-size:11px;">단타 -22% / 역효과 +8%</span>
                 </div>
             </form>
-            {% else %}
+        </div>
+        {% else %}
+        <div class="decision">
             <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
                 <div class="dec-btns">
                     <button class="dec-btn primary" name="action" value="swing">▶ 진행</button>
                 </div>
             </form>
-            {% endif %}
         </div>
+        {% endif %}
         {% else %}
+        <!-- 경기 종료 -->
         <div class="final-box">
             <div class="f-title">
                 {% if state.h_score == state.a_score %}무승부
                 {% elif (state.h_score > state.a_score and user_team.id == home.id) or (state.a_score > state.h_score and user_team.id == away.id) %}🎉 승리!
                 {% else %}패배{% endif %}
             </div>
+            {% if mvp %}
+            <div class="f-mvp">⭐ 경기 MVP: {{ mvp.name }} ({{ mvp.line }})</div>
+            {% endif %}
+            {% for h in highlights %}
+            <div class="f-hl">{{ h }}</div>
+            {% endfor %}
             <a class="btn-home" href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}">대시보드로</a>
         </div>
         {% endif %}
@@ -209,20 +258,20 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         </div>
     </div>
 
-    <!-- 홈 로스터 -->
+    <!-- 홈 사이드 -->
     <div class="side">
         <h3>{{ home.logo }} {{ home.team_name }}</h3>
         {% for r in home_lineup %}
         <div class="lp {% if r.at_bat %}atbat{% endif %} {% if r.sub %}subbed{% endif %}">
-            <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }}</span><span class="ov">{{ r.overall }}</span>
+            <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }} {{ r.cond }}</span><span class="ov">{{ r.overall }}</span>
         </div>
         {% endfor %}
-        <div class="sec">투수진</div>
-        {% for p in home_pitchers %}
-        <div class="lp">
-            <span class="nm">{{ p.name }}</span><span class="ov">{{ p.overall }}</span>
-        </div>
+        {% if box_home %}
+        <div class="sec">📊 오늘 기록</div>
+        {% for v in box_home %}
+        <div class="bx">{{ v.name }} — {% if v.so or v.saves %}{{ v.so }}K{% if v.saves %} S{% endif %}{% else %}{{ v.hits }}안타{% if v.hr %} {{ v.hr }}홈런{% endif %}{% if v.rbi %} {{ v.rbi }}타점{% endif %}{% if v.sb %} {{ v.sb }}도루{% endif %}{% endif %}</div>
         {% endfor %}
+        {% endif %}
     </div>
 
 </div>
