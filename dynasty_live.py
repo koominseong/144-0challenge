@@ -99,7 +99,7 @@ def _base_state(home_id, away_id, week, season):
         "banner": None,
         "scenario": None,              # 시나리오 코드
         "log": [], "acc": {},
-        "pending": "mode_select",
+        "pending": "pregame",
         "view_mode": None,             # manager | batter | pitcher
         "focus_player": None,          # 빙의 대상 pid
         "pregame_done": False,
