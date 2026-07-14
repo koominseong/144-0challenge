@@ -1,4 +1,4 @@
-# dynasty_live_routes.py - 전체 교체본
+# dynasty_live_routes.py - v2 전체 교체본
 # =========================================
 # app.py 등록:
 #   from dynasty_live_routes import live_bp
@@ -9,8 +9,8 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from dynasty_utils import get_supabase
 from dynasty_live import (
-    start_live_game, progress, load_context, user_side,
-    offense_defense, win_prob,
+    start_live_game, start_scenario, progress, load_context,
+    user_side, offense_defense, win_prob, _current_batter, _cond as cond_of,
 )
 
 live_bp = Blueprint("dynasty_live", __name__)
@@ -20,21 +20,21 @@ live_bp = Blueprint("dynasty_live", __name__)
 def live_enter(save_id, schedule_id):
     sb = get_supabase()
 
-    g = (
-        sb.table("dynasty_schedule")
-        .select("played")
-        .eq("id", schedule_id)
-        .execute()
-        .data[0]
-    )
+    g = sb.table("dynasty_schedule").select("played").eq("id", schedule_id).execute().data[0]
     live_row = start_live_game(save_id, schedule_id)
 
     if g["played"] and not live_row["finished"]:
         return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
 
-    if not live_row["finished"] and live_row["state"].get("pending") == "pregame":
-        live_row = progress(save_id, live_row["id"])
+    return _render(save_id, live_row)
 
+
+@live_bp.route("/dynasty/<int:save_id>/scenario/<code>")
+def scenario_enter(save_id, code):
+    if code not in ("save_lead", "comeback"):
+        return redirect(url_for("dynasty.dynasty_dashboard", save_id=save_id))
+    live_row = start_scenario(save_id, code)
+    live_row = progress(save_id, live_row["id"])  # pregame 처리
     return _render(save_id, live_row)
 
 
@@ -44,8 +44,10 @@ def live_action(save_id, live_id):
     ph_id = request.form.get("ph_id", type=int)
     rp_id = request.form.get("rp_id", type=int)
     slot = request.form.get("slot", type=int)
-    live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id, rp_id=rp_id, user_action_slot=slot)
+    live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id,
+                        rp_id=rp_id, user_action_slot=slot)
     return _render(save_id, live_row)
+
 
 def _render(save_id, live_row):
     sb = get_supabase()
@@ -56,32 +58,32 @@ def _render(save_id, live_row):
     away = ctx["team_map"][state["away_id"]]
     us = user_side(state, ctx)
     off, def_ = offense_defense(state)
+    mode = state.get("view_mode") or "manager"
 
-    base_names = []
-    for rid in state["bases"]:
-        base_names.append(ctx["players"][rid]["name"] if rid else None)
+    base_names = [ctx["players"][rid]["name"] if rid else None for rid in state["bases"]]
 
+    cond_map = state.get("cond", {})
+
+    def cond_mark(pid):
+        c = cond_map.get(str(pid), 0)
+        return "🔥" if c >= 2 else ("❄" if c <= -2 else "")
+
+    # ----- 현재 투수 + 체력바 -----
     cur_pitcher = None
     pk = "h_pitcher" if def_ == "home" else "a_pitcher"
     if state.get(pk):
         p = ctx["players"][state[pk]]
         outs_thrown = state["h_pit_outs" if def_ == "home" else "a_pit_outs"]
+        def_fx = ctx["home_fx"] if def_ == "home" else ctx["away_fx"]
+        max_outs = int(12 + (p["stamina"] or 50) * 0.21) + def_fx.get("sp_outs", 0)
+        stamina_pct = max(0, min(100, round((1 - outs_thrown / max(1, max_outs)) * 100)))
         cur_pitcher = {
             "id": p["id"], "name": p["name"], "overall": p["overall"],
             "ip": f"{outs_thrown // 3}.{outs_thrown % 3}",
+            "stamina_pct": stamina_pct,
         }
 
-    cond = state.get("cond", {})
-
-    def cond_mark(pid):
-        c = cond.get(str(pid), 0)
-        if c >= 2:
-            return "🔥"
-        if c <= -2:
-            return "❄"
-        return ""
-
-    # 양팀 라인업 뷰
+    # ----- 라인업 뷰 -----
     def lineup_view(side):
         team = ctx[side]
         if not team or not team["batters"]:
@@ -105,9 +107,9 @@ def _render(save_id, live_row):
         if r["at_bat"]:
             next_batter = r
 
+    # ----- 벤치/불펜 -----
     used_ph = state.get("used_ph", [])
-    bench = []
-    rps = []
+    bench, rps = [], []
     if us:
         bench = [
             {"id": p["id"], "name": p["name"], "overall": p["overall"],
@@ -120,7 +122,31 @@ def _render(save_id, live_row):
             for p in ctx[us]["rps"] if p["id"] != cur_pid
         ]
 
-    # 박스스코어 (이 경기 기록이 있는 선수만)
+    # ----- 작전 성공률 표시값 (벤치 대화 겸용) -----
+    steal_pct, bunt_pct, coach_tip = None, None, None
+    if us and off == us and state["pending"] in ("offense", "duel_bat"):
+        off_fx = ctx["home_fx"] if off == "home" else ctx["away_fx"]
+        def_fx = ctx["home_fx"] if def_ == "home" else ctx["away_fx"]
+        if state["bases"][0] and not state["bases"][1]:
+            runner = ctx["players"][state["bases"][0]]
+            spd = (runner["speed"] or 40) + cond_of(state, runner["id"])
+            sp = 0.45 + (spd - 50) * 0.008 + off_fx.get("steal_bonus", 0.0) - def_fx.get("opp_steal_cut", 0.0)
+            steal_pct = round(min(0.9, max(0.1, sp)) * 100)
+            if steal_pct >= 60:
+                coach_tip = f"주루코치: \"{runner['name']}, 충분히 갈 수 있습니다. 성공률 {steal_pct}%로 봅니다.\""
+            elif steal_pct <= 40:
+                coach_tip = f"주루코치: \"무리입니다. {steal_pct}%… 아웃카운트만 헌납할 수 있어요.\""
+        if next_batter and any(state["bases"]) and state["outs"] < 2:
+            b, _ = _current_batter(state, ctx, off)
+            bp = 0.72 + ((b["contact"] or 50) - 50) * 0.002 + off_fx.get("bunt_bonus", 0.0)
+            bunt_pct = round(min(0.95, bp) * 100)
+    if us and def_ == us and state["pending"] in ("pitching", "duel_pitch") and cur_pitcher:
+        if cur_pitcher["stamina_pct"] <= 25:
+            coach_tip = f"투수코치: \"{cur_pitcher['name']}, 한계입니다. 공 끝이 무뎌졌어요.\""
+        elif state["inning"] >= 9 and not state["h_used_cp" if us == "home" else "a_used_cp"]:
+            coach_tip = "투수코치: \"마무리 몸 다 풀렸습니다. 언제든 콜만 주세요.\""
+
+    # ----- 박스스코어 -----
     def boxscore(side):
         tid = state["home_id"] if side == "home" else state["away_id"]
         rows = []
@@ -133,10 +159,29 @@ def _render(save_id, live_row):
         rows.sort(key=lambda v: (v["hits"] + v["hr"] * 2 + v["rbi"] + v["so"] * 0.4), reverse=True)
         return rows[:8]
 
-    # 주루 판단 대상
     send_runner = None
     if state["pending"] == "running" and state.get("send_runner"):
         send_runner = ctx["players"][state["send_runner"]]["name"]
+
+    # ----- 듀얼 상대 정보 -----
+    duel_info = None
+    if state["pending"] == "duel_bat" and cur_pitcher:
+        duel_info = {"kind": "bat", "vs": cur_pitcher["name"], "vs_ovr": cur_pitcher["overall"]}
+    elif state["pending"] == "duel_pitch" and next_batter:
+        duel_info = {"kind": "pitch", "vs": next_batter["name"], "vs_ovr": next_batter["overall"]}
+
+    # ----- 모드 선택 화면용: 내 타자 목록 / 오늘 선발 -----
+    mode_batters, mode_sp = [], None
+    if state["pending"] == "mode_select" and us:
+        mode_batters = [
+            {"id": p["id"], "name": p["name"], "overall": p["overall"]}
+            for p in ctx[us]["batters"]
+        ]
+        if ctx[us]["sps"]:
+            sp = ctx[us]["sps"][state["week"] % len(ctx[us]["sps"])]
+            mode_sp = {"name": sp["name"], "overall": sp["overall"]}
+
+    mo = state.get("momentum", {"home": 0, "away": 0})
 
     save = sb.table("dynasty_save").select("*").eq("id", save_id).execute().data[0]
 
@@ -148,12 +193,14 @@ def _render(save_id, live_row):
         home=home,
         away=away,
         user_team=home if us == "home" else away,
+        mode=mode,
         base_names=base_names,
         cur_pitcher=cur_pitcher,
         next_batter=next_batter,
         can_steal=bool(state["bases"][0] and not state["bases"][1]),
         away_lineup=lineup_view("away"),
         home_lineup=lineup_view("home"),
+        my_lineup=lineup_view(us) if us else [],
         bench=bench,
         rps=rps,
         cp_available=bool(us and ctx[us]["cp"] and not state["h_used_cp" if us == "home" else "a_used_cp"]),
@@ -161,7 +208,19 @@ def _render(save_id, live_row):
         box_home=boxscore("home"),
         box_away=boxscore("away"),
         send_runner=send_runner,
+        duel_info=duel_info,
+        mode_batters=mode_batters,
+        mode_sp=mode_sp,
+        steal_pct=steal_pct,
+        bunt_pct=bunt_pct,
+        coach_tip=coach_tip,
+        crowd=state.get("crowd", 50),
+        op=state.get("op", 0),
+        momentum_my=(mo.get(us, 0) if us else 0),
+        momentum_opp=(mo.get("away" if us == "home" else "home", 0) if us else 0),
+        is_clutch=(state["inning"] >= 7 and abs(state["h_score"] - state["a_score"]) <= 3),
         mvp=state.get("mvp"),
-        highlights=state.get("hl", []),
-        my_lineup=lineup_view(us) if us else [],
+        highlights=state.get("scenes", []),
+        feats=state.get("feats", []),
+        is_scenario=bool(state.get("scenario")),
     )
