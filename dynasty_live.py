@@ -1008,7 +1008,7 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_ac
         finish_live_game(save_id, live_row, state, ctx)
         return _reload(sb, live_id)
 
-    # ----- 시점 선택 -----
+# ----- 시점 선택 -----
     if state["pending"] == "mode_select":
         if user_action == "mode_manager":
             state["view_mode"] = "manager"
@@ -1026,6 +1026,24 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_ac
         else:
             return _save_and_reload()
         state["pending"] = "pregame"
+
+    # ----- 경기 중 시점 전환 (언제든, 타석 소비 안 함) -----
+    if user_action == "view_manager" and us:
+        state["view_mode"] = "manager"
+        state["focus_player"] = None
+        state["log"].append("🧢 감독 시점으로 전환")
+        if state["pending"] not in ("running", "challenge", "finished"):
+            state["pending"] = None
+
+    if user_action == "view_focus" and us and ph_id:
+        p = ctx["players"].get(ph_id)
+        if p:
+            is_pitcher = "P" in (p.get("positions") or "")
+            state["view_mode"] = "pitcher" if is_pitcher else "batter"
+            state["focus_player"] = ph_id
+            state["log"].append(f"👁 {p['name']} 시점으로 전환")
+            if state["pending"] not in ("running", "challenge", "finished"):
+                state["pending"] = None
 
     # ----- 경기 전 -----
     if state["pending"] == "pregame":
