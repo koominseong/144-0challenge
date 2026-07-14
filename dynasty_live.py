@@ -117,6 +117,15 @@ def load_context(save_id, state):
         away["bench"] = bench_map.get(state["away_id"], [])
 
     # 수비력: 타자진 평균 OVR (호수비 확률에 사용)
+    players = {}
+    for team in (home, away):
+        if not team:
+            continue
+        for p in team["batters"] + team["sps"] + team["rps"] + team.get("bench", []):
+            players[p["id"]] = p
+        if team["cp"]:
+            players[team["cp"]["id"]] = team["cp"]
+    
     # 수비력: 라인업 평균 OVR (대수비 오버라이드 반영)
     for side_key, team in (("home", home), ("away", away)):
         if not team or not team["batters"]:
@@ -129,15 +138,6 @@ def load_context(save_id, state):
             oid = over.get(str(i))
             vals.append((players_pre.get(oid, p) if oid else p)["overall"])
         team["def_avg"] = sum(vals) / len(vals)
-
-    players = {}
-    for team in (home, away):
-        if not team:
-            continue
-        for p in team["batters"] + team["sps"] + team["rps"] + team.get("bench", []):
-            players[p["id"]] = p
-        if team["cp"]:
-            players[team["cp"]["id"]] = team["cp"]
 
  # 스태프 상세 효과 (라이브 반영용)
     try:
