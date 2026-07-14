@@ -310,6 +310,12 @@ tr.user-row td {
         <form method="POST" action="{{ url_for('dynasty.dynasty_next_week', save_id=save.id) }}" style="margin-top: 20px;">
             <button type="submit" class="btn-next">▶ 다음 주 진행</button>
         </form>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+            <a href="{{ url_for('dynasty_live.scenario_enter', save_id=save.id, code='save_lead') }}"
+               style="flex:1; text-align:center; font-size:12px; color:#90caf9; border:1px solid rgba(144,202,249,0.3); padding:9px; border-radius:8px; text-decoration:none;">🎯 시나리오: 리드를 지켜라</a>
+            <a href="{{ url_for('dynasty_live.scenario_enter', save_id=save.id, code='comeback') }}"
+               style="flex:1; text-align:center; font-size:12px; color:#ffab91; border:1px solid rgba(255,171,145,0.3); padding:9px; border-radius:8px; text-decoration:none;">🎯 시나리오: 기적의 역전</a>
+        </div>
         <form method="POST" action="{{ url_for('dynasty.dynasty_sim_all', save_id=save.id) }}"
             onsubmit="return confirm('남은 시즌 전체를 한번에 진행합니다. 계속하시겠습니까?');"
             style="margin-top: 10px;">
