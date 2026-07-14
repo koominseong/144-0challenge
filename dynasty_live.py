@@ -248,33 +248,27 @@ def needs_decision(state, ctx):
     if us is None:
         return None
     off, def_ = offense_defense(state)
-    mode = state.get("view_mode") or "manager"
+    focus = state.get("focus_player")
 
-    if mode == "manager":
-        if off == us:
-            if _is_clutch(state) and not state.get("duel_done_pa"):
-                return "duel_bat"
-            return "offense"
-        if _is_clutch(state) and not state.get("duel_done_pa"):
-            return "duel_pitch"
-        return "pitching"
-
-    if mode == "batter":
+    # ----- 빙의 선수 차례: 듀얼 우선 -----
+    if focus and not state.get("duel_done_pa"):
         if off == us:
             batter, _ = _current_batter(state, ctx, off)
-            if batter["id"] == state.get("focus_player"):
+            if batter["id"] == focus:
                 return "duel_bat"
-        return None  # 나머지 전부 자동
-
-    if mode == "pitcher":
         if def_ == us:
             pk = "h_pitcher" if def_ == "home" else "a_pitcher"
-            if state.get(pk) == state.get("focus_player"):
+            if state.get(pk) == focus:
                 return "duel_pitch"
-        return None
 
-    return None
-
+    # ----- 기본: 감독 모드 -----
+    if off == us:
+        if _is_clutch(state) and not state.get("duel_done_pa"):
+            return "duel_bat"
+        return "offense"
+    if _is_clutch(state) and not state.get("duel_done_pa"):
+        return "duel_pitch"
+    return "pitching"
 
 # =========================================
 # 듀얼 판정 매트릭스
@@ -1031,7 +1025,7 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_ac
     if user_action == "view_manager" and us:
         state["view_mode"] = "manager"
         state["focus_player"] = None
-        state["log"].append("🧢 감독 시점으로 전환")
+        state["log"].append("🧢 빙의 해제 — 감독 시점")
         if state["pending"] not in ("running", "challenge", "finished"):
             state["pending"] = None
 
