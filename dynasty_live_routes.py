@@ -181,6 +181,15 @@ def _render(save_id, live_row):
             sp = ctx[us]["sps"][state["week"] % len(ctx[us]["sps"])]
             mode_sp = {"name": sp["name"], "overall": sp["overall"]}
 
+    # 시점 전환용 내 선수 목록 (타자 + 투수 전원)
+    view_options = []
+    if us and state["pending"] not in ("finished", "mode_select"):
+        for p in ctx[us]["batters"]:
+            view_options.append({"id": p["id"], "label": f"⚾ {p['name']} (타자 OVR {p['overall']})"})
+        pitchers = list(ctx[us]["sps"]) + list(ctx[us]["rps"]) + ([ctx[us]["cp"]] if ctx[us]["cp"] else [])
+        for p in pitchers:
+            view_options.append({"id": p["id"], "label": f"🔥 {p['name']} (투수 OVR {p['overall']})"})
+
     mo = state.get("momentum", {"home": 0, "away": 0})
 
     save = sb.table("dynasty_save").select("*").eq("id", save_id).execute().data[0]
@@ -223,4 +232,5 @@ def _render(save_id, live_row):
         highlights=state.get("scenes", []),
         feats=state.get("feats", []),
         is_scenario=bool(state.get("scenario")),
+        view_options=view_options,
     )
