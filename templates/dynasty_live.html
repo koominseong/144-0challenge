@@ -216,6 +216,23 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         </div>
         </form>
 
+        <!-- 시점 전환 -->
+        <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+        <div class="op-bar" style="margin-top:8px;">
+            <span class="op-label">👁 시점</span>
+            <span style="font-size:11px; color:#8899a6; white-space:nowrap;">
+                {% if mode == 'manager' %}감독{% else %}빙의 중{% endif %}
+            </span>
+            <select name="ph_id" style="flex:1; padding:6px; font-size:11px; background:#0f1419; color:#e6e6e6; border:1px solid rgba(255,255,255,0.12); border-radius:6px;">
+                {% for v in view_options %}
+                <option value="{{ v.id }}">{{ v.label }}</option>
+                {% endfor %}
+            </select>
+            <button class="op-btn" name="action" value="view_focus">빙의</button>
+            <button class="op-btn" name="action" value="view_manager" {% if mode == 'manager' %}disabled{% endif %}>🧢 감독 복귀</button>
+        </div>
+        </form>
+
         <!-- 다이아몬드 -->
         <div class="diamond-wrap">
             <div class="diamond">
