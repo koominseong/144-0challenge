@@ -37,7 +37,6 @@ def scenario_enter(save_id, code):
     live_row = progress(save_id, live_row["id"])  # pregame 처리
     return _render(save_id, live_row)
 
-
 @live_bp.route("/dynasty/<int:save_id>/live/<int:live_id>/action", methods=["POST"])
 def live_action(save_id, live_id):
     action = request.form.get("action", "swing")
@@ -45,8 +44,9 @@ def live_action(save_id, live_id):
     rp_id = request.form.get("rp_id", type=int)
     slot = request.form.get("slot", type=int)
     skill = request.form.get("skill", type=int)
+    outcome = request.form.get("outcome")
     live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id,
-                        rp_id=rp_id, user_action_slot=slot, skill=skill)
+                        rp_id=rp_id, user_action_slot=slot, skill=skill, outcome=outcome)
     return _render(save_id, live_row)
 
 
