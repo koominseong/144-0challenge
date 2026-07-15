@@ -588,6 +588,16 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
         state["pending"] = "running"
         txt += f" — 3루 코치가 팔을 돌릴까요? {runner['name']}!"
 
+    if duel_forced == "BB":
+        result = "BB"
+    elif duel_forced == "K":
+        result = "K"
+    else:
+        sp_today = def_team["sps"][state["week"] % len(def_team["sps"])] if def_team["sps"] else None
+        if sp_today and pitcher["id"] != sp_today["id"]:
+            bat_mod -= def_fx.get("rp_boost", 0) * 0.004
+        result = _plate_appearance(batter, pitcher, fatigue, bat_mod + (0.015 if hitrun else 0.0))
+
     return txt
 
 
@@ -1106,19 +1116,41 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_ac
                 return _finish()
 
     # ----- 타격 미니게임 결과 (빙의 타자) -----
+   # ----- 타격 미니게임 결과 (빙의 타자, PA 전체 + 전술) -----
     if user_action == "minigame_bat" and state["pending"] == "duel_bat":
-        sk = max(0, min(100, skill if skill is not None else 0))
-        dmod = (sk - 50) * 0.004
-        if sk >= 95:
-            state["log"].append("🎯 완벽한 타이밍! 배트 중심에 걸렸습니다!")
-        elif sk >= 70:
-            state["log"].append("🎯 좋은 스윙!")
-        elif sk >= 30:
-            state["log"].append("🎯 타이밍이 조금 어긋났습니다…")
-        else:
-            state["log"].append("🎯 완전히 속았습니다. 방망이가 늦었어요.")
+        forced = None
+        dmod = 0.0
+        act = None
+        if outcome == "K":
+            forced = "K"
+            state["log"].append("🎯 3스트라이크 아웃!")
+        elif outcome == "K_BUNT":
+            forced = "K"
+            state["log"].append("🎯 투 스트라이크 번트 파울… 스리번트 삼진!")
+        elif outcome == "BB":
+            forced = "BB"
+            state["log"].append("🎯 볼넷을 골라냅니다!")
+        elif outcome == "bunt":
+            act = "bunt"
+            state["log"].append("🎯 번트 자세… 공을 정확히 죽였습니다!")
+        else:  # contact
+            sk = max(0, min(100, skill if skill is not None else 0))
+            st = outcome or "normal"   # normal | power | contact | slash
+            if st == "power":
+                dmod = (sk - 50) * 0.0056
+                state["log"].append("🎯 풀스윙!" + (" 배럴에 정확히 걸렸습니다!!" if sk >= 95 else ""))
+            elif st == "contact":
+                dmod = (sk - 50) * 0.0028 + 0.01
+                state["log"].append("🎯 컨택 스윙, 맞히는 데 집중합니다.")
+            elif st == "slash":
+                dmod = (sk - 50) * 0.004 + 0.03
+                state["log"].append("🎯 페이크번트 슬래시!! 전진수비 사이를 노립니다!")
+            else:
+                dmod = (sk - 50) * 0.004
+                if sk >= 95:
+                    state["log"].append("🎯 완벽한 타이밍!")
         state["duel_done_pa"] = True
-        txt = play_at_bat(state, ctx, None, duel_mod=dmod)
+        txt = play_at_bat(state, ctx, act, duel_mod=dmod, duel_forced=forced)
         state["log"].append(txt)
         if state["pending"] not in ("running", "challenge"):
             state["pending"] = None
