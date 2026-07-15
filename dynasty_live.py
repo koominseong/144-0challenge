@@ -991,7 +991,8 @@ def build_banner(sb, save_id, state, ctx):
 #   판독: challenge_yes | challenge_no
 #   작전: op_focus | op_cut | op_shift
 # =========================================
-def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_action_slot=None, skill=None):
+def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
+             user_action_slot=None, skill=None, outcome=None):
     sb = get_supabase()
 
     live_row = sb.table("dynasty_live_game").select("*").eq("id", live_id).execute().data[0]
