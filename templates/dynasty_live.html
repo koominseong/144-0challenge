@@ -310,45 +310,181 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         
         {% elif state.pending == 'duel_bat' %}
         <div class="decision duel clutch-glow">
-            <h2>🎯 승부의 순간 — {{ next_batter.name if next_batter else '' }} vs {{ duel_info.vs if duel_info else '' }}</h2>
+            <h2>🎯 {{ next_batter.name if next_batter else '' }} vs {{ duel_info.vs if duel_info else '' }}</h2>
 
-            <!-- 타격 미니게임 -->
-            <div id="mg-field" style="position:relative; height:210px; background:linear-gradient(180deg,#0a0f14,#141d26); border:1px solid rgba(255,255,255,0.1); border-radius:12px; overflow:hidden; cursor:pointer; user-select:none;">
-                <div id="mg-msg" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:bold; color:#ffd54f; z-index:5;">클릭해서 타석에 들어서기</div>
-                <!-- 투수 -->
-                <div style="position:absolute; top:18px; left:50%; transform:translateX(-50%); font-size:26px;">🧍</div>
-                <!-- 공 -->
-                <div id="mg-ball" style="position:absolute; top:44px; left:50%; transform:translateX(-50%); width:14px; height:14px; background:#fff; border-radius:50%; box-shadow:0 0 8px #fff; display:none;"></div>
-                <!-- 히팅 존 -->
-                <div id="mg-zone" style="position:absolute; bottom:26px; left:50%; transform:translateX(-50%); width:90px; height:26px; border:2px dashed rgba(255,213,79,0.6); border-radius:8px;"></div>
-                <div style="position:absolute; bottom:4px; left:50%; transform:translateX(-50%); font-size:20px;">🏏</div>
-                <div id="mg-judge" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; font-size:24px; font-weight:bold; z-index:6;"></div>
+            <div style="display:flex; justify-content:center; gap:16px; font-size:14px; font-weight:bold; margin-bottom:8px;">
+                <span style="color:#81c784;">B <span id="pa-balls">0</span></span>
+                <span style="color:#ef9a9a;">S <span id="pa-strikes">0</span></span>
+                <span id="pa-pitchno" style="color:#8899a6;">1구</span>
             </div>
-            <div style="font-size:11.5px; color:#8899a6; margin-top:8px; text-align:center;">
-                공이 존에 들어오는 순간 클릭(또는 스페이스)! · 상대 투수가 강할수록 공이 빠릅니다
+
+            <!-- 전술 선택 -->
+            <div id="tac-row" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); gap:6px; margin-bottom:10px;">
+                <button class="op-btn tac" data-tac="normal" style="border-color:#ffd54f; color:#ffd54f;">💪 강공</button>
+                <button class="op-btn tac" data-tac="power">🔨 파워</button>
+                <button class="op-btn tac" data-tac="contact">🎯 컨택</button>
+                <button class="op-btn tac" data-tac="bunt" {% if not (state.bases[0] or state.bases[1] or state.bases[2]) %}disabled{% endif %}>🥢 번트</button>
+                <button class="op-btn tac" data-tac="slash" {% if not (state.bases[0] or state.bases[1] or state.bases[2]) %}disabled{% endif %}>⚡ 슬래시</button>
+            </div>
+
+            <div id="mg-field" style="position:relative; height:250px; background:linear-gradient(180deg,#0a0f14,#141d26); border:1px solid rgba(255,255,255,0.1); border-radius:12px; overflow:hidden; cursor:pointer; user-select:none;">
+                <div id="mg-msg" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:bold; color:#ffd54f; z-index:5; text-align:center; padding:0 20px;">전술 선택 후 클릭 = 투구<br>날아올 때 클릭 = 스윙 · 가만히 = 지켜보기</div>
+                <div style="position:absolute; top:14px; left:50%; transform:translateX(-50%); font-size:26px;">🧍</div>
+                <div id="mg-ball" style="position:absolute; width:14px; height:14px; background:#fff; border-radius:50%; box-shadow:0 0 8px #fff; display:none; z-index:3;"></div>
+                <div id="mg-zone" style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%); width:110px; height:80px; border:2px solid rgba(255,213,79,0.5); border-radius:6px;"></div>
+                <div id="mg-stance" style="position:absolute; bottom:6px; left:50%; transform:translateX(-50%); font-size:20px;">🏏</div>
+                <div id="mg-judge" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; font-size:26px; font-weight:bold; z-index:6;"></div>
             </div>
 
             <form id="mg-form" method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
                 <input type="hidden" name="action" value="minigame_bat">
                 <input type="hidden" name="skill" id="mg-skill" value="0">
+                <input type="hidden" name="outcome" id="mg-outcome" value="normal">
             </form>
 
-            <!-- 수동 폴백: 미니게임 대신 기존 노림수 -->
-            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}" onsubmit="return reveal(this);" style="margin-top:12px;">
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}" onsubmit="return reveal(this);" style="margin-top:10px;">
                 <div class="dec-btns">
-                    <button class="dec-btn alt" name="action" value="cut">✂ 커트 승부</button>
-                    <button class="dec-btn primary" name="action" value="swing">💪 자동 스윙</button>
+                    <button class="dec-btn alt" name="action" value="swing" style="font-size:12px;">⏭ 자동 승부</button>
                 </div>
-                {% if bench and state.bases[0] %}
-                <div class="sub-row">
-                    <select name="ph_id">
-                        {% for p in bench %}
-                        <option value="{{ p.id }}">{{ p.name }} {{ p.cond }} (OVR {{ p.overall }})</option>
-                        {% endfor %}
-                    </select>
-                    <button name="action" value="pr" style="background:#00695c;">🏃 대주자</button>
-                </div>
-                {% endif %}
+            </form>
+        </div>
+
+        <script>
+        (function() {
+            var field = document.getElementById("mg-field");
+            if (!field) return;
+            var msg = document.getElementById("mg-msg"), ball = document.getElementById("mg-ball"),
+                judge = document.getElementById("mg-judge"), zone = document.getElementById("mg-zone"),
+                stance = document.getElementById("mg-stance"),
+                elB = document.getElementById("pa-balls"), elS = document.getElementById("pa-strikes"),
+                elP = document.getElementById("pa-pitchno");
+
+            var TRAVEL = {{ pitch_speed }};
+            var CONTROL = {{ pitch_control }};
+            var balls = 0, strikes = 0, pitchNo = 1;
+            var phase = "idle", tactic = "normal";
+            var t0 = 0, raf = null, missTimer = null;
+            var isStrikePitch = false, endX = 0, FW = null;
+
+            // 전술별 판정창 [perfect, good, foul] ms / skill 값 / outcome
+            var WIN = {
+                normal:  {p:50,  g:110, f:200, sk:[100,72], out:"normal"},
+                power:   {p:35,  g:80,  f:150, sk:[100,70], out:"power"},
+                contact: {p:70,  g:140, f:230, sk:[90,65],  out:"contact"},
+                slash:   {p:40,  g:90,  f:150, sk:[100,70], out:"slash"},
+                bunt:    {p:250, g:250, f:340, sk:[80,80],  out:"bunt"}
+            };
+
+            var TOP_Y = 40, ZONE_Y = 140;
+            function centerX(){ if(FW===null) FW=field.clientWidth/2; return FW; }
+
+            // 전술 선택
+            document.querySelectorAll(".tac").forEach(function(b){
+                b.addEventListener("click", function(e){
+                    e.preventDefault();
+                    if (phase !== "idle") return;
+                    tactic = b.dataset.tac;
+                    document.querySelectorAll(".tac").forEach(function(x){ x.style.borderColor=""; x.style.color=""; });
+                    b.style.borderColor = "#ffd54f"; b.style.color = "#ffd54f";
+                    stance.textContent = (tactic === "bunt" || tactic === "slash") ? "🥢" : "🏏";
+                });
+            });
+
+            function flash(txt, color, cb){
+                phase = "judging";
+                judge.textContent = txt; judge.style.color = color; judge.style.display = "flex";
+                setTimeout(function(){ judge.style.display="none"; if(cb) cb(); }, 750);
+            }
+
+            function nextPitchOrEnd(addBall, addStrike, foul){
+                if (addBall) balls++;
+                if (addStrike) strikes++;
+                if (foul) {
+                    // 번트 파울은 2S에서도 카운트 → 스리번트 삼진
+                    if (tactic === "bunt" && strikes >= 2) { finish("K_BUNT"); return; }
+                    if (strikes < 2) strikes++;
+                }
+                elB.textContent = balls; elS.textContent = strikes;
+                if (strikes >= 3) { finish("K"); return; }
+                if (balls >= 4) { finish("BB"); return; }
+                pitchNo++; elP.textContent = pitchNo + "구";
+                phase = "idle";
+                msg.innerHTML = "클릭 = 다음 공 (" + pitchNo + "구)";
+                msg.style.display = "flex";
+            }
+
+            function finish(outcome, skill){
+                phase = "over";
+                document.getElementById("mg-outcome").value = outcome;
+                document.getElementById("mg-skill").value = skill || 0;
+                setTimeout(function(){ document.getElementById("mg-form").submit(); }, 500);
+            }
+
+            function throwPitch(){
+                phase = "windup";
+                msg.textContent = "와인드업…";
+                var zoneProb = 0.45 + (CONTROL - 50) * 0.004;
+                // 번트/슬래시 자세면 투수가 존을 더 공략 (실제 야구처럼)
+                if (tactic === "bunt" || tactic === "slash") zoneProb += 0.08;
+                isStrikePitch = Math.random() < Math.max(0.35, Math.min(0.75, zoneProb));
+                var zw = zone.clientWidth;
+                endX = centerX() + (isStrikePitch
+                    ? (Math.random()-0.5)*(zw-20)
+                    : (Math.random()<0.5?-1:1)*(zw/2+15+Math.random()*30));
+                setTimeout(function(){
+                    if (phase !== "windup") return;
+                    phase = "flying";
+                    msg.style.display = "none";
+                    ball.style.display = "block";
+                    t0 = performance.now();
+                    raf = requestAnimationFrame(fly);
+                    missTimer = setTimeout(take, TRAVEL + 120);
+                }, 600 + Math.random()*900);
+            }
+
+            function fly(now){
+                if (phase !== "flying") return;
+                var t = Math.min(1, (now - t0)/TRAVEL);
+                ball.style.left = (centerX() + (endX - centerX())*t - 7) + "px";
+                ball.style.top = (TOP_Y + (ZONE_Y-TOP_Y)*t*t) + "px";
+                if (t < 1) raf = requestAnimationFrame(fly);
+            }
+
+            function take(){
+                if (phase !== "flying") return;
+                cancelAnimationFrame(raf); ball.style.display = "none";
+                if (isStrikePitch) flash("스트라이크!", "#ef9a9a", function(){ nextPitchOrEnd(false,true,false); });
+                else flash("볼", "#81c784", function(){ nextPitchOrEnd(true,false,false); });
+            }
+
+            function swing(){
+                if (phase === "idle"){ throwPitch(); return; }
+                if (phase !== "flying") return;
+                clearTimeout(missTimer); cancelAnimationFrame(raf); ball.style.display = "none";
+
+                var w = WIN[tactic];
+                var err = Math.abs((performance.now() - t0) - TRAVEL);
+                if (!isStrikePitch) err += (tactic === "bunt" ? 120 : 60);  // 나쁜 공 건드림 페널티
+
+                if (tactic === "bunt") {
+                    if (err <= w.p) { flash("번트 성공!", "#ffd54f", null); setTimeout(function(){ finish("bunt", 80); }, 750); }
+                    else if (err <= w.f) { flash("번트 파울", "#90a4ae", function(){ nextPitchOrEnd(false,false,true); }); }
+                    else { flash("헛스윙!", "#ef5350", function(){ nextPitchOrEnd(false,true,false); }); }
+                    return;
+                }
+
+                if (err <= w.p) { flash("PERFECT!", "#ffd54f", null); setTimeout(function(){ finish(w.out, w.sk[0]); }, 750); }
+                else if (err <= w.g) { flash("GOOD!", "#81c784", null); setTimeout(function(){ finish(w.out, w.sk[1]); }, 750); }
+                else if (err <= w.f) { flash("파울!", "#90a4ae", function(){ nextPitchOrEnd(false,false,true); }); }
+                else { flash("헛스윙!", "#ef5350", function(){ nextPitchOrEnd(false,true,false); }); }
+            }
+
+            field.addEventListener("click", swing);
+            document.addEventListener("keydown", function(e){
+                if (e.code === "Space"){ e.preventDefault(); swing(); }
+            });
+        })();
+        </script>
             </form>
         </div>
 
