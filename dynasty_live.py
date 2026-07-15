@@ -1105,6 +1105,26 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None, user_ac
             if advance_if_needed(state, ctx) == "game_over":
                 return _finish()
 
+    # ----- 타격 미니게임 결과 (빙의 타자) -----
+    if user_action == "minigame_bat" and state["pending"] == "duel_bat":
+        sk = max(0, min(100, skill if skill is not None else 0))
+        dmod = (sk - 50) * 0.004
+        if sk >= 95:
+            state["log"].append("🎯 완벽한 타이밍! 배트 중심에 걸렸습니다!")
+        elif sk >= 70:
+            state["log"].append("🎯 좋은 스윙!")
+        elif sk >= 30:
+            state["log"].append("🎯 타이밍이 조금 어긋났습니다…")
+        else:
+            state["log"].append("🎯 완전히 속았습니다. 방망이가 늦었어요.")
+        state["duel_done_pa"] = True
+        txt = play_at_bat(state, ctx, None, duel_mod=dmod)
+        state["log"].append(txt)
+        if state["pending"] not in ("running", "challenge"):
+            state["pending"] = None
+            if advance_if_needed(state, ctx) == "game_over":
+                return _finish()
+
     # ----- 클러치/시점 듀얼: 투수 -----
     if user_action in ("duel_attack", "duel_bait", "duel_avoid") and state["pending"] == "duel_pitch":
         choice = {"duel_attack": "attack", "duel_bait": "bait", "duel_avoid": "avoid"}[user_action]
