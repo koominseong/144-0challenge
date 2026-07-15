@@ -44,8 +44,9 @@ def live_action(save_id, live_id):
     ph_id = request.form.get("ph_id", type=int)
     rp_id = request.form.get("rp_id", type=int)
     slot = request.form.get("slot", type=int)
+    skill = request.form.get("skill", type=int)
     live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id,
-                        rp_id=rp_id, user_action_slot=slot)
+                        rp_id=rp_id, user_action_slot=slot, skill=skill)
     return _render(save_id, live_row)
 
 
@@ -233,4 +234,5 @@ def _render(save_id, live_row):
         feats=state.get("feats", []),
         is_scenario=bool(state.get("scenario")),
         view_options=view_options,
+        pitch_speed=(max(600, 1300 - (cur_pitcher["overall"] or 50) * 8) if cur_pitcher else 900),
     )
