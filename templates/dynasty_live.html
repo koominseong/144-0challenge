@@ -307,18 +307,39 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                 </div>
             </form>
         </div>
-
+        
         {% elif state.pending == 'duel_bat' %}
         <div class="decision duel clutch-glow">
             <h2>🎯 승부의 순간 — {{ next_batter.name if next_batter else '' }} vs {{ duel_info.vs if duel_info else '' }}</h2>
-            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}" onsubmit="return reveal(this);">
+
+            <!-- 타격 미니게임 -->
+            <div id="mg-field" style="position:relative; height:210px; background:linear-gradient(180deg,#0a0f14,#141d26); border:1px solid rgba(255,255,255,0.1); border-radius:12px; overflow:hidden; cursor:pointer; user-select:none;">
+                <div id="mg-msg" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:bold; color:#ffd54f; z-index:5;">클릭해서 타석에 들어서기</div>
+                <!-- 투수 -->
+                <div style="position:absolute; top:18px; left:50%; transform:translateX(-50%); font-size:26px;">🧍</div>
+                <!-- 공 -->
+                <div id="mg-ball" style="position:absolute; top:44px; left:50%; transform:translateX(-50%); width:14px; height:14px; background:#fff; border-radius:50%; box-shadow:0 0 8px #fff; display:none;"></div>
+                <!-- 히팅 존 -->
+                <div id="mg-zone" style="position:absolute; bottom:26px; left:50%; transform:translateX(-50%); width:90px; height:26px; border:2px dashed rgba(255,213,79,0.6); border-radius:8px;"></div>
+                <div style="position:absolute; bottom:4px; left:50%; transform:translateX(-50%); font-size:20px;">🏏</div>
+                <div id="mg-judge" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; font-size:24px; font-weight:bold; z-index:6;"></div>
+            </div>
+            <div style="font-size:11.5px; color:#8899a6; margin-top:8px; text-align:center;">
+                공이 존에 들어오는 순간 클릭(또는 스페이스)! · 상대 투수가 강할수록 공이 빠릅니다
+            </div>
+
+            <form id="mg-form" method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                <input type="hidden" name="action" value="minigame_bat">
+                <input type="hidden" name="skill" id="mg-skill" value="0">
+            </form>
+
+            <!-- 수동 폴백: 미니게임 대신 기존 노림수 -->
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}" onsubmit="return reveal(this);" style="margin-top:12px;">
                 <div class="dec-btns">
-                    <button class="dec-btn red" name="action" value="guess_fast">⚡ 직구 노림<span class="pct">적중 시 대폭 보정</span></button>
-                    <button class="dec-btn blue" name="action" value="guess_break">🌀 변화구 노림<span class="pct">적중 시 대폭 보정</span></button>
-                    <button class="dec-btn alt" name="action" value="cut">✂ 커트 승부<span class="pct">안정적, 볼넷 노림</span></button>
-                    <button class="dec-btn primary" name="action" value="swing">💪 그냥 승부<span class="pct">노림수 없이</span></button>
+                    <button class="dec-btn alt" name="action" value="cut">✂ 커트 승부</button>
+                    <button class="dec-btn primary" name="action" value="swing">💪 자동 스윙</button>
                 </div>
-                {% if bench and state.bases[0] and mode == 'manager' %}
+                {% if bench and state.bases[0] %}
                 <div class="sub-row">
                     <select name="ph_id">
                         {% for p in bench %}
@@ -328,6 +349,75 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                     <button name="action" value="pr" style="background:#00695c;">🏃 대주자</button>
                 </div>
                 {% endif %}
+            </form>
+        </div>
+
+        <script>
+        (function() {
+            var field = document.getElementById("mg-field");
+            if (!field) return;
+            var msg = document.getElementById("mg-msg");
+            var ball = document.getElementById("mg-ball");
+            var judge = document.getElementById("mg-judge");
+            var TRAVEL = {{ pitch_speed }};        // 공 도달 시간(ms)
+            var armed = false, flying = false, done = false;
+            var t0 = 0, raf = null;
+
+            var TOP = 44, BOTTOM = 160;            // 공 이동 구간(px), 존 중심 ≈ bottom-39 → y≈171... 존 도달 판정은 시간 기준
+
+            function start() {
+                if (flying || done) return;
+                armed = true;
+                msg.textContent = "투수, 와인드업…";
+                var delay = 700 + Math.random() * 900;   // 랜덤 딜레이 (성급한 클릭 방지)
+                setTimeout(function() {
+                    if (done) return;
+                    flying = true;
+                    msg.style.display = "none";
+                    ball.style.display = "block";
+                    t0 = performance.now();
+                    raf = requestAnimationFrame(fly);
+                    // 안 치면 자동 미스
+                    setTimeout(function() { if (!done) swing(); }, TRAVEL + 300);
+                }, delay);
+            }
+
+            function fly(now) {
+                if (done) return;
+                var t = Math.min(1, (now - t0) / TRAVEL);
+                ball.style.top = (TOP + (BOTTOM - TOP) * t * t) + "px";  // 가속감
+                if (t < 1) raf = requestAnimationFrame(fly);
+            }
+
+            function swing() {
+                if (done) return;
+                if (!flying) {                     // 와인드업 전/중 클릭 = 헛스윙 아님, 그냥 시작
+                    if (!armed) start();
+                    return;
+                }
+                done = true;
+                cancelAnimationFrame(raf);
+                var err = Math.abs((performance.now() - t0) - TRAVEL);   // 도달 시점과의 오차
+                var skill;
+                var label, color;
+                if (err <= 45)      { skill = 100; label = "PERFECT!"; color = "#ffd54f"; }
+                else if (err <= 100){ skill = 75;  label = "GOOD!";    color = "#81c784"; }
+                else if (err <= 180){ skill = 45;  label = "LATE…";    color = "#90a4ae"; }
+                else                { skill = 10;  label = "MISS";     color = "#ef5350"; }
+                judge.textContent = label;
+                judge.style.color = color;
+                judge.style.display = "flex";
+                document.getElementById("mg-skill").value = skill;
+                setTimeout(function() { document.getElementById("mg-form").submit(); }, 700);
+            }
+
+            field.addEventListener("click", swing);
+            field.addEventListener("click", function() { if (!armed) start(); });
+            document.addEventListener("keydown", function(e) {
+                if (e.code === "Space") { e.preventDefault(); if (!armed) start(); else swing(); }
+            });
+        })();
+        </script>
             </form>
         </div>
 
