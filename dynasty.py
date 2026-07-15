@@ -767,6 +767,7 @@ def dynasty_next_season(save_id):
     from dynasty_finance import update_fans, grant_season_budget
     update_fans(save_id)
     grant_season_budget(save_id)
+    reset_budgets(save_id)
 
     from dynasty_staff import ai_fire_managers
     ai_fire_managers(save_id)
@@ -794,8 +795,6 @@ def dynasty_next_season(save_id):
     generate_fa_market(save_id)
 
     release_surplus_players(save_id)
-    
-    reset_budgets(save_id)
 
     # 4. AI끼리 트레이드
     ai_auto_trades(save_id, max_trades=3)
