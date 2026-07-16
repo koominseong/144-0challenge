@@ -9,7 +9,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from dynasty_utils import get_supabase
 from dynasty_staff import (
-    init_staff_market, hire_staff, fire_staff,
+    init_staff_market, hire_staff, fire_staff, poach_staff,
     STYLE_DESC, TRAIT_DESC, PERSON_SYNERGY, GROUP_SYNERGY, ROLE_KR,
     GRADE_SIM, GRADE_GROWTH,
 )
@@ -18,19 +18,6 @@ staff_bp = Blueprint("dynasty_staff", __name__)
 
 ROLE_ORDER = {"MANAGER": 0, "HEAD": 1, "HITTING": 2, "PITCHING": 3, "DEFENSE": 4,
               "BULLPEN": 5, "BASERUN": 6, "BATTERY": 7}
-
-@staff_bp.route("/dynasty/<int:save_id>/staff/poach", methods=["POST"])
-def staff_poach(save_id):
-    sb = get_supabase()
-    staff_id = int(request.form.get("staff_id"))
-    offer = request.form.get("offer", type=int)
-
-    teams = sb.table("dynasty_team").select("id, is_user").eq("save_id", save_id).execute().data
-    user_team = next(t for t in teams if t["is_user"])
-
-    success, message = poach_staff(save_id, user_team["id"], staff_id, offer)
-    return redirect(url_for("dynasty_staff.staff_home", save_id=save_id,
-                            msg=message, ok="1" if success else "0"))
 
 
 @staff_bp.route("/dynasty/<int:save_id>/staff")
@@ -61,14 +48,13 @@ def staff_home(save_id):
         s["team"] = team_map.get(s["team_id"]) if s["team_id"] else None
         s["disp_name"] = s["name"].rstrip("2")
 
-        # 이 인물이 얽힌 듀오 시너지
+        # 이 인물이 얽힌 시너지 목록
         duos = []
         for (mg, ch), (title, desc, _fx) in PERSON_SYNERGY.items():
             if s["name"] == ch and s["role"] != "MANAGER":
                 duos.append(f"「{title}」 {mg} 감독과 — {desc}")
             elif s["name"] == mg and s["role"] == "MANAGER":
                 duos.append(f"「{title}」 {ch.rstrip('2')} 코치와 — {desc}")
-        # 이 인물이 포함된 단체 시너지
         for g in GROUP_SYNERGY:
             if s["name"] in g["members"]:
                 duos.append(f"「{g['title']}」 [{len(g['members'])}인 단체] — {g['desc']}")
@@ -113,13 +99,18 @@ def staff_home(save_id):
             if cnt:
                 s["duo_hint"] = f"보유 코치와 시너지 {cnt}건"
         if not s["duo_hint"]:
-            # 단체 진행도 배지: 이 인물 영입 시 2인 이상 모이는 단체
             for g in GROUP_SYNERGY:
                 if s["name"] in g["members"]:
                     got = len(set(g["members"]) & my_names)
                     if got >= 1:
                         s["duo_hint"] = f"{g['title']} {got + 1}/{len(g['members'])}"
                         break
+
+    # others에는 duo_hint 없음 (매크로 방어)
+    for s in others:
+        s["duo_hint"] = None
+    for s in mine:
+        s["duo_hint"] = None
 
     # ----- 듀오 도감 -----
     codex = []
@@ -142,7 +133,7 @@ def staff_home(save_id):
     status_order = {"active": 0, "possible": 1, "other": 2}
     codex.sort(key=lambda x: (status_order[x["status"]], x["manager"]))
 
-    # ----- 단체 도감 (멤버별 상태 + 진행도) -----
+    # ----- 단체 도감 -----
     group_codex = []
     for g in GROUP_SYNERGY:
         members = []
@@ -176,9 +167,11 @@ def staff_home(save_id):
         })
     group_codex.sort(key=lambda x: (status_order[x["status"]], -x["got"]))
 
+    # ----- 스카우트 잔여 횟수 -----
+    poach_used = (save.get("poach_count") or 0) if save.get("poach_season") == save["season"] else 0
+
     msg = request.args.get("msg", "")
     ok = request.args.get("ok", "")
-    poach_used = (save.get("poach_count") or 0) if save.get("poach_season") == save["season"] else 0
 
     return render_template(
         "dynasty_staff.html",
@@ -193,10 +186,10 @@ def staff_home(save_id):
         my_style=my_manager["style"] if my_manager else None,
         my_manager_name=my_manager["disp_name"] if my_manager else None,
         budget=user_team.get("budget") or 0,
-        msg=msg,
-        ok=ok,
         poach_available=(poach_used < 3),
         poach_left=3 - poach_used,
+        msg=msg,
+        ok=ok,
     )
 
 
@@ -222,5 +215,19 @@ def staff_fire(save_id):
     user_team = next(t for t in teams if t["is_user"])
 
     success, message = fire_staff(save_id, user_team["id"], staff_id)
+    return redirect(url_for("dynasty_staff.staff_home", save_id=save_id,
+                            msg=message, ok="1" if success else "0"))
+
+
+@staff_bp.route("/dynasty/<int:save_id>/staff/poach", methods=["POST"])
+def staff_poach(save_id):
+    sb = get_supabase()
+    staff_id = int(request.form.get("staff_id"))
+    offer = request.form.get("offer", type=int)
+
+    teams = sb.table("dynasty_team").select("id, is_user").eq("save_id", save_id).execute().data
+    user_team = next(t for t in teams if t["is_user"])
+
+    success, message = poach_staff(save_id, user_team["id"], staff_id, offer)
     return redirect(url_for("dynasty_staff.staff_home", save_id=save_id,
                             msg=message, ok="1" if success else "0"))
