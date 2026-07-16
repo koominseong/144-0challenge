@@ -19,6 +19,19 @@ staff_bp = Blueprint("dynasty_staff", __name__)
 ROLE_ORDER = {"MANAGER": 0, "HEAD": 1, "HITTING": 2, "PITCHING": 3, "DEFENSE": 4,
               "BULLPEN": 5, "BASERUN": 6, "BATTERY": 7}
 
+@staff_bp.route("/dynasty/<int:save_id>/staff/poach", methods=["POST"])
+def staff_poach(save_id):
+    sb = get_supabase()
+    staff_id = int(request.form.get("staff_id"))
+    offer = request.form.get("offer", type=int)
+
+    teams = sb.table("dynasty_team").select("id, is_user").eq("save_id", save_id).execute().data
+    user_team = next(t for t in teams if t["is_user"])
+
+    success, message = poach_staff(save_id, user_team["id"], staff_id, offer)
+    return redirect(url_for("dynasty_staff.staff_home", save_id=save_id,
+                            msg=message, ok="1" if success else "0"))
+
 
 @staff_bp.route("/dynasty/<int:save_id>/staff")
 def staff_home(save_id):
@@ -181,6 +194,9 @@ def staff_home(save_id):
         budget=user_team.get("budget") or 0,
         msg=msg,
         ok=ok,
+        poach_used = (save.get("poach_count") or 0) if save.get("poach_season") == save["season"] else 0,
+        poach_available=(poach_used < 3),
+        poach_left=3 - poach_used,
     )
 
 
