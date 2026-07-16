@@ -45,6 +45,10 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .hire-btn:hover { opacity: 0.85; }
 .fire-btn { padding: 8px 16px; font-size: 12px; font-weight: bold; color: #ef5350; background: none; border: 1px solid rgba(239,83,80,0.4); border-radius: 7px; cursor: pointer; margin-left: 12px; }
 .fire-btn:hover { background: rgba(239,83,80,0.1); }
+.poach-form { display: flex; gap: 6px; align-items: center; margin-left: 12px; }
+.poach-form input[type="number"] { width: 84px; padding: 7px; font-size: 12px; background: #10161d; color: #ffd54f; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; }
+.poach-btn { padding: 9px 16px; font-size: 13px; font-weight: bold; color: #fff; background: #4527a0; border: none; border-radius: 7px; cursor: pointer; }
+.poach-btn:hover { opacity: 0.85; }
 .empty-line { color: #566573; font-size: 13px; padding: 14px 4px; }
 .toggle-btn { font-size: 12px; color: #ce93d8; background: none; border: 1px solid rgba(171,71,188,0.4); padding: 6px 14px; border-radius: 7px; cursor: pointer; }
 .codex { display: none; }
@@ -109,6 +113,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% if s.style %}<span class="s-style">「{{ s.style }}」</span>{% endif %}
         {% if s.trait %}<span class="s-trait">✦ {{ s.trait }}</span>{% endif %}
         {% if s.duo_hint %}<span class="duo-badge">⚡ {{ s.duo_hint }}</span>{% endif %}
+        <span class="s-effect">{{ s.effect }}</span>
         {% if show_hire %}
         <span class="s-salary">연봉 {{ s.salary }}</span>
         <form method="POST" action="{{ url_for('dynasty_staff.staff_hire', save_id=save.id) }}" style="display:inline;">
@@ -125,13 +130,11 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% elif s.team %}
         <span class="s-team">{{ s.team.logo }} {{ s.team.team_name }} · 연봉 {{ s.salary }}</span>
         {% if poach_available %}
-        <form method="POST" action="{{ url_for('dynasty_staff.staff_poach', save_id=save.id) }}"
-              style="display:flex; gap:6px; align-items:center; margin-left:12px;"
-              onsubmit="return confirm('제안 금액 ' + this.offer.value + '로 {{ s.disp_name }} 스카우트를 시도합니다. 실패 시 30% 소모, 시즌 3회 제한. 진행?');">
+        <form method="POST" action="{{ url_for('dynasty_staff.staff_poach', save_id=save.id) }}" class="poach-form"
+              onsubmit="return confirm('스카우트를 시도합니다. 실패 시 제안액의 30% 소모. 진행하시겠습니까?');">
             <input type="hidden" name="staff_id" value="{{ s.id }}">
-            <input type="number" name="offer" min="{{ (s.salary * 1.5) | int }}" value="{{ s.salary * 2 }}" step="5"
-                   style="width:80px; padding:7px; font-size:12px; background:#10161d; color:#ffd54f; border:1px solid rgba(255,255,255,0.15); border-radius:6px;">
-            <button type="submit" class="hire-btn" style="background:#4527a0; margin-left:0;">🕵️ 제안</button>
+            <input type="number" name="offer" min="{{ (s.salary * 1.5) | int }}" value="{{ s.salary * 2 }}" step="1">
+            <button type="submit" class="poach-btn">🕵️ 제안</button>
         </form>
         {% endif %}
         {% else %}
@@ -144,6 +147,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% endfor %}
     </div>
     {% endmacro %}
+
     <div class="section-title">🏠 내 코칭스태프</div>
     {% if mine %}
         {% for s in mine %}{{ staff_row(s, False, True, True) }}{% endfor %}
@@ -197,7 +201,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 
     <div class="section-title">🏟 타 구단 스태프
         <span style="font-size:11px; color:{% if poach_available %}#81c784{% else %}#566573{% endif %};">
-            {% if poach_available %}🕵️ 스카우트 {{ poach_left }}회 남음{% else %}이번 시즌 스카우트 소진{% endif %}
+            {% if poach_available %}🕵️ 스카우트 {{ poach_left }}회 남음 · 최소 제안 = 연봉 ×1.5{% else %}이번 시즌 스카우트 소진{% endif %}
         </span>
     </div>
     {% if others %}
