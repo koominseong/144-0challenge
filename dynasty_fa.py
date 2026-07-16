@@ -24,7 +24,7 @@ from dynasty_trade import trade_value
 
 FA_CAREER_YEARS = 6        # FA 자격 연차
 FA_RELEASE_RATE = 0.35     # 자격자 중 시장에 나오는 비율
-BASE_BUDGET = 1500          # 기본 예산
+BASE_BUDGET = 1000          # 기본 예산
 LOYALTY_BONUS = 1.15       # 원소속팀 유효 입찰액 가산
 AI_MIN_BUDGET = 300        # AI 예산이 이 밑이면 기본 예산으로 보정
 # 상단 상수 (추가/변경)
@@ -49,6 +49,10 @@ def fa_base_price(player, season):
 # 시즌 예산 리셋 (next_season에서 호출)
 # 전년도 1위 690 ~ 10위 825 (하위팀 우대)
 # =========================================
+# =========================================
+# 시즌 예산 리셋 (유일한 예산 지급처)
+# 예산 = 기본 750 + 순위 보상(1위 0 ~ 10위 150) + 팬 수익(팬/200)
+# =========================================
 def reset_budgets(save_id):
     sb = get_supabase()
 
@@ -60,19 +64,31 @@ def reset_budgets(save_id):
         .data
     )
 
-    standings = get_standings(teams)
+    # 순위 산정 (승률 내림차순)
+    ranked = sorted(
+        teams,
+        key=lambda t: ((t["wins"] + 0.5 * t["ties"]) / max(1, t["wins"] + t["losses"] + t["ties"])),
+        reverse=True,
+    )
+    n = len(ranked)
+    rank_bonus = {t["id"]: round((i) * (150 / max(1, n - 1))) for i, t in enumerate(ranked)}
+    # 1위 0 ~ 꼴찌 150 (하위팀 우대)
 
     rows = []
-    for i, t in enumerate(standings):
-        rank = i + 1
+    log = []
+    for t in teams:
+        fans = t.get("fans") or 10000
+        budget = BASE_BUDGET + rank_bonus.get(t["id"], 0) + fans // 400
+
         row = dict(t)
         row.pop("pct", None)
         row.pop("gb", None)
-        row["budget"] = BASE_BUDGET - 75 + rank * 15
+        row["budget"] = budget
         rows.append(row)
+        log.append((t["team_name"], budget))
 
     sb.table("dynasty_team").upsert(rows).execute()
-    print(f"[dynasty_fa] 예산 리셋: {[(r['team_name'], r['budget']) for r in rows]}")
+    print(f"[dynasty_fa] 예산 리셋: {log}")
 
 
 # =========================================
