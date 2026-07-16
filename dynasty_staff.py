@@ -799,3 +799,121 @@ def ai_hire_staff(save_id):
 
     print(f"[dynasty_staff] AI 고용={hired_count}명")
     return hired_count
+
+# =========================================
+# 스태프 스카우트 (가격 제안식)
+# 최소 제안 연봉×1.5, 제안액이 클수록 성공률 상승
+# 실패 시 제안액 30% 소모, 시즌당 1회
+# =========================================
+def poach_staff(save_id, team_id, staff_id, offer):
+    sb = get_supabase()
+    POACH_PER_SEASON = 3
+    
+    save = sb.table("dynasty_save").select("season, poach_season, poach_count").eq("id", save_id).execute().data[0]
+    season = save["season"]
+
+    # 시즌 바뀌면 카운트 리셋
+    used = save.get("poach_count") or 0
+    if save.get("poach_season") != season:
+        used = 0
+
+    if used >= POACH_PER_SEASON:
+        return False, f"이번 시즌 스카우트 기회를 모두 사용했습니다. (시즌당 {POACH_PER_SEASON}회)"
+
+    s = (
+        sb.table("dynasty_staff")
+        .select("*").eq("save_id", save_id).eq("id", staff_id).execute().data
+    )
+    if not s:
+        return False, "해당 인물을 찾을 수 없습니다."
+    s = s[0]
+
+    if s["team_id"] is None:
+        return False, "시장 인물은 일반 영입으로 데려오세요."
+    if s["team_id"] == team_id:
+        return False, "이미 내 팀 소속입니다."
+
+    try:
+        offer = int(offer)
+    except (TypeError, ValueError):
+        return False, "제안 금액이 올바르지 않습니다."
+
+    min_offer = int(s["salary"] * 1.5)
+    if offer < min_offer:
+        return False, f"제안이 너무 낮아 접촉조차 못 했습니다. (최소 {min_offer})"
+
+    team = sb.table("dynasty_team").select("*").eq("id", team_id).execute().data[0]
+    budget = team.get("budget") or 0
+    if budget < offer:
+        return False, f"예산 부족 (제안 {offer} / 보유 {budget})"
+
+    # ----- 성공률 -----
+    ratio = offer / s["salary"]
+    prob = 0.25 + (ratio - 1.5) * 0.25
+
+    teams = sb.table("dynasty_team").select("*").eq("save_id", save_id).execute().data
+    ranked = sorted(
+        teams,
+        key=lambda t: ((t["wins"] + 0.5 * t["ties"]) / max(1, t["wins"] + t["losses"] + t["ties"])),
+        reverse=True,
+    )
+    rank_map = {t["id"]: i + 1 for i, t in enumerate(ranked)}
+    owner_rank = rank_map.get(s["team_id"], 5)
+    prob -= (len(ranked) - owner_rank) * 0.02
+
+    owner_staff = (
+        sb.table("dynasty_staff")
+        .select("name, role")
+        .eq("save_id", save_id)
+        .eq("team_id", s["team_id"])
+        .execute()
+        .data
+    )
+    owner_mgr = next((x["name"] for x in owner_staff if x["role"] == "MANAGER"), None)
+    loyal = False
+    if owner_mgr:
+        if s["role"] == "MANAGER":
+            loyal = any((s["name"], x["name"]) in PERSON_SYNERGY for x in owner_staff)
+        else:
+            loyal = (owner_mgr, s["name"]) in PERSON_SYNERGY
+    if loyal:
+        prob -= 0.25
+
+    prob = max(0.05, min(0.85, prob))
+
+    sb.table("dynasty_save").update(
+        {"poach_season": season, "poach_count": used + 1}
+    ).eq("id", save_id).execute()
+
+    disp = s["name"].rstrip("2")
+    if random.random() < prob:
+        current = (
+            sb.table("dynasty_staff")
+            .select("id").eq("save_id", save_id)
+            .eq("team_id", team_id).eq("role", s["role"]).execute().data
+        )
+        if current:
+            sb.table("dynasty_staff").update(
+                {"team_id": None, "hired_season": None}
+            ).eq("id", current[0]["id"]).execute()
+
+        sb.table("dynasty_staff").update(
+            {"team_id": team_id, "hired_season": season}
+        ).eq("id", staff_id).execute()
+        sb.table("dynasty_team").update({"budget": budget - offer}).eq("id", team_id).execute()
+
+        try:
+            owner_name = next(t["team_name"] for t in teams if t["id"] == s["team_id"])
+            sb.table("dynasty_event").insert(
+                {"save_id": save_id, "season": season, "week": 99,
+                 "icon": "🕵️", "message": f"{team['team_name']}, 거액 {offer}으로 {owner_name}의 {disp} {ROLE_KR.get(s['role'], '')} 전격 스카우트!"}
+            ).execute()
+        except Exception:
+            pass
+
+        return True, f"🕵️ 스카우트 성공! {disp} 영입 (지급 {offer} · 성공률 {round(prob*100)}%)"
+    else:
+        lost = int(offer * 0.3)
+        sb.table("dynasty_team").update({"budget": budget - lost}).eq("id", team_id).execute()
+        reason = "구단에 대한 의리를 지켰습니다" if loyal else "제안을 거절했습니다"
+        return False, f"스카우트 실패… {disp}이(가) {reason}. (성공률 {round(prob*100)}% · 접촉 비용 {lost} 소모)"
