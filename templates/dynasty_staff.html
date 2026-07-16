@@ -125,8 +125,16 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         </form>
         {% elif s.team %}
         <span class="s-team">{{ s.team.logo }} {{ s.team.team_name }} · 연봉 {{ s.salary }}</span>
-        {% else %}
-        <span class="s-salary">연봉 {{ s.salary }}</span>
+        {% if poach_available %}
+        <form method="POST" action="{{ url_for('dynasty_staff.staff_poach', save_id=save.id) }}"
+              style="display:flex; gap:6px; align-items:center; margin-left:12px;"
+              onsubmit="return confirm('제안 금액 ' + this.offer.value + '로 {{ s.disp_name }} 스카우트를 시도합니다.\n실패 시 30% 소모 · 시즌 1회. 진행?');">
+            <input type="hidden" name="staff_id" value="{{ s.id }}">
+            <input type="number" name="offer" min="{{ (s.salary * 1.5) | int }}" value="{{ s.salary * 2 }}" step="5"
+                   style="width:80px; padding:7px; font-size:12px; background:#10161d; color:#ffd54f; border:1px solid rgba(255,255,255,0.15); border-radius:6px;"
+                   title="최소 {{ (s.salary * 1.5) | int }}">
+            <button type="submit" class="hire-btn" style="background:#4527a0; margin-left:0;">🕵️ 제안</button>
+        </form>
         {% endif %}
         {% if s.style_desc %}<span class="s-desc">효과: {{ s.style_desc }}</span>{% endif %}
         {% if s.trait_desc %}<span class="s-desc">특성: {{ s.trait_desc }}</span>{% endif %}
@@ -187,7 +195,11 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <div class="empty-line">시장에 남은 인물이 없습니다.</div>
     {% endif %}
 
-    <div class="section-title">🏟 타 구단 스태프</div>
+    <div class="section-title">🏟 타 구단 스태프
+        <span style="font-size:11px; color:{% if poach_available %}#81c784{% else %}#566573{% endif %};">
+            {% if poach_available %}🕵️ 스카우트 {{ poach_left }}회 남음{% else %}이번 시즌 스카우트 소진{% endif %}
+        </span>
+    </div>
     {% if others %}
         {% for s in others %}{{ staff_row(s, False, False, False) }}{% endfor %}
     {% else %}
