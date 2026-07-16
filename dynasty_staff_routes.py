@@ -178,6 +178,7 @@ def staff_home(save_id):
 
     msg = request.args.get("msg", "")
     ok = request.args.get("ok", "")
+    poach_used = (save.get("poach_count") or 0) if save.get("poach_season") == save["season"] else 0
 
     return render_template(
         "dynasty_staff.html",
@@ -194,7 +195,6 @@ def staff_home(save_id):
         budget=user_team.get("budget") or 0,
         msg=msg,
         ok=ok,
-        poach_used = (save.get("poach_count") or 0) if save.get("poach_season") == save["season"] else 0,
         poach_available=(poach_used < 3),
         poach_left=3 - poach_used,
     )
