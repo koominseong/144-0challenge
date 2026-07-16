@@ -109,7 +109,6 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% if s.style %}<span class="s-style">「{{ s.style }}」</span>{% endif %}
         {% if s.trait %}<span class="s-trait">✦ {{ s.trait }}</span>{% endif %}
         {% if s.duo_hint %}<span class="duo-badge">⚡ {{ s.duo_hint }}</span>{% endif %}
-        <span class="s-effect">{{ s.effect }}</span>
         {% if show_hire %}
         <span class="s-salary">연봉 {{ s.salary }}</span>
         <form method="POST" action="{{ url_for('dynasty_staff.staff_hire', save_id=save.id) }}" style="display:inline;">
@@ -128,13 +127,15 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% if poach_available %}
         <form method="POST" action="{{ url_for('dynasty_staff.staff_poach', save_id=save.id) }}"
               style="display:flex; gap:6px; align-items:center; margin-left:12px;"
-              onsubmit="return confirm('제안 금액 ' + this.offer.value + '로 {{ s.disp_name }} 스카우트를 시도합니다.\n실패 시 30% 소모 · 시즌 1회. 진행?');">
+              onsubmit="return confirm('제안 금액 ' + this.offer.value + '로 {{ s.disp_name }} 스카우트를 시도합니다. 실패 시 30% 소모, 시즌 3회 제한. 진행?');">
             <input type="hidden" name="staff_id" value="{{ s.id }}">
             <input type="number" name="offer" min="{{ (s.salary * 1.5) | int }}" value="{{ s.salary * 2 }}" step="5"
-                   style="width:80px; padding:7px; font-size:12px; background:#10161d; color:#ffd54f; border:1px solid rgba(255,255,255,0.15); border-radius:6px;"
-                   title="최소 {{ (s.salary * 1.5) | int }}">
+                   style="width:80px; padding:7px; font-size:12px; background:#10161d; color:#ffd54f; border:1px solid rgba(255,255,255,0.15); border-radius:6px;">
             <button type="submit" class="hire-btn" style="background:#4527a0; margin-left:0;">🕵️ 제안</button>
         </form>
+        {% endif %}
+        {% else %}
+        <span class="s-salary">연봉 {{ s.salary }}</span>
         {% endif %}
         {% if s.style_desc %}<span class="s-desc">효과: {{ s.style_desc }}</span>{% endif %}
         {% if s.trait_desc %}<span class="s-desc">특성: {{ s.trait_desc }}</span>{% endif %}
@@ -143,7 +144,6 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% endfor %}
     </div>
     {% endmacro %}
-
     <div class="section-title">🏠 내 코칭스태프</div>
     {% if mine %}
         {% for s in mine %}{{ staff_row(s, False, True, True) }}{% endfor %}
