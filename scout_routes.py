@@ -113,29 +113,42 @@ def scout_reveal(game_id):
 
 
 def _render_play(row):
+    from scout import current_round
     state = row["state"]
-    taken = {cid for picks in state["picks"].values() for cid in picks}
+    taken_map = {}
+    for seat, picks in state["picks"].items():
+        for cid in picks:
+            taken_map[cid] = seat
+
+    rnd = current_round(state)
 
     cards = []
     for c in state["cards"]:
+        if c["wave"] > rnd:
+            continue  # 미공개 웨이브
         cards.append({
             "cid": c["cid"],
             "hint": c["hint"],
             "positions": c["positions"],
-            "taken": c["cid"] in taken,
-            "mine": c["cid"] in state["picks"]["user"],
+            "wave": c["wave"],
+            "new": c["wave"] == rnd,
+            "taken": c["cid"] in taken_map,
+            "mine": taken_map.get(c["cid"]) == "user",
         })
 
-    my_round = len(state["picks"]["user"]) + 1
     my_picks = [next(c for c in state["cards"] if c["cid"] == cid)
                 for cid in state["picks"]["user"]]
+
+    # 내 드래프트 순번 (1라운드 기준 몇 번째인지)
+    my_slot = state["order"][:4].index("user") + 1
 
     return render_template(
         "scout_game.html",
         game_id=row["id"],
         year=state["year"],
         cards=cards,
-        my_round=my_round,
+        my_round=len(state["picks"]["user"]) + 1,
         total_rounds=ROUNDS,
+        my_slot=my_slot,
         my_picks=[{"hint": c["hint"], "positions": c["positions"]} for c in my_picks],
     )
