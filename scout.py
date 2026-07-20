@@ -26,7 +26,7 @@ def find_data_dir():
 
 ROUNDS = 5
 AI_SCOUTS = 3
-WAVE_SIZE = 8
+WAVE_SIZE = 15
 POOL_SIZE = ROUNDS * WAVE_SIZE   # 40
 PITCHER_POS = {"P", "SP", "RP", "CP"}
 
