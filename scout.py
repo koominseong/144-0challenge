@@ -1,7 +1,7 @@
 # scout.py
 # =========================================
-# KBO Dynasty - 스카우트 블라인드 테스트
-# 랜덤 연도 실존 선수 → 이름/팀 가림 (실제 기록 힌트) → 스냅 드래프트 → 리빌/채점(WAR)
+# KBO Dynasty - 스카우트 블라인드 테스트 v2
+# 랜덤 연도 + 드래프트 순번 추첨 + 웨이브제(라운드마다 새 선수 공개) + 함정 카드
 # =========================================
 
 import os
@@ -25,13 +25,11 @@ def find_data_dir():
 
 ROUNDS = 5
 AI_SCOUTS = 3
-POOL_SIZE = 28
+WAVE_SIZE = 8          # 라운드마다 8명 공개
+POOL_SIZE = ROUNDS * WAVE_SIZE   # 40
 PITCHER_POS = {"P", "SP", "RP", "CP"}
 
 
-# =========================================
-# 연도 랜덤 선택 + 풀 로드
-# =========================================
 def load_year_pool():
     data_dir = find_data_dir()
     if not data_dir:
@@ -60,9 +58,6 @@ def load_year_pool():
     return year, players
 
 
-# =========================================
-# 힌트: 실제 기록 그대로
-# =========================================
 def build_hint(p):
     pos_list = p.get("positions") or []
     is_pitcher = bool(set(pos_list) & PITCHER_POS) or (p.get("IP") or 0) > 0
@@ -85,29 +80,44 @@ def build_hint(p):
                 "SB": int(p.get("SB") or 0)}
 
 
-# =========================================
-# 라운드 생성
-# =========================================
+def _apparent_raw(p):
+    """원본 레코드 기준 겉보기 점수 (함정 카드 선별용)"""
+    ip = p.get("IP") or 0
+    if ip > 0:
+        era = p.get("ERA")
+        if era is None:
+            return 0
+        return (6.0 - era) * 20 + (p.get("SO") or 0) * 0.15
+    avg = p.get("AVG")
+    if avg is None:
+        return 0
+    return avg * 250 + (p.get("HR") or 0) * 1.5 + (p.get("SB") or 0) * 0.8
+
+
 def create_round():
     year, players = load_year_pool()
     if not year:
         return None
 
-    # 최소 출장 필터
     players = [p for p in players
                if (p.get("PA") or 0) >= 30 or (p.get("IP") or 0) >= 15]
     if len(players) < POOL_SIZE:
         return None
 
-    # WAR 기준 상/중/하 혼합
     players.sort(key=lambda p: -(p.get("war") or 0))
     third = max(1, len(players) // 3)
     top = players[:third]
     mid = players[third: 2 * third]
     low = players[2 * third:]
-    pool = (random.sample(top, min(10, len(top)))
-            + random.sample(mid, min(10, len(mid)))
-            + random.sample(low, min(8, len(low))))
+
+    # 함정 카드: 하위 WAR인데 겉기록 화려한 선수 3장 보장
+    traps = sorted(low, key=lambda p: -_apparent_raw(p))[:3]
+    low_rest = [p for p in low if p not in traps]
+
+    pool = (random.sample(top, min(13, len(top)))
+            + random.sample(mid, min(14, len(mid)))
+            + traps
+            + random.sample(low_rest, min(10, len(low_rest))))
     random.shuffle(pool)
     pool = pool[:POOL_SIZE]
 
@@ -117,9 +127,9 @@ def create_round():
         war = round(float(p.get("war") or 0), 2)
         cards.append({
             "cid": i,
+            "wave": i // WAVE_SIZE + 1,     # 1~5 웨이브
             "hint": build_hint(p),
             "positions": "/".join(pos_list) if pos_list else "?",
-            # 리빌용 실체 (게임 화면 노출 금지)
             "name": p.get("name"),
             "team": p.get("team_kr") or p.get("team") or "?",
             "war": war,
@@ -137,32 +147,39 @@ def create_round():
 
 def _snake_order():
     seats = ["user", "ai1", "ai2", "ai3"]
+    random.shuffle(seats)              # 매판 드래프트 순번 추첨
     order = []
     for r in range(ROUNDS):
         order += seats if r % 2 == 0 else seats[::-1]
     return order
 
 
-# =========================================
-# 픽 진행
-# =========================================
+def current_round(state):
+    """전체 턴 기준 현재 라운드 (1-base)"""
+    return min(ROUNDS, state["turn"] // (AI_SCOUTS + 1) + 1)
+
+
 def advance(state, user_cid=None):
     cards = {c["cid"]: c for c in state["cards"]}
     taken = {cid for picks in state["picks"].values() for cid in picks}
 
     while state["turn"] < len(state["order"]):
         seat = state["order"][state["turn"]]
+        rnd = current_round(state)
 
         if seat == "user":
             if user_cid is None:
                 return state
-            if user_cid in taken or user_cid not in cards:
+            c = cards.get(user_cid)
+            # 미공개 웨이브/이미 지명 차단
+            if user_cid in taken or c is None or c["wave"] > rnd:
                 return state
             state["picks"]["user"].append(user_cid)
             taken.add(user_cid)
             user_cid = None
         else:
-            avail = [c for c in state["cards"] if c["cid"] not in taken]
+            avail = [c for c in state["cards"]
+                     if c["cid"] not in taken and c["wave"] <= rnd]
             if not avail:
                 break
             avail.sort(key=lambda c: -_apparent_score(c))
@@ -178,7 +195,6 @@ def advance(state, user_cid=None):
 
 
 def _apparent_score(c):
-    """AI가 보는 겉보기 점수 (당해 기록만, WAR은 못 봄)"""
     h = c["hint"]
     try:
         if h["type"] == "P":
@@ -191,9 +207,6 @@ def _apparent_score(c):
         return 0
 
 
-# =========================================
-# 채점: WAR 기반 + 발굴 보너스
-# =========================================
 def score_round(state):
     cards = {c["cid"]: c for c in state["cards"]}
     ranked = sorted(state["cards"], key=lambda c: -c["war"])
