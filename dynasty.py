@@ -385,9 +385,7 @@ def dynasty_draft(save_id):
 @require_auth
 def dynasty_draft_pick(save_id):
     sb = get_supabase()
-
     player_id = int(request.form.get("player_id"))
-
     teams = (
         sb.table("dynasty_team")
         .select("*")
@@ -398,7 +396,6 @@ def dynasty_draft_pick(save_id):
     )
     user_team = next(t for t in teams if t["is_user"])
     ai_teams = [t for t in teams if not t["is_user"]]
-
     roster_rows = (
         sb.table("dynasty_roster")
         .select("id", count="exact")
@@ -407,13 +404,35 @@ def dynasty_draft_pick(save_id):
     )
     picked_count = roster_rows.count or 0
     current_round = picked_count // TEAM_COUNT + 1
-
     if current_round > DRAFT_ROUNDS:
         return redirect(url_for("dynasty.dynasty_draft_finish", save_id=save_id))
 
+    # ---- 가드 1: 유저가 이번 라운드 픽을 이미 했는지 ----
+    user_count_res = (
+        sb.table("dynasty_roster")
+        .select("id", count="exact")
+        .eq("save_id", save_id)
+        .eq("team_id", user_team["id"])
+        .execute()
+    )
+    user_count = user_count_res.count or 0
+    if user_count >= current_round:
+        # 이번 라운드 몫을 이미 뽑음 → 요청 무시 (연타/새로고침 악용 차단)
+        return redirect(url_for("dynasty.dynasty_draft", save_id=save_id))
+
+    # ---- 가드 2: 대상 선수가 이미 지명됐는지 ----
+    chk = (
+        sb.table("dynasty_player")
+        .select("drafted")
+        .eq("id", player_id)
+        .execute()
+        .data
+    )
+    if not chk or chk[0]["drafted"]:
+        return redirect(url_for("dynasty.dynasty_draft", save_id=save_id))
+
     round_picks = []
     bulk = []
-
     # 유저 픽
     user_pick = _get_player_brief(sb, save_id, player_id)
     user_pick["id"] = player_id
@@ -426,7 +445,6 @@ def dynasty_draft_pick(save_id):
             "player": user_pick,
         }
     )
-
     # AI 픽 (메모리에서 선정 → 일괄 반영)
     remaining = (
         sb.table("dynasty_player")
@@ -440,7 +458,6 @@ def dynasty_draft_pick(save_id):
         .execute()
         .data
     )
-
     shuffled_ai = list(ai_teams)
     random.shuffle(shuffled_ai)
     for team in shuffled_ai:
@@ -463,18 +480,14 @@ def dynasty_draft_pick(save_id):
                 },
             }
         )
-
     _bulk_draft(sb, save_id, bulk)
-
     session[f"last_picks_{save_id}"] = {
         "round": current_round,
         "picks": round_picks,
     }
-
     picked_count = picked_count + len(bulk)
     if picked_count >= DRAFT_ROUNDS * TEAM_COUNT:
         return redirect(url_for("dynasty.dynasty_draft_finish", save_id=save_id))
-
     return redirect(url_for("dynasty.dynasty_draft", save_id=save_id))
 
 
