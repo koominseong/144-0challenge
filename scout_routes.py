@@ -103,12 +103,30 @@ def scout_reveal(game_id):
             print(f"[scout] 기록 저장 skip: {ex}")
         sb.table("scout_game").update({"finished": True}).eq("id", game_id).execute()
 
+    # 전체 선수 WAR 순위표 (지명자 표시 포함)
+    seat_names = {"user": "🙋 나", "ai1": "🦉 베테랑", "ai2": "📋 정석파", "ai3": "🎲 도박사"}
+    picked_by = {}
+    for seat, picks in state["picks"].items():
+        for cid in picks:
+            picked_by[cid] = seat_names[seat]
+
+    full_ranking = sorted(state["cards"], key=lambda c: -c["war"])
+    ranking = [{
+        "rank": i + 1,
+        "name": c["name"], "team": c["team"], "positions": c["positions"],
+        "war": c["war"], "hint": c["hint"],
+        "owner": picked_by.get(c["cid"]),
+        "mine": picked_by.get(c["cid"]) == "🙋 나",
+    } for i, c in enumerate(full_ranking)]
+
     return render_template(
         "scout_result.html",
         year=state["year"],
         result=result,
         user=result["results"]["user"],
         ais=[result["results"]["ai1"], result["results"]["ai2"], result["results"]["ai3"]],
+        ranking=ranking,
+        seat_names=seat_names,
     )
 
 
