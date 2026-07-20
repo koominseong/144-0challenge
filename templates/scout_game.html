@@ -1,0 +1,92 @@
+<!-- templates/scout_game.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스카우트 진행 중 - {{ year }}년</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.topbar { background: linear-gradient(135deg, #4527a0 0%, #0f1419 100%); padding: 16px 26px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid rgba(255,255,255,0.1); }
+.topbar h1 { font-size: 18px; color: #fff; }
+.topbar .yr { font-size: 24px; color: #ffd54f; font-weight: bold; }
+.topbar .rd { font-size: 13px; color: rgba(255,255,255,0.75); }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 20px 16px 120px; }
+.notice { text-align: center; font-size: 13px; color: #8899a6; margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.card { position: relative; background: #1a222c; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 13px 12px; }
+.card.taken { opacity: 0.28; }
+.card.mine { border-color: rgba(255,213,79,0.6); background: linear-gradient(160deg, #232013, #1a222c); }
+.card .qmark { font-size: 26px; text-align: center; color: #566573; }
+.card .pos { text-align: center; font-size: 12px; color: #90caf9; margin-top: 4px; }
+.card .age { text-align: center; font-size: 11px; color: #566573; }
+.stats { margin-top: 9px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; }
+.st { display: flex; justify-content: space-between; font-size: 12.5px; padding: 2px 0; }
+.st .k { color: #8899a6; }
+.st .v { color: #fff; font-weight: 600; }
+.pick-btn { width: 100%; margin-top: 10px; padding: 9px; font-size: 13px; font-weight: bold; color: #fff; background: #4527a0; border: none; border-radius: 8px; cursor: pointer; }
+.pick-btn:hover { opacity: 0.85; }
+.mine-tag { position: absolute; top: 8px; right: 8px; font-size: 10px; color: #ffd54f; border: 1px solid rgba(255,213,79,0.5); padding: 2px 6px; border-radius: 5px; }
+.tray { position: fixed; left: 0; right: 0; bottom: 0; background: #141b23; border-top: 1px solid rgba(255,255,255,0.1); padding: 10px 16px; }
+.tray-inner { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: center; overflow-x: auto; }
+.tray .t-label { font-size: 12px; color: #ffd54f; font-weight: bold; white-space: nowrap; }
+.t-chip { background: #232d3a; border: 1px solid rgba(255,213,79,0.3); border-radius: 8px; padding: 6px 10px; font-size: 11.5px; color: #cfd8dc; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <h1>🔍 스카우트</h1>
+    <div style="text-align:center;">
+        <div class="yr">{{ year }}년</div>
+        <div class="rd">내 픽 {{ my_round }} / {{ total_rounds }} 라운드</div>
+    </div>
+    <div style="width:80px;"></div>
+</div>
+
+<div class="wrap">
+    <div class="notice">이름과 소속팀은 가려져 있습니다. 기록만 보고 미래의 대어를 찾아내세요.</div>
+
+    <div class="grid">
+        {% for c in cards %}
+        <div class="card {% if c.taken %}taken{% endif %} {% if c.mine %}mine{% endif %}">
+            {% if c.mine %}<span class="mine-tag">MY</span>{% endif %}
+            <div class="qmark">❓</div>
+            <div class="pos">{{ c.positions }}</div>
+            <div class="age">{{ c.age_hint }}</div>
+            <div class="stats">
+                {% if c.hint.type == 'P' %}
+                <div class="st"><span class="k">ERA</span><span class="v">{{ c.hint.ERA }}</span></div>
+                <div class="st"><span class="k">탈삼진</span><span class="v">{{ c.hint.SO }}</span></div>
+                {% else %}
+                <div class="st"><span class="k">타율</span><span class="v">{{ c.hint.AVG }}</span></div>
+                <div class="st"><span class="k">홈런</span><span class="v">{{ c.hint.HR }}</span></div>
+                <div class="st"><span class="k">도루</span><span class="v">{{ c.hint.SB }}</span></div>
+                {% endif %}
+            </div>
+            {% if not c.taken %}
+            <form method="POST" action="{{ url_for('scout.scout_pick', game_id=game_id) }}">
+                <input type="hidden" name="cid" value="{{ c.cid }}">
+                <button type="submit" class="pick-btn">지명</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="tray">
+    <div class="tray-inner">
+        <span class="t-label">내 지명 ({{ my_picks|length }})</span>
+        {% for p in my_picks %}
+        <span class="t-chip">
+            {{ p.positions }} ·
+            {% if p.hint.type == 'P' %}ERA {{ p.hint.ERA }}{% else %}{{ p.hint.AVG }} / {{ p.hint.HR }}HR{% endif %}
+        </span>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
