@@ -158,7 +158,7 @@ def create_run():
 
     # 감독 후보 3명 (dynasty_staff 풀 재활용)
     from dynasty_staff import MANAGER_POOL, STYLE_DESC
-    mgr_cands = random.sample(MANAGER_POOL, 3)
+    mgr_cands = random.sample(list(MANAGER_POOL), 3)
     managers = [{"name": m[0], "grade": m[1], "style": m[2],
                  "style_desc": STYLE_DESC.get(m[2], "")} for m in mgr_cands]
 
