@@ -1,0 +1,65 @@
+<!-- templates/gauntlet_home.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가을야구 업셋 런</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 60px; }
+.hero { text-align: center; padding: 26px 0 22px; }
+.hero .icon { font-size: 54px; }
+.hero h1 { font-size: 26px; color: #fff; margin-top: 10px; }
+.hero p { font-size: 13.5px; color: #8899a6; margin-top: 10px; line-height: 1.8; }
+.start-btn { display: block; width: 280px; margin: 24px auto 0; padding: 16px; text-align: center; font-size: 16px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #6d4c41, #bf360c); border-radius: 12px; text-decoration: none; }
+.start-btn:hover { opacity: 0.9; }
+.cont-btn { display: block; width: 280px; margin: 10px auto 0; padding: 13px; text-align: center; font-size: 14px; font-weight: bold; color: #ffcc80; border: 1px solid rgba(255,171,64,0.4); border-radius: 12px; text-decoration: none; }
+.sec { font-size: 15px; color: #fff; margin: 34px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.rec { display: flex; align-items: center; gap: 12px; background: #1b2330; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; font-size: 13px; flex-wrap: wrap; }
+.rec .res { min-width: 90px; font-weight: bold; }
+.rec .res.clear { color: #ffd54f; }
+.rec .res.out { color: #78909c; }
+.rec .tm { color: #90caf9; font-weight: 600; }
+.rec .wl { color: #8899a6; }
+.rec .sp { margin-left: auto; color: #566573; font-size: 12px; }
+.empty { color: #566573; font-size: 13px; padding: 20px 4px; text-align: center; }
+.home-link { display: block; text-align: center; margin-top: 30px; color: #8899a6; font-size: 13px; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="hero">
+        <div class="icon">🍂</div>
+        <h1>가을야구 업셋 런</h1>
+        <p>랜덤 실존 팀을 받아 <b>5위 와일드카드</b>로 가을야구에 뛰어듭니다.<br>
+        와일드카드 → 준PO → PO → 한국시리즈, 상대는 라운드마다 강해집니다.<br>
+        시리즈 사이엔 예산으로 <b>전 시대 선수</b>를 최대 2명까지 영입.<br>
+        업셋을 거듭할수록 돈이 쌓이고, 슈퍼스타에 손이 닿습니다.</p>
+        <a class="start-btn" href="{{ url_for('gauntlet.g_new') }}">🍂 새 도전 시작</a>
+        {% if ongoing %}
+        <a class="cont-btn" href="{{ url_for('gauntlet.g_play', run_id=ongoing.id) }}">▶ 진행 중인 도전 이어하기 ({{ ongoing.state.my_label }})</a>
+        {% endif %}
+    </div>
+
+    <div class="sec">🏆 명예의 기록</div>
+    {% if records %}
+        {% for r in records %}
+        <div class="rec">
+            <span class="res {% if r.result == 'CLEAR' %}clear{% else %}out{% endif %}">
+                {% if r.result == 'CLEAR' %}🏆 우승{% else %}{{ r.result }}{% endif %}
+            </span>
+            <span class="tm">{{ r.team_label }}</span>
+            <span class="wl">{{ r.wins }}승 {{ r.losses }}패</span>
+            <span class="sp">영입 {{ r.signings|length }}명 · 지출 {{ r.budget_spent }}</span>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">아직 도전 기록이 없습니다.</div>
+    {% endif %}
+
+    <a class="home-link" href="/dynasty">← 메인으로</a>
+</div>
+</body>
+</html>
