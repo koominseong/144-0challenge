@@ -123,10 +123,6 @@ def create_round():
     mid = players[third: 2 * third]
     low = players[2 * third:]
 
-    # 함정 카드: 하위 WAR인데 겉기록 화려한 선수 3장 보장
-    traps = sorted(low, key=lambda p: -_apparent_raw(p))[:3]
-    low_rest = [p for p in low if p not in traps]
-
     pool = (random.sample(top, min(13, len(top)))
             + random.sample(mid, min(14, len(mid)))
             + traps
