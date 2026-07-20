@@ -1,0 +1,61 @@
+<!-- templates/scout_home.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스카우트 블라인드 테스트</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 60px; }
+.hero { text-align: center; padding: 30px 0 26px; }
+.hero .icon { font-size: 54px; }
+.hero h1 { font-size: 26px; color: #fff; margin-top: 10px; }
+.hero p { font-size: 13.5px; color: #8899a6; margin-top: 10px; line-height: 1.7; }
+.start-btn { display: block; width: 260px; margin: 26px auto 0; padding: 16px; text-align: center; font-size: 16px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #4527a0, #1565c0); border-radius: 12px; text-decoration: none; }
+.start-btn:hover { opacity: 0.9; }
+.section-title { font-size: 15px; color: #fff; margin: 36px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.rec { display: flex; align-items: center; gap: 14px; background: #1a222c; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; font-size: 13.5px; }
+.rec .g { min-width: 34px; text-align: center; padding: 5px 0; border-radius: 7px; font-weight: bold; }
+.g-S { background: #6a1b9a; color: #fff; }
+.g-A { background: #b71c1c; color: #fff; }
+.g-B { background: #e65100; color: #fff; }
+.g-C { background: #37474f; color: #cfd8dc; }
+.g-D { background: #263238; color: #78909c; }
+.rec .yr { color: #ffd54f; font-weight: bold; min-width: 60px; }
+.rec .pl { color: #8899a6; }
+.rec .tt { margin-left: auto; color: #90caf9; font-weight: 600; }
+.empty { color: #566573; font-size: 13px; padding: 20px 4px; text-align: center; }
+.home-link { display: block; text-align: center; margin-top: 30px; color: #8899a6; font-size: 13px; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="hero">
+        <div class="icon">🔍</div>
+        <h1>스카우트 블라인드 테스트</h1>
+        <p>랜덤 연도의 실존 KBO 선수들이 <b>이름이 가려진 채</b> 나타납니다.<br>
+        기록(타율·홈런·ERA·SO·SB)만 보고 AI 스카우터 3명과 5라운드 드래프트 대결.<br>
+        숨은 대어를 알아보는 눈이 있습니까?</p>
+        <a class="start-btn" href="{{ url_for('scout.scout_new') }}">🎲 새 스카우트 시작</a>
+    </div>
+
+    <div class="section-title">📋 최근 스카우트 기록</div>
+    {% if records %}
+        {% for r in records %}
+        <div class="rec">
+            <span class="g g-{{ r.grade }}">{{ r.grade }}</span>
+            <span class="yr">{{ r.year }}년</span>
+            <span class="pl">{{ r.place }}위 / 4명</span>
+            <span class="tt">{{ r.total }}점</span>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">아직 기록이 없습니다. 첫 스카우트를 시작해보세요.</div>
+    {% endif %}
+
+    <a class="home-link" href="/dynasty">← 메인으로</a>
+</div>
+</body>
+</html>
