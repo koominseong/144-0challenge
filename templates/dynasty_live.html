@@ -672,7 +672,11 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
             {% for h in highlights %}
             <div class="f-hl">🎬 {{ h }}</div>
             {% endfor %}
+            {% if save.is_gauntlet %}
+            <a class="btn-home" href="{{ url_for('gauntlet.g_return', save_id=save.id) }}">🍂 시리즈로 돌아가기</a>
+            {% else %}
             <a class="btn-home" href="{{ url_for('dynasty.dynasty_dashboard', save_id=save.id) }}">대시보드로</a>
+            {% endif %}
         </div>
 
         {% else %}
