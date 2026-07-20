@@ -1,0 +1,63 @@
+<!-- templates/gauntlet_entry.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엔트리 편성 - 업셋 런</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 30px 16px 60px; }
+h1 { font-size: 20px; color: #fff; text-align: center; }
+.sub { text-align: center; font-size: 13px; color: #8899a6; margin-top: 8px; }
+.panel { background: #1b2330; border: 1px solid rgba(255,255,255,0.08); border-radius: 13px; padding: 16px 18px; margin-top: 18px; }
+.panel h2 { font-size: 14px; color: #ffd54f; margin-bottom: 10px; }
+.row { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 5px 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.row .n { color: #566573; min-width: 24px; }
+.row .nm { color: #fff; font-weight: 600; min-width: 90px; }
+.row .ps { color: #90caf9; min-width: 60px; font-size: 12px; }
+.row .ov { color: #8899a6; margin-left: auto; font-size: 12px; }
+.confirm { display: block; width: 100%; margin-top: 22px; padding: 16px; font-size: 15px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #6d4c41, #bf360c); border: none; border-radius: 12px; cursor: pointer; }
+.note { text-align: center; font-size: 11.5px; color: #566573; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>🍂 {{ state.my_label }} — 가을 엔트리</h1>
+    <div class="sub">{{ state.manager.name }} 감독 「{{ state.manager.style }}」 · 자동 편성안입니다. 확정하면 와일드카드전이 시작됩니다.</div>
+
+    <div class="panel">
+        <h2>⚾ 선발 타순</h2>
+        {% for pid in sug.lineup %}{% set p = pmap[pid] %}
+        <div class="row"><span class="n">{{ loop.index }}</span><span class="nm">{{ p.name }}</span><span class="ps">{{ p.positions }}</span><span class="ov">OVR {{ p.overall }} · WAR {{ p.war }}</span></div>
+        {% endfor %}
+    </div>
+
+    <div class="panel">
+        <h2>🔥 선발 로테이션</h2>
+        {% for pid in sug.rotation %}{% set p = pmap[pid] %}
+        <div class="row"><span class="n">{{ loop.index }}선발</span><span class="nm">{{ p.name }}</span><span class="ov">OVR {{ p.overall }} · 체력 {{ p.stamina }}</span></div>
+        {% endfor %}
+        {% if sug.closer %}{% set c = pmap[sug.closer] %}
+        <div class="row"><span class="n">🧯</span><span class="nm">{{ c.name }}</span><span class="ps">마무리</span><span class="ov">OVR {{ c.overall }}</span></div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <h2>📋 벤치 / 불펜 (엔트리 28인 중 나머지)</h2>
+        {% for pid in sug.entry %}{% set p = pmap[pid] %}
+        {% if pid not in sug.lineup and pid not in sug.rotation and pid != sug.closer %}
+        <div class="row"><span class="n">·</span><span class="nm">{{ p.name }}</span><span class="ps">{{ '불펜' if p.is_pitcher else p.positions }}</span><span class="ov">OVR {{ p.overall }}</span></div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <form method="POST" action="{{ url_for('gauntlet.g_entry', run_id=run_id) }}">
+        <input type="hidden" name="mode" value="auto">
+        <button type="submit" class="confirm">✅ 이 엔트리로 확정 — 와일드카드전 개시</button>
+    </form>
+    <div class="note">세부 편성 수정은 경기 중 감독 모드(대타/대수비/불펜)로 조정할 수 있습니다.</div>
+</div>
+</body>
+</html>
