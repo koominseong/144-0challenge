@@ -4,65 +4,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>스카우트 진행 중 - {{ year }}년</title>
+<title>스카우트 - {{ year }}년</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
-.topbar { background: linear-gradient(135deg, #4527a0 0%, #0f1419 100%); padding: 16px 26px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid rgba(255,255,255,0.1); }
-.topbar h1 { font-size: 18px; color: #fff; }
-.topbar .yr { font-size: 24px; color: #ffd54f; font-weight: bold; }
-.topbar .rd { font-size: 13px; color: rgba(255,255,255,0.75); }
-.wrap { max-width: 1000px; margin: 0 auto; padding: 20px 16px 120px; }
-.notice { text-align: center; font-size: 13px; color: #8899a6; margin-bottom: 16px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-.card { position: relative; background: #1a222c; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 13px 12px; }
-.card.taken { opacity: 0.28; }
-.card.mine { border-color: rgba(255,213,79,0.6); background: linear-gradient(160deg, #232013, #1a222c); }
-.card .qmark { font-size: 26px; text-align: center; color: #566573; }
-.card .pos { text-align: center; font-size: 12px; color: #90caf9; margin-top: 4px; }
-.card .age { text-align: center; font-size: 11px; color: #566573; }
-.stats { margin-top: 9px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; }
-.st { display: flex; justify-content: space-between; font-size: 12.5px; padding: 2px 0; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.topbar { background: linear-gradient(135deg, #311b92 0%, #0d1117 90%); padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topbar .tl { display: flex; align-items: center; gap: 10px; }
+.topbar .tl .ico { font-size: 26px; }
+.topbar h1 { font-size: 16px; color: #fff; }
+.topbar .yr-badge { font-size: 26px; font-weight: 900; color: #ffd54f; letter-spacing: 1px; }
+.topbar .rd { font-size: 12px; color: rgba(255,255,255,0.7); text-align: right; }
+.rd-dots { display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px; }
+.rd-dot { width: 9px; height: 9px; border-radius: 50%; background: #2c3440; }
+.rd-dot.done { background: #ffd54f; }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 18px 14px 130px; }
+.notice { text-align: center; font-size: 12.5px; color: #8899a6; margin-bottom: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; }
+.card { position: relative; background: linear-gradient(170deg, #1b2330, #141b25); border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; padding: 12px; transition: transform 0.12s, border-color 0.12s; }
+.card:not(.taken):hover { transform: translateY(-3px); border-color: rgba(255,213,79,0.5); }
+.card.taken { opacity: 0.22; filter: grayscale(0.7); }
+.card.mine { border-color: rgba(255,213,79,0.7); background: linear-gradient(170deg, #2a2410, #141b25); }
+.type-badge { position: absolute; top: 10px; left: 10px; font-size: 10px; font-weight: bold; padding: 3px 7px; border-radius: 5px; }
+.tb-B { background: rgba(21,101,192,0.35); color: #90caf9; }
+.tb-P { background: rgba(183,28,28,0.35); color: #ef9a9a; }
+.mine-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: #0d1117; background: #ffd54f; font-weight: bold; padding: 2px 7px; border-radius: 5px; }
+.qmark { font-size: 30px; text-align: center; margin-top: 12px; color: #455263; }
+.pos { text-align: center; font-size: 12px; color: #90caf9; margin-top: 3px; font-weight: 600; }
+.stats { margin-top: 9px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; }
+.st { display: flex; justify-content: space-between; font-size: 12.5px; padding: 2.5px 2px; }
 .st .k { color: #8899a6; }
-.st .v { color: #fff; font-weight: 600; }
+.st .v { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
+.st .v.hot { color: #ffd54f; }
 .pick-btn { width: 100%; margin-top: 10px; padding: 9px; font-size: 13px; font-weight: bold; color: #fff; background: #4527a0; border: none; border-radius: 8px; cursor: pointer; }
-.pick-btn:hover { opacity: 0.85; }
-.mine-tag { position: absolute; top: 8px; right: 8px; font-size: 10px; color: #ffd54f; border: 1px solid rgba(255,213,79,0.5); padding: 2px 6px; border-radius: 5px; }
-.tray { position: fixed; left: 0; right: 0; bottom: 0; background: #141b23; border-top: 1px solid rgba(255,255,255,0.1); padding: 10px 16px; }
-.tray-inner { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: center; overflow-x: auto; }
-.tray .t-label { font-size: 12px; color: #ffd54f; font-weight: bold; white-space: nowrap; }
-.t-chip { background: #232d3a; border: 1px solid rgba(255,213,79,0.3); border-radius: 8px; padding: 6px 10px; font-size: 11.5px; color: #cfd8dc; white-space: nowrap; }
+.pick-btn:hover { background: #5e35b1; }
+.tray { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(13,17,23,0.97); backdrop-filter: blur(4px); border-top: 1px solid rgba(255,213,79,0.25); padding: 12px 16px; z-index: 20; }
+.tray-inner { max-width: 1060px; margin: 0 auto; display: flex; gap: 8px; align-items: center; overflow-x: auto; }
+.t-label { font-size: 12px; color: #ffd54f; font-weight: bold; white-space: nowrap; }
+.t-chip { background: #1b2330; border: 1px solid rgba(255,213,79,0.35); border-radius: 9px; padding: 7px 11px; font-size: 11.5px; color: #cfd8dc; white-space: nowrap; }
+.t-chip .n { color: #ffd54f; font-weight: bold; margin-right: 4px; }
+.t-empty { font-size: 11.5px; color: #566573; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-    <h1>🔍 스카우트</h1>
-    <div style="text-align:center;">
-        <div class="yr">{{ year }}년</div>
-        <div class="rd">내 픽 {{ my_round }} / {{ total_rounds }} 라운드</div>
+    <div class="tl">
+        <span class="ico">🔍</span>
+        <h1>블라인드 스카우트</h1>
     </div>
-    <div style="width:80px;"></div>
+    <div class="yr-badge">{{ year }}</div>
+    <div class="rd">
+        {{ my_round }} / {{ total_rounds }} 라운드
+        <div class="rd-dots">
+            {% for i in range(total_rounds) %}
+            <span class="rd-dot {% if i < my_picks|length %}done{% endif %}"></span>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <div class="wrap">
-    <div class="notice">이름과 소속팀은 가려져 있습니다. 기록만 보고 미래의 대어를 찾아내세요.</div>
+    <div class="notice">{{ year }}년의 실존 선수들입니다. 이름은 가려져 있습니다 — 기록만 보고 그 해의 진짜 가치(WAR)를 찾아내세요.</div>
 
     <div class="grid">
         {% for c in cards %}
         <div class="card {% if c.taken %}taken{% endif %} {% if c.mine %}mine{% endif %}">
+            <span class="type-badge tb-{{ c.hint.type }}">{{ '투수' if c.hint.type == 'P' else '타자' }}</span>
             {% if c.mine %}<span class="mine-tag">MY</span>{% endif %}
             <div class="qmark">❓</div>
             <div class="pos">{{ c.positions }}</div>
-            <div class="age">{{ c.age_hint }}</div>
             <div class="stats">
                 {% if c.hint.type == 'P' %}
-                <div class="st"><span class="k">ERA</span><span class="v">{{ c.hint.ERA }}</span></div>
-                <div class="st"><span class="k">탈삼진</span><span class="v">{{ c.hint.SO }}</span></div>
+                <div class="st"><span class="k">ERA</span><span class="v {% if c.hint.ERA != '-' and c.hint.ERA|float < 3.0 %}hot{% endif %}">{{ c.hint.ERA }}</span></div>
+                <div class="st"><span class="k">탈삼진</span><span class="v {% if c.hint.SO >= 100 %}hot{% endif %}">{{ c.hint.SO }}</span></div>
+                <div class="st"><span class="k">이닝</span><span class="v">{{ c.hint.IP }}</span></div>
                 {% else %}
-                <div class="st"><span class="k">타율</span><span class="v">{{ c.hint.AVG }}</span></div>
-                <div class="st"><span class="k">홈런</span><span class="v">{{ c.hint.HR }}</span></div>
-                <div class="st"><span class="k">도루</span><span class="v">{{ c.hint.SB }}</span></div>
+                <div class="st"><span class="k">타율</span><span class="v {% if c.hint.AVG != '-' and c.hint.AVG|float >= 0.3 %}hot{% endif %}">{{ c.hint.AVG }}</span></div>
+                <div class="st"><span class="k">OPS</span><span class="v">{{ c.hint.OPS }}</span></div>
+                <div class="st"><span class="k">홈런</span><span class="v {% if c.hint.HR >= 15 %}hot{% endif %}">{{ c.hint.HR }}</span></div>
+                <div class="st"><span class="k">도루</span><span class="v {% if c.hint.SB >= 20 %}hot{% endif %}">{{ c.hint.SB }}</span></div>
                 {% endif %}
             </div>
             {% if not c.taken %}
@@ -78,13 +98,17 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 
 <div class="tray">
     <div class="tray-inner">
-        <span class="t-label">내 지명 ({{ my_picks|length }})</span>
+        <span class="t-label">📋 내 지명 {{ my_picks|length }}/{{ total_rounds }}</span>
+        {% if my_picks %}
         {% for p in my_picks %}
         <span class="t-chip">
-            {{ p.positions }} ·
-            {% if p.hint.type == 'P' %}ERA {{ p.hint.ERA }}{% else %}{{ p.hint.AVG }} / {{ p.hint.HR }}HR{% endif %}
+            <span class="n">{{ loop.index }}R</span>{{ p.positions }} ·
+            {% if p.hint.type == 'P' %}ERA {{ p.hint.ERA }} · {{ p.hint.SO }}K{% else %}{{ p.hint.AVG }} · {{ p.hint.HR }}HR · {{ p.hint.SB }}SB{% endif %}
         </span>
         {% endfor %}
+        {% else %}
+        <span class="t-empty">아직 지명한 선수가 없습니다</span>
+        {% endif %}
     </div>
 </div>
 
