@@ -1,0 +1,100 @@
+<!-- templates/scout_result.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스카우트 결과 - {{ year }}년</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 36px 18px 60px; }
+.head { text-align: center; margin-bottom: 26px; }
+.head .yr { font-size: 15px; color: #8899a6; }
+.head h1 { font-size: 24px; color: #fff; margin-top: 6px; }
+.grade-stamp { display: inline-block; margin-top: 16px; font-size: 44px; font-weight: 900; padding: 10px 34px; border-radius: 14px; transform: rotate(-4deg); border: 3px solid; }
+.gs-S { color: #ce93d8; border-color: #ce93d8; background: rgba(106,27,154,0.15); }
+.gs-A { color: #ef9a9a; border-color: #ef9a9a; background: rgba(183,28,28,0.15); }
+.gs-B { color: #ffb74d; border-color: #ffb74d; background: rgba(230,81,0,0.12); }
+.gs-C { color: #b0bec5; border-color: #b0bec5; background: rgba(55,71,79,0.3); }
+.gs-D { color: #78909c; border-color: #78909c; background: rgba(38,50,56,0.4); }
+.grade-desc { margin-top: 10px; font-size: 13.5px; color: #8899a6; }
+.sec { font-size: 15px; color: #fff; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.pk { background: #1a222c; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 13px 16px; margin-bottom: 9px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; opacity: 0; transform: rotateY(90deg); animation: flip 0.5s forwards; }
+{% for i in range(6) %}
+.pk:nth-child({{ i + 2 }}) { animation-delay: {{ i * 0.35 }}s; }
+{% endfor %}
+@keyframes flip { to { opacity: 1; transform: rotateY(0); } }
+.pk .rd { font-size: 11px; color: #566573; min-width: 30px; }
+.pk .nm { font-size: 16px; font-weight: bold; color: #ffd54f; }
+.pk .tm { font-size: 12.5px; color: #90caf9; }
+.pk .ps { font-size: 12px; color: #8899a6; }
+.pk .ov { margin-left: auto; font-size: 12.5px; color: #cfd8dc; }
+.pk .steal { font-size: 11.5px; color: #81c784; border: 1px solid rgba(102,187,106,0.4); padding: 2px 8px; border-radius: 6px; }
+.pk .bust { font-size: 11.5px; color: #ef9a9a; border: 1px solid rgba(239,83,80,0.4); padding: 2px 8px; border-radius: 6px; }
+.board { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.bd { background: #1a222c; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 13px; text-align: center; }
+.bd.me { border-color: rgba(255,213,79,0.5); }
+.bd .who { font-size: 12.5px; color: #8899a6; }
+.bd .pt { font-size: 22px; font-weight: bold; color: #fff; margin-top: 5px; }
+.bd .pl { font-size: 11.5px; color: #566573; margin-top: 3px; }
+.btns { display: flex; gap: 10px; margin-top: 28px; }
+.btn { flex: 1; padding: 14px; text-align: center; font-size: 14px; font-weight: bold; color: #fff; border-radius: 10px; text-decoration: none; }
+.btn.again { background: linear-gradient(135deg, #4527a0, #1565c0); }
+.btn.home { background: #263238; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="head">
+        <div class="yr">{{ year }}년 스카우트 리포트</div>
+        <h1>정체를 공개합니다</h1>
+        <div>
+            <span class="grade-stamp gs-{{ result.grade }}">{{ result.grade }}</span>
+        </div>
+        <div class="grade-desc">
+            {% if result.grade == 'S' %}전설의 눈 — 압도적 1위. 당신은 스카우트로 먹고살아도 됩니다.
+            {% elif result.grade == 'A' %}베테랑 스카우터 — 4명 중 1위!
+            {% elif result.grade == 'B' %}준수한 안목 — 2위. 아깝습니다.
+            {% elif result.grade == 'C' %}수업이 더 필요합니다 — 3위.
+            {% else %}뜬공 스카우터 — 꼴찌… 이름을 가리니 아무것도 안 보이셨군요.{% endif %}
+        </div>
+    </div>
+
+    <div class="sec">🃏 내 지명 리빌</div>
+    {% for p in user.detail %}
+    <div class="pk">
+        <span class="rd">{{ loop.index }}R</span>
+        <span class="nm">{{ p.name }}</span>
+        <span class="tm">{{ p.team }}</span>
+        <span class="ps">{{ p.positions }}</span>
+        {% if p.pot_rank <= 5 %}<span class="steal">💎 풀 잠재력 {{ p.pot_rank }}위</span>
+        {% elif p.pot_rank >= 20 %}<span class="bust">💨 잠재력 {{ p.pot_rank }}위</span>{% endif %}
+        <span class="ov">OVR {{ p.overall }} · POT {{ p.potential }} · +{{ p.pts }}점</span>
+    </div>
+    {% endfor %}
+
+    <div class="sec">🏆 스카우터 순위</div>
+    <div class="board">
+        <div class="bd me">
+            <div class="who">🙋 나</div>
+            <div class="pt">{{ user.total }}</div>
+            <div class="pl">{{ result.place }}위</div>
+        </div>
+        {% for a in ais %}
+        <div class="bd">
+            <div class="who">🤖 AI 스카우터 {{ loop.index }}</div>
+            <div class="pt">{{ a.total }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="btns">
+        <a class="btn again" href="{{ url_for('scout.scout_new') }}">🎲 다시 도전</a>
+        <a class="btn home" href="{{ url_for('scout.scout_home') }}">기록실로</a>
+    </div>
+
+</div>
+</body>
+</html>
