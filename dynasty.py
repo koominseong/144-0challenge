@@ -107,10 +107,10 @@ def dynasty_home():
     saves = (
         sb.table("dynasty_save")
         .select("*")
+        .neq("is_gauntlet", True)
         .order("id", desc=True)
         .execute()
         .data
-        .neq("is_gauntlet", True)
     )
     return render_template("dynasty_home.html", saves=saves)
 
