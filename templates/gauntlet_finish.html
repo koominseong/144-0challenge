@@ -1,0 +1,67 @@
+<!-- templates/gauntlet_finish.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도전 종료 - 업셋 런</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 40px 18px 60px; text-align: center; }
+.res { font-size: 46px; font-weight: 900; margin-top: 10px; animation: pop 0.5s cubic-bezier(0.2,1.6,0.4,1); }
+@keyframes pop { 0% { transform: scale(2.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.res.clear { color: #ffd54f; }
+.res.out { color: #90a4ae; }
+.tm { font-size: 15px; color: #90caf9; margin-top: 10px; }
+.sec { font-size: 14px; color: #fff; margin: 30px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; }
+.h-card { background: #1b2330; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 13px 16px; margin-bottom: 9px; text-align: left; }
+.h-card .st { font-size: 13.5px; font-weight: bold; color: #ffd54f; }
+.h-card .opp { font-size: 12.5px; color: #8899a6; margin-top: 2px; }
+.h-card .sc { font-size: 12.5px; color: #cfd8dc; margin-top: 2px; }
+.h-card .bn { font-size: 11.5px; color: #81c784; margin-top: 4px; }
+.sg { font-size: 12.5px; color: #b0bec5; padding: 5px 2px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.btns { display: flex; gap: 10px; margin-top: 30px; }
+.btn { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: bold; color: #fff; border-radius: 11px; text-decoration: none; }
+.btn.again { background: linear-gradient(135deg, #6d4c41, #bf360c); }
+.btn.home { background: #263238; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="res {% if state.result == 'CLEAR' %}clear{% else %}out{% endif %}">
+        {% if state.result == 'CLEAR' %}🏆 우승!{% else %}{{ state.result }}{% endif %}
+    </div>
+    <div class="tm">🍂 {{ state.my_label }} · {{ state.manager.name }} 감독</div>
+    {% if state.result == 'CLEAR' %}
+    <div style="font-size:13px; color:#8899a6; margin-top:10px;">5위 팀이 가을을 전부 뒤집었습니다. 미라클.</div>
+    {% endif %}
+
+    <div class="sec">📜 여정</div>
+    {% for h in state.history %}
+    <div class="h-card">
+        <div class="st">{{ h.stage }} — {{ '통과' if h.bonus > 0 else '탈락' }}</div>
+        <div class="opp">vs {{ h.opp }}</div>
+        <div class="sc">{{ h.score }}</div>
+        {% if h.bonus %}
+        <div class="bn">보너스 +{{ h.bonus }} ({% for d in h.bonus_detail %}{{ d[0] }} +{{ d[1] }}{% if not loop.last %} · {% endif %}{% endfor %})</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if state.signings %}
+    <div class="sec">✍ 영입 이력</div>
+    {% for s in state.signings %}
+    <div class="sg">{{ s.stage }} 앞두고 — {{ s.year }} {{ s.name }} ({{ s.team }}) 영입, 💰{{ s.price }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="btns">
+        <a class="btn again" href="{{ url_for('gauntlet.g_new') }}">🍂 새 도전</a>
+        <a class="btn home" href="{{ url_for('gauntlet.g_home') }}">기록실로</a>
+    </div>
+
+</div>
+</body>
+</html>
