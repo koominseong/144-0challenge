@@ -89,7 +89,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         </div>
         {% for a in ais %}
         <div class="bd">
-            <div class="who">🤖 AI {{ loop.index }}</div>
+            <div class="who">{{ ['🦉 베테랑', '📋 정석파', '🎲 도박사'][loop.index0] }}</div>
             <div class="pt">{{ a.total }}</div>
         </div>
         {% endfor %}
