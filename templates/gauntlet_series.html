@@ -1,0 +1,82 @@
+<!-- templates/gauntlet_series.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ sr.stage_name }} - 업셋 런</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 30px 16px 60px; }
+.bracket { display: flex; gap: 8px; justify-content: center; margin-bottom: 26px; flex-wrap: wrap; }
+.bk { padding: 8px 14px; border-radius: 9px; font-size: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.12); color: #566573; }
+.bk.done { color: #81c784; border-color: rgba(102,187,106,0.4); }
+.bk.now { color: #ffd54f; border-color: rgba(255,213,79,0.6); background: rgba(255,213,79,0.08); }
+.vs-box { text-align: center; background: linear-gradient(170deg, #1b2330, #141b25); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 26px 18px; }
+.vs-box .stage { font-size: 13px; color: #ef9a9a; font-weight: bold; letter-spacing: 2px; }
+.vs-row { display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 14px; }
+.vs-team { flex: 1; max-width: 240px; }
+.vs-team .nm { font-size: 17px; font-weight: 800; color: #fff; }
+.vs-team.me .nm { color: #ffd54f; }
+.vs-team .tag { font-size: 11px; color: #8899a6; margin-top: 3px; }
+.vs-mid { font-size: 26px; font-weight: 900; color: #566573; }
+.score { display: flex; justify-content: center; gap: 14px; margin-top: 18px; font-size: 15px; }
+.score .s { padding: 8px 18px; border-radius: 10px; background: #10161d; border: 1px solid rgba(255,255,255,0.08); }
+.score .s b { font-size: 22px; color: #fff; }
+.need { font-size: 12px; color: #8899a6; margin-top: 10px; }
+.game-btn { display: block; width: 300px; margin: 24px auto 0; padding: 16px; text-align: center; font-size: 15px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #6d4c41, #bf360c); border-radius: 12px; text-decoration: none; }
+.game-btn:hover { opacity: 0.9; }
+.budget-line { text-align: center; font-size: 12.5px; color: #ffd54f; margin-top: 16px; }
+.loglist { margin-top: 26px; }
+.loglist h3 { font-size: 14px; color: #fff; margin-bottom: 10px; }
+.lg { font-size: 12.5px; color: #b0bec5; padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.home-link { display: block; text-align: center; margin-top: 26px; color: #8899a6; font-size: 13px; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="bracket">
+        {% set names = ['와일드카드', '준플레이오프', '플레이오프', '한국시리즈'] %}
+        {% for n in names %}
+        <span class="bk {% if loop.index0 < state.stage_idx %}done{% elif loop.index0 == state.stage_idx %}now{% endif %}">
+            {% if loop.index0 < state.stage_idx %}✔ {% endif %}{{ n }}
+        </span>
+        {% endfor %}
+        <span class="bk {% if state.result == 'CLEAR' %}done{% endif %}">🏆</span>
+    </div>
+
+    <div class="vs-box">
+        <div class="stage">{{ sr.stage_name }}</div>
+        <div class="vs-row">
+            <div class="vs-team me">
+                <div class="nm">🍂 {{ state.my_label }}</div>
+                <div class="tag">5위 · {{ state.manager.name }} 감독</div>
+            </div>
+            <div class="vs-mid">VS</div>
+            <div class="vs-team">
+                <div class="nm">🔥 {{ sr.opp_label }}</div>
+                <div class="tag">{{ state.opponents[state.stage_idx].seed }}위 시드</div>
+            </div>
+        </div>
+        <div class="score">
+            <div class="s">나 <b>{{ sr.my_wins }}</b></div>
+            <div class="s">상대 <b>{{ sr.opp_wins }}</b></div>
+        </div>
+        <div class="need">{{ sr.wins_needed }}승 선취 시 진출 {% if sr.opp_wins_needed < sr.wins_needed %}(와일드카드: 상대는 {{ sr.opp_wins_needed }}승이면 통과){% endif %}</div>
+        <a class="game-btn" href="{{ url_for('gauntlet.g_game', run_id=run_id) }}">⚾ {{ sr.game_no if sr.current_schedule_id else sr.game_no + 1 }}차전 — 감독 모드로 지휘</a>
+        <div class="budget-line">💰 보유 예산 {{ state.budget }} (라운드 종료 후 마켓에서 사용)</div>
+    </div>
+
+    {% if sr.log %}
+    <div class="loglist">
+        <h3>📋 시리즈 기록</h3>
+        {% for l in sr.log %}<div class="lg">{{ l }}</div>{% endfor %}
+    </div>
+    {% endif %}
+
+    <a class="home-link" href="{{ url_for('gauntlet.g_home') }}">← 업셋 런 홈</a>
+</div>
+</body>
+</html>
