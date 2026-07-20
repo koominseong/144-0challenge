@@ -122,7 +122,6 @@ def _render_play(row):
             "cid": c["cid"],
             "hint": c["hint"],
             "positions": c["positions"],
-            "age_hint": c["age_hint"],
             "taken": c["cid"] in taken,
             "mine": c["cid"] in state["picks"]["user"],
         })
