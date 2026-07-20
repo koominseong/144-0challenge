@@ -1,0 +1,53 @@
+<!-- templates/gauntlet_manager.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>감독 선임 - 업셋 런</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 40px 18px 60px; text-align: center; }
+.team-reveal { margin-bottom: 30px; }
+.team-reveal .lbl { font-size: 13px; color: #8899a6; }
+.team-reveal .tm { font-size: 30px; font-weight: 900; color: #ffd54f; margin-top: 8px; animation: pop 0.5s cubic-bezier(0.2,1.6,0.4,1); }
+@keyframes pop { 0% { transform: scale(2); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.team-reveal .seed { font-size: 13px; color: #ef9a9a; margin-top: 6px; }
+h2 { font-size: 17px; color: #fff; margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.mg { background: linear-gradient(170deg, #1b2330, #141b25); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 20px 14px; }
+.mg .grade { display: inline-block; min-width: 32px; padding: 4px 9px; border-radius: 7px; font-weight: bold; }
+.g-S { background: #6a1b9a; color: #fff; } .g-A { background: #b71c1c; color: #fff; }
+.g-B { background: #e65100; color: #fff; } .g-C { background: #37474f; color: #cfd8dc; }
+.mg .nm { font-size: 18px; font-weight: 800; color: #fff; margin-top: 10px; }
+.mg .style { font-size: 13px; color: #ffd54f; margin-top: 4px; }
+.mg .desc { font-size: 11.5px; color: #8899a6; margin-top: 8px; line-height: 1.5; min-height: 34px; }
+.mg button { width: 100%; margin-top: 14px; padding: 11px; font-size: 14px; font-weight: bold; color: #fff; background: #6d4c41; border: none; border-radius: 9px; cursor: pointer; }
+.mg button:hover { background: #8d6e63; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="team-reveal">
+        <div class="lbl">당신에게 배정된 팀은…</div>
+        <div class="tm">🍂 {{ state.my_label }}</div>
+        <div class="seed">정규시즌 5위 — 와일드카드부터 시작합니다</div>
+    </div>
+
+    <h2>이 가을을 함께할 감독을 선임하세요</h2>
+    <div class="grid">
+        {% for m in state.manager_cands %}
+        <form method="POST" action="{{ url_for('gauntlet.g_manager', run_id=run_id) }}" class="mg">
+            <input type="hidden" name="idx" value="{{ loop.index0 }}">
+            <span class="grade g-{{ m.grade }}">{{ m.grade }}</span>
+            <div class="nm">{{ m.name }}</div>
+            <div class="style">「{{ m.style }}」</div>
+            <div class="desc">{{ m.style_desc }}</div>
+            <button type="submit">선임</button>
+        </form>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
