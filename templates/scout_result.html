@@ -1,4 +1,3 @@
-<!-- templates/scout_result.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -21,6 +20,9 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .gs-D { color: #78909c; border-color: #78909c; background: rgba(38,50,56,0.4); }
 .grade-desc { margin-top: 12px; font-size: 13.5px; color: #8899a6; }
 .sec { font-size: 15px; color: #fff; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sec.flex { display: flex; justify-content: space-between; align-items: center; }
+.toggle-btn { font-size: 11px; color: #ce93d8; background: none; border: 1px solid rgba(171,71,188,0.4); padding: 5px 12px; border-radius: 7px; cursor: pointer; }
+
 .pk { background: linear-gradient(170deg, #1b2330, #141b25); border: 1px solid rgba(255,255,255,0.08); border-radius: 13px; padding: 13px 16px; margin-bottom: 9px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; opacity: 0; transform: rotateY(90deg); animation: flip 0.5s forwards; }
 {% for i in range(6) %}
 .pk:nth-of-type({{ i + 1 }}) { animation-delay: {{ i * 0.4 }}s; }
@@ -35,6 +37,25 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .tag { font-size: 11px; padding: 3px 9px; border-radius: 7px; font-weight: bold; }
 .tag.gem { color: #81c784; border: 1px solid rgba(102,187,106,0.5); background: rgba(102,187,106,0.08); }
 .tag.bust { color: #ef9a9a; border: 1px solid rgba(239,83,80,0.5); background: rgba(239,83,80,0.06); }
+
+.ai-block { margin-bottom: 14px; }
+.ai-block .ai-h { font-size: 13px; color: #90caf9; font-weight: bold; margin-bottom: 6px; }
+.ai-row { display: flex; gap: 10px; align-items: center; font-size: 12.5px; padding: 5px 8px; background: #141b25; border-radius: 8px; margin-bottom: 4px; }
+.ai-row .r { color: #566573; min-width: 24px; }
+.ai-row .n { color: #e6e6e6; font-weight: 600; }
+.ai-row .t { color: #8899a6; }
+.ai-row .w { margin-left: auto; color: #cfd8dc; }
+
+.rk-row { display: flex; gap: 10px; align-items: center; font-size: 12.5px; padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.rk-row.mine { background: rgba(255,213,79,0.08); border-radius: 6px; }
+.rk-row .r { min-width: 28px; font-weight: bold; color: #566573; }
+.rk-row .r.top { color: #ffd54f; }
+.rk-row .n { color: #fff; font-weight: 600; }
+.rk-row .t { color: #8899a6; }
+.rk-row .own { font-size: 11px; color: #90caf9; }
+.rk-row .own.none { color: #455263; }
+.rk-row .w { margin-left: auto; color: #cfd8dc; font-weight: 600; }
+
 .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 .bd { background: #1b2330; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; text-align: center; }
 .bd.me { border-color: rgba(255,213,79,0.55); background: linear-gradient(170deg, #2a2410, #141b25); }
@@ -70,7 +91,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <span class="nm">{{ p.name }}</span>
         <span class="tm">{{ p.team }}</span>
         <span class="ps">{{ p.positions }}</span>
-        {% if p.war_rank <= 15 %}<span class="tag gem">💎 이 풀 WAR {{ p.war_rank }}위</span>
+        {% if p.war_rank <= 8 %}<span class="tag gem">💎 이 풀 WAR {{ p.war_rank }}위</span>
         {% elif p.war_rank >= 40 %}<span class="tag bust">💨 WAR {{ p.war_rank }}위</span>{% endif %}
         <span class="war">WAR {{ p.war }} · +{{ p.pts }}점</span>
         <span class="line">
@@ -89,9 +110,57 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         </div>
         {% for a in ais %}
         <div class="bd">
-            <div class="who">{{ ['🦉 베테랑', '📋 정석파', '🎲 도박사'][loop.index0] }}</div>
+            <div class="who">{{ a.label }}</div>
             <div class="pt">{{ a.total }}</div>
         </div>
+        {% endfor %}
+    </div>
+
+    <div class="sec">🤖 AI 스카우터들의 지명</div>
+    {% for a in ais %}
+    <div class="ai-block">
+        <div class="ai-h">{{ a.label }} — {{ a.total }}점</div>
+        {% for p in a.detail %}
+        <div class="ai-row">
+            <span class="r">{{ loop.index }}R</span>
+            <span class="n">{{ p.name }}</span>
+            <span class="t">{{ p.team }} · {{ p.positions }}</span>
+            {% if p.war_rank <= 8 %}<span style="color:#81c784; font-size:11px;">💎</span>
+            {% elif p.war_rank >= 40 %}<span style="color:#ef9a9a; font-size:11px;">💨</span>{% endif %}
+            <span class="w">WAR {{ p.war }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="sec flex">
+        <span>📊 이 풀 전체 WAR 순위</span>
+        <button class="toggle-btn" onclick="document.getElementById('fullrank').style.display='block'; this.style.display='none';">전체 보기</button>
+    </div>
+    {% for r in ranking %}
+    {% if loop.index <= 15 %}
+    <div class="rk-row {% if r.mine %}mine{% endif %}">
+        <span class="r {% if loop.index <= 3 %}top{% endif %}">{{ r.rank }}</span>
+        <span class="n">{{ r.name }}</span>
+        <span class="t">{{ r.team }} · {{ r.positions }}</span>
+        {% if r.owner %}<span class="own">→ {{ r.owner }}</span>
+        {% else %}<span class="own none">미지명</span>{% endif %}
+        <span class="w">{{ r.war }}</span>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div id="fullrank" style="display:none;">
+        {% for r in ranking %}
+        {% if loop.index > 15 %}
+        <div class="rk-row {% if r.mine %}mine{% endif %}">
+            <span class="r">{{ r.rank }}</span>
+            <span class="n">{{ r.name }}</span>
+            <span class="t">{{ r.team }} · {{ r.positions }}</span>
+            {% if r.owner %}<span class="own">→ {{ r.owner }}</span>
+            {% else %}<span class="own none">미지명</span>{% endif %}
+            <span class="w">{{ r.war }}</span>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
 
