@@ -18,6 +18,7 @@ from dynasty_staff_routes import staff_bp
 from dynasty_postseason_routes import ps_bp
 from dynasty_records_routes import records_bp
 from dynasty_live_routes import live_bp
+from scout_routes import scout_bp
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -40,6 +41,7 @@ app.register_blueprint(staff_bp)
 app.register_blueprint(ps_bp)
 app.register_blueprint(records_bp)
 app.register_blueprint(live_bp)
+app.register_blueprint(scout_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
