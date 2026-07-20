@@ -1,8 +1,7 @@
 # scout.py
 # =========================================
 # KBO Dynasty - 스카우트 블라인드 테스트 v3
-# 랜덤 연도 + 드래프트 순번 추첨 + 웨이브제 + 함정 카드
-# AI: 진짜 가치(WAR)를 노이즈 낀 채로 보는 3단계 안목
+# 랜덤 연도 + 순번 추첨 + 웨이브제(20장×5) + 함정 카드 + WAR 안목 AI
 # =========================================
 
 import os
@@ -26,16 +25,19 @@ def find_data_dir():
 
 ROUNDS = 5
 AI_SCOUTS = 3
-WAVE_SIZE = 15
-POOL_SIZE = ROUNDS * WAVE_SIZE   # 40
+WAVE_SIZE = 20
+POOL_SIZE = ROUNDS * WAVE_SIZE   # 100
+TRAP_COUNT = 7
 PITCHER_POS = {"P", "SP", "RP", "CP"}
+MIN_PA = 15
+MIN_IP = 10
 
 # AI 안목: WAR을 얼마나 정확히 보는가 (0=겉기록만, 1=완벽)
 AI_SKILL = {"ai1": 0.75, "ai2": 0.5, "ai3": 0.25}
 
 
 # =========================================
-# 연도 랜덤 선택 + 풀 로드
+# 연도 랜덤 선택 + 그 해 전체 팀 로드
 # =========================================
 def load_year_pool():
     data_dir = find_data_dir()
@@ -108,13 +110,17 @@ def _apparent_raw(p):
 # 라운드 생성
 # =========================================
 def create_round():
-    year, players = load_year_pool()
-    if not year:
-        return None
-
-    players = [p for p in players
-               if (p.get("PA") or 0) >= 30 or (p.get("IP") or 0) >= 15]
-    if len(players) < POOL_SIZE:
+    # 선수 부족 연도면 재추첨 (최대 6회) — 60명 이상이면 진행
+    for _ in range(6):
+        year, players = load_year_pool()
+        if not year:
+            return None
+        players = [p for p in players
+                   if isinstance(p, dict) and p.get("name")
+                   and ((p.get("PA") or 0) >= MIN_PA or (p.get("IP") or 0) >= MIN_IP)]
+        if len(players) >= max(60, POOL_SIZE * 2 // 3):
+            break
+    else:
         return None
 
     players.sort(key=lambda p: -(p.get("war") or 0))
@@ -123,10 +129,22 @@ def create_round():
     mid = players[third: 2 * third]
     low = players[2 * third:]
 
-    pool = (random.sample(top, min(13, len(top)))
-            + random.sample(mid, min(14, len(mid)))
+    # 함정 카드: 하위 WAR인데 겉기록 화려한 선수 보장
+    traps = sorted(low, key=lambda p: -_apparent_raw(p))[:TRAP_COUNT]
+    low_rest = [p for p in low if p not in traps]
+
+    pool = (random.sample(top, min(33, len(top)))
+            + random.sample(mid, min(35, len(mid)))
             + traps
-            + random.sample(low_rest, min(10, len(low_rest))))
+            + random.sample(low_rest, min(25, len(low_rest))))
+
+    # 부족분은 남은 선수에서 채움
+    if len(pool) < POOL_SIZE:
+        used = {id(p) for p in pool}
+        rest = [p for p in players if id(p) not in used]
+        random.shuffle(rest)
+        pool += rest[: POOL_SIZE - len(pool)]
+
     random.shuffle(pool)
     pool = pool[:POOL_SIZE]
 
@@ -184,7 +202,7 @@ def _apparent_score(c):
 
 
 def _ai_eval(c, skill):
-    apparent = _apparent_score(c) / 8.0     # WAR×10 스케일 근사 정규화
+    apparent = _apparent_score(c) / 8.0
     true_val = c["war"] * 10
     noise = random.gauss(0, 6) * (1 - skill)
     return true_val * skill + apparent * (1 - skill) + noise
