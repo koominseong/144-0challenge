@@ -1,0 +1,97 @@
+<!-- templates/gauntlet_market.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영입 시장 - 업셋 런</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0d1117; color: #e6e6e6; min-height: 100vh; }
+.topbar { background: linear-gradient(135deg, #4e342e 0%, #0d1117 90%); padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topbar h1 { font-size: 16px; color: #fff; }
+.topbar .bd { font-size: 20px; font-weight: 900; color: #ffd54f; }
+.topbar .lf { font-size: 12px; color: rgba(255,255,255,0.75); text-align: right; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 18px 14px 60px; }
+.next-line { text-align: center; font-size: 13px; color: #ef9a9a; margin-bottom: 14px; }
+.search { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.search input { flex: 1; min-width: 160px; padding: 11px 14px; font-size: 13px; background: #1b2330; color: #fff; border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; }
+.search button, .search a { padding: 11px 16px; font-size: 13px; font-weight: bold; color: #fff; background: #37474f; border: none; border-radius: 9px; cursor: pointer; text-decoration: none; }
+.search .active { background: #6d4c41; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.card { background: linear-gradient(170deg, #1b2330, #141b25); border: 1px solid rgba(255,255,255,0.09); border-radius: 13px; padding: 13px; }
+.card .top { display: flex; justify-content: space-between; align-items: baseline; }
+.card .nm { font-size: 15px; font-weight: 800; color: #fff; }
+.card .yr { font-size: 11px; color: #90caf9; }
+.card .meta { font-size: 11.5px; color: #8899a6; margin-top: 3px; }
+.card .war { font-size: 12.5px; color: #ffd54f; font-weight: 700; margin-top: 6px; }
+.card .price { font-size: 15px; font-weight: 900; margin-top: 4px; }
+.price.ok { color: #81c784; }
+.price.no { color: #ef5350; }
+.card select { width: 100%; margin-top: 9px; padding: 8px; font-size: 11.5px; background: #10161d; color: #e6e6e6; border: 1px solid rgba(255,255,255,0.12); border-radius: 7px; }
+.card button { width: 100%; margin-top: 7px; padding: 9px; font-size: 12.5px; font-weight: bold; color: #fff; background: #6d4c41; border: none; border-radius: 8px; cursor: pointer; }
+.card button:disabled { opacity: 0.3; cursor: default; }
+.proceed { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(13,17,23,0.97); border-top: 1px solid rgba(255,213,79,0.25); padding: 12px 16px; z-index: 20; }
+.proceed-inner { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+.proceed-inner .info { font-size: 12.5px; color: #8899a6; }
+.proceed-inner button { margin-left: auto; padding: 14px 26px; font-size: 14px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #6d4c41, #bf360c); border: none; border-radius: 11px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <h1>💰 영입 시장</h1>
+    <div class="bd">{{ state.budget }}</div>
+    <div class="lf">이번 라운드 영입 가능<br><b>{{ left }}명</b></div>
+</div>
+
+<div class="wrap">
+    <div class="next-line">다음 상대: {{ next_stage }} — 🔥 {{ next_opp.year }} {{ next_opp.label or next_opp.team }} ({{ next_opp.seed }}위 시드)</div>
+
+    {% if request.args.get('msg') %}
+    <div style="text-align:center; font-size:13px; color:#81c784; margin-bottom:12px;">{{ request.args.get('msg') }}</div>
+    {% endif %}
+
+    <form method="GET" action="{{ url_for('gauntlet.g_play', run_id=run_id) }}" class="search">
+        <input type="text" name="q" value="{{ q }}" placeholder="선수 이름 또는 팀 검색 (예: 이종범, 해태)">
+        <button type="submit">🔍 검색</button>
+        <a href="{{ url_for('gauntlet.g_play', run_id=run_id, q=q) }}" class="{% if not pos %}active{% endif %}">전체</a>
+        <a href="{{ url_for('gauntlet.g_play', run_id=run_id, q=q, pos='B') }}" class="{% if pos == 'B' %}active{% endif %}">타자</a>
+        <a href="{{ url_for('gauntlet.g_play', run_id=run_id, q=q, pos='P') }}" class="{% if pos == 'P' %}active{% endif %}">투수</a>
+    </form>
+
+    <div class="grid">
+        {% for p in pool %}
+        <div class="card">
+            <div class="top">
+                <span class="nm">{{ p.name }}</span>
+                <span class="yr">{{ p.year }} {{ p.team_kr }}</span>
+            </div>
+            <div class="meta">{{ p.positions }} · OVR {{ p.overall }}</div>
+            <div class="war">WAR {{ p.war }}</div>
+            <div class="price {% if state.budget >= p.price and left > 0 %}ok{% else %}no{% endif %}">💰 {{ p.price }}</div>
+            <form method="POST" action="{{ url_for('gauntlet.g_sign', run_id=run_id) }}">
+                <input type="hidden" name="player_json" value='{{ p | tojson }}'>
+                <select name="drop_pid">
+                    {% for e in entry_players %}
+                    <option value="{{ e.id }}">↔ {{ e.name }} ({{ '투' if e.is_pitcher else '타' }} OVR {{ e.overall }}) 제외</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" {% if state.budget < p.price or left <= 0 %}disabled{% endif %}>영입 + 교체</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="proceed">
+    <div class="proceed-inner">
+        <span class="info">남은 예산은 다음 라운드로 이월됩니다. 지금 보강할까요, KS를 위해 아낄까요?</span>
+        <form method="POST" action="{{ url_for('gauntlet.g_proceed', run_id=run_id) }}">
+            <button type="submit">⚾ {{ next_stage }} 개시 →</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
