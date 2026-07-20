@@ -124,7 +124,11 @@ def scout_reveal(game_id):
         year=state["year"],
         result=result,
         user=result["results"]["user"],
-        ais=[result["results"]["ai1"], result["results"]["ai2"], result["results"]["ai3"]],
+        ais=[
+            {"label": "🦉 베테랑", **result["results"]["ai1"]},
+            {"label": "📋 정석파", **result["results"]["ai2"]},
+            {"label": "🎲 도박사", **result["results"]["ai3"]},
+        ],
         ranking=ranking,
         seat_names=seat_names,
     )
