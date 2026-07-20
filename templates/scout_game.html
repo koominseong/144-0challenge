@@ -1,4 +1,3 @@
-<!-- templates/scout_game.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +12,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .topbar .tl .ico { font-size: 26px; }
 .topbar h1 { font-size: 16px; color: #fff; }
 .topbar .yr-badge { font-size: 26px; font-weight: 900; color: #ffd54f; letter-spacing: 1px; }
-.topbar .rd { font-size: 12px; color: rgba(255,255,255,0.7); text-align: right; }
+.topbar .rd { font-size: 12px; color: rgba(255,255,255,0.75); text-align: right; }
 .rd-dots { display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px; }
 .rd-dot { width: 9px; height: 9px; border-radius: 50%; background: #2c3440; }
 .rd-dot.done { background: #ffd54f; }
@@ -24,10 +23,14 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .card:not(.taken):hover { transform: translateY(-3px); border-color: rgba(255,213,79,0.5); }
 .card.taken { opacity: 0.22; filter: grayscale(0.7); }
 .card.mine { border-color: rgba(255,213,79,0.7); background: linear-gradient(170deg, #2a2410, #141b25); }
+.card.fresh { animation: dealIn 0.4s ease; }
+@keyframes dealIn { 0% { opacity: 0; transform: translateY(14px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 .type-badge { position: absolute; top: 10px; left: 10px; font-size: 10px; font-weight: bold; padding: 3px 7px; border-radius: 5px; }
 .tb-B { background: rgba(21,101,192,0.35); color: #90caf9; }
 .tb-P { background: rgba(183,28,28,0.35); color: #ef9a9a; }
-.mine-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: #0d1117; background: #ffd54f; font-weight: bold; padding: 2px 7px; border-radius: 5px; }
+.corner-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 5px; }
+.ct-my { color: #0d1117; background: #ffd54f; }
+.ct-new { color: #81c784; border: 1px solid rgba(102,187,106,0.5); }
 .qmark { font-size: 30px; text-align: center; margin-top: 12px; color: #455263; }
 .pos { text-align: center; font-size: 12px; color: #90caf9; margin-top: 3px; font-weight: 600; }
 .stats { margin-top: 9px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; }
@@ -54,7 +57,7 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
     </div>
     <div class="yr-badge">{{ year }}</div>
     <div class="rd">
-        {{ my_round }} / {{ total_rounds }} 라운드
+        {{ my_round }} / {{ total_rounds }} 라운드 · 내 순번 {{ my_slot }}번
         <div class="rd-dots">
             {% for i in range(total_rounds) %}
             <span class="rd-dot {% if i < my_picks|length %}done{% endif %}"></span>
@@ -64,13 +67,17 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 </div>
 
 <div class="wrap">
-    <div class="notice">{{ year }}년의 실존 선수들입니다. 이름은 가려져 있습니다 — 기록만 보고 그 해의 진짜 가치(WAR)를 찾아내세요.</div>
+    <div class="notice">라운드마다 새 선수가 공개됩니다 — 지금 잡을까, 다음 물결을 기다릴까? 겉기록에 속지 마세요.</div>
 
     <div class="grid">
         {% for c in cards %}
-        <div class="card {% if c.taken %}taken{% endif %} {% if c.mine %}mine{% endif %}">
+        <div class="card {% if c.taken %}taken{% endif %} {% if c.mine %}mine{% endif %} {% if c.new and not c.taken %}fresh{% endif %}">
             <span class="type-badge tb-{{ c.hint.type }}">{{ '투수' if c.hint.type == 'P' else '타자' }}</span>
-            {% if c.mine %}<span class="mine-tag">MY</span>{% endif %}
+            {% if c.mine %}
+            <span class="corner-tag ct-my">MY</span>
+            {% elif c.new and not c.taken %}
+            <span class="corner-tag ct-new">NEW</span>
+            {% endif %}
             <div class="qmark">❓</div>
             <div class="pos">{{ c.positions }}</div>
             <div class="stats">
