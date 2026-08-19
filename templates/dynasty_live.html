@@ -1,4 +1,4 @@
-<!-- templates/dynasty_live.html - v2 Part1 -->
+<!-- templates/dynasty_live.html - v3 / 벤치 운영 + 실제 포지션 수비 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,8 +8,8 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: #0f1419; color: #e6e6e6; min-height: 100vh; }
-.wrap { max-width: 1200px; margin: 0 auto; padding: 20px 16px 50px; display: grid; grid-template-columns: 240px 1fr 240px; gap: 16px; }
-@media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } .side { order: 2; } }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 20px 16px 50px; display: grid; grid-template-columns: 300px minmax(520px, 1fr) 300px; gap: 16px; }
+@media (max-width: 1050px) { .wrap { grid-template-columns: 1fr; } .side { order: 2; } }
 
 .side { background: #1a222c; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; align-self: start; }
 .side h3 { font-size: 13px; color: #fff; margin-bottom: 10px; }
@@ -126,6 +126,28 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 
 .reveal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,20,25,0.75); z-index: 50; text-align: center; padding-top: 40vh; font-size: 18px; font-weight: bold; color: #ffd54f; }
 .reveal-overlay.show { display: block; }
+/* ===== LIVE v3 ===== */
+.v3-panel { background:#111820; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:11px; margin-bottom:10px; }
+.v3-title { font-size:12px; font-weight:800; color:#ffd54f; margin-bottom:8px; }
+.v3-sub { font-size:10px; color:#78909c; margin:8px 0 4px; }
+.v3-btn-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
+.v3-btn { padding:8px 5px; border:1px solid rgba(255,255,255,.10); background:#202b36; color:#e8eef2; border-radius:7px; font-size:10px; font-weight:700; cursor:pointer; }
+.v3-btn:hover { background:#2d3a47; }
+.v3-btn:disabled { opacity:.3; cursor:default; }
+.v3-select { width:100%; padding:7px; background:#0c1218; color:#e6e6e6; border:1px solid rgba(255,255,255,.12); border-radius:7px; font-size:10px; margin-bottom:6px; }
+.bp-item { padding:7px 5px; border-bottom:1px solid rgba(255,255,255,.05); font-size:10px; }
+.bp-head { display:flex; justify-content:space-between; gap:4px; }
+.bp-bar { height:5px; background:#263238; border-radius:4px; overflow:hidden; margin-top:5px; }
+.bp-fill { height:100%; background:#66bb6a; }
+.bp-fill.ready { background:#ffd54f; }
+.chat { max-height:570px; overflow:auto; }
+.chat-item { padding:7px 5px; border-bottom:1px solid rgba(255,255,255,.05); font-size:10.5px; line-height:1.45; }
+.chat-role { color:#ffd54f; font-weight:800; margin-bottom:2px; }
+.def-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+.def-cell { background:#18222c; border-radius:6px; padding:5px 3px; text-align:center; font-size:9px; }
+.def-cell .pos { color:#78909c; font-size:8px; }
+.def-cell .name { color:#fff; font-weight:700; margin-top:2px; }
+
 </style>
 </head>
 <body>
@@ -134,20 +156,101 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 
 <div class="wrap">
 
-    <!-- 원정 사이드 -->
+    <!-- LEFT: 감독 개입 패널 -->
     <div class="side">
-        <h3>{{ away.logo }} {{ away.team_name }}</h3>
-        {% for r in away_lineup %}
-        <div class="lp {% if r.at_bat %}atbat{% endif %} {% if r.sub %}subbed{% endif %}">
-            <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }} {{ r.cond }}</span><span class="ov">{{ r.overall }}</span>
+        <div class="v3-panel">
+            <div class="v3-title">🧢 감독 개입</div>
+            {% if state.pending not in ('finished','mode_select') %}
+            <div class="v3-sub">🔥 불펜</div>
+            {% set bp = bullpen_status[us] if us else [] %}
+            {% for p in bp %}
+            <div class="bp-item">
+                <div class="bp-head">
+                    <span>{{ p.name }}{% if p.is_cp %} · CL{% endif %}</span>
+                    <span>{% if p.ready %}🟢 준비{% elif p.warming %}🟡 준비중{% else %}⚪ 대기{% endif %}</span>
+                </div>
+                <div style="color:#78909c;">{{ p.overall }} OVR · {{ p.warmup }}/{{ p.required }}구</div>
+                <div class="bp-bar"><div class="bp-fill {% if p.ready %}ready{% endif %}" style="width:{{ [100, (p.warmup/p.required*100)|round(0)]|min }}%;"></div></div>
+                <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}" style="margin-top:5px;">
+                    <input type="hidden" name="ph_id" value="{{ p.id }}">
+                    {% if p.warming %}
+                    <button class="v3-btn" name="action" value="bp_stop">몸풀기 중단</button>
+                    {% else %}
+                    <button class="v3-btn" name="action" value="bp_start" {% if p.ready %}disabled{% endif %}>준비시키기</button>
+                    {% endif %}
+                    <button class="v3-btn" name="action" value="bp_ready_pitch" {% if not p.ready %}disabled{% endif %}>등판</button>
+                </form>
+            </div>
+            {% endfor %}
+
+            <div class="v3-sub">⚾ 대타 준비</div>
+            {% if bench %}
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                <select class="v3-select" name="ph_id">
+                    {% for p in bench %}
+                    <option value="{{ p.id }}">{{ p.name }} · {{ p.positions }} · {{ p.overall }}</option>
+                    {% endfor %}
+                </select>
+                <button class="v3-btn" name="action" value="ph_warm">대타 준비</button>
+                <button class="v3-btn" name="action" value="ph">즉시 대타</button>
+            </form>
+            {% else %}
+            <div style="font-size:10px;color:#78909c;">사용 가능한 대타 없음</div>
+            {% endif %}
+
+            <div class="v3-sub">🎯 타격 접근</div>
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                <div class="v3-btn-grid">
+                    <button class="v3-btn" name="action" value="bat_approach"><input type="hidden" name="outcome" value="normal">기본</button>
+                    <button class="v3-btn" name="action" value="bat_approach"><input type="hidden" name="outcome" value="pull">당겨치기</button>
+                    <button class="v3-btn" name="action" value="bat_approach"><input type="hidden" name="outcome" value="oppo">밀어치기</button>
+                    <button class="v3-btn" name="action" value="bat_approach"><input type="hidden" name="outcome" value="contact">컨택</button>
+                    <button class="v3-btn" name="action" value="bat_approach"><input type="hidden" name="outcome" value="power">장타</button>
+                </div>
+            </form>
+
+            <div class="v3-sub">🛡 수비 위치</div>
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                <div class="v3-btn-grid">
+                    {% for val,label in [('normal','기본'),('infield_in','전진'),('deep','후진'),('pull','당겨치기'),('oppo','밀어치기')] %}
+                    <button class="v3-btn" name="action" value="def_shift_v3"><input type="hidden" name="outcome" value="{{ val }}">{{ label }}</button>
+                    {% endfor %}
+                </div>
+            </form>
+
+            <div class="v3-sub">💬 벤치 지시</div>
+            <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                <div class="v3-btn-grid">
+                    <button class="v3-btn" name="action" value="mound_visit">마운드 방문</button>
+                    <button class="v3-btn" name="action" value="manager_encourage">선수 독려</button>
+                </div>
+            </form>
+            {% endif %}
         </div>
-        {% endfor %}
-        {% if box_away %}
-        <div class="sec">📊 오늘 기록</div>
-        {% for v in box_away %}
-        <div class="bx">{{ v.name }} — {% if v.so or v.saves %}{{ v.so }}K{% if v.saves %} S{% endif %}{% else %}{{ v.hits }}안타{% if v.hr %} {{ v.hr }}홈런{% endif %}{% if v.rbi %} {{ v.rbi }}타점{% endif %}{% if v.sb %} {{ v.sb }}도루{% endif %}{% endif %}</div>
-        {% endfor %}
+
+        {% if us %}
+        <div class="v3-panel">
+            <div class="v3-title">🛡 실제 수비진</div>
+            <div class="def-grid">
+                {% for d in defense_view[us] %}
+                <div class="def-cell">
+                    <div class="pos">{{ d.pos }}</div>
+                    <div class="name">{{ d.name }}</div>
+                    <div style="color:#78909c;">{{ d.overall }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         {% endif %}
+
+        <div class="v3-panel">
+            <div class="v3-title">{{ away.logo }} {{ away.team_name }}</div>
+            {% for r in away_lineup %}
+            <div class="lp {% if r.at_bat %}atbat{% endif %} {% if r.sub %}subbed{% endif %}">
+                <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }} {{ r.cond }}</span><span class="ov">{{ r.overall }}</span>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
     <!-- 중앙 -->
@@ -672,6 +775,16 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
             {% for h in highlights %}
             <div class="f-hl">🎬 {{ h }}</div>
             {% endfor %}
+            {% if manager_report %}
+            <div class="v3-panel" style="margin-top:14px;text-align:left;">
+                <div class="v3-title">🧢 LIVE v3 감독 리포트</div>
+                {% for r in manager_report %}
+                <div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0;">
+                    <span>{{ r.label }}</span><span>{{ '★' * r.value }}{{ '☆' * (5-r.value) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
             {% if save.is_gauntlet %}
             <a class="btn-home" href="{{ url_for('gauntlet.g_return', save_id=save.id) }}">🍂 시리즈로 돌아가기</a>
             {% else %}
@@ -700,29 +813,67 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         {% endif %}
     </div>
 
-    <!-- 홈 사이드 -->
+    <!-- RIGHT: 실시간 벤치 대화 -->
     <div class="side">
-        <h3>{{ home.logo }} {{ home.team_name }}</h3>
-        {% for r in home_lineup %}
-        <div class="lp {% if r.at_bat %}atbat{% endif %} {% if r.sub %}subbed{% endif %}">
-            <span class="n">{{ r.num }}</span><span class="nm">{{ r.name }} {{ r.cond }}</span><span class="ov">{{ r.overall }}</span>
+        <div class="v3-panel">
+            <div class="v3-title">💬 BENCH · 실시간 대화</div>
+            <div class="chat">
+                {% if bench_chat %}
+                {% for m in bench_chat | reverse %}
+                <div class="chat-item">
+                    <div class="chat-role">{{ m.role }}</div>
+                    <div>{{ m.text }}</div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="font-size:10px;color:#78909c;">아직 벤치 대화가 없습니다.</div>
+                {% endif %}
+            </div>
         </div>
-        {% endfor %}
+
+        {% if us %}
+        <div class="v3-panel">
+            <div class="v3-title">🛡 상대 수비진</div>
+            <div class="def-grid">
+                {% set opp_side = 'away' if us == 'home' else 'home' %}
+                {% for d in defense_view[opp_side] %}
+                <div class="def-cell">
+                    <div class="pos">{{ d.pos }}</div>
+                    <div class="name">{{ d.name }}</div>
+                    <div style="color:#78909c;">{{ d.overall }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="v3-panel">
+            <div class="v3-title">📋 오늘의 흐름</div>
+            {% if state.log %}
+                {% for line in state.log[:8] %}
+                <div class="chat-item">{{ line }}</div>
+                {% endfor %}
+            {% else %}
+                <div style="font-size:10px;color:#78909c;">경기 로그 대기 중</div>
+            {% endif %}
+        </div>
+
         {% if box_home %}
-        <div class="sec">📊 오늘 기록</div>
-        {% for v in box_home %}
-        <div class="bx">{{ v.name }} — {% if v.so or v.saves %}{{ v.so }}K{% if v.saves %} S{% endif %}{% else %}{{ v.hits }}안타{% if v.hr %} {{ v.hr }}홈런{% endif %}{% if v.rbi %} {{ v.rbi }}타점{% endif %}{% if v.sb %} {{ v.sb }}도루{% endif %}{% endif %}</div>
-        {% endfor %}
+        <div class="v3-panel">
+            <div class="v3-title">{{ home.logo }} {{ home.team_name }} 기록</div>
+            {% for v in box_home %}
+            <div class="bx">{{ v.name }} — {% if v.so or v.saves %}{{ v.so }}K{% if v.saves %} S{% endif %}{% else %}{{ v.hits }}안타{% if v.hr %} {{ v.hr }}홈런{% endif %}{% if v.rbi %} {{ v.rbi }}타점{% endif %}{% endif %}</div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
-
 </div>
 
 <script>
 // 결과 리빌: 진행성 액션만 0.6초 연출 후 제출
 var REVEAL_ACTIONS = ["swing","bunt","steal","hitrun","ph","send",
     "guess_fast","guess_break","cut","duel_attack","duel_bait","duel_avoid",
-    "pitch_keep","pitch_rp","pitch_cp","ibb","challenge_yes"];
+    "pitch_keep","pitch_rp","pitch_cp","ibb","challenge_yes","bp_start","bp_stop","bp_ready_pitch","ph_warm","ph","bat_approach","def_shift_v3","mound_visit","manager_encourage"];
 var submitting = false;
 function reveal(form) {
     if (submitting) return false;
