@@ -1,4 +1,4 @@
-# dynasty_live_routes.py - v2 전체 교체본
+# dynasty_live_routes.py - v3 전체 교체본
 # =========================================
 # app.py 등록:
 #   from dynasty_live_routes import live_bp
@@ -195,6 +195,41 @@ def _render(save_id, live_row):
 
     save = sb.table("dynasty_save").select("*").eq("id", save_id).execute().data[0]
 
+
+    # ===== LIVE v3 UI 데이터 =====
+    bullpen_status = {"home": [], "away": []}
+    for side in ("home", "away"):
+        bp = state.get("bullpen", {}).get(side, {})
+        team = ctx[side]
+        for p in team.get("rps", []) + ([team["cp"]] if team.get("cp") else []):
+            item = bp.get(str(p["id"]), {})
+            bullpen_status[side].append({
+                "id": p["id"], "name": p["name"], "overall": p["overall"],
+                "warming": item.get("warming", False),
+                "warmup": item.get("warmup_pitches", 0),
+                "required": item.get("required_pitches", state.get("pitcher_warmup_required", 15)),
+                "ready": item.get("ready", False),
+                "is_cp": bool(team.get("cp") and team["cp"]["id"] == p["id"]),
+            })
+
+    defense_view = {}
+    for side in ("home", "away"):
+        defense_view[side] = []
+        for pos in ["P","C","1B","2B","3B","SS","LF","CF","RF"]:
+            if pos == "P":
+                pk2 = "h_pitcher" if side == "home" else "a_pitcher"
+                p = ctx["players"].get(state.get(pk2))
+            else:
+                p = ctx["players"].get(state.get("defense", {}).get(side, {}).get(pos))
+            if p:
+                defense_view[side].append({
+                    "pos": pos, "id": p["id"], "name": p["name"],
+                    "overall": p["overall"], "positions": p.get("positions") or ""
+                })
+
+    bench_chat = state.get("bench_chat", [])[-18:]
+    manager_report = state.get("manager_report", [])
+
     return render_template(
         "dynasty_live.html",
         save=save,
@@ -235,4 +270,9 @@ def _render(save_id, live_row):
         is_scenario=bool(state.get("scenario")),
         view_options=view_options,
         pitch_speed=(max(600, 1300 - (cur_pitcher["overall"] or 50) * 8) if cur_pitcher else 900),
+        bullpen_status=bullpen_status,
+        defense_view=defense_view,
+        bench_chat=bench_chat,
+        manager_report=manager_report,
+        defense_shift=state.get("defense_shift", {}).get(us, "normal") if us else "normal",
     )
