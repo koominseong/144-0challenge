@@ -13,7 +13,7 @@ from dynasty_utils import get_supabase
 from dynasty_game import _plate_appearance, _load_all
 from dynasty_stats import flush_stats
 
-FAN_MAX = 2000000
+FAN_MAX = 200000
 
 # =========================================
 # 중계 멘트 풀
@@ -217,9 +217,12 @@ def load_context(save_id, state):
         team["def_avg"] = sum(vals) / len(vals)
 
     # LIVE v3: 실제 수비 포지션/불펜 상태 초기화
-    ensure_defense(state, {"home": home, "away": away, "players": players})
-    _ensure_bullpen(state, {"home": home, "away": away, "players": players}, "home")
-    _ensure_bullpen(state, {"home": home, "away": away, "players": players}, "away")
+    ctx_bootstrap = {"home": home, "away": away, "players": players}
+    _fill_emergency_bullpen(ctx_bootstrap, "home")
+    _fill_emergency_bullpen(ctx_bootstrap, "away")
+    ensure_defense(state, ctx_bootstrap)
+    _ensure_bullpen(state, ctx_bootstrap, "home")
+    _ensure_bullpen(state, ctx_bootstrap, "away")
 
     try:
         from dynasty_staff import get_staff_effects
@@ -402,6 +405,25 @@ def _apply_defense_result(state, ctx, def_side, batter, result, log_prefix):
         f"({kind}, 수비 {round(rating)})"
     )
     return result, direction
+
+def _fill_emergency_bullpen(ctx, side):
+    """로스터에 RP/CP로 등록된 투수가 한 명도 없을 때를 대비한 안전장치.
+    (원인은 dynasty_roster 테이블에 role='RP'/'CP' 행이 없는 것 — 로스터 데이터 문제.
+    이 함수는 그 문제를 고치지 않고, 경기가 진행 가능하도록 벤치의 투수 포지션
+    선수를 임시로 불펜에 배치할 뿐이다. DB에는 저장되지 않는다.)
+    """
+    team = ctx.get(side)
+    if not team or team.get("rps") or team.get("cp"):
+        return
+    candidates = [p for p in team.get("bench", []) if _has_position(p, "P")]
+    if not candidates:
+        return
+    candidates.sort(key=lambda p: -(p.get("overall") or 0))
+    team["rps"] = candidates[:3]
+    if len(candidates) >= 4:
+        team["cp"] = candidates[3]
+    team["emergency_bullpen"] = True
+
 
 def _ensure_bullpen(state, ctx, side):
     team = ctx[side]
