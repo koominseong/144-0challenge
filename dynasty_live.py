@@ -1,5 +1,8 @@
-# dynasty_live.py - v3
-# KBO Dynasty LIVE v3 - 벤치 운영 / 실제 포지션 수비 / 코치 개입
+# dynasty_live.py - v3.3
+# 감독 개입 / 불펜 준비투구 / 수비 위치 / 감독·코치 대화
+# 기존 v2 기능 유지
+
+# dynasty_live.py - v2 Part1
 # =========================================
 # KBO Dynasty - 감독 모드 v2
 # 중계 멘트 풀 / 클러치 듀얼 / 작전 포인트 / 비디오 판독
@@ -8,7 +11,6 @@
 
 import math
 import random
-import re
 from dynasty_utils import get_supabase
 from dynasty_game import _plate_appearance, _load_all
 from dynasty_stats import flush_stats
@@ -106,24 +108,92 @@ def _base_state(home_id, away_id, week, season):
         "focus_player": None,          # 빙의 대상 pid
         "pregame_done": False,
 
-        # ===== LIVE v3: 벤치 운영 =====
+        # ===== v3.3 감독 개입 상태 =====
+        "tactic": "normal",
+        "defense_mode": "normal",
         "bullpen": {"home": {}, "away": {}},
-        "bat_warmup": {"home": {}, "away": {}},
-        "bench_chat": [],
-        "bench_last_event": None,
-        "bat_approach": None,
-        "pitch_plan": None,
-        "manager_mood": "normal",
-        "defense": {"home": {}, "away": {}},
-        "defense_shift": {"home": "normal", "away": "normal"},
-        "defense_move_count": {"home": 0, "away": 0},
-        "pitcher_warmup_required": 15,
-        "batter_warmup_required": 1,
-        "coach_memory": {},
-        "manager_report": [],
+        "bullpen_required": 15,
+        "defense_positions": {"home": {}, "away": {}},
+        "coach_messages": [],
     }
 
 # dynasty_live.py - v2 Part2
+
+# =========================================
+# v3.3 감독 개입 헬퍼
+# =========================================
+def _ensure_v33_state(state, ctx=None):
+    state.setdefault("tactic", "normal")
+    state.setdefault("defense_mode", "normal")
+    state.setdefault("bullpen", {"home": {}, "away": {}})
+    state.setdefault("bullpen_required", 15)
+    state.setdefault("defense_positions", {"home": {}, "away": {}})
+    state.setdefault("coach_messages", [])
+
+    # 기존 저장 게임에도 안전하게 초기화
+    for side in ("home", "away"):
+        state["bullpen"].setdefault(side, {})
+        state["defense_positions"].setdefault(side, {})
+
+    if ctx:
+        for side in ("home", "away"):
+            team = ctx.get(side) or {}
+            positions = state["defense_positions"][side]
+            players = team.get("batters", [])
+            # 포지션 정보가 있는 선수부터 자연스럽게 배치
+            for p in players:
+                pos_text = str(p.get("positions") or "").upper().replace(" ", "")
+                for pos in ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF"):
+                    if pos not in positions and pos in pos_text:
+                        positions[pos] = p["id"]
+            # 아직 빈 자리는 타순으로 채움
+            for i, pos in enumerate(("C","1B","2B","3B","SS","LF","CF","RF")):
+                if pos not in positions and i < len(players):
+                    positions[pos] = players[i]["id"]
+
+
+def _coach(state, text, role="감독"):
+    state.setdefault("coach_messages", []).append({
+        "role": role,
+        "text": text,
+    })
+    state["coach_messages"] = state["coach_messages"][-12:]
+    state.setdefault("log", []).append(f"💬 {role}: {text}")
+
+
+def _bp_entry(state, side, pid):
+    bp = state.setdefault("bullpen", {}).setdefault(side, {})
+    return bp.setdefault(str(pid), {
+        "warming": False,
+        "warmup_pitches": 0,
+        "required_pitches": state.get("bullpen_required", 15),
+        "ready": False,
+    })
+
+
+def _warmup_pitcher(state, side, pid, amount=5):
+    e = _bp_entry(state, side, pid)
+    e["warming"] = True
+    e["warmup_pitches"] = min(99, e.get("warmup_pitches", 0) + amount)
+    e["ready"] = e["warmup_pitches"] >= e.get("required_pitches", 15)
+    return e
+
+
+def _defense_modifier(state, ctx, side):
+    positions = state.get("defense_positions", {}).get(side, {})
+    team = ctx.get(side) or {}
+    players = ctx.get("players", {})
+    total = 0.0
+    count = 0
+    for pos, pid in positions.items():
+        p = players.get(pid)
+        if not p:
+            continue
+        count += 1
+        text = str(p.get("positions") or "").upper().replace(" ", "")
+        total += 0.015 if pos in text else -0.025
+    return total / max(1, count)
+
 
 # =========================================
 # 컨텍스트 로드 (v1과 동일 + fx)
@@ -177,11 +247,6 @@ def load_context(save_id, state):
             vals.append((players.get(oid, p) if oid else p)["overall"])
         team["def_avg"] = sum(vals) / len(vals)
 
-    # LIVE v3.2: 실제 수비 포지션/불펜 상태 초기화
-    ensure_defense(state, {"home": home, "away": away, "players": players})
-    _ensure_bullpen(state, {"home": home, "away": away, "players": players}, "home")
-    _ensure_bullpen(state, {"home": home, "away": away, "players": players}, "away")
-
     try:
         from dynasty_staff import get_staff_effects
         fx = get_staff_effects(save_id)
@@ -196,288 +261,6 @@ def load_context(save_id, state):
         "away_fx": fx.get(state["away_id"], {}),
         "players": players,
     }
-
-
-
-# =========================================
-# LIVE v3.2 - 벤치/포지션 엔진
-# =========================================
-
-DEF_POSITIONS = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF"]
-ALL_FIELD_POSITIONS = ["P"] + DEF_POSITIONS
-
-def _positions(p):
-    raw = p.get("positions") or ""
-    if isinstance(raw, list):
-        return [str(x).upper().strip() for x in raw]
-    return [x.strip().upper() for x in re.split(r"[,/| ]+", str(raw)) if x.strip()]
-
-def _has_position(p, pos):
-    return pos.upper() in _positions(p)
-
-def _def_rating(p, pos):
-    """포지션 적합도를 전체 OVR에서 보수적으로 추정.
-    기존 DB에 포지션별 수비 스탯이 없으므로 기존 positions/overall을 기반으로 한다."""
-    ov = float(p.get("overall") or 50)
-    pos = pos.upper()
-    positions = _positions(p)
-    if pos in positions:
-        return ov
-    if positions:
-        # 유사 포지션 적응도
-        groups = [
-            {"C"}, {"1B", "3B"}, {"2B", "SS"}, {"LF", "CF", "RF"}
-        ]
-        for g in groups:
-            if pos in g and any(x in g for x in positions):
-                return ov - 5
-    return ov - 14
-
-def _team_lineup_players(ctx, side, state):
-    team = ctx[side]
-    over = state.get("ph_over", {}).get(side, {})
-    out = []
-    for i, p in enumerate(team.get("batters", [])):
-        out.append(ctx["players"].get(over.get(str(i)), p))
-    return out
-
-def _build_defense(side, ctx, state):
-    """실제 8개 야수 포지션에 선수를 배치한다. P는 별도 pitcher."""
-    team = ctx[side]
-    lineup = _team_lineup_players(ctx, side, state)
-    existing = state.get("defense", {}).get(side, {})
-    used = set()
-    defense = {}
-
-    # 기존 배치를 우선 보존
-    for pos in DEF_POSITIONS:
-        pid = existing.get(pos)
-        if pid and pid in ctx["players"]:
-            p = ctx["players"][pid]
-            if p in lineup and pid not in used:
-                defense[pos] = pid
-                used.add(pid)
-
-    # DB의 positions를 이용해 가장 적합한 선수 배치
-    for pos in DEF_POSITIONS:
-        if pos in defense:
-            continue
-        candidates = [p for p in lineup if p["id"] not in used]
-        if not candidates:
-            continue
-        best = max(candidates, key=lambda p: _def_rating(p, pos))
-        defense[pos] = best["id"]
-        used.add(best["id"])
-
-    state.setdefault("defense", {})[side] = defense
-    return defense
-
-def ensure_defense(state, ctx):
-    _build_defense("home", ctx, state)
-    _build_defense("away", ctx, state)
-
-def _current_defender(state, ctx, side, pos):
-    defense = state.get("defense", {}).get(side, {})
-    pid = defense.get(pos)
-    return ctx["players"].get(pid) if pid else None
-
-def _defense_shift_bonus(state, side, pos):
-    mode = state.get("defense_shift", {}).get(side, "normal")
-    if mode == "normal":
-        return 0.0
-    if mode == "infield_in":
-        return 0.08 if pos in ("3B", "SS", "2B", "1B") else -0.02
-    if mode == "deep":
-        return 0.05 if pos in ("LF", "CF", "RF") else -0.02
-    if mode == "pull":
-        return 0.07 if pos in ("2B", "SS", "1B", "RF") else -0.025
-    if mode == "oppo":
-        return 0.06 if pos in ("3B", "SS", "LF") else -0.02
-    return 0.0
-
-def _choose_batted_ball(batter, result, state, side):
-    """기존 결과를 유지하면서 수비가 개입할 수 있는 타구 방향/유형을 생성."""
-    if result not in ("OUT", "1B", "2B", "3B"):
-        return None, None
-    c = float(batter.get("contact") or 50)
-    power = float(batter.get("power") or 50)
-    roll = random.random()
-    if result == "OUT":
-        kind = "GB" if roll < 0.52 else ("LD" if roll < 0.78 else "FB")
-    else:
-        kind = "GB" if roll < 0.38 else ("LD" if roll < 0.70 else "FB")
-    # 타자 성향 + 랜덤으로 방향 결정
-    dirs = ["1B", "2B", "SS", "3B", "LF", "CF", "RF"]
-    weights = [12, 12, 14, 14, 15, 18, 15]
-    if state.get("bat_approach") == "pull":
-        weights = [16, 15, 20, 6, 7, 14, 22]
-    elif state.get("bat_approach") == "oppo":
-        weights = [8, 8, 5, 17, 24, 20, 18]
-    if power > 75:
-        kind = "LD" if roll < .55 else kind
-    direction = random.choices(dirs, weights=weights)[0]
-    return kind, direction
-
-def _apply_defense_result(state, ctx, def_side, batter, result, log_prefix):
-    """실제 수비 포지션/수비수/위치가 타구 결과에 영향을 주도록 한다."""
-    kind, direction = _choose_batted_ball(batter, result, state, def_side)
-    if not direction:
-        return result, None
-
-    defender = _current_defender(state, ctx, def_side, direction)
-    if not defender:
-        return result, direction
-
-    rating = _def_rating(defender, direction)
-    pos_bonus = _defense_shift_bonus(state, def_side, direction)
-    # 기본 포구 확률: 결과에 따라 난이도 차이
-    if result == "OUT":
-        catch_p = 0.10 + max(0.0, rating - 60) * 0.003 + pos_bonus
-    elif result == "1B":
-        catch_p = 0.015 + max(0.0, rating - 65) * 0.0035 + pos_bonus
-    elif result == "2B":
-        catch_p = 0.006 + max(0.0, rating - 72) * 0.0025 + pos_bonus
-    else:
-        catch_p = 0.0
-
-    catch_p = max(0.0, min(0.42, catch_p))
-
-    # 좋은 수비가 안타를 지우거나, 나쁜 위치가 평범한 타구를 살려준다.
-    if result in ("1B", "2B") and random.random() < catch_p:
-        state["log"].append(
-            f"{log_prefix} 🛡 {defender['name']}({direction})가 타구를 걷어냅니다! "
-            f"— {kind} 수비 성공"
-        )
-        return "OUT", direction
-
-    if result == "OUT":
-        miss = max(0.0, 0.055 - max(0.0, rating - 55) * 0.0015 - pos_bonus * 0.35)
-        if random.random() < miss:
-            state["log"].append(
-                f"{log_prefix} ⚠ {defender['name']}({direction})의 수비 범위를 살짝 벗어납니다."
-            )
-            return "1B", direction
-
-    state["log"].append(
-        f"{log_prefix} 🛡 타구 방향 {direction} · 수비 {defender['name']} "
-        f"({kind}, 수비 {round(rating)})"
-    )
-    return result, direction
-
-def _ensure_bullpen(state, ctx, side):
-    team = ctx[side]
-    bp = state.setdefault("bullpen", {}).setdefault(side, {})
-    for p in team.get("rps", []):
-        k = str(p["id"])
-        bp.setdefault(k, {
-            "warming": False,
-            "warmup_pitches": 0,
-            "required_pitches": state.get("pitcher_warmup_required", 15),
-            "ready": False,
-            "fatigue": 0.0,
-        })
-    if team.get("cp"):
-        p = team["cp"]
-        k = str(p["id"])
-        bp.setdefault(k, {
-            "warming": False,
-            "warmup_pitches": 0,
-            "required_pitches": state.get("pitcher_warmup_required", 15),
-            "ready": False,
-            "fatigue": 0.0,
-        })
-    return bp
-
-def _start_warmup(state, ctx, side, pid):
-    team = ctx[side]
-    p = ctx["players"].get(pid)
-    if not p or p not in team.get("rps", []) and (not team.get("cp") or team["cp"]["id"] != pid):
-        return False, "불펜 투수가 아닙니다."
-    bp = _ensure_bullpen(state, ctx, side)
-    item = bp.setdefault(str(pid), {
-        "warming": False, "warmup_pitches": 0,
-        "required_pitches": state.get("pitcher_warmup_required", 15),
-        "ready": False, "fatigue": 0.0
-    })
-    if item["warming"]:
-        return False, f"{p['name']}은(는) 이미 몸을 풀고 있습니다."
-    item["warming"] = True
-    state.setdefault("bench_chat", []).append({
-        "role": "🧤 투수코치", "text": f"{p['name']} 준비시키겠습니다. {item['warmup_pitches']}/{item['required_pitches']}구."
-    })
-    return True, f"🔥 {p['name']} 불펜 준비 시작"
-
-def _stop_warmup(state, ctx, side, pid):
-    bp = _ensure_bullpen(state, ctx, side)
-    item = bp.get(str(pid))
-    p = ctx["players"].get(pid)
-    if not item or not item.get("warming"):
-        return False, "현재 준비 중인 투수가 아닙니다."
-    item["warming"] = False
-    item["fatigue"] = min(1.0, item.get("fatigue", 0) + item["warmup_pitches"] * 0.003)
-    return True, f"🧊 {p['name']} 몸풀기를 중단했습니다."
-
-def _advance_warmups(state, ctx):
-    for side in ("home", "away"):
-        bp = _ensure_bullpen(state, ctx, side)
-        for pid, item in bp.items():
-            if not item.get("warming"):
-                continue
-            # 타석 단위로 2~4구씩 준비
-            item["warmup_pitches"] = min(
-                item["required_pitches"],
-                item["warmup_pitches"] + random.randint(2, 4)
-            )
-            if item["warmup_pitches"] >= item["required_pitches"]:
-                item["ready"] = True
-
-def _bullpen_ready(state, side, pid):
-    item = state.get("bullpen", {}).get(side, {}).get(str(pid))
-    return bool(item and item.get("ready"))
-
-def _start_batter_warmup(state, ctx, side, pid):
-    p = ctx["players"].get(pid)
-    if not p:
-        return False, "선수를 찾을 수 없습니다."
-    state.setdefault("bat_warmup", {}).setdefault(side, {})[str(pid)] = {
-        "warming": True, "ready": True
-    }
-    state.setdefault("bench_chat", []).append({
-        "role": "⚾ 타격코치", "text": f"{p['name']} 대타 준비됐습니다."
-    })
-    return True, f"⚾ {p['name']} 대타 준비"
-
-def _bench_message(state, role, text):
-    chat = state.setdefault("bench_chat", [])
-    chat.append({"role": role, "text": text})
-    state["bench_chat"] = chat[-30:]
-    state["bench_last_event"] = {"role": role, "text": text}
-
-def _coach_context_messages(state, ctx):
-    """상황이 바뀔 때 한두 줄만 자동 생성. 스팸을 막기 위해 핵심 이벤트만."""
-    off, de = offense_defense(state)
-    us = user_side(state, ctx)
-    if not us:
-        return
-    team = ctx[us]
-    if de == us:
-        pk = "h_pitcher" if us == "home" else "a_pitcher"
-        p = ctx["players"].get(state.get(pk))
-        if p:
-            outs = state["h_pit_outs" if us == "home" else "a_pit_outs"]
-            maxo = int(12 + (p.get("stamina") or 50) * .21)
-            if outs >= maxo * .8 and not state.get("coach_memory", {}).get(f"fatigue_{p['id']}"):
-                _bench_message(state, "🧤 투수코치",
-                               f"{p['name']} 투구 부담이 커졌습니다. 불펜 준비를 권합니다.")
-                state.setdefault("coach_memory", {})[f"fatigue_{p['id']}"] = True
-    if off == us:
-        batter, _ = _current_batter(state, ctx, off)
-        if batter:
-            approach = state.get("bat_approach")
-            if approach == "pull":
-                _bench_message(state, "⚾ 타격코치", f"{batter['name']}에게 당겨치기 접근을 지시했습니다.")
-            elif approach == "oppo":
-                _bench_message(state, "⚾ 타격코치", f"{batter['name']}에게 밀어치기 접근을 지시했습니다.")
 
 
 def user_side(state, ctx):
@@ -657,6 +440,25 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
     bat_mod += _momentum_mod(state, off)
     bat_mod += duel_mod
 
+    # v3.3 타격 지시
+    tactic = state.get("tactic", "normal") if off == us else "normal"
+    tactic_mod = {
+        "normal": 0.00,
+        "power": 0.025,
+        "contact": 0.018,
+        "slash": 0.010,
+        "bunt": 0.000,
+    }.get(tactic, 0.0)
+    bat_mod += tactic_mod
+
+    # v3.3 수비 위치/수비 지시
+    if def_:
+        bat_mod -= _defense_modifier(state, ctx, def_)
+        if state.get("defense_mode") == "shift":
+            bat_mod -= 0.012
+        elif state.get("defense_mode") == "deep":
+            bat_mod -= 0.006
+
     # 집중 지시 (작전 포인트)
     if state.get("focus_next") and off == us:
         bat_mod += 0.05
@@ -778,17 +580,12 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
             result = "1B"
             state["log"].append(f"{log_prefix} ⚠ 시프트의 빈 곳으로… 안타가 됩니다.")
 
-    # LIVE v3.2: 선수 포지션 → 타구 방향 → 실제 수비수 판정
-    result, ball_direction = _apply_defense_result(
-        state, ctx, def_, batter, result, log_prefix
-    )
-
-    # 기존 팀 평균 호수비 보정도 유지
+    # 호수비
     if result in ("1B", "2B"):
         def_avg = def_team.get("def_avg", 60) + def_fx.get("def_bonus", 0)
         if def_avg > 62 and random.random() < (def_avg - 62) * 0.004:
             result = "OUT"
-            state["log"].append(f"{log_prefix} ✨ 팀 수비력이 타구를 지워냅니다!")
+            state["log"].append(f"{log_prefix} ✨ 믿을 수 없는 호수비! 안타를 도둑맞았습니다!")
 
     if result == "K":
         state["outs"] += 1
@@ -1241,16 +1038,6 @@ def finish_live_game(save_id, live_row, state, ctx):
             continue
     flush_stats(save_id, state["season"], int_acc)
 
-    # LIVE v3.2 감독 리포트
-    state["manager_report"] = [
-        {"label": "불펜 운용", "value": min(5, 2 + sum(
-            1 for side in ("home", "away")
-            for v in state.get("bullpen", {}).get(side, {}).values() if v.get("ready")
-        ) // 2)},
-        {"label": "수비 위치 운용", "value": min(5, 3 + sum(state.get("defense_move_count", {}).values()) // 3)},
-        {"label": "벤치 개입", "value": min(5, 2 + len(state.get("bench_chat", [])) // 6)},
-        {"label": "타격 지시", "value": 4 if state.get("bat_approach") else 3},
-    ]
     state["pending"] = "finished"
     sb.table("dynasty_live_game").update(
         {"state": state, "finished": True}
@@ -1321,6 +1108,7 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
 
     state = live_row["state"]
     ctx = load_context(save_id, state)
+    _ensure_v33_state(state, ctx)
     us = user_side(state, ctx)
     mode = state.get("view_mode") or "manager"
 
@@ -1421,6 +1209,68 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
         state["shift"] = (user_action == "shift_on")
         state["log"].append("🛡 수비 시프트 " + ("가동" if state["shift"] else "해제"))
 
+    # =========================================
+    # v3.3 감독 지시
+    # =========================================
+    if tactic and us and state.get("pending") in ("offense", "duel_bat"):
+        state["tactic"] = tactic
+        labels = {
+            "normal": "강공", "power": "파워", "contact": "컨택",
+            "slash": "슬래시", "bunt": "번트"
+        }
+        _coach(state, f"타격 지시는 {labels.get(tactic, tactic)}로 갑니다.", "타격코치")
+
+    if defense_mode and us and state.get("pending") in ("pitching", "duel_pitch"):
+        state["defense_mode"] = defense_mode
+        labels = {"normal":"기본 수비", "shift":"시프트", "deep":"장타 방지"}
+        _coach(state, f"수비는 {labels.get(defense_mode, defense_mode)}로 맞춥니다.", "수비코치")
+
+    # 감독이 버튼으로 보낸 직접 지시
+    if user_action == "tactic_power" and us and state.get("pending") in ("offense", "duel_bat"):
+        state["tactic"] = "power"
+        _coach(state, "이번 타석은 강하게 노립니다.", "타격코치")
+    elif user_action == "tactic_contact" and us and state.get("pending") in ("offense", "duel_bat"):
+        state["tactic"] = "contact"
+        _coach(state, "무조건 맞히는 데 집중합니다.", "타격코치")
+    elif user_action == "tactic_normal" and us and state.get("pending") in ("offense", "duel_bat"):
+        state["tactic"] = "normal"
+        _coach(state, "기본 작전으로 갑니다.", "감독")
+    elif user_action == "def_shift" and us and state.get("pending") in ("pitching", "duel_pitch"):
+        state["defense_mode"] = "shift"
+        state["shift"] = True
+        _coach(state, "당겨칠 가능성이 높습니다. 시프트 걸죠.", "수비코치")
+    elif user_action == "def_deep" and us and state.get("pending") in ("pitching", "duel_pitch"):
+        state["defense_mode"] = "deep"
+        _coach(state, "장타를 막는 게 우선입니다.", "수비코치")
+    elif user_action == "def_normal" and us and state.get("pending") in ("pitching", "duel_pitch"):
+        state["defense_mode"] = "normal"
+        state["shift"] = False
+        _coach(state, "기본 수비로 돌아갑니다.", "감독")
+
+    # ----- 불펜 준비 -----
+    if user_action == "bp_start" and us and rp_id:
+        team = ctx[us]
+        rp = next((p for p in team.get("rps", []) if p["id"] == rp_id), None)
+        if rp:
+            _warmup_pitcher(state, us, rp_id, 5)
+            e = _bp_entry(state, us, rp_id)
+            _coach(state, f"{rp['name']} 몸 풀기 시작. {e['warmup_pitches']}/{e['required_pitches']}구", "불펜코치")
+
+    if user_action == "bp_pitch" and us and rp_id:
+        team = ctx[us]
+        rp = next((p for p in team.get("rps", []) if p["id"] == rp_id), None)
+        if rp:
+            e = _warmup_pitcher(state, us, rp_id, 5)
+            _coach(state, f"{rp['name']} 불펜 {e['warmup_pitches']}/{e['required_pitches']}구", "불펜코치")
+
+    if user_action == "bp_stop" and us and rp_id:
+        e = _bp_entry(state, us, rp_id)
+        e["warming"] = False
+        _coach(state, "불펜 대기 중단합니다.", "불펜코치")
+
+    if user_action in ("bp_start", "bp_pitch", "bp_stop"):
+        return _save_and_reload()
+
     # ----- 클러치/시점 듀얼: 타자 -----
     if user_action in ("guess_fast", "guess_break", "cut") and state["pending"] == "duel_bat":
         _, def_ = offense_defense(state)
@@ -1495,84 +1345,6 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
             if advance_if_needed(state, ctx) == "game_over":
                 return _finish()
 
-    # ===== LIVE v3: 벤치 운영 액션 =====
-    if us:
-        if user_action == "bp_start" and rp_id:
-            ok, txt = _start_warmup(state, ctx, us, rp_id)
-            state["log"].append(txt)
-        elif user_action == "bp_stop" and rp_id:
-            ok, txt = _stop_warmup(state, ctx, us, rp_id)
-            state["log"].append(txt)
-        elif user_action == "bp_ready_pitch" and rp_id:
-            item = state.get("bullpen", {}).get(us, {}).get(str(rp_id))
-            if item and item.get("ready"):
-                pitcher_key = "h_pitcher" if us == "home" else "a_pitcher"
-                pit_key = "h_pit_outs" if us == "home" else "a_pit_outs"
-                used_cp_key = "h_used_cp" if us == "home" else "a_used_cp"
-                nxt = ctx["players"].get(rp_id)
-                if nxt and rp_id != state.get(pitcher_key):
-                    state[pitcher_key] = ph_id
-                    state[pit_key] = 0
-                    if ctx[us].get("cp") and ctx[us]["cp"]["id"] == ph_id:
-                        state[used_cp_key] = True
-                    item["warming"] = False
-                    state["log"].append(f"🔄 {nxt['name']} 등판! 불펜 준비 완료.")
-                    _bench_message(state, "🧢 감독", f"{nxt['name']} 투입.")
-            else:
-                state["log"].append("⚠ 아직 등판 준비가 완료되지 않았습니다.")
-        elif user_action == "ph_warm" and ph_id:
-            ok, txt = _start_batter_warmup(state, ctx, us, ph_id)
-            state["log"].append(txt)
-        elif user_action == "bat_approach" and outcome:
-            approaches = {
-                "normal": ("normal", "🎯 평소 타격"),
-                "pull": ("pull", "💥 당겨치기 접근"),
-                "oppo": ("oppo", "↔ 밀어치기 접근"),
-                "contact": ("contact", "🎯 컨택 우선"),
-                "power": ("power", "🔨 장타 노리기"),
-            }
-            if outcome in approaches:
-                state["bat_approach"] = approaches[outcome][0]
-                state["log"].append(approaches[outcome][1])
-                _bench_message(state, "🧢 감독", approaches[outcome][1])
-        elif user_action == "def_shift_v3" and outcome:
-            modes = {
-                "normal": "normal", "infield_in": "infield_in",
-                "deep": "deep", "pull": "pull", "oppo": "oppo"
-            }
-            if outcome in modes:
-                state.setdefault("defense_shift", {})[us] = modes[outcome]
-                state.setdefault("defense_move_count", {})[us] = state.get("defense_move_count", {}).get(us, 0) + 1
-                state["log"].append(f"🛡 수비 위치 변경: {outcome}")
-                _bench_message(state, "🧤 수비코치", f"수비진을 {outcome} 방식으로 조정했습니다.")
-        elif user_action == "def_move" and ph_id and user_action_slot is not None:
-            pos = str(user_action_slot).upper()
-            if pos in DEF_POSITIONS:
-                defense = state.setdefault("defense", {}).setdefault(us, {})
-                old_pid = defense.get(pos)
-                candidate = ctx["players"].get(ph_id)
-                if candidate:
-                    defense[pos] = ph_id
-                    state.setdefault("defense_move_count", {})[us] = state.get("defense_move_count", {}).get(us, 0) + 1
-                    state["log"].append(f"🛡 {pos} 수비: {candidate['name']} 배치")
-                    if old_pid and old_pid != ph_id:
-                        _bench_message(state, "🧢 감독", f"{pos}에 {candidate['name']}을(를) 배치했습니다.")
-        elif user_action == "mound_visit":
-            state["manager_mood"] = "calm"
-            state["log"].append("🧢 감독이 마운드에 올라 투수와 대화합니다.")
-            _bench_message(state, "🧢 감독", "괜찮아. 다음 타자 하나만 보자.")
-            _bench_message(state, "🧤 투수코치", "승부구를 낮게 가져가겠습니다.")
-        elif user_action == "manager_encourage":
-            state["manager_mood"] = "fire"
-            state["log"].append("🔥 감독이 덕아웃에서 선수들을 독려합니다.")
-            _bench_message(state, "🧢 감독", "좋아. 여기서 한 번 더 집중하자!")
-        elif user_action == "challenge_advice":
-            _bench_message(state, "📊 전력분석", "판독 요청을 권합니다. 현재 판정은 접전입니다.")
-
-    # 자동 워밍업 진행: 한 타석이 소비될 때마다 반영
-    _advance_warmups(state, ctx)
-    _coach_context_messages(state, ctx)
-
     # ----- 대타 -----
     if user_action == "ph" and us and ph_id and state["pending"] == "offense":
         team = ctx[us]
@@ -1642,25 +1414,20 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
                 cur = state[pitcher_key]
                 nxt = next((p for p in team["rps"] if p["id"] != cur), None)
             if nxt and nxt["id"] != state[pitcher_key]:
-                item = state.get("bullpen", {}).get(us, {}).get(str(nxt["id"]))
-                if item and item.get("ready"):
+                e = _bp_entry(state, us, nxt["id"])
+                if not e.get("ready"):
+                    _coach(state, f"{nxt['name']} 아직 준비가 안 됐습니다. {e.get('warmup_pitches',0)}/{e.get('required_pitches',15)}구", "불펜코치")
+                else:
                     state[pitcher_key] = nxt["id"]
                     state[pit_outs_key] = 0
-                    item["warming"] = False
+                    e["warming"] = False
                     state["log"].append(f"🔄 투수 교체: {nxt['name']}")
-                else:
-                    state["log"].append(f"⚠ {nxt['name']}은(는) 아직 워밍업 중입니다.")
+                    _coach(state, f"{nxt['name']} 준비 완료. 투입합니다.", "감독")
         elif user_action == "pitch_cp" and team["cp"] and not state[used_cp_key]:
-            pid = team["cp"]["id"]
-            item = state.get("bullpen", {}).get(us, {}).get(str(pid))
-            if item and item.get("ready"):
-                state[pitcher_key] = pid
-                state[pit_outs_key] = 0
-                state[used_cp_key] = True
-                item["warming"] = False
-                state["log"].append(f"🧯 마무리 등판: {team['cp']['name']}")
-            else:
-                state["log"].append(f"⚠ {team['cp']['name']} 아직 준비되지 않았습니다.")
+            state[pitcher_key] = team["cp"]["id"]
+            state[pit_outs_key] = 0
+            state[used_cp_key] = True
+            state["log"].append(f"🧯 마무리 등판: {team['cp']['name']}")
 
         off, _ = offense_defense(state)
         ai_pinch_hit(state, ctx, off)
@@ -1671,11 +1438,6 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
             state["pending"] = None
             if advance_if_needed(state, ctx) == "game_over":
                 return _finish()
-
-    # ----- LIVE v3 상태 보정 -----
-    ensure_defense(state, ctx)
-    _ensure_bullpen(state, ctx, "home")
-    _ensure_bullpen(state, ctx, "away")
 
     # ----- 자동 진행 루프 -----
     guard = 0
