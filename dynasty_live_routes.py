@@ -1,4 +1,4 @@
-# dynasty_live_routes.py - v3.1 전체 교체본
+# dynasty_live_routes.py - v3 전체 교체본
 # =========================================
 # app.py 등록:
 #   from dynasty_live_routes import live_bp
@@ -58,13 +58,6 @@ def _render(save_id, live_row):
     home = ctx["team_map"][state["home_id"]]
     away = ctx["team_map"][state["away_id"]]
     us = user_side(state, ctx)
-    # 기존 저장 경기에서 user_side가 비어 있는 경우를 대비한 보정
-    if us is None:
-        for side in ("home", "away"):
-            team = ctx.get("team_map", {}).get(state.get(f"{side}_id"))
-            if team and team.get("is_user"):
-                us = side
-                break
     off, def_ = offense_defense(state)
     mode = state.get("view_mode") or "manager"
 
@@ -203,39 +196,34 @@ def _render(save_id, live_row):
     save = sb.table("dynasty_save").select("*").eq("id", save_id).execute().data[0]
 
 
-    # ===== LIVE v3 UI 데이터 =====
-    bullpen_status = {"home": [], "away": []}
-    for side in ("home", "away"):
-        bp = state.get("bullpen", {}).get(side, {})
-        team = ctx[side]
-        for p in team.get("rps", []) + ([team["cp"]] if team.get("cp") else []):
-            item = bp.get(str(p["id"]), {})
-            bullpen_status[side].append({
-                "id": p["id"], "name": p["name"], "overall": p["overall"],
-                "warming": item.get("warming", False),
+    # ===== LIVE v3.2 UI 데이터 =====
+    # 기존 LIVE의 ctx[us]["rps"] / cp를 그대로 사용한다.
+    live_rps = []
+    live_cp = None
+    if us:
+        current_pid = state.get("h_pitcher" if us == "home" else "a_pitcher")
+        for p in ctx[us].get("rps", []):
+            if p["id"] != current_pid:
+                item = state.get("bullpen", {}).get(us, {}).get(str(p["id"]), {})
+                live_rps.append({
+                    "id": p["id"], "name": p["name"], "overall": p["overall"],
+                    "cond": cond_mark(p["id"]),
+                    "warming": bool(item.get("warming")),
+                    "warmup": item.get("warmup_pitches", 0),
+                    "required": item.get("required_pitches", state.get("pitcher_warmup_required", 15)),
+                    "ready": bool(item.get("ready")),
+                })
+        cp = ctx[us].get("cp")
+        if cp and cp["id"] != current_pid:
+            item = state.get("bullpen", {}).get(us, {}).get(str(cp["id"]), {})
+            live_cp = {
+                "id": cp["id"], "name": cp["name"], "overall": cp["overall"],
+                "cond": cond_mark(cp["id"]),
+                "warming": bool(item.get("warming")),
                 "warmup": item.get("warmup_pitches", 0),
                 "required": item.get("required_pitches", state.get("pitcher_warmup_required", 15)),
-                "ready": item.get("ready", False),
-                "is_cp": bool(team.get("cp") and team["cp"]["id"] == p["id"]),
-            })
-
-    defense_view = {}
-    for side in ("home", "away"):
-        defense_view[side] = []
-        for pos in ["P","C","1B","2B","3B","SS","LF","CF","RF"]:
-            if pos == "P":
-                pk2 = "h_pitcher" if side == "home" else "a_pitcher"
-                p = ctx["players"].get(state.get(pk2))
-            else:
-                p = ctx["players"].get(state.get("defense", {}).get(side, {}).get(pos))
-            if p:
-                defense_view[side].append({
-                    "pos": pos, "id": p["id"], "name": p["name"],
-                    "overall": p["overall"], "positions": p.get("positions") or ""
-                })
-
-    bench_chat = state.get("bench_chat", [])[-18:]
-    manager_report = state.get("manager_report", [])
+                "ready": bool(item.get("ready")),
+            }
 
     return render_template(
         "dynasty_live.html",
@@ -278,6 +266,8 @@ def _render(save_id, live_row):
         view_options=view_options,
         pitch_speed=(max(600, 1300 - (cur_pitcher["overall"] or 50) * 8) if cur_pitcher else 900),
         bullpen_status=bullpen_status,
+        live_rps=live_rps,
+        live_cp=live_cp,
         defense_view=defense_view,
         bench_chat=bench_chat,
         manager_report=manager_report,
