@@ -198,9 +198,11 @@ def _render(save_id, live_row):
 
     # ===== LIVE v3 UI 데이터 =====
     bullpen_status = {"home": [], "away": []}
+    bullpen_emergency = {"home": False, "away": False}
     for side in ("home", "away"):
         bp = state.get("bullpen", {}).get(side, {})
         team = ctx[side]
+        bullpen_emergency[side] = bool(team.get("emergency_bullpen"))
         for p in team.get("rps", []) + ([team["cp"]] if team.get("cp") else []):
             item = bp.get(str(p["id"]), {})
             bullpen_status[side].append({
@@ -271,6 +273,7 @@ def _render(save_id, live_row):
         view_options=view_options,
         pitch_speed=(max(600, 1300 - (cur_pitcher["overall"] or 50) * 8) if cur_pitcher else 900),
         bullpen_status=bullpen_status,
+        bullpen_emergency=(bullpen_emergency.get(us, False) if us else False),
         defense_view=defense_view,
         bench_chat=bench_chat,
         manager_report=manager_report,
