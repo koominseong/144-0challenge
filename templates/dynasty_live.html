@@ -171,8 +171,17 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <div class="v3-panel">
             <div class="v3-title">🧢 감독 개입</div>
             {% if state.pending not in ('finished','mode_select') %}
-            <div class="v3-sub">🔥 불펜</div>
+            <div class="v3-sub">🔥 불펜{% if bullpen_emergency %} <span style="color:#ffb74d;font-size:10px;">(임시 배치)</span>{% endif %}</div>
             {% set bp = bullpen_status[us] if us else [] %}
+            {% if bullpen_emergency %}
+            <div style="font-size:11px;color:#ffb74d;line-height:1.5;padding:6px 0 10px;">
+                로스터에 등록된 구원/마무리 투수가 없어 벤치의 투수 포지션 선수를<br>임시로 배치했습니다. 로스터 편집에서 RP/CP를 지정해주세요.
+            </div>
+            {% elif us and not bp %}
+            <div style="font-size:11px;color:#78909c;line-height:1.5;padding:6px 0 10px;">
+                등록된 불펜 투수(구원/마무리)가 없습니다.<br>로스터에서 투수 역할을 확인해주세요.
+            </div>
+            {% endif %}
             {% for p in bp %}
             <div class="bp-item">
                 <div class="bp-head">
