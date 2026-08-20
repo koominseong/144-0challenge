@@ -265,7 +265,6 @@ def _render(save_id, live_row):
         is_scenario=bool(state.get("scenario")),
         view_options=view_options,
         pitch_speed=(max(600, 1300 - (cur_pitcher["overall"] or 50) * 8) if cur_pitcher else 900),
-        bullpen_status=bullpen_status,
         live_rps=live_rps,
         live_cp=live_cp,
         defense_view=defense_view,
