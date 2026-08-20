@@ -1,4 +1,4 @@
-# dynasty_live.py - v3
+# dynasty_live.py - v3.1
 # KBO Dynasty LIVE v3 - 벤치 운영 / 실제 포지션 수비 / 코치 개입
 # =========================================
 # KBO Dynasty - 감독 모드 v2
@@ -490,7 +490,14 @@ def _advance_warmups(state, ctx):
                 item["warmup_pitches"] + random.randint(2, 4)
             )
             if item["warmup_pitches"] >= item["required_pitches"]:
-                item["ready"] = True
+                if not item.get("ready"):
+                    item["ready"] = True
+                    p = ctx["players"].get(int(pid))
+                    if p:
+                        _bench_message(
+                            state, "🧤 투수코치",
+                            f"{p['name']} 몸 다 풀렸습니다. 등판 준비됐습니다."
+                        )
 
 def _bullpen_ready(state, side, pid):
     item = state.get("bullpen", {}).get(side, {}).get(str(pid))
@@ -1493,10 +1500,45 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
             return _save_and_reload()
 
     # ----- 작전 포인트 (타석 소비 안 함) -----
+    # v3.1 핵심 수정: 작전 실행 후 자동 진행 루프로 내려가지 않는다.
     if user_action in ("op_focus", "op_cut", "op_shift") and us:
+        before_op = state.get("op", 0)
         txt = use_op(state, ctx, user_action)
         if txt:
             state["log"].append(txt)
+
+        # 실제로 작전 포인트가 소비된 경우에만 감독/코치 대화를 남긴다.
+        if state.get("op", 0) < before_op:
+            if user_action == "op_focus":
+                _bench_message(
+                    state, "🧢 감독",
+                    "좋아. 다음 타석은 집중해서 간다. 좋은 공을 놓치지 마."
+                )
+                _bench_message(
+                    state, "📊 전력분석",
+                    "다음 내 타석에 집중 보정(+5%)이 적용됩니다."
+                )
+            elif user_action == "op_cut":
+                _bench_message(
+                    state, "🧢 감독",
+                    "타임! 상대 흐름부터 끊는다."
+                )
+                _bench_message(
+                    state, "📊 전력분석",
+                    "상대 모멘텀을 초기화했습니다."
+                )
+            elif user_action == "op_shift":
+                _bench_message(
+                    state, "🧢 감독",
+                    "수비 위치 바꾼다. 이번 이닝은 강하게 대비해."
+                )
+                _bench_message(
+                    state, "🧤 수비코치",
+                    "필승 시프트를 가동합니다. 타구 방향에 맞춰 수비 범위를 조정합니다."
+                )
+
+        # ★ 작전은 타석을 소비하지 않는다. ★
+        return _save_and_reload()
 
     # ----- 시프트 토글 -----
     if user_action in ("shift_on", "shift_off") and us:
@@ -1702,6 +1744,41 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
 
     # ----- 공격 작전 -----
     if user_action in ("swing", "bunt", "steal", "hitrun") and us and state["pending"] in ("offense", "duel_bat"):
+        batter, _ = _current_batter(state, ctx, us)
+
+        if user_action == "swing":
+            _bench_message(
+                state, "🧢 감독",
+                f"{batter['name']}는 기본 승부. 좋은 공 오면 과감하게 친다."
+            )
+        elif user_action == "bunt":
+            _bench_message(
+                state, "🧢 감독",
+                f"{batter['name']} 번트 댄다. 주자를 한 베이스씩 보낸다."
+            )
+            _bench_message(
+                state, "⚾ 타격코치",
+                "자세 낮추고 공을 끝까지 봐."
+            )
+        elif user_action == "steal":
+            _bench_message(
+                state, "🧢 감독",
+                "간다! 지금 스타트."
+            )
+            _bench_message(
+                state, "🏃 주루코치",
+                "타이밍 좋습니다. 승부 가능합니다."
+            )
+        elif user_action == "hitrun":
+            _bench_message(
+                state, "🧢 감독",
+                "히트앤런 건다. 주자는 먼저 출발."
+            )
+            _bench_message(
+                state, "⚾ 타격코치",
+                "무조건 맞혀서 인플레이 시켜."
+            )
+
         action = None if user_action == "swing" else user_action
         state["duel_done_pa"] = True
         txt = play_at_bat(state, ctx, action)
