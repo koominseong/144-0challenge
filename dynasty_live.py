@@ -13,7 +13,7 @@ from dynasty_utils import get_supabase
 from dynasty_game import _plate_appearance, _load_all
 from dynasty_stats import flush_stats
 
-FAN_MAX = 200000
+FAN_MAX = 2000000
 
 # =========================================
 # 중계 멘트 풀
@@ -29,14 +29,53 @@ COMMENT = {
     "COLOR_HR": ["해설: 완벽한 스윙이었어요. 실투를 놓치지 않았습니다.", "해설: 저건 잡을 수 없죠. 타구음부터 달랐습니다."],
     "COLOR_K": ["해설: 승부구 선택이 아주 좋았습니다.", "해설: 타자 입장에선 손이 나갈 수밖에 없는 공이에요."],
     "CLUTCH_IN": ["🔥 승부처입니다. 덕아웃의 공기가 달라졌습니다.", "🔥 여기가 오늘 경기의 분수령이 되겠죠."],
+    "WALKOFF": [
+        "🎆 끝났습니다!!! 끝내기입니다! 벤치가 모두 쏟아져 나옵니다!",
+        "🎆 경기 끝! 짜릿한 끝내기 승리로 마무리됩니다!",
+        "🎆 여기서 끝을 냅니다! 홈 팬들이 열광합니다!",
+    ],
+    # ----- 상황별 톤 변형: 클러치(승부처) -----
+    "1B_CLUTCH": ["★ {b}, 결정적인 순간에 안타를 만들어냅니다!", "★ 긴장감 속에 {b}의 타구가 그린 위로 떨어집니다!"],
+    "2B_CLUTCH": ["★ {b}! 승부처에서 터진 2루타입니다!", "★ {b}의 타구가 갭을 가릅니다, 이 순간에!"],
+    "3B_CLUTCH": ["★ {b}, 이 상황에서 3루타!! 덕아웃이 뒤집어집니다!"],
+    "HR_CLUTCH": ["★ 🎆 {b}!!! 승부처에서 터졌습니다! 그대로 넘어갑니다!!!", "★ 🎆 {b}, 이 순간 가장 필요했던 한 방!!!"],
+    "K_CLUTCH": ["★ {p}, 위기에서 삼진으로 막아냅니다!", "★ 벤치가 안도합니다. {p}의 결정구, {b} 삼진!"],
+    # ----- 상황별 톤 변형: 승부가 크게 기운 경기 -----
+    "OUT_BLOWOUT": ["{b}, 범타로 물러납니다.", "{b}의 타구, 그대로 아웃 처리됩니다."],
+    "K_BLOWOUT": ["{b}, 삼진으로 물러납니다.", "{p}의 공에 {b}, 헛스윙 삼진."],
 }
 
+MOUND_VISIT_LINES = [
+    ("괜찮아. 다음 타자 하나만 보자.", "승부구를 낮게 가져가겠습니다."),
+    ("숨 한 번 고르고 가자. 서두를 필요 없어.", "카운트 싸움부터 다시 가져가겠습니다."),
+    ("지금까지 잘 던졌다. 하나만 더 믿는다.", "구속보다 제구에 집중하겠습니다."),
+]
 
-def _say(kind, **kw):
-    pool = COMMENT.get(kind)
+ENCOURAGE_LINES = [
+    "좋아. 여기서 한 번 더 집중하자!",
+    "지금이야! 다들 한 걸음씩만 더!",
+    "침착하게, 하던 대로만 하면 된다!",
+]
+
+
+def _say(kind, tone=None, **kw):
+    pool = COMMENT.get(f"{kind}_{tone}") if tone else None
+    if not pool:
+        pool = COMMENT.get(kind)
     if not pool:
         return None
     return random.choice(pool).format(**kw)
+
+
+def _comment_tone(state):
+    """상황에 따라 중계 톤을 결정한다: 승부처면 CLUTCH, 승부가 크게
+    기운 후반 블로아웃 경기면 BLOWOUT, 그 외엔 기본 톤(None)."""
+    if _is_clutch(state):
+        return "CLUTCH"
+    diff = abs(state["h_score"] - state["a_score"])
+    if state["inning"] >= 7 and diff >= 6:
+        return "BLOWOUT"
+    return None
 
 
 # =========================================
@@ -794,7 +833,11 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
         state["outs"] += 1
         ps["so"] += 1
         _out_streak()
-        txt = f"{log_prefix} " + _say("K", b=batter["name"], p=pitcher["name"])
+        tone = _comment_tone(state)
+        escaped_jam = tone == "CLUTCH" and state["outs"] >= 3
+        txt = f"{log_prefix} " + _say("K", tone=tone, b=batter["name"], p=pitcher["name"])
+        if escaped_jam:
+            state.setdefault("scenes", []).append(f"{log_prefix} {pitcher['name']}, 위기 탈출 삼진!")
         if random.random() < 0.3:
             state["log"].append(_say("COLOR_K"))
         if hitrun and state["bases"][0] and random.random() < 0.4:
@@ -819,7 +862,7 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
             _add_runs(state, off, 1)
             return f"{log_prefix} {batter['name']}의 희생타! {runner['name']} 홈인!"
         _out_streak()
-        return f"{log_prefix} " + _say("OUT", b=batter["name"], p=pitcher["name"])
+        return f"{log_prefix} " + _say("OUT", tone=_comment_tone(state), b=batter["name"], p=pitcher["name"])
 
     if result == "BB":
         runs = 0
@@ -878,7 +921,7 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
             )
         state["lead_side"] = lead
 
-    txt = f"{log_prefix} " + _say(result, b=batter["name"], p=pitcher["name"])
+    txt = f"{log_prefix} " + _say(result, tone=_comment_tone(state), b=batter["name"], p=pitcher["name"])
     if result == "HR" and random.random() < 0.5:
         state["log"].append(_say("COLOR_HR"))
     if hitrun and result == "1B":
@@ -887,6 +930,8 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
         txt += f" (+{runs}점)"
     if result == "HR":
         state.setdefault("scenes", []).append(f"{log_prefix} {batter['name']} 홈런 (+{runs}점)")
+    elif _is_clutch(state) and result in ("1B", "2B", "3B") and runs:
+        state.setdefault("scenes", []).append(f"{log_prefix} {batter['name']}의 결정적 적시타 (+{runs}점)")
 
     # 주루 판단 (감독 모드만)
     if ((state.get("view_mode") or "manager") == "manager"
@@ -996,6 +1041,21 @@ def use_op(state, ctx, kind):
 # 이닝/경기 전환 (v1 동일 + 클러치 플래그 리셋)
 # =========================================
 def advance_if_needed(state, ctx):
+    # 끝내기: 9회 이후 말(홈 공격)에서 홈이 앞서가는 순간, 아웃카운트와 무관하게
+    # 그 자리에서 즉시 경기가 종료된다 (실제 야구 규칙).
+    if (
+        state["half"] == "bot"
+        and state["inning"] >= 9
+        and state["h_score"] > state["a_score"]
+        and not state.get("walkoff")
+    ):
+        state["walkoff"] = True
+        line = _say("WALKOFF")
+        if line:
+            state["log"].append(line)
+        state["banner"] = "🏆 끝내기 승리!"
+        return "game_over"
+
     pit_outs_key = "h_pit_outs" if state["half"] == "top" else "a_pit_outs"
 
     if state["outs"] >= 3:
@@ -1560,12 +1620,13 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
         elif user_action == "mound_visit":
             state["manager_mood"] = "calm"
             state["log"].append("🧢 감독이 마운드에 올라 투수와 대화합니다.")
-            _bench_message(state, "🧢 감독", "괜찮아. 다음 타자 하나만 보자.")
-            _bench_message(state, "🧤 투수코치", "승부구를 낮게 가져가겠습니다.")
+            mgr_line, coach_line = random.choice(MOUND_VISIT_LINES)
+            _bench_message(state, "🧢 감독", mgr_line)
+            _bench_message(state, "🧤 투수코치", coach_line)
         elif user_action == "manager_encourage":
             state["manager_mood"] = "fire"
             state["log"].append("🔥 감독이 덕아웃에서 선수들을 독려합니다.")
-            _bench_message(state, "🧢 감독", "좋아. 여기서 한 번 더 집중하자!")
+            _bench_message(state, "🧢 감독", random.choice(ENCOURAGE_LINES))
         elif user_action == "challenge_advice":
             _bench_message(state, "📊 전력분석", "판독 요청을 권합니다. 현재 판정은 접전입니다.")
 
