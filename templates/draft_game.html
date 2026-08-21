@@ -5,12 +5,10 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<title>Draft Auction</title>
+<title>Draft Game</title>
 
 <style>
 
@@ -27,7 +25,7 @@ body{
     background:
         radial-gradient(
             circle at top,
-            #1e3a5f,
+            #1e3a5f 0%,
             transparent 40%
         ),
         #080d18;
@@ -39,18 +37,157 @@ body{
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-
 }
+
 
 .wrapper{
 
     width:min(1200px,95vw);
 
-    margin:25px auto;
+    margin:30px auto;
 
 }
 
-.top{
+
+/* =========================
+   PLAYER INPUT
+========================= */
+
+.player-input-area{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+    margin-bottom:20px;
+
+}
+
+
+.player-card{
+
+    background:#111a2d;
+
+    border:
+        1px solid
+        #2b395a;
+
+    border-radius:20px;
+
+    padding:25px;
+
+}
+
+
+.player-card.player1{
+
+    border-color:#3b82f6;
+
+}
+
+
+.player-card.player2{
+
+    border-color:#ef4444;
+
+}
+
+
+.player-title{
+
+    font-size:14px;
+
+    font-weight:900;
+
+    letter-spacing:2px;
+
+    color:#94a3b8;
+
+    margin-bottom:10px;
+
+}
+
+
+.player-number{
+
+    font-size:28px;
+
+    font-weight:900;
+
+    margin-bottom:15px;
+
+}
+
+
+.player-card.player1 .player-number{
+
+    color:#60a5fa;
+
+}
+
+
+.player-card.player2 .player-number{
+
+    color:#f87171;
+
+}
+
+
+.name-input{
+
+    width:100%;
+
+    height:52px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:12px;
+
+    padding:
+        0 16px;
+
+    background:#080d18;
+
+    color:white;
+
+    border:
+        1px solid
+        #334155;
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
+
+
+.name-input:focus{
+
+    border-color:#60a5fa;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(96,165,250,.12);
+
+}
+
+
+.name-input::placeholder{
+
+    color:#64748b;
+
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status-area{
 
     display:grid;
 
@@ -58,41 +195,38 @@ body{
 
     gap:15px;
 
+    margin-bottom:15px;
+
 }
 
-.player{
+
+.status-card{
 
     background:#111a2d;
 
-    border:1px solid #293957;
+    border:
+        1px solid
+        #2b395a;
 
-    border-radius:18px;
+    border-radius:16px;
 
-    padding:20px;
-
-}
-
-.player.active{
-
-    border-color:#60a5fa;
-
-    box-shadow:
-        0 0 25px
-        rgba(59,130,246,.15);
+    padding:18px;
 
 }
 
-.name{
 
-    font-size:20px;
+.status-name{
+
+    font-size:18px;
 
     font-weight:900;
 
 }
 
-.money{
 
-    font-size:32px;
+.status-money{
+
+    font-size:30px;
 
     font-weight:900;
 
@@ -100,7 +234,8 @@ body{
 
 }
 
-.sub{
+
+.status-sub{
 
     color:#94a3b8;
 
@@ -110,21 +245,23 @@ body{
 
 }
 
-.position{
+
+.position-list{
 
     display:flex;
 
-    gap:7px;
-
     flex-wrap:wrap;
+
+    gap:7px;
 
     margin-top:12px;
 
 }
 
-.pos{
 
-    background:#0b1220;
+.position-box{
+
+    background:#080d18;
 
     border-radius:8px;
 
@@ -136,11 +273,17 @@ body{
 
 }
 
-.pos strong{
+
+.position-box strong{
 
     color:white;
 
 }
+
+
+/* =========================
+   MAIN
+========================= */
 
 .main{
 
@@ -152,19 +295,20 @@ body{
 
     gap:15px;
 
-    margin-top:15px;
-
 }
+
 
 .auction{
 
-    min-height:540px;
-
     background:#111a2d;
 
-    border:1px solid #293957;
+    border:
+        1px solid
+        #2b395a;
 
     border-radius:22px;
+
+    min-height:560px;
 
     padding:45px 30px;
 
@@ -178,7 +322,8 @@ body{
 
 }
 
-.label{
+
+.current-label{
 
     color:#60a5fa;
 
@@ -190,7 +335,8 @@ body{
 
 }
 
-.current{
+
+.player-name{
 
     font-size:48px;
 
@@ -200,7 +346,8 @@ body{
 
 }
 
-.team{
+
+.player-team{
 
     color:#94a3b8;
 
@@ -208,13 +355,15 @@ body{
 
 }
 
-.badge{
+
+.player-position{
 
     display:inline-block;
 
     margin-top:14px;
 
-    padding:7px 14px;
+    padding:
+        7px 14px;
 
     border-radius:20px;
 
@@ -226,15 +375,17 @@ body{
 
 }
 
-.ovr{
 
-    margin-top:18px;
+.player-ovr{
+
+    margin-top:20px;
 
     font-size:18px;
 
 }
 
-.ovr strong{
+
+.player-ovr strong{
 
     font-size:32px;
 
@@ -242,7 +393,8 @@ body{
 
 }
 
-.price{
+
+.current-bid{
 
     margin-top:30px;
 
@@ -250,85 +402,92 @@ body{
 
 }
 
-.price strong{
 
-    display:block;
-
-    color:white;
+.bid-price{
 
     font-size:42px;
 
-}
-
-.leader{
-
-    margin-top:8px;
-
-    color:#fbbf24;
-
     font-weight:900;
 
+    color:white;
+
+    margin-top:5px;
+
 }
+
 
 .turn{
 
     margin-top:20px;
 
-    color:#60a5fa;
+    color:#fbbf24;
 
     font-weight:900;
 
+    font-size:18px;
+
 }
 
-.notice{
 
-    margin-top:20px;
+.leader{
+
+    margin-top:8px;
 
     color:#94a3b8;
 
-    font-size:13px;
+    font-size:14px;
 
 }
 
-.action{
+
+/* =========================
+   ACTION
+========================= */
+
+.action-form{
 
     margin-top:25px;
 
 }
 
-.amount{
 
-    display:flex;
+.bid-input{
 
-    justify-content:center;
+    width:160px;
 
-    gap:10px;
+    height:48px;
+
+    border-radius:10px;
+
+    border:
+        1px solid
+        #334155;
+
+    background:#080d18;
+
+    color:white;
+
+    text-align:center;
+
+    font-size:18px;
+
+    font-weight:900;
+
+    outline:none;
 
     margin-bottom:12px;
 
 }
 
-.amount input{
 
-    width:150px;
+.bid-input:focus{
 
-    padding:14px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:#0b1220;
-
-    color:white;
-
-    font-size:18px;
-
-    text-align:center;
+    border-color:#60a5fa;
 
 }
 
-.buttons{
+
+.action-buttons{
 
     display:flex;
 
@@ -340,47 +499,61 @@ body{
 
 }
 
-button{
 
-    border:0;
+.action-button{
+
+    border:none;
 
     border-radius:11px;
 
-    padding:14px 22px;
+    padding:
+        14px 22px;
 
     color:white;
 
-    font-size:16px;
+    font-size:15px;
 
     font-weight:900;
 
     cursor:pointer;
 
+    transition:.15s;
+
 }
 
-.bid{
+
+.action-button:hover{
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.bid-button{
 
     background:#2563eb;
 
 }
 
-.allin{
+
+.allin-button{
 
     background:#dc2626;
 
 }
 
-.pass{
+
+.pass-button{
 
     background:#374151;
 
 }
 
-button:hover{
 
-    transform:translateY(-2px);
-
-}
+/* =========================
+   SIDEBAR
+========================= */
 
 .sidebar{
 
@@ -392,11 +565,14 @@ button:hover{
 
 }
 
-.card{
+
+.info-card{
 
     background:#111a2d;
 
-    border:1px solid #293957;
+    border:
+        1px solid
+        #2b395a;
 
     border-radius:18px;
 
@@ -404,21 +580,25 @@ button:hover{
 
 }
 
-.card-title{
+
+.info-title{
+
+    font-size:15px;
 
     font-weight:900;
 
-    margin-bottom:15px;
+    margin-bottom:14px;
 
 }
 
-.private{
 
-    background:#0b1220;
+.secret{
 
-    padding:16px;
+    background:#080d18;
 
     border-radius:12px;
+
+    padding:16px;
 
     color:#64748b;
 
@@ -430,11 +610,12 @@ button:hover{
 
 }
 
-.logs{
+
+.log{
 
     height:300px;
 
-    overflow:auto;
+    overflow-y:auto;
 
     color:#94a3b8;
 
@@ -444,27 +625,83 @@ button:hover{
 
 }
 
-.log{
 
-    padding:6px 0;
+.log-item{
 
-    border-bottom:1px solid rgba(255,255,255,.05);
+    padding:
+        6px 0;
+
+    border-bottom:
+        1px solid
+        rgba(148,163,184,.06);
 
 }
+
 
 .error{
 
-    margin-top:18px;
+    margin-top:20px;
 
     padding:12px;
 
-    border-radius:10px;
-
     background:#451a1a;
+
+    border:
+        1px solid
+        #7f1d1d;
 
     color:#fecaca;
 
+    border-radius:10px;
+
 }
+
+
+/* =========================
+   SETUP FORM
+========================= */
+
+.setup-submit{
+
+    width:100%;
+
+    margin-top:15px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:900;
+
+    cursor:pointer;
+
+}
+
+
+.setup-submit:hover{
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:850px){
 
@@ -474,17 +711,38 @@ button:hover{
 
     }
 
+    .sidebar{
+
+        display:grid;
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
 }
 
-@media(max-width:600px){
 
-    .top{
+@media(max-width:650px){
+
+    .player-input-area{
 
         grid-template-columns:1fr;
 
     }
 
-    .current{
+    .status-area{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .sidebar{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .player-name{
 
         font-size:36px;
 
@@ -492,7 +750,8 @@ button:hover{
 
     .auction{
 
-        padding:30px 18px;
+        padding:
+            35px 18px;
 
     }
 
@@ -502,154 +761,265 @@ button:hover{
 
 </head>
 
+
 <body>
+
 
 <div class="wrapper">
 
 
-<!-- ======================================================
+<!-- =====================================================
+     PLAYER NAME INPUT
+===================================================== -->
+
+{% if not state.players or not state.players.get('a') or not state.players.get('b') %}
+
+<form
+    method="POST"
+    action="{{ url_for('draft.game', game_id=game_id) }}"
+>
+
+
+    <div class="player-input-area">
+
+
+        <!-- PLAYER 1 -->
+
+        <div class="player-card player1">
+
+            <div class="player-title">
+
+                PLAYER 1
+
+            </div>
+
+
+            <div class="player-number">
+
+                Player 1
+
+            </div>
+
+
+            <input
+                class="name-input"
+                type="text"
+                name="player_a"
+                placeholder="Player 1 이름 입력"
+                maxlength="20"
+                required
+            >
+
+        </div>
+
+
+        <!-- PLAYER 2 -->
+
+        <div class="player-card player2">
+
+            <div class="player-title">
+
+                PLAYER 2
+
+            </div>
+
+
+            <div class="player-number">
+
+                Player 2
+
+            </div>
+
+
+            <input
+                class="name-input"
+                type="text"
+                name="player_b"
+                placeholder="Player 2 이름 입력"
+                maxlength="20"
+                required
+            >
+
+        </div>
+
+
+    </div>
+
+
+    <button
+        class="setup-submit"
+        type="submit"
+        name="action"
+        value="set_players"
+    >
+
+        두 플레이어 이름 설정
+
+    </button>
+
+
+</form>
+
+
+{% else %}
+
+
+<!-- =====================================================
      PLAYER STATUS
-======================================================= -->
+===================================================== -->
 
-<div class="top">
-
-{% for s in ['a','b'] %}
-
-<div class="
-    player
-    {% if state.turn == s %}
-        active
-    {% endif %}
-">
-
-    <div class="name">
-        {{ state.players[s] }}
-    </div>
-
-    <div class="money">
-        ${{ state.money[s] }}
-    </div>
-
-    <div class="sub">
-
-        {{ state.rosters[s]|length }}
-        /
-        {{ state.roster_size }}
-        명
-
-        ·
-
-        지출
-        ${{ state.spent[s] }}
-
-    </div>
+<div class="status-area">
 
 
-    <div class="position">
+    {% for s in ['a','b'] %}
 
-        <div class="pos">
+    <div class="status-card">
 
-            투수
+        <div class="status-name">
 
-            <strong>
-                {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '투수'
-                    )
-                    |list
-                    |length
-                }}
-            </strong>
-
-            /
-            {{ state.limits['투수'] }}
+            {{ state.players[s] }}
 
         </div>
 
 
-        <div class="pos">
+        <div class="status-money">
 
-            내야수
-
-            <strong>
-                {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '내야수'
-                    )
-                    |list
-                    |length
-                }}
-            </strong>
-
-            /
-            {{ state.limits['내야수'] }}
+            ${{ state.money[s] }}
 
         </div>
 
 
-        <div class="pos">
+        <div class="status-sub">
 
-            외야수
-
-            <strong>
-                {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '외야수'
-                    )
-                    |list
-                    |length
-                }}
-            </strong>
-
+            {{ state.rosters[s]|length }}
             /
-            {{ state.limits['외야수'] }}
+            {{ state.roster_size }}
+            명
+
+            ·
+
+            지출
+            ${{ state.spent[s] }}
 
         </div>
 
 
-        <div class="pos">
+        <div class="position-list">
 
-            포수
 
-            <strong>
-                {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '포수'
-                    )
-                    |list
-                    |length
-                }}
-            </strong>
+            <div class="position-box">
 
-            /
-            {{ state.limits['포수'] }}
+                투수
+
+                <strong>
+
+                    {{
+                        state.rosters[s]
+                        |selectattr(
+                            'group',
+                            'equalto',
+                            '투수'
+                        )
+                        |list
+                        |length
+                    }}
+
+                </strong>
+
+                /
+                {{ state.limits['투수'] }}
+
+            </div>
+
+
+            <div class="position-box">
+
+                내야수
+
+                <strong>
+
+                    {{
+                        state.rosters[s]
+                        |selectattr(
+                            'group',
+                            'equalto',
+                            '내야수'
+                        )
+                        |list
+                        |length
+                    }}
+
+                </strong>
+
+                /
+                {{ state.limits['내야수'] }}
+
+            </div>
+
+
+            <div class="position-box">
+
+                외야수
+
+                <strong>
+
+                    {{
+                        state.rosters[s]
+                        |selectattr(
+                            'group',
+                            'equalto',
+                            '외야수'
+                        )
+                        |list
+                        |length
+                    }}
+
+                </strong>
+
+                /
+                {{ state.limits['외야수'] }}
+
+            </div>
+
+
+            <div class="position-box">
+
+                포수
+
+                <strong>
+
+                    {{
+                        state.rosters[s]
+                        |selectattr(
+                            'group',
+                            'equalto',
+                            '포수'
+                        )
+                        |list
+                        |length
+                    }}
+
+                </strong>
+
+                /
+                {{ state.limits['포수'] }}
+
+            </div>
+
 
         </div>
 
     </div>
+
+    {% endfor %}
 
 </div>
 
-{% endfor %}
-
-</div>
 
 
-<!-- ======================================================
+<!-- =====================================================
      MAIN
-======================================================= -->
+===================================================== -->
 
 <div class="main">
 
@@ -660,26 +1030,32 @@ button:hover{
 {% if state.current %}
 
 
-<div class="label">
+<div class="current-label">
+
     CURRENT PLAYER
+
 </div>
 
 
-<div class="current">
+<div class="player-name">
+
     {{ state.current.name }}
+
 </div>
 
 
 {% if state.current.team %}
 
-<div class="team">
+<div class="player-team">
+
     {{ state.current.team }}
+
 </div>
 
 {% endif %}
 
 
-<div class="badge">
+<div class="player-position">
 
     {{ state.current.position }}
 
@@ -690,24 +1066,29 @@ button:hover{
 </div>
 
 
-<div class="ovr">
+<div class="player-ovr">
 
     OVR
 
     <strong>
-        {{ state.current.overall|int }}
+
+        {{ state.current.overall }}
+
     </strong>
 
 </div>
 
 
-<div class="price">
+<div class="current-bid">
 
-    현재가
+    CURRENT BID
 
-    <strong>
-        ${{ state.current_bid }}
-    </strong>
+</div>
+
+
+<div class="bid-price">
+
+    ${{ state.bid }}
 
 </div>
 
@@ -724,8 +1105,6 @@ button:hover{
 {% endif %}
 
 
-{% if state.turn %}
-
 <div class="turn">
 
     {{ state.players[state.turn] }}
@@ -733,127 +1112,91 @@ button:hover{
 
 </div>
 
-{% else %}
-
-<div class="turn">
-
-    ⚡ 먼저 누르는 사람이 선공
-
-</div>
-
-{% endif %}
-
 
 <form
-    class="action"
+    class="action-form"
     method="POST"
-    action="{{
-        url_for(
-            'draft.action',
-            game_id=game_id
-        )
-    }}"
->
-
-<input
-    type="hidden"
-    name="side"
-    value="{{
-        state.turn
-        if state.turn
-        else 'a'
-    }}"
+    action="{{ url_for('draft.action', game_id=game_id) }}"
 >
 
 
-<div class="amount">
+    <!--
+        사용자가 원하는 금액 직접 입력
+        예:
+        현재가 $3 → $7 입력 가능
+    -->
 
     <input
+        class="bid-input"
         type="number"
-        name="amount"
+        name="bid_amount"
         min="1"
-        max="{{
-            state.money[
-                state.turn
-                if state.turn
-                else 'a'
-            ]
-        }}"
-        placeholder="금액"
+        step="1"
+        placeholder="금액 입력"
     >
 
-</div>
+
+    <div class="action-buttons">
 
 
-<div class="buttons">
+        <button
+            class="action-button bid-button"
+            type="submit"
+            name="action"
+            value="bid"
+        >
 
-<button
-    class="bid"
-    type="submit"
-    name="action"
-    value="bid"
->
+            BID
 
-    💰 입찰
-
-</button>
+        </button>
 
 
-<button
-    class="allin"
-    type="submit"
-    name="action"
-    value="allin"
->
+        <button
+            class="action-button allin-button"
+            type="submit"
+            name="action"
+            value="allin"
+        >
 
-    🔥 ALL-IN
+            🔥 ALL-IN
 
-</button>
+        </button>
 
 
-<button
-    class="pass"
-    type="submit"
-    name="action"
-    value="pass"
->
+        <button
+            class="action-button pass-button"
+            type="submit"
+            name="action"
+            value="pass"
+        >
 
-    PASS
+            PASS
 
-</button>
+        </button>
 
-</div>
+
+    </div>
+
 
 </form>
 
 
-<div class="notice">
-
-    {% if not state.auction_started %}
-
-    아직 아무도 입찰하지 않았습니다.
-    <br>
-    <b>먼저 행동한 사람이 선공입니다.</b>
-
-    {% else %}
-
-    현재가보다 높은 금액을
-    자유롭게 입력할 수 있습니다.
-
-    {% endif %}
-
-</div>
-
-
 {% else %}
 
-<div class="label">
+
+<div class="current-label">
+
     DRAFT
+
 </div>
 
-<div class="current">
+
+<div class="player-name">
+
     경매 종료
+
 </div>
+
 
 {% endif %}
 
@@ -872,63 +1215,79 @@ button:hover{
 </section>
 
 
-<!-- ======================================================
+
+<!-- =====================================================
      SIDEBAR
-======================================================= -->
+===================================================== -->
 
 <aside class="sidebar">
 
 
-<div class="card">
+<div class="info-card">
 
-<div class="card-title">
-    🔒 경매 정보
-</div>
+    <div class="info-title">
 
-<div class="private">
+        🔒 경매 정보
 
-    현재 선수만 공개됩니다.
-
-    <br><br>
-
-    다음 선수의 이름과 순서는
-    공개되지 않습니다.
-
-    <br><br>
-
-    선수풀 전체도 공개되지 않습니다.
-
-</div>
-
-</div>
+    </div>
 
 
-<div class="card">
+    <div class="secret">
 
-<div class="card-title">
-    📋 경매 기록
-</div>
+        현재 선수만 공개됩니다.
 
-<div class="logs">
+        <br><br>
 
-{% for item in state.log|reverse %}
+        다음 선수와 전체 선수풀의
+        순서는 공개되지 않습니다.
 
-<div class="log">
-    {{ item }}
-</div>
+        <br><br>
 
-{% endfor %}
+        두 사람이 모두 PASS하면
+        해당 선수는 선수풀 맨 뒤로 이동합니다.
+
+    </div>
 
 </div>
+
+
+
+<div class="info-card">
+
+    <div class="info-title">
+
+        📋 경매 기록
+
+    </div>
+
+
+    <div class="log">
+
+        {% for item in state.log|reverse %}
+
+        <div class="log-item">
+
+            {{ item }}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
 
 </div>
 
 
 </aside>
 
-</div>
 
 </div>
+
+{% endif %}
+
+
+</div>
+
 
 </body>
 
