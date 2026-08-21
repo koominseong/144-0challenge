@@ -115,6 +115,19 @@ def _base_state(home_id, away_id, week, season):
         "bullpen_required": 15,
         "defense_positions": {"home": {}, "away": {}},
         "coach_messages": [],
+        "mound_visits": {"home": 0, "away": 0},
+        "lead_width": {"home": "normal", "away": "normal"},
+        "throw_priority": {"home": "home", "away": "home"},
+        "confidence": {},
+        "personality": {},
+        "manager_style": "balanced",
+        "big_inning_warning": False,
+        "wpa_alert": None,
+        "last_wp": None,
+        "next_batter_prediction": None,
+        "defense_leader": {"home": None, "away": None},
+        "team_chemistry": {},
+        "seasonal_manager_grade": {"A": 0, "B": 0, "C": 0},
     }
 
 # dynasty_live.py - v2 Part2
@@ -129,6 +142,30 @@ def _ensure_v33_state(state, ctx=None):
     state.setdefault("bullpen_required", 15)
     state.setdefault("defense_positions", {"home": {}, "away": {}})
     state.setdefault("coach_messages", [])
+    state.setdefault("mound_visits", {"home": 0, "away": 0})
+    state.setdefault("lead_width", {"home": "normal", "away": "normal"})
+    state.setdefault("throw_priority", {"home": "home", "away": "home"})
+    state.setdefault("confidence", {})
+    state.setdefault("personality", {})
+    state.setdefault("manager_style", "balanced")
+    state.setdefault("big_inning_warning", False)
+    state.setdefault("wpa_alert", None)
+    state.setdefault("last_wp", None)
+    state.setdefault("next_batter_prediction", None)
+    state.setdefault("defense_leader", {"home": None, "away": None})
+    state.setdefault("team_chemistry", {})
+    state.setdefault("seasonal_manager_grade", {"A": 0, "B": 0, "C": 0})
+
+    # v4: 기존 선수 데이터에 성격/자신감이 없어도 안정적으로 작동
+    if ctx:
+        players = ctx.get("players", {})
+        for pid, p in players.items():
+            key = str(pid)
+            if key not in state["confidence"]:
+                state["confidence"][key] = 0
+            if key not in state["personality"]:
+                seed = int(pid) if str(pid).isdigit() else sum(ord(c) for c in key)
+                state["personality"][key] = ["침착형", "승부사형", "적극형", "신중형"][seed % 4]
 
     # 기존 저장 게임에도 안전하게 초기화
     for side in ("home", "away"):
@@ -194,6 +231,45 @@ def _defense_modifier(state, ctx, side):
         total += 0.015 if pos in text else -0.025
     return total / max(1, count)
 
+
+# =========================================
+# v4 감독/선수 개입 헬퍼
+# =========================================
+def _confidence_mod(state, pid):
+    return max(-0.04, min(0.04, state.get("confidence", {}).get(str(pid), 0) * 0.006))
+
+def _change_confidence(state, pid, delta):
+    if not pid:
+        return
+    k = str(pid)
+    state.setdefault("confidence", {})[k] = max(-5, min(5, state.setdefault("confidence", {}).get(k, 0) + delta))
+
+def _style_mod(style):
+    return {
+        "aggressive": (0.025, -0.010),
+        "defensive": (-0.010, 0.025),
+        "pitching": (0.000, 0.020),
+        "data": (0.015, 0.015),
+        "balanced": (0.000, 0.000),
+    }.get(style, (0.0, 0.0))
+
+def _manager_grade(state):
+    score = 0
+    if state.get("mound_visits", {}).get("home", 0) <= 2: score += 1
+    if state.get("big_inning_warning"): score += 1
+    if state.get("lead_width", {}).get("home") in ("normal", "small", "large"): score += 1
+    return "A" if score >= 3 else ("B" if score >= 2 else "C")
+
+def _predict_next_batter(state, ctx, off):
+    team = ctx.get(off, {})
+    bench = team.get("bench", [])
+    batter, _ = _current_batter(state, ctx, off)
+    if not bench:
+        return f"상대는 {batter['name']} 그대로 승부할 가능성이 높습니다."
+    best = max(bench, key=lambda p: p.get("overall", 0) or 0)
+    if best.get("overall", 0) >= (batter.get("overall", 0) or 0) + 4 and state.get("inning", 1) >= 7:
+        return f"상대 벤치에서 {best['name']} 대타 가능성이 있습니다."
+    return f"상대는 {batter['name']}로 계속 승부할 가능성이 높습니다."
 
 # =========================================
 # 컨텍스트 로드 (v1과 동일 + fx)
@@ -436,6 +512,12 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
     crowd_adv = 0.005 if (state.get("crowd", 50) >= 90 and off == "home") else 0.0
     bat_mod = mod.get("sim", 0.0) + ((0.02 + ctx["home_mod"].get("home_adv", 0.0) + crowd_adv) if off == "home" else 0.0)
     bat_mod += (_cond(state, batter["id"]) - _cond(state, pitcher["id"])) * 0.004
+    bat_mod += _confidence_mod(state, batter["id"]) - _confidence_mod(state, pitcher["id"])
+    style_bat, style_pitch = _style_mod(state.get("manager_style", "balanced"))
+    if off == us:
+        bat_mod += style_bat
+    if def_ == us:
+        bat_mod += style_pitch
     bat_mod += off_fx.get("bat_mod", 0.0) - def_fx.get("so_bonus", 0.0)
     bat_mod += _momentum_mod(state, off)
     bat_mod += duel_mod
@@ -512,7 +594,8 @@ def play_at_bat(state, ctx, action=None, duel_mod=0.0, duel_forced=None):
         runner = ctx["players"][state["bases"][0]]
         rs = _ensure_acc(acc, runner, off_id)
         spd = (runner["speed"] or 40) + _cond(state, runner["id"])
-        steal_p = 0.45 + (spd - 50) * 0.008 + off_fx.get("steal_bonus", 0.0) - def_fx.get("opp_steal_cut", 0.0)
+        lead_bonus = {"small": -0.07, "normal": 0.0, "large": 0.07}.get(state.get("lead_width", {}).get(off, "normal"), 0.0)
+        steal_p = 0.45 + (spd - 50) * 0.008 + lead_bonus + off_fx.get("steal_bonus", 0.0) - def_fx.get("opp_steal_cut", 0.0)
         if random.random() < min(0.9, max(0.1, steal_p)):
             state["bases"][1] = state["bases"][0]
             state["bases"][0] = None
@@ -979,6 +1062,8 @@ def finish_live_game(save_id, live_row, state, ctx):
 
     # ----- 시나리오면 여기서 종료 (기록 미반영) -----
     if scenario:
+        state["manager_grade"] = _manager_grade(state)
+        state["manager_grade_comment"] = {"A":"오늘의 운영은 매우 좋았습니다.", "B":"안정적인 경기 운영이었습니다.", "C":"몇 차례 아쉬운 판단이 있었습니다."}[state["manager_grade"]]
         state["pending"] = "finished"
         sb.table("dynasty_live_game").update(
             {"state": state, "finished": True}
@@ -1038,6 +1123,8 @@ def finish_live_game(save_id, live_row, state, ctx):
             continue
     flush_stats(save_id, state["season"], int_acc)
 
+    state["manager_grade"] = _manager_grade(state)
+    state["manager_grade_comment"] = {"A":"오늘의 운영은 매우 좋았습니다.", "B":"안정적인 경기 운영이었습니다.", "C":"몇 차례 아쉬운 판단이 있었습니다."}[state["manager_grade"]]
     state["pending"] = "finished"
     sb.table("dynasty_live_game").update(
         {"state": state, "finished": True}
@@ -1100,7 +1187,8 @@ def build_banner(sb, save_id, state, ctx):
 # =========================================
 def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
              user_action_slot=None, skill=None, outcome=None,
-             tactic=None, defense_mode=None):
+             tactic=None, defense_mode=None, lead_width=None, throw_priority=None,
+             mound_visit=None, catcher_visit=None, tagup=None, manager_style=None):
     sb = get_supabase()
 
     live_row = sb.table("dynasty_live_game").select("*").eq("id", live_id).execute().data[0]
@@ -1112,6 +1200,60 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
     _ensure_v33_state(state, ctx)
     us = user_side(state, ctx)
     mode = state.get("view_mode") or "manager"
+
+    # ===== v4 감독 스타일/운영 설정 =====
+    if manager_style and us:
+        if manager_style in ("aggressive", "defensive", "pitching", "data", "balanced"):
+            state["manager_style"] = manager_style
+            labels = {"aggressive":"공격형", "defensive":"수비형", "pitching":"투수교체형", "data":"데이터형", "balanced":"균형형"}
+            _coach(state, f"오늘 경기 운영 스타일을 {labels[manager_style]}으로 설정합니다.", "감독")
+
+    if lead_width and us:
+        state.setdefault("lead_width", {})[us] = lead_width
+        labels = {"small":"짧게", "normal":"기본", "large":"공격적"}
+        _coach(state, f"주자 리드 폭을 {labels.get(lead_width, lead_width)}로 설정합니다.", "주루코치")
+
+    if throw_priority and us:
+        state.setdefault("throw_priority", {})[us] = throw_priority
+        labels = {"home":"홈", "third":"3루", "second":"2루", "first":"1루"}
+        _coach(state, f"외야 송구 우선순위는 {labels.get(throw_priority, throw_priority)}입니다.", "수비코치")
+
+    if user_action == "mound_visit" and us and state.get("pending") in ("pitching", "duel_pitch"):
+        visits = state.setdefault("mound_visits", {}).get(us, 0)
+        if visits < 2:
+            state["mound_visits"][us] = visits + 1
+            pk = "h_pitcher" if us == "home" else "a_pitcher"
+            pid = state.get(pk)
+            _change_confidence(state, pid, 1)
+            _coach(state, "마운드 방문. 투수에게 한 번 더 호흡을 정리시킵니다.", "감독")
+        else:
+            _coach(state, "이번 이닝 마운드 방문을 이미 모두 사용했습니다.", "투수코치")
+
+    if user_action == "catcher_visit" and us and state.get("pending") in ("pitching", "duel_pitch"):
+        pk = "h_pitcher" if us == "home" else "a_pitcher"
+        _change_confidence(state, state.get(pk), 1)
+        _coach(state, "포수가 직접 마운드에 올라왔습니다. 배터리가 다시 사인을 맞춥니다.", "포수")
+
+    if user_action == "def_leader" and us and ph_id:
+        state.setdefault("defense_leader", {})[us] = ph_id
+        p = ctx["players"].get(ph_id)
+        if p:
+            _coach(state, f"{p['name']}를 오늘 수비 리더로 지정합니다.", "감독")
+
+    if user_action == "tagup" and us and state.get("pending") == "running":
+        state["send_runner"] = state.get("send_runner") or state["bases"][2] or state["bases"][1] or state["bases"][0]
+        txt = try_send_runner(state, ctx)
+        if txt:
+            state["log"].append("🏃 태그업 판단: " + txt)
+        if state.get("pending") != "challenge":
+            state["pending"] = None
+            if advance_if_needed(state, ctx) == "game_over":
+                return _finish()
+
+    # v4 비소모성 감독 설정은 타석을 진행시키지 않는다.
+    if user_action in ("manager_style", "set_lead", "set_throw", "def_leader", "mound_visit", "catcher_visit"):
+        return _save_and_reload()
+
 
     def _save_and_reload():
         state["log"] = state["log"][-60:]
@@ -1439,6 +1581,31 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
             state["pending"] = None
             if advance_if_needed(state, ctx) == "game_over":
                 return _finish()
+
+    # ===== v4 상황 분석 =====
+    off_now, def_now = offense_defense(state)
+    state["next_batter_prediction"] = _predict_next_batter(state, ctx, off_now)
+    if state["outs"] <= 1 and (state["bases"][0] or state["bases"][1] or state["bases"][2]):
+        state["big_inning_warning"] = True
+        if not state.get("_big_warned") and def_now == us:
+            _coach(state, "지금은 빅이닝 위험이 있습니다. 한 타자씩 확실하게 잡아야 합니다.", "수비코치")
+            state["_big_warned"] = True
+    else:
+        state["big_inning_warning"] = False
+        state["_big_warned"] = False
+
+    # ===== v4 승리확률 급변 알림 =====
+    try:
+        current_wp = win_prob(state, ctx)
+        last_wp = state.get("last_wp")
+        if last_wp is not None and abs(current_wp - last_wp) >= 8:
+            state["wpa_alert"] = {"from": last_wp, "to": current_wp, "delta": current_wp-last_wp}
+            state["log"].append(f"📈 승리확률 급변! {last_wp}% → {current_wp}%")
+        else:
+            state["wpa_alert"] = None
+        state["last_wp"] = current_wp
+    except Exception:
+        pass
 
     # ----- 자동 진행 루프 -----
     guard = 0
