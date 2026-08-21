@@ -10,34 +10,26 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Draft - 144-0 Challenge</title>
+<title>Draft 경매</title>
 
 
 <style>
 
-/* =========================
-   RESET
-========================= */
-
 *{
-    margin:0;
-    padding:0;
     box-sizing:border-box;
 }
 
 
-/* =========================
-   BODY
-========================= */
-
 body{
+
+    margin:0;
 
     min-height:100vh;
 
     background:
         radial-gradient(
             circle at top,
-            #1e3a5f 0%,
+            #1e3a5f,
             transparent 38%
         ),
         linear-gradient(
@@ -46,7 +38,7 @@ body{
             #0f172a
         );
 
-    color:#f8fafc;
+    color:#eef2ff;
 
     font-family:
         -apple-system,
@@ -58,55 +50,46 @@ body{
 }
 
 
-/* =========================
-   WRAPPER
-========================= */
+.wrap{
 
-.wrapper{
-
-    width:min(1250px,96vw);
+    width:min(
+        1250px,
+        96vw
+    );
 
     margin:25px auto 50px;
 
 }
 
 
-/* =========================
-   TOP PLAYER STATUS
-========================= */
-
-.topbar{
+.top{
 
     display:grid;
 
     grid-template-columns:
-        1fr
-        1fr;
+        1fr 1fr;
 
     gap:15px;
 
 }
 
 
-.player-card{
+.player{
 
-    background:
-        rgba(17,26,45,.95);
+    background:#131b2e;
 
     border:
         1px solid
-        rgba(148,163,184,.18);
+        #2b395a;
 
     border-radius:18px;
 
     padding:20px;
 
-    transition:.2s;
-
 }
 
 
-.player-card.active{
+.player.active{
 
     border-color:#60a5fa;
 
@@ -126,7 +109,7 @@ body{
 }
 
 
-.player-money{
+.money{
 
     margin-top:5px;
 
@@ -137,84 +120,18 @@ body{
 }
 
 
-.player-sub{
+.sub{
 
     margin-top:6px;
 
-    color:#94a3b8;
+    color:#95a4c1;
 
     font-size:13px;
 
 }
 
 
-/* =========================
-   POSITION STATUS
-========================= */
-
-.position-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
-    gap:8px;
-
-    margin-top:15px;
-
-}
-
-
-.position-box{
-
-    background:#0b1220;
-
-    border:
-        1px solid
-        rgba(148,163,184,.08);
-
-    border-radius:10px;
-
-    padding:9px;
-
-    text-align:center;
-
-}
-
-
-.position-title{
-
-    color:#94a3b8;
-
-    font-size:11px;
-
-    margin-bottom:4px;
-
-}
-
-
-.position-count{
-
-    font-size:15px;
-
-    font-weight:900;
-
-}
-
-
-.position-count span{
-
-    color:#60a5fa;
-
-}
-
-
-/* =========================
-   PITCHER DETAIL
-========================= */
-
-.pitcher-grid{
+.positions{
 
     display:grid;
 
@@ -223,47 +140,50 @@ body{
 
     gap:8px;
 
-    margin-top:8px;
+    margin-top:15px;
 
 }
 
 
-.pitcher-box{
+.pos-box{
 
-    background:#080d18;
+    background:#0b1220;
 
     border-radius:9px;
 
-    padding:8px;
+    padding:9px;
 
     text-align:center;
 
 }
 
 
-.pitcher-box small{
+.pos-title{
 
-    display:block;
+    color:#7f8eaa;
 
-    color:#64748b;
-
-    font-size:10px;
-
-    margin-bottom:3px;
+    font-size:11px;
 
 }
 
 
-.pitcher-box strong{
+.pos-count{
 
-    font-size:14px;
+    margin-top:3px;
+
+    font-size:15px;
+
+    font-weight:900;
 
 }
 
 
-/* =========================
-   MAIN
-========================= */
+.pos-count span{
+
+    color:#60a5fa;
+
+}
+
 
 .main{
 
@@ -271,7 +191,7 @@ body{
 
     grid-template-columns:
         minmax(0,1fr)
-        310px;
+        320px;
 
     gap:15px;
 
@@ -280,26 +200,19 @@ body{
 }
 
 
-/* =========================
-   AUCTION
-========================= */
-
 .auction{
 
-    min-height:560px;
-
-    background:
-        rgba(17,26,45,.97);
+    background:#131b2e;
 
     border:
         1px solid
-        rgba(148,163,184,.18);
+        #2b395a;
 
     border-radius:22px;
 
     padding:45px 30px;
 
-    text-align:center;
+    min-height:600px;
 
     display:flex;
 
@@ -308,6 +221,8 @@ body{
     justify-content:center;
 
     align-items:center;
+
+    text-align:center;
 
 }
 
@@ -325,29 +240,27 @@ body{
 }
 
 
-.current-player{
+.current{
 
     margin-top:15px;
 
-    font-size:50px;
+    font-size:52px;
 
     font-weight:900;
 
 }
 
 
-.player-team{
+.team{
 
     margin-top:8px;
 
     color:#94a3b8;
 
-    font-size:15px;
-
 }
 
 
-.player-position{
+.position{
 
     display:inline-block;
 
@@ -366,7 +279,7 @@ body{
 }
 
 
-.player-overall{
+.ovr{
 
     margin-top:18px;
 
@@ -375,20 +288,14 @@ body{
 }
 
 
-.player-overall span{
+.ovr strong{
 
     color:#fbbf24;
 
     font-size:34px;
 
-    font-weight:900;
-
 }
 
-
-/* =========================
-   PITCHER TYPE
-========================= */
 
 .pitcher-type{
 
@@ -396,18 +303,14 @@ body{
 
     color:#a5b4fc;
 
-    font-weight:800;
-
     font-size:14px;
+
+    font-weight:900;
 
 }
 
 
-/* =========================
-   BID
-========================= */
-
-.current-bid-label{
+.bid-title{
 
     margin-top:30px;
 
@@ -418,7 +321,7 @@ body{
 }
 
 
-.current-bid{
+.bid-price{
 
     margin-top:3px;
 
@@ -431,69 +334,104 @@ body{
 
 .leader{
 
-    margin-top:7px;
+    margin-top:8px;
 
     color:#fbbf24;
 
-    font-size:14px;
-
     font-weight:900;
 
 }
 
 
-.turn{
+.first-message{
 
-    margin-top:22px;
+    margin-top:14px;
+
+    padding:10px 15px;
+
+    background:#0b1220;
+
+    border-radius:10px;
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+
+.turn-message{
+
+    margin-top:18px;
 
     color:#60a5fa;
 
-    font-size:16px;
-
     font-weight:900;
 
 }
 
 
-/* =========================
-   ACTION
-========================= */
+.action-area{
 
-.action-form{
+    width:100%;
 
     margin-top:25px;
 
 }
 
 
-.action-buttons{
+.action-title{
+
+    margin-bottom:10px;
+
+    color:#cbd5e1;
+
+    font-size:13px;
+
+    font-weight:800;
+
+}
+
+
+.action-row{
 
     display:flex;
 
     justify-content:center;
 
-    align-items:center;
-
-    gap:10px;
+    gap:8px;
 
     flex-wrap:wrap;
 
 }
 
 
-.action-button{
+.action-form{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+}
+
+
+button{
 
     border:none;
 
-    border-radius:12px;
+    border-radius:11px;
 
     padding:
-        14px
-        25px;
+        13px
+        18px;
 
     color:white;
 
-    font-size:16px;
+    font-size:14px;
 
     font-weight:900;
 
@@ -504,42 +442,45 @@ body{
 }
 
 
-.action-button:hover{
+button:hover{
 
     transform:
         translateY(-2px);
 
-    box-shadow:
-        0 8px 20px
-        rgba(0,0,0,.25);
+}
+
+
+button:disabled{
+
+    opacity:.3;
+
+    cursor:not-allowed;
+
+    transform:none;
 
 }
 
 
-.bid-button{
+.bid{
 
     background:#2563eb;
 
 }
 
 
-.allin-button{
+.allin{
 
     background:#dc2626;
 
 }
 
 
-.pass-button{
+.pass{
 
     background:#374151;
 
 }
 
-
-/* =========================
-   SIDEBAR
-========================= */
 
 .sidebar{
 
@@ -552,14 +493,13 @@ body{
 }
 
 
-.info-card{
+.card{
 
-    background:
-        rgba(17,26,45,.97);
+    background:#131b2e;
 
     border:
         1px solid
-        rgba(148,163,184,.18);
+        #2b395a;
 
     border-radius:18px;
 
@@ -568,47 +508,43 @@ body{
 }
 
 
-.info-title{
+.card-title{
+
+    margin-bottom:14px;
 
     font-size:15px;
 
     font-weight:900;
 
-    margin-bottom:14px;
-
 }
 
 
-.secret-box{
+.secret{
+
+    padding:15px;
 
     background:#0b1220;
 
-    border-radius:12px;
+    border-radius:10px;
 
-    padding:16px;
-
-    color:#64748b;
-
-    text-align:center;
+    color:#8996b3;
 
     font-size:13px;
 
     line-height:1.7;
 
+    text-align:center;
+
 }
 
 
-/* =========================
-   LOG
-========================= */
+.logs{
 
-.log{
-
-    height:300px;
+    height:280px;
 
     overflow-y:auto;
 
-    color:#a8b4ca;
+    color:#b8c4dc;
 
     font-size:12px;
 
@@ -617,54 +553,22 @@ body{
 }
 
 
-.log-line{
+.log{
 
     padding:6px 0;
 
     border-bottom:
         1px solid
-        rgba(148,163,184,.06);
+        rgba(255,255,255,.05);
 
 }
 
 
-/* =========================
-   ERROR
-========================= */
+.roster{
 
-.error{
+    display:flex;
 
-    width:100%;
-
-    margin-top:20px;
-
-    padding:12px 15px;
-
-    border:
-        1px solid
-        #7f1d1d;
-
-    background:#451a1a;
-
-    color:#fecaca;
-
-    border-radius:10px;
-
-    font-size:13px;
-
-}
-
-
-/* =========================
-   ROSTER
-========================= */
-
-.roster-list{
-
-    display:grid;
-
-    grid-template-columns:
-        1fr;
+    flex-direction:column;
 
     gap:6px;
 
@@ -673,84 +577,90 @@ body{
 
 .roster-item{
 
-    background:#0b1220;
-
-    border-radius:8px;
-
-    padding:8px 10px;
-
     display:flex;
 
     justify-content:space-between;
 
     align-items:center;
 
+    background:#0b1220;
+
+    border-radius:8px;
+
+    padding:8px 10px;
+
     font-size:12px;
 
 }
 
 
-.roster-item-name{
+.roster-name{
 
     font-weight:800;
 
 }
 
 
-.roster-item-position{
+.roster-pos{
 
     color:#64748b;
 
 }
 
 
-/* =========================
-   FINISH
-========================= */
+.error{
 
-.finish-box{
+    width:100%;
+
+    margin-top:20px;
+
+    padding:12px;
+
+    background:#451a1a;
+
+    border:
+        1px solid
+        #7f1d1d;
+
+    border-radius:10px;
+
+    color:#fecaca;
+
+    font-size:13px;
+
+}
+
+
+.finished{
 
     text-align:center;
 
 }
 
 
-.finish-title{
+.finished-title{
 
     color:#60a5fa;
 
     font-size:13px;
 
-    font-weight:900;
+    letter-spacing:4px;
 
-    letter-spacing:3px;
+    font-weight:900;
 
 }
 
 
-.finish-main{
+.finished-main{
 
     margin-top:15px;
 
-    font-size:40px;
+    font-size:42px;
 
     font-weight:900;
 
 }
 
-
-.finish-sub{
-
-    margin-top:10px;
-
-    color:#94a3b8;
-
-}
-
-
-/* =========================
-   MOBILE
-========================= */
 
 @media(max-width:900px){
 
@@ -760,69 +670,38 @@ body{
 
     }
 
-    .sidebar{
-
-        display:grid;
-
-        grid-template-columns:
-            1fr
-            1fr;
-
-    }
-
 }
 
 
 @media(max-width:650px){
 
-    .topbar{
+    .top{
 
         grid-template-columns:1fr;
 
     }
 
-    .position-grid{
+    .positions{
 
         grid-template-columns:
             repeat(2,1fr);
 
     }
 
-    .pitcher-grid{
+    .current{
 
-        grid-template-columns:
-            repeat(3,1fr);
-
-    }
-
-    .sidebar{
-
-        grid-template-columns:1fr;
+        font-size:38px;
 
     }
 
     .auction{
 
-        min-height:500px;
-
-        padding:35px 18px;
-
-    }
-
-    .current-player{
-
-        font-size:36px;
-
-    }
-
-    .current-bid{
-
-        font-size:36px;
+        padding:
+            35px 15px;
 
     }
 
 }
-
 
 </style>
 
@@ -832,270 +711,264 @@ body{
 <body>
 
 
-<div class="wrapper">
+<div class="wrap">
 
 
 <!-- =====================================================
      PLAYER STATUS
 ===================================================== -->
 
-<div class="topbar">
+<div class="top">
 
 
 {% for s in ['a','b'] %}
 
 <div
-    class="
-        player-card
-        {% if state.turn == s %}
-            active
-        {% endif %}
+    class="player
+    {% if state.turn == s %}
+        active
+    {% endif %}
     "
 >
 
 
-    <div class="player-name">
+<div class="player-name">
 
-        {{ state.players[s] }}
+    {{ state.players[s] }}
 
-    </div>
+</div>
 
 
-    <div class="player-money">
+<div class="money">
 
-        ${{ state.money[s] }}
+    ${{ state.money[s] }}
 
-    </div>
+</div>
 
 
-    <div class="player-sub">
+<div class="sub">
 
-        {{ state.rosters[s]|length }}
-        /
-        {{ state.roster_size }}
-        명
+    {{ state.rosters[s]|length }}
+    /
+    {{ state.roster_size }}
+    명
 
-        ·
+    ·
 
-        지출
-        ${{ state.spent[s] }}
+    지출
+    ${{ state.spent[s] }}
 
-    </div>
+</div>
 
 
-    <!-- 포지션 -->
+<div class="positions">
 
-    <div class="position-grid">
 
+<!-- 선발 -->
 
-        <!-- 투수 -->
+<div class="pos-box">
 
-        <div class="position-box">
+<div class="pos-title">
 
-            <div class="position-title">
+    선발
 
-                투수
+</div>
 
-            </div>
+<div class="pos-count">
 
-            <div class="position-count">
+<span>
 
-                <span>
-                    {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '투수'
-                    )
-                    |list
-                    |length
-                    }}
-                </span>
+{{
+state.rosters[s]
+|selectattr(
+    'group',
+    'equalto',
+    '선발'
+)
+|list
+|length
+}}
 
-                /
-                {{ state.limits['투수'] }}
+</span>
 
-            </div>
+/ {{ state.limits['선발'] }}
 
-        </div>
+</div>
 
+</div>
 
-        <!-- 내야 -->
 
-        <div class="position-box">
+<!-- 불펜 -->
 
-            <div class="position-title">
+<div class="pos-box">
 
-                내야수
+<div class="pos-title">
 
-            </div>
+    불펜
 
-            <div class="position-count">
+</div>
 
-                <span>
-                    {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '내야수'
-                    )
-                    |list
-                    |length
-                    }}
-                </span>
+<div class="pos-count">
 
-                /
-                {{ state.limits['내야수'] }}
+<span>
 
-            </div>
+{{
+state.rosters[s]
+|selectattr(
+    'group',
+    'equalto',
+    '불펜'
+)
+|list
+|length
+}}
 
-        </div>
+</span>
 
+/ {{ state.limits['불펜'] }}
 
-        <!-- 외야 -->
+</div>
 
-        <div class="position-box">
+</div>
 
-            <div class="position-title">
 
-                외야수
+<!-- 마무리 -->
 
-            </div>
+<div class="pos-box">
 
-            <div class="position-count">
+<div class="pos-title">
 
-                <span>
-                    {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '외야수'
-                    )
-                    |list
-                    |length
-                    }}
-                </span>
+    마무리
 
-                /
-                {{ state.limits['외야수'] }}
+</div>
 
-            </div>
+<div class="pos-count">
 
-        </div>
+<span>
 
+{{
+state.rosters[s]
+|selectattr(
+    'group',
+    'equalto',
+    '마무리'
+)
+|list
+|length
+}}
 
-        <!-- 포수 -->
+</span>
 
-        <div class="position-box">
+/ {{ state.limits['마무리'] }}
 
-            <div class="position-title">
+</div>
 
-                포수
+</div>
 
-            </div>
 
-            <div class="position-count">
+<!-- 포수 -->
 
-                <span>
-                    {{
-                    state.rosters[s]
-                    |selectattr(
-                        'group',
-                        'equalto',
-                        '포수'
-                    )
-                    |list
-                    |length
-                    }}
-                </span>
+<div class="pos-box">
 
-                /
-                {{ state.limits['포수'] }}
+<div class="pos-title">
 
-            </div>
+    포수
 
-        </div>
+</div>
 
+<div class="pos-count">
 
-    </div>
+<span>
 
+{{
+state.rosters[s]
+|selectattr(
+    'group',
+    'equalto',
+    '포수'
+)
+|list
+|length
+}}
 
-    <!-- 투수 세부 -->
+</span>
 
-    <div class="pitcher-grid">
+/ {{ state.limits['포수'] }}
 
+</div>
 
-        <div class="pitcher-box">
+</div>
 
-            <small>선발</small>
 
-            <strong>
+<!-- 내야 -->
 
-                {{
-                state.rosters[s]
-                |selectattr(
-                    'pitcher_type',
-                    'equalto',
-                    '선발'
-                )
-                |list
-                |length
-                }}
+<div class="pos-box">
 
-            </strong>
+<div class="pos-title">
 
-        </div>
+    내야수
 
+</div>
 
-        <div class="pitcher-box">
+<div class="pos-count">
 
-            <small>불펜</small>
+<span>
 
-            <strong>
+{{
+state.rosters[s]
+|selectattr(
+    'group',
+    'equalto',
+    '내야수'
+)
+|list
+|length
+}}
 
-                {{
-                state.rosters[s]
-                |selectattr(
-                    'pitcher_type',
-                    'equalto',
-                    '불펜'
-                )
-                |list
-                |length
-                }}
+</span>
 
-            </strong>
+/ {{ state.limits['내야수'] }}
 
-        </div>
+</div>
 
+</div>
 
-        <div class="pitcher-box">
 
-            <small>마무리</small>
+<!-- 외야 -->
 
-            <strong>
+<div class="pos-box">
 
-                {{
-                state.rosters[s]
-                |selectattr(
-                    'pitcher_type',
-                    'equalto',
-                    '마무리'
-                )
-                |list
-                |length
-                }}
+<div class="pos-title">
 
-            </strong>
+    외야수
 
-        </div>
+</div>
 
+<div class="pos-count">
 
-    </div>
+<span>
 
+{{
+state.rosters[s]
+|selectattr(
+    'group',
+    'equalto',
+    '외야수'
+)
+|list
+|length
+}}
+
+</span>
+
+/ {{ state.limits['외야수'] }}
+
+</div>
+
+</div>
+
+
+</div>
 
 </div>
 
@@ -1111,10 +984,6 @@ body{
 <div class="main">
 
 
-<!-- =====================================================
-     AUCTION
-===================================================== -->
-
 <section class="auction">
 
 
@@ -1128,7 +997,7 @@ body{
 </div>
 
 
-<div class="current-player">
+<div class="current">
 
     {{ state.current.name }}
 
@@ -1137,7 +1006,7 @@ body{
 
 {% if state.current.team %}
 
-<div class="player-team">
+<div class="team">
 
     {{ state.current.team }}
 
@@ -1146,7 +1015,7 @@ body{
 {% endif %}
 
 
-<div class="player-position">
+<div class="position">
 
     {{ state.current.position }}
 
@@ -1157,54 +1026,43 @@ body{
 </div>
 
 
-<div class="player-overall">
+<div class="ovr">
 
     OVR
 
-    <span>
+    <strong>
 
         {{ state.current.overall }}
 
-    </span>
+    </strong>
 
 </div>
 
 
-<!-- 투수 타입 -->
-
-{% if state.current.group == '투수' %}
+{% if state.current.group in [
+    '선발',
+    '불펜',
+    '마무리'
+] %}
 
 <div class="pitcher-type">
 
-    {% if state.current.pitcher_type %}
-
-        투수 유형 :
-        {{ state.current.pitcher_type }}
-
-    {% elif state.current.role %}
-
-        투수 유형 :
-        {{ state.current.role }}
-
-    {% else %}
-
-        투수
-
-    {% endif %}
+    투수 유형 :
+    {{ state.current.group }}
 
 </div>
 
 {% endif %}
 
 
-<div class="current-bid-label">
+<div class="bid-title">
 
     CURRENT BID
 
 </div>
 
 
-<div class="current-bid">
+<div class="bid-price">
 
     ${{ state.bid }}
 
@@ -1224,11 +1082,53 @@ body{
 {% endif %}
 
 
-<div class="turn">
+<!-- =================================================
+     첫 입찰 전
+================================================= -->
 
+{% if state.first_bidder is none %}
+
+<div class="first-message">
+
+    아직 입찰자가 없습니다.<br>
+
+    <strong>
+        먼저 행동하는 플레이어가 선공권을 가져갑니다.
+    </strong>
+
+</div>
+
+{% else %}
+
+<div class="turn-message">
+
+{% if state.turn %}
+
+    현재 차례 :
     {{ state.players[state.turn] }}
 
-    의 차례
+{% else %}
+
+    경매 처리 중
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+<!-- =================================================
+     A 행동
+================================================= -->
+
+<div class="action-area">
+
+<div class="action-title">
+
+    {{ state.players['a'] }}
+
+    행동
 
 </div>
 
@@ -1239,7 +1139,6 @@ body{
     action="{{
         url_for(
             'draft.action',
-            save_id=save_id,
             game_id=game_id
         )
     }}"
@@ -1249,30 +1148,37 @@ body{
 <input
     type="hidden"
     name="side"
-    value="{{ state.turn }}"
+    value="a"
 >
-
-
-<div class="action-buttons">
 
 
 <button
-    class="action-button bid-button"
+    class="bid"
     type="submit"
     name="action"
     value="bid"
+
+    {% if state.turn is not none
+       and state.turn != 'a' %}
+        disabled
+    {% endif %}
 >
 
-    + $1
+    +$1
 
 </button>
 
 
 <button
-    class="action-button allin-button"
+    class="allin"
     type="submit"
     name="action"
     value="allin"
+
+    {% if state.turn is not none
+       and state.turn != 'a' %}
+        disabled
+    {% endif %}
 >
 
     🔥 ALL-IN
@@ -1281,10 +1187,15 @@ body{
 
 
 <button
-    class="action-button pass-button"
+    class="pass"
     type="submit"
     name="action"
     value="pass"
+
+    {% if state.turn is not none
+       and state.turn != 'a' %}
+        disabled
+    {% endif %}
 >
 
     PASS
@@ -1292,33 +1203,122 @@ body{
 </button>
 
 
+</form>
+
 </div>
 
 
+<!-- =================================================
+     B 행동
+================================================= -->
+
+<div class="action-area">
+
+<div class="action-title">
+
+    {{ state.players['b'] }}
+
+    행동
+
+</div>
+
+
+<form
+    class="action-form"
+    method="POST"
+    action="{{
+        url_for(
+            'draft.action',
+            game_id=game_id
+        )
+    }}"
+>
+
+
+<input
+    type="hidden"
+    name="side"
+    value="b"
+>
+
+
+<button
+    class="bid"
+    type="submit"
+    name="action"
+    value="bid"
+
+    {% if state.turn is not none
+       and state.turn != 'b' %}
+        disabled
+    {% endif %}
+>
+
+    +$1
+
+</button>
+
+
+<button
+    class="allin"
+    type="submit"
+    name="action"
+    value="allin"
+
+    {% if state.turn is not none
+       and state.turn != 'b' %}
+        disabled
+    {% endif %}
+>
+
+    🔥 ALL-IN
+
+</button>
+
+
+<button
+    class="pass"
+    type="submit"
+    name="action"
+    value="pass"
+
+    {% if state.turn is not none
+       and state.turn != 'b' %}
+        disabled
+    {% endif %}
+>
+
+    PASS
+
+</button>
+
+
 </form>
+
+</div>
 
 
 {% else %}
 
 
-<div class="finish-box">
+<div class="finished">
 
 
-<div class="finish-title">
+<div class="finished-title">
 
-    DRAFT
+    DRAFT COMPLETE
 
 </div>
 
 
-<div class="finish-main">
+<div class="finished-main">
 
     경매 종료
 
 </div>
 
 
-<div class="finish-sub">
+<div>
 
     모든 선수의 배정이 완료되었습니다.
 
@@ -1352,58 +1352,65 @@ body{
 <aside class="sidebar">
 
 
-<!-- 비공개 정보 -->
+<!-- 정보 -->
 
-<div class="info-card">
+<div class="card">
 
-
-<div class="info-title">
+<div class="card-title">
 
     🔒 경매 정보
 
 </div>
 
 
-<div class="secret-box">
+<div class="secret">
 
-    현재 경매 선수만 공개됩니다.
+현재 선수만 공개됩니다.
 
-    <br><br>
+<br><br>
 
-    다음 선수와 전체 선수풀의
-    순서는 공개되지 않습니다.
+다음 선수는 공개되지 않습니다.
 
-    <br><br>
+<br>
 
-    두 플레이어가 모두 PASS하면
-    해당 선수는 선수풀의 뒤로 이동합니다.
+전체 선수풀의 순서도 공개되지 않습니다.
+
+<br><br>
+
+둘 다 PASS하면 해당 선수는
+선수풀의 맨 뒤로 이동합니다.
+
+<br><br>
+
+첫 입찰 전에는
+<strong>
+누구든 먼저 누를 수 있습니다.
+</strong>
 
 </div>
-
 
 </div>
 
 
 <!-- 로그 -->
 
-<div class="info-card">
+<div class="card">
 
-
-<div class="info-title">
+<div class="card-title">
 
     📋 경매 기록
 
 </div>
 
 
-<div class="log">
+<div class="logs">
 
 
 {% if state.log %}
 
 {% for item in state.log|reverse %}
 
-<div class="log-line">
+<div class="log">
 
     {{ item }}
 
@@ -1413,9 +1420,9 @@ body{
 
 {% else %}
 
-<div class="log-line">
+<div class="log">
 
-    아직 경매 기록이 없습니다.
+    아직 기록이 없습니다.
 
 </div>
 
@@ -1424,73 +1431,109 @@ body{
 
 </div>
 
+</div>
+
+
+<!-- A 로스터 -->
+
+<div class="card">
+
+<div class="card-title">
+
+    {{ state.players['a'] }} 로스터
 
 </div>
 
 
-<!-- 로스터 -->
-
-{% for s in ['a','b'] %}
-
-<div class="info-card">
+<div class="roster">
 
 
-<div class="info-title">
-
-    {{ state.players[s] }} 로스터
-
-</div>
-
-
-<div class="roster-list">
-
-
-{% if state.rosters[s] %}
-
-
-{% for player in state.rosters[s] %}
+{% for player in state.rosters['a'] %}
 
 <div class="roster-item">
 
-
-<div class="roster-item-name">
+<div class="roster-name">
 
     {{ player.name }}
 
 </div>
 
+<div class="roster-pos">
 
-<div class="roster-item-position">
-
-    {{ player.position }}
+    {{ player.group }}
 
 </div>
-
 
 </div>
 
 {% endfor %}
 
 
-{% else %}
+{% if not state.rosters['a'] %}
 
+<div class="sub">
 
-<div class="log-line">
-
-    아직 선수가 없습니다.
+    아직 영입한 선수가 없습니다.
 
 </div>
-
 
 {% endif %}
 
 
 </div>
 
+</div>
+
+
+<!-- B 로스터 -->
+
+<div class="card">
+
+<div class="card-title">
+
+    {{ state.players['b'] }} 로스터
+
+</div>
+
+
+<div class="roster">
+
+
+{% for player in state.rosters['b'] %}
+
+<div class="roster-item">
+
+<div class="roster-name">
+
+    {{ player.name }}
+
+</div>
+
+<div class="roster-pos">
+
+    {{ player.group }}
+
+</div>
 
 </div>
 
 {% endfor %}
+
+
+{% if not state.rosters['b'] %}
+
+<div class="sub">
+
+    아직 영입한 선수가 없습니다.
+
+</div>
+
+{% endif %}
+
+
+</div>
+
+</div>
 
 
 </aside>
