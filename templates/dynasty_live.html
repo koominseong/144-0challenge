@@ -143,6 +143,8 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
 .tactic-bar { display:flex; gap:5px; margin-top:9px; flex-wrap:wrap; }
 .tactic-bar button { flex:1; min-width:65px; padding:6px 4px; font-size:10px; background:#263238; color:#ddd; border:1px solid rgba(255,255,255,.12); border-radius:6px; cursor:pointer; }
 
+
+.v4-panel{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:10px;padding:10px;margin-top:10px}.v4-title{font-size:12px;font-weight:700;margin-bottom:8px;color:#ffd54f}.v4-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.v4-btn{padding:7px 5px;background:#202a33;color:#ddd;border:1px solid rgba(255,255,255,.1);border-radius:6px;font-size:10px;cursor:pointer}.v4-btn:hover{border-color:#ffd54f;color:#ffd54f}.v4-alert{padding:8px;border-radius:8px;background:rgba(239,83,80,.10);border:1px solid rgba(239,83,80,.3);font-size:11px;margin-top:8px}.v4-grade{font-size:20px;font-weight:800}.v4-small{font-size:10px;color:#8fa0ad;margin-top:3px}.v4-row{display:flex;gap:5px;align-items:center;margin:5px 0}.v4-row form{flex:1}.v4-row select{width:100%;padding:6px;background:#0f1419;color:#ddd;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:10px}
 </style>
 </head>
 <body>
@@ -296,6 +298,38 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
         <div class="coach-tip">💬 {{ coach_tip }}</div>
         {% endif %}
         {% endif %}
+
+        <!-- ===== V4 감독실 ===== -->
+        <div class="v4-panel">
+            <div class="v4-title">🧢 V4 감독실</div>
+            <div class="v4-row">
+                <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                    <select name="manager_style" onchange="this.form.submit()">
+                        {% for ms in manager_styles %}<option value="{{ ms.id }}" {% if manager_style==ms.id %}selected{% endif %}>{{ ms.name }} · {{ ms.desc }}</option>{% endfor %}
+                    </select>
+                    <input type="hidden" name="action" value="manager_style">
+                </form>
+            </div>
+            {% if state.pending in ['pitching','duel_pitch'] and us == defense_side %}
+            <div class="v4-grid">
+                <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}"><button class="v4-btn" name="action" value="mound_visit">🧢 마운드 방문 ({{ mound_visits.get('home' if user_team.id==home.id else 'away',0) }}/2)</button></form>
+                <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}"><button class="v4-btn" name="action" value="catcher_visit">🧤 포수 방문</button></form>
+            </div>
+            {% endif %}
+            <div class="v4-row">
+                <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                    <select name="lead_width" onchange="this.form.submit()"><option value="small" {% if lead_width=='small' %}selected{% endif %}>주자 리드: 짧게</option><option value="normal" {% if lead_width=='normal' %}selected{% endif %}>주자 리드: 기본</option><option value="large" {% if lead_width=='large' %}selected{% endif %}>주자 리드: 공격적</option></select><input type="hidden" name="action" value="set_lead">
+                </form>
+            </div>
+            <div class="v4-row">
+                <form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}">
+                    <select name="throw_priority" onchange="this.form.submit()"><option value="home" {% if throw_priority=='home' %}selected{% endif %}>송구 우선: 홈</option><option value="third" {% if throw_priority=='third' %}selected{% endif %}>송구 우선: 3루</option><option value="second" {% if throw_priority=='second' %}selected{% endif %}>송구 우선: 2루</option><option value="first" {% if throw_priority=='first' %}selected{% endif %}>송구 우선: 1루</option></select><input type="hidden" name="action" value="set_throw">
+                </form>
+            </div>
+            {% if state.pending == 'running' %}<form method="POST" action="{{ url_for('dynasty_live.live_action', save_id=save.id, live_id=live.id) }}"><button class="v4-btn" style="width:100%" name="action" value="tagup">🏃 태그업/한 베이스 더 판단</button></form>{% endif %}
+            {% if next_batter_prediction %}<div class="v4-small">🔮 코치 분석: {{ next_batter_prediction }}</div>{% endif %}
+            {% if wpa_alert %}<div class="v4-alert">📈 승리확률 {{ wpa_alert['from'] }}% → {{ wpa_alert['to'] }}% ({{ '%+d'|format(wpa_alert['delta']) }}%p)</div>{% endif %}
+        </div>
 
         <!-- ===== 패널 분기 ===== -->
         {% if state.pending == 'mode_select' %}
@@ -734,6 +768,14 @@ body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; ba
                     <button class="dec-btn primary" name="action" value="swing">▶ 진행</button>
                 </div>
             </form>
+        </div>
+        {% endif %}
+
+        {% if state.pending == 'finished' and manager_grade %}
+        <div class="v4-panel">
+            <div class="v4-title">📋 오늘의 감독 평가</div>
+            <div class="v4-grade">{{ manager_grade }}</div>
+            <div class="v4-small">{{ manager_grade_comment }}</div>
         </div>
         {% endif %}
 
