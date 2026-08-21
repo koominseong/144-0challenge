@@ -50,9 +50,14 @@ def live_action(save_id, live_id):
     outcome = request.form.get("outcome")
     tactic = request.form.get("tactic")
     defense_mode = request.form.get("defense_mode")
+    lead_width = request.form.get("lead_width")
+    throw_priority = request.form.get("throw_priority")
+    manager_style = request.form.get("manager_style")
     live_row = progress(save_id, live_id, user_action=action, ph_id=ph_id,
                         rp_id=rp_id, user_action_slot=slot, skill=skill, outcome=outcome,
-                        tactic=tactic, defense_mode=defense_mode)
+                        tactic=tactic, defense_mode=defense_mode,
+                        lead_width=lead_width, throw_priority=throw_priority,
+                        manager_style=manager_style)
     return _render(save_id, live_row)
 
 
@@ -236,6 +241,19 @@ def _render(save_id, live_row):
 
     save = sb.table("dynasty_save").select("*").eq("id", save_id).execute().data[0]
 
+    manager_grade = state.get("manager_grade")
+    manager_grade_comment = state.get("manager_grade_comment")
+    wpa_alert = state.get("wpa_alert")
+    next_batter_prediction = state.get("next_batter_prediction")
+    manager_style = state.get("manager_style", "balanced")
+    manager_styles = [
+        {"id":"aggressive", "name":"공격형", "desc":"장타·적극적인 승부"},
+        {"id":"defensive", "name":"수비형", "desc":"실점 억제 우선"},
+        {"id":"pitching", "name":"투수교체형", "desc":"불펜 적극 운용"},
+        {"id":"data", "name":"데이터형", "desc":"상성·확률 중심"},
+        {"id":"balanced", "name":"균형형", "desc":"기본 운영"},
+    ]
+
     return render_template(
         "dynasty_live.html",
         save=save,
@@ -280,4 +298,16 @@ def _render(save_id, live_row):
         bullpen_status=bullpen_status,
         defense_view=defense_view,
         coach_messages=coach_messages,
+        manager_grade=manager_grade,
+        manager_grade_comment=manager_grade_comment,
+        wpa_alert=wpa_alert,
+        next_batter_prediction=next_batter_prediction,
+        manager_style=manager_style,
+        manager_styles=manager_styles,
+        mound_visits=state.get("mound_visits", {}),
+        lead_width=state.get("lead_width", {}).get(us, "normal") if us else "normal",
+        throw_priority=state.get("throw_priority", {}).get(us, "home") if us else "home",
+        defense_leader=state.get("defense_leader", {}).get(us) if us else None,
+        defense_side=def_,
+        us=us,
     )
