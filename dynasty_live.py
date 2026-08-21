@@ -1250,10 +1250,6 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
             if advance_if_needed(state, ctx) == "game_over":
                 return _finish()
 
-    # v4 비소모성 감독 설정은 타석을 진행시키지 않는다.
-    if user_action in ("manager_style", "set_lead", "set_throw", "def_leader", "mound_visit", "catcher_visit"):
-        return _save_and_reload()
-
 
     def _save_and_reload():
         state["log"] = state["log"][-60:]
@@ -1263,6 +1259,12 @@ def progress(save_id, live_id, user_action=None, ph_id=None, rp_id=None,
     def _finish():
         finish_live_game(save_id, live_row, state, ctx)
         return _reload(sb, live_id)
+                 
+    # v4 비소모성 감독 설정은 타석을 진행시키지 않는다.
+    if user_action in ("manager_style", "set_lead", "set_throw", "def_leader", "mound_visit", "catcher_visit"):
+        return _save_and_reload()
+
+
 
 # ----- 시점 선택 -----
     if state["pending"] == "mode_select":
