@@ -1,4 +1,20 @@
+# ============================================================
 # draft_routes.py
+# Draft Mode
+#
+# 포지션
+#   선발 / 불펜 / 마무리 / 내야 / 외야 / 포수
+#
+# 게임
+#   1 VS 1 비공개 경매
+#   선수풀은 설정 인원의 2배
+#   경매 순서는 랜덤
+#   +$1 입찰
+#   ALL-IN
+#   PASS
+#   양쪽 모두 PASS -> 선수풀 맨 뒤
+#   한쪽이 로스터를 모두 채우면 남은 선수는 상대에게
+# ============================================================
 
 from flask import (
     Blueprint,
@@ -6,18 +22,17 @@ from flask import (
     request,
     redirect,
     url_for,
-    session,
 )
 
-import json
 import os
-import uuid
+import json
 import random
+import uuid
 
 
-# =========================================================
+# ============================================================
 # Blueprint
-# =========================================================
+# ============================================================
 
 draft_bp = Blueprint(
     "draft",
@@ -26,11 +41,13 @@ draft_bp = Blueprint(
 )
 
 
-# =========================================================
-# 파일 경로
-# =========================================================
+# ============================================================
+# 경로
+# ============================================================
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
 
 PLAYER_POOL_FILE = os.path.join(
     BASE_DIR,
@@ -38,335 +55,384 @@ PLAYER_POOL_FILE = os.path.join(
 )
 
 
-# =========================================================
-# 기본 설정
-# =========================================================
+# ============================================================
+# 포지션 정의
+#
+# player_pool.json의 실제 position 값을 그대로 사용
+# ============================================================
 
-DEFAULT_SETTINGS = {
+POSITIONS = [
+    "선발",
+    "불펜",
+    "마무리",
+    "내야",
+    "외야",
+    "포수",
+]
 
-    "money": 10,
 
-    "pitchers": 2,
-
-    "infielders": 2,
-
-    "outfielders": 2,
-
-    "catchers": 1,
-
+POSITION_SETTINGS = {
+    "선발": "starter",
+    "불펜": "reliever",
+    "마무리": "closer",
+    "내야": "infield",
+    "외야": "outfield",
+    "포수": "catcher",
 }
 
 
-# =========================================================
-# 선수 풀 로드
-# =========================================================
+DEFAULT_SETTINGS = {
+
+    # 초기 자본
+    "money": 10,
+
+    # 한 팀이 뽑을 인원
+    "starter": 2,
+    "reliever": 2,
+    "closer": 1,
+    "infield": 2,
+    "outfield": 2,
+    "catcher": 1,
+}
+
+
+# ============================================================
+# 임시 게임 저장소
+#
+# 서버 재시작 전까지 유지
+# ============================================================
+
+GAMES = {}
+
+
+# ============================================================
+# JSON 로드
+# ============================================================
 
 def load_player_pool():
 
-    if not os.path.exists(PLAYER_POOL_FILE):
-        return []
-
-    try:
-
-        with open(
-            PLAYER_POOL_FILE,
-            "r",
-            encoding="utf-8"
-        ) as f:
-
-            data = json.load(f)
-
-    except Exception:
-        return []
+    if not os.path.exists(
+        PLAYER_POOL_FILE
+    ):
+        raise FileNotFoundError(
+            "player_pool.json 파일을 찾을 수 없습니다."
+        )
 
 
-    # -----------------------------------------
-    # JSON이 리스트인 경우
-    # -----------------------------------------
+    with open(
+        PLAYER_POOL_FILE,
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        data = json.load(f)
+
+
+    # ----------------------------------------
+    # [
+    #   {...},
+    #   {...}
+    # ]
+    # ----------------------------------------
 
     if isinstance(data, list):
-
         return data
 
 
-    # -----------------------------------------
-    # {"players": [...]} 형태
-    # -----------------------------------------
+    # ----------------------------------------
+    # {"players": [...]}
+    # ----------------------------------------
 
     if isinstance(data, dict):
 
-        if isinstance(data.get("players"), list):
-
+        if isinstance(
+            data.get("players"),
+            list
+        ):
             return data["players"]
 
-        if isinstance(data.get("player_pool"), list):
 
+        if isinstance(
+            data.get("player_pool"),
+            list
+        ):
             return data["player_pool"]
 
-        if isinstance(data.get("pool"), list):
 
+        if isinstance(
+            data.get("pool"),
+            list
+        ):
             return data["pool"]
 
 
-    return []
-
-
-# =========================================================
-# 선수 포지션 정규화
-# =========================================================
-
-def normalize_group(player):
-
-    group = (
-        player.get("group")
-        or player.get("position_group")
-        or player.get("category")
-        or ""
-    )
-
-    position = (
-        player.get("position")
-        or player.get("pos")
-        or ""
+    raise ValueError(
+        "player_pool.json의 선수 데이터 형식을 인식할 수 없습니다."
     )
 
 
-    group = str(group).strip()
-
-    position = str(position).strip().upper()
-
-
-    # 이미 한글 그룹이면 그대로 사용
-
-    if group in (
-        "투수",
-        "내야수",
-        "외야수",
-        "포수"
-    ):
-
-        return group
-
-
-    # 영문 그룹
-
-    if group.upper() in (
-        "P",
-        "PITCHER",
-        "PITCHERS"
-    ):
-
-        return "투수"
-
-
-    if group.upper() in (
-        "IF",
-        "INF",
-        "INFIELD",
-        "INFIELDER",
-        "INFIELDERS"
-    ):
-
-        return "내야수"
-
-
-    if group.upper() in (
-        "OF",
-        "OUTFIELD",
-        "OUTFIELDER",
-        "OUTFIELDERS"
-    ):
-
-        return "외야수"
-
-
-    if group.upper() in (
-        "C",
-        "CATCHER",
-        "CATCHERS"
-    ):
-
-        return "포수"
-
-
-    # position으로 판단
-
-    if position in (
-        "P",
-        "SP",
-        "RP"
-    ):
-
-        return "투수"
-
-
-    if position in (
-        "C",
-        "포수"
-    ):
-
-        return "포수"
-
-
-    if position in (
-        "1B",
-        "2B",
-        "3B",
-        "SS",
-        "IF"
-    ):
-
-        return "내야수"
-
-
-    if position in (
-        "LF",
-        "CF",
-        "RF",
-        "OF"
-    ):
-
-        return "외야수"
-
-
-    return group or "기타"
-
-
-# =========================================================
-# 선수 데이터 정리
-# =========================================================
+# ============================================================
+# 선수 데이터 정규화
+# ============================================================
 
 def normalize_player(player):
 
     p = dict(player)
 
-    p["name"] = (
-        p.get("name")
-        or p.get("player_name")
-        or p.get("선수명")
-        or "이름 없음"
-    )
 
-    p["team"] = (
-        p.get("team")
-        or p.get("팀")
-        or ""
-    )
+    # ----------------------------------------
+    # 이름
+    # ----------------------------------------
 
-    p["position"] = (
+    if not p.get("name"):
+
+        p["name"] = (
+            p.get("player_name")
+            or p.get("선수명")
+            or "이름 없음"
+        )
+
+
+    # ----------------------------------------
+    # 팀
+    # ----------------------------------------
+
+    if not p.get("team"):
+
+        p["team"] = (
+            p.get("팀")
+            or ""
+        )
+
+
+    # ----------------------------------------
+    # 포지션
+    #
+    # 중요:
+    # 여기서는 포지션을 절대로
+    # "투수"로 합치지 않는다.
+    # ----------------------------------------
+
+    position = (
         p.get("position")
         or p.get("pos")
         or ""
     )
 
-    p["group"] = normalize_group(p)
+    p["position"] = str(
+        position
+    ).strip()
+
+
+    # ----------------------------------------
+    # OVR
+    # ----------------------------------------
+
+    overall = (
+        p.get("overall")
+        or p.get("ovr")
+        or p.get("rating")
+        or 0
+    )
 
     try:
-
         p["overall"] = int(
-            p.get("overall")
-            or p.get("ovr")
-            or p.get("rating")
-            or 0
+            overall
         )
 
-    except Exception:
-
+    except (
+        TypeError,
+        ValueError
+    ):
         p["overall"] = 0
 
 
     return p
 
 
-# =========================================================
+# ============================================================
+# 설정값 읽기
+# ============================================================
+
+def get_int_form(
+    name,
+    default,
+    minimum=0
+):
+
+    value = request.form.get(
+        name,
+        default
+    )
+
+
+    try:
+
+        value = int(value)
+
+    except (
+        TypeError,
+        ValueError
+    ):
+
+        value = int(default)
+
+
+    if value < minimum:
+        value = minimum
+
+
+    return value
+
+
+# ============================================================
 # 필요한 선수 수
-# =========================================================
+#
+# 예:
+# 선발 2 -> 선수풀에는 4명
+# 불펜 2 -> 선수풀에는 4명
+# ...
+# ============================================================
 
 def required_counts(settings):
 
     return {
 
-        "투수":
-            int(settings["pitchers"]) * 2,
+        position:
+            int(
+                settings[
+                    POSITION_SETTINGS[
+                        position
+                    ]
+                ]
+            ) * 2
 
-        "내야수":
-            int(settings["infielders"]) * 2,
-
-        "외야수":
-            int(settings["outfielders"]) * 2,
-
-        "포수":
-            int(settings["catchers"]) * 2,
+        for position in POSITIONS
 
     }
 
 
-# =========================================================
+# ============================================================
+# 팀당 로스터 크기
+# ============================================================
+
+def roster_size(settings):
+
+    return sum(
+        int(
+            settings[
+                POSITION_SETTINGS[
+                    position
+                ]
+            ]
+        )
+        for position in POSITIONS
+    )
+
+
+# ============================================================
 # 선수 풀 생성
-# =========================================================
+# ============================================================
 
-def build_pool(settings):
+def build_player_pool(settings):
 
-    players = [
-        normalize_player(x)
-        for x in load_player_pool()
-        if isinstance(x, dict)
-    ]
+    raw_players = load_player_pool()
 
 
-    required = required_counts(settings)
+    players = []
+
+    for raw in raw_players:
+
+        if not isinstance(
+            raw,
+            dict
+        ):
+            continue
+
+        players.append(
+            normalize_player(raw)
+        )
 
 
-    groups = {
+    # --------------------------------------------------------
+    # 포지션별 분류
+    # --------------------------------------------------------
 
-        "투수": [],
-
-        "내야수": [],
-
-        "외야수": [],
-
-        "포수": [],
-
+    grouped = {
+        position: []
+        for position in POSITIONS
     }
 
 
     for player in players:
 
-        group = player["group"]
+        position = player.get(
+            "position",
+            ""
+        )
 
-        if group in groups:
 
-            groups[group].append(player)
+        # JSON에 실제로 존재하는 포지션만 사용
+
+        if position in grouped:
+
+            grouped[position].append(
+                player
+            )
 
 
-    # 부족한 포지션 확인
+    # --------------------------------------------------------
+    # 필요한 수 확인
+    # --------------------------------------------------------
 
-    for group, need in required.items():
+    required = required_counts(
+        settings
+    )
 
-        available = len(groups[group])
+
+    for position in POSITIONS:
+
+        need = required[position]
+
+        available = len(
+            grouped[position]
+        )
+
 
         if available < need:
 
             raise ValueError(
-                f"{group} 선수 풀이 부족합니다. "
+                f"{position} 선수 풀이 부족합니다. "
                 f"필요 {need}명 / 보유 {available}명"
             )
 
 
+    # --------------------------------------------------------
+    # 각 포지션에서 필요한 선수만 랜덤 선택
+    # --------------------------------------------------------
+
     pool = []
 
 
-    for group, count in required.items():
+    for position in POSITIONS:
+
+        count = required[position]
+
 
         selected = random.sample(
-            groups[group],
+            grouped[position],
             count
         )
 
-        pool.extend(selected)
+
+        pool.extend(
+            selected
+        )
 
 
+    # --------------------------------------------------------
     # 전체 경매 순서 랜덤
+    # --------------------------------------------------------
 
     random.shuffle(pool)
 
@@ -374,20 +440,325 @@ def build_pool(settings):
     return pool
 
 
-# =========================================================
-# 게임 상태 생성
-# =========================================================
+# ============================================================
+# 포지션별 현재 로스터 수
+# ============================================================
+
+def count_position(
+    roster,
+    position
+):
+
+    return sum(
+        1
+        for player in roster
+        if player.get(
+            "position"
+        ) == position
+    )
+
+
+# ============================================================
+# 포지션별 제한
+# ============================================================
+
+def get_position_limit(
+    settings,
+    position
+):
+
+    key = POSITION_SETTINGS.get(
+        position
+    )
+
+
+    if not key:
+        return 0
+
+
+    return int(
+        settings.get(
+            key,
+            0
+        )
+    )
+
+
+# ============================================================
+# 해당 포지션을 더 뽑을 수 있는지
+# ============================================================
+
+def position_full(
+    game,
+    side,
+    player
+):
+
+    position = player.get(
+        "position"
+    )
+
+
+    limit = get_position_limit(
+        game["settings"],
+        position
+    )
+
+
+    current = count_position(
+        game["rosters"][side],
+        position
+    )
+
+
+    return current >= limit
+
+
+# ============================================================
+# 로스터 전체가 가득 찼는지
+# ============================================================
+
+def roster_full(
+    game,
+    side
+):
+
+    return (
+        len(
+            game["rosters"][side]
+        )
+        >=
+        roster_size(
+            game["settings"]
+        )
+    )
+
+
+# ============================================================
+# 게임 종료 여부
+# ============================================================
+
+def check_finished(game):
+
+    target = roster_size(
+        game["settings"]
+    )
+
+
+    a_full = (
+        len(
+            game["rosters"]["a"]
+        )
+        >= target
+    )
+
+
+    b_full = (
+        len(
+            game["rosters"]["b"]
+        )
+        >= target
+    )
+
+
+    # 한 명이 먼저 다 채우면
+    # 나머지 선수는 상대방에게
+
+    if a_full and not b_full:
+
+        remaining = []
+
+        if game.get("current"):
+            remaining.append(
+                game["current"]
+            )
+
+        remaining.extend(
+            game.get("pool", [])
+        )
+
+        remaining.extend(
+            game.get("returned", [])
+        )
+
+
+        game["rosters"]["b"].extend(
+            remaining
+        )
+
+
+        game["pool"] = []
+
+        game["returned"] = []
+
+        game["current"] = None
+
+        game["finished"] = True
+
+        game["winner"] = "a"
+
+        return True
+
+
+    if b_full and not a_full:
+
+        remaining = []
+
+        if game.get("current"):
+            remaining.append(
+                game["current"]
+            )
+
+        remaining.extend(
+            game.get("pool", [])
+        )
+
+        remaining.extend(
+            game.get("returned", [])
+        )
+
+
+        game["rosters"]["a"].extend(
+            remaining
+        )
+
+
+        game["pool"] = []
+
+        game["returned"] = []
+
+        game["current"] = None
+
+        game["finished"] = True
+
+        game["winner"] = "b"
+
+        return True
+
+
+    if a_full and b_full:
+
+        game["current"] = None
+
+        game["pool"] = []
+
+        game["returned"] = []
+
+        game["finished"] = True
+
+        game["winner"] = None
+
+        return True
+
+
+    return False
+
+
+# ============================================================
+# 다음 선수 꺼내기
+# ============================================================
+
+def next_player(game):
+
+    if game["finished"]:
+        return
+
+
+    # --------------------------------------------------------
+    # 현재 경매가 끝났으므로 현재 선수 제거
+    # --------------------------------------------------------
+
+    game["current"] = None
+
+    game["bid"] = 0
+
+    game["leader"] = None
+
+
+    # --------------------------------------------------------
+    # 먼저 일반 선수풀
+    # --------------------------------------------------------
+
+    if game["pool"]:
+
+        game["current"] = game[
+            "pool"
+        ].pop(0)
+
+        # 경매 시작자는 랜덤
+        game["turn"] = random.choice(
+            ["a", "b"]
+        )
+
+        return
+
+
+    # --------------------------------------------------------
+    # PASS로 뒤로 밀린 선수
+    #
+    # 일반 풀이 모두 끝나면
+    # 뒤로 보낸 선수들이 다시 나온다.
+    # --------------------------------------------------------
+
+    if game["returned"]:
+
+        game["pool"] = list(
+            game["returned"]
+        )
+
+        game["returned"] = []
+
+
+        random.shuffle(
+            game["pool"]
+        )
+
+
+        game["current"] = game[
+            "pool"
+        ].pop(0)
+
+
+        game["turn"] = random.choice(
+            ["a", "b"]
+        )
+
+        return
+
+
+    # --------------------------------------------------------
+    # 정말 끝
+    # --------------------------------------------------------
+
+    game["finished"] = True
+
+    game["current"] = None
+
+    game["winner"] = None
+
+
+# ============================================================
+# 게임 생성
+# ============================================================
 
 def create_game(settings):
 
-    pool = build_pool(settings)
+    pool = build_player_pool(
+        settings
+    )
+
+
+    game_id = uuid.uuid4().hex
 
 
     game = {
 
-        "id": uuid.uuid4().hex,
+        "id": game_id,
 
-        "settings": settings,
+        "settings": dict(
+            settings
+        ),
+
 
         "players": {
 
@@ -397,13 +768,19 @@ def create_game(settings):
 
         },
 
+
         "money": {
 
-            "a": int(settings["money"]),
+            "a": int(
+                settings["money"]
+            ),
 
-            "b": int(settings["money"]),
+            "b": int(
+                settings["money"]
+            ),
 
         },
+
 
         "spent": {
 
@@ -413,6 +790,7 @@ def create_game(settings):
 
         },
 
+
         "rosters": {
 
             "a": [],
@@ -421,9 +799,11 @@ def create_game(settings):
 
         },
 
+
         "pool": pool,
 
         "returned": [],
+
 
         "current": None,
 
@@ -431,9 +811,15 @@ def create_game(settings):
 
         "leader": None,
 
-        "turn": random.choice(["a", "b"]),
+
+        # 경매 시작자는 랜덤
+        "turn": random.choice(
+            ["a", "b"]
+        ),
+
 
         "log": [],
+
 
         "finished": False,
 
@@ -444,173 +830,108 @@ def create_game(settings):
 
     # 첫 선수
 
-    advance_player(game)
+    next_player(game)
 
 
     return game
 
 
-# =========================================================
-# 다음 선수
-# =========================================================
+# ============================================================
+# 템플릿용 상태
+# ============================================================
 
-def advance_player(game):
+def make_state(game):
 
-    if game["finished"]:
-
-        return
-
-
-    if game["pool"]:
-
-        game["current"] = game["pool"].pop(0)
-
-        game["bid"] = 0
-
-        game["leader"] = None
-
-        # 경매 시작자는 랜덤
-
-        game["turn"] = random.choice(
-            ["a", "b"]
-        )
-
-        return
-
-
-    # 뒤로 밀렸던 선수
-
-    if game["returned"]:
-
-        game["pool"] = game["returned"]
-
-        game["returned"] = []
-
-        random.shuffle(game["pool"])
-
-        advance_player(game)
-
-        return
-
-
-    game["current"] = None
-
-    game["finished"] = True
-
-
-    if len(game["rosters"]["a"]) > len(
-        game["rosters"]["b"]
-    ):
-
-        game["winner"] = "a"
-
-    elif len(game["rosters"]["b"]) > len(
-        game["rosters"]["a"]
-    ):
-
-        game["winner"] = "b"
-
-    else:
-
-        game["winner"] = None
-
-
-# =========================================================
-# 로스터가 가득 찼는지
-# =========================================================
-
-def roster_full(game, side):
-
-    settings = game["settings"]
-
-    roster = game["rosters"][side]
-
-
-    required = (
-
-        int(settings["pitchers"])
-        + int(settings["infielders"])
-        + int(settings["outfielders"])
-        + int(settings["catchers"])
-
-    )
-
-
-    return len(roster) >= required
-
-
-# =========================================================
-# 포지션 제한
-# =========================================================
-
-def position_full(game, side, player):
-
-    group = player["group"]
-
-    settings = game["settings"]
-
-    roster = game["rosters"][side]
+    settings = game[
+        "settings"
+    ]
 
 
     limits = {
 
-        "투수":
-            int(settings["pitchers"]),
+        position:
+            get_position_limit(
+                settings,
+                position
+            )
 
-        "내야수":
-            int(settings["infielders"]),
-
-        "외야수":
-            int(settings["outfielders"]),
-
-        "포수":
-            int(settings["catchers"]),
+        for position in POSITIONS
 
     }
 
 
-    count = sum(
-        1
-        for p in roster
-        if p.get("group") == group
-    )
+    state = {
+
+        "id": game["id"],
 
 
-    return count >= limits.get(group, 999)
+        "players": dict(
+            game["players"]
+        ),
 
 
-# =========================================================
-# 현재 상태를 템플릿용으로 변환
-# =========================================================
-
-def template_state(game):
-
-    state = dict(game)
+        "money": dict(
+            game["money"]
+        ),
 
 
-    state["roster_size"] = (
-
-        int(game["settings"]["pitchers"])
-        + int(game["settings"]["infielders"])
-        + int(game["settings"]["outfielders"])
-        + int(game["settings"]["catchers"])
-
-    )
+        "spent": dict(
+            game["spent"]
+        ),
 
 
-    state["limits"] = {
+        "rosters": {
 
-        "투수":
-            int(game["settings"]["pitchers"]),
+            "a": list(
+                game["rosters"]["a"]
+            ),
 
-        "내야수":
-            int(game["settings"]["infielders"]),
+            "b": list(
+                game["rosters"]["b"]
+            ),
 
-        "외야수":
-            int(game["settings"]["outfielders"]),
+        },
 
-        "포수":
-            int(game["settings"]["catchers"]),
+
+        "roster_size":
+            roster_size(settings),
+
+
+        "limits": limits,
+
+
+        "current":
+            game["current"],
+
+
+        "bid":
+            game["bid"],
+
+
+        # 기존 템플릿 호환
+        "current_bid":
+            game["bid"],
+
+
+        "leader":
+            game["leader"],
+
+
+        "turn":
+            game["turn"],
+
+
+        "log": list(
+            game["log"]
+        ),
+
+
+        "finished":
+            game["finished"],
+
+
+        "winner":
+            game["winner"],
 
     }
 
@@ -618,31 +939,25 @@ def template_state(game):
     return state
 
 
-# =========================================================
-# 임시 저장소
-#
-# 서버 재시작 전까지 사용
-# =========================================================
-
-GAMES = {}
-
-
-# =========================================================
+# ============================================================
 # /draft
-# =========================================================
+#
+# 시작 화면
+# ============================================================
 
 @draft_bp.route("/")
 def draft_home():
 
     return render_template(
         "draft_setup.html",
-        settings=DEFAULT_SETTINGS
+        settings=DEFAULT_SETTINGS,
+        error=None
     )
 
 
-# =========================================================
-# 게임 생성
-# =========================================================
+# ============================================================
+# 게임 시작
+# ============================================================
 
 @draft_bp.route(
     "/start",
@@ -652,85 +967,100 @@ def draft_start():
 
     try:
 
-        money = int(
-            request.form.get(
-                "money",
-                10
-            )
-        )
-
-        pitchers = int(
-            request.form.get(
-                "pitchers",
-                2
-            )
-        )
-
-        infielders = int(
-            request.form.get(
-                "infielders",
-                2
-            )
-        )
-
-        outfielders = int(
-            request.form.get(
-                "outfielders",
-                2
-            )
-        )
-
-        catchers = int(
-            request.form.get(
-                "catchers",
-                1
-            )
+        money = get_int_form(
+            "money",
+            10,
+            1
         )
 
 
-        if money < 1:
+        starter = get_int_form(
+            "starter",
+            2,
+            0
+        )
 
-            raise ValueError(
-                "초기 자본은 1달러 이상이어야 합니다."
-            )
+
+        reliever = get_int_form(
+            "reliever",
+            2,
+            0
+        )
+
+
+        closer = get_int_form(
+            "closer",
+            1,
+            0
+        )
+
+
+        infield = get_int_form(
+            "infield",
+            2,
+            0
+        )
+
+
+        outfield = get_int_form(
+            "outfield",
+            2,
+            0
+        )
+
+
+        catcher = get_int_form(
+            "catcher",
+            1,
+            0
+        )
 
 
         settings = {
 
             "money": money,
 
-            "pitchers": pitchers,
+            "starter": starter,
 
-            "infielders": infielders,
+            "reliever": reliever,
 
-            "outfielders": outfielders,
+            "closer": closer,
 
-            "catchers": catchers,
+            "infield": infield,
+
+            "outfield": outfield,
+
+            "catcher": catcher,
 
         }
 
 
-        game = create_game(settings)
+        # 최소 1명 이상
 
-        game_id = game["id"]
+        if roster_size(
+            settings
+        ) <= 0:
 
-        GAMES[game_id] = game
+            raise ValueError(
+                "최소 1명의 선수를 설정해야 합니다."
+            )
+
+
+        game = create_game(
+            settings
+        )
+
+
+        GAMES[
+            game["id"]
+        ] = game
 
 
         return redirect(
             url_for(
                 "draft.game",
-                game_id=game_id
+                game_id=game["id"]
             )
-        )
-
-
-    except ValueError as e:
-
-        return render_template(
-            "draft_setup.html",
-            settings=request.form,
-            error=str(e)
         )
 
 
@@ -739,45 +1069,56 @@ def draft_start():
         return render_template(
             "draft_setup.html",
             settings=request.form,
-            error=f"게임 생성 오류: {e}"
+            error=str(e)
         )
 
 
-# =========================================================
+# ============================================================
 # 게임 화면
-# =========================================================
+# ============================================================
 
 @draft_bp.route(
     "/game/<game_id>"
 )
 def game(game_id):
 
-    game_data = GAMES.get(game_id)
+    game_data = GAMES.get(
+        game_id
+    )
 
 
-    if not game_data:
+    if game_data is None:
 
-        return "존재하지 않는 Draft 게임입니다.", 404
+        return (
+            "존재하지 않는 Draft 게임입니다.",
+            404
+        )
 
 
-    state = template_state(
+    state = make_state(
         game_data
     )
 
 
+    # 기존 템플릿과 새 템플릿 모두 대응
     return render_template(
         "draft_game.html",
+
         state=state,
+
         game=game_data,
+
         game_id=game_id,
+
         save_id=game_id,
+
         error=None
     )
 
 
-# =========================================================
+# ============================================================
 # 경매 액션
-# =========================================================
+# ============================================================
 
 @draft_bp.route(
     "/game/<game_id>/action",
@@ -785,12 +1126,17 @@ def game(game_id):
 )
 def action(game_id):
 
-    game = GAMES.get(game_id)
+    game = GAMES.get(
+        game_id
+    )
 
 
-    if not game:
+    if game is None:
 
-        return "존재하지 않는 Draft 게임입니다.", 404
+        return (
+            "존재하지 않는 Draft 게임입니다.",
+            404
+        )
 
 
     if game["finished"]:
@@ -803,10 +1149,15 @@ def action(game_id):
         )
 
 
-    current = game["current"]
+    current = game.get(
+        "current"
+    )
 
 
-    if not current:
+    if current is None:
+
+        next_player(game)
+
 
         return redirect(
             url_for(
@@ -826,7 +1177,10 @@ def action(game_id):
     )
 
 
-    if side not in ("a", "b"):
+    if side not in (
+        "a",
+        "b"
+    ):
 
         return redirect(
             url_for(
@@ -835,117 +1189,66 @@ def action(game_id):
             )
         )
 
+
+    # --------------------------------------------------------
+    # 현재 차례 검증
+    # --------------------------------------------------------
 
     if side != game["turn"]:
 
         return render_template(
             "draft_game.html",
-            state=template_state(game),
+
+            state=make_state(game),
+
             game=game,
+
             game_id=game_id,
+
             save_id=game_id,
+
             error="현재 차례가 아닙니다."
         )
 
 
-    # =====================================================
-    # PASS
-    # =====================================================
-
-    if action_type == "pass":
-
-        # 아직 아무도 입찰하지 않았다면
-        # 이 선수는 선수풀 맨 뒤로
-
-        if game["leader"] is None:
-
-            game["returned"].append(
-                current
-            )
-
-            game["log"].append(
-                f"{current['name']} → 양쪽 모두 PASS. 선수풀 뒤로 이동"
-            )
-
-
-            advance_player(game)
-
-
-            return redirect(
-                url_for(
-                    "draft.game",
-                    game_id=game_id
-                )
-            )
-
-
-        # 누군가 이미 입찰한 상태에서 PASS
-        # 선두가 최종 낙찰
-
-        winner = game["leader"]
-
-        price = game["bid"]
-
-
-        game["money"][winner] -= price
-
-        game["spent"][winner] += price
-
-        game["rosters"][winner].append(
-            current
-        )
-
-
-        game["log"].append(
-            f"{game['players'][winner]} → "
-            f"{current['name']} 낙찰 (${price})"
-        )
-
-
-        # 상대가 로스터를 다 채웠으면
-        # 남은 선수는 전부 반대쪽
-
-        advance_player(game)
-
-
-        if game["finished"]:
-
-            return redirect(
-                url_for(
-                    "draft.result",
-                    game_id=game_id
-                )
-            )
-
-
-        return redirect(
-            url_for(
-                "draft.game",
-                game_id=game_id
-            )
-        )
-
-
-    # =====================================================
-    # BID
-    # =====================================================
+    # ========================================================
+    # BID +$1
+    # ========================================================
 
     if action_type == "bid":
 
-        new_bid = game["bid"] + 1
+        new_bid = (
+            int(game["bid"])
+            + 1
+        )
 
 
-        if new_bid > game["money"][side]:
+        # ------------------------------------
+        # 자본 검사
+        # ------------------------------------
+
+        if new_bid > int(
+            game["money"][side]
+        ):
 
             return render_template(
                 "draft_game.html",
-                state=template_state(game),
+
+                state=make_state(game),
+
                 game=game,
+
                 game_id=game_id,
+
                 save_id=game_id,
+
                 error="자본이 부족합니다."
             )
 
+
+        # ------------------------------------
+        # 로스터 검사
+        # ------------------------------------
 
         if roster_full(
             game,
@@ -954,13 +1257,22 @@ def action(game_id):
 
             return render_template(
                 "draft_game.html",
-                state=template_state(game),
+
+                state=make_state(game),
+
                 game=game,
+
                 game_id=game_id,
+
                 save_id=game_id,
+
                 error="이미 로스터가 가득 찼습니다."
             )
 
+
+        # ------------------------------------
+        # 포지션 검사
+        # ------------------------------------
 
         if position_full(
             game,
@@ -970,16 +1282,25 @@ def action(game_id):
 
             return render_template(
                 "draft_game.html",
-                state=template_state(game),
+
+                state=make_state(game),
+
                 game=game,
+
                 game_id=game_id,
+
                 save_id=game_id,
+
                 error=(
-                    f"{current['group']} "
-                    "포지션을 더 이상 채울 수 없습니다."
+                    f"{current.get('position')} "
+                    "포지션은 더 이상 뽑을 수 없습니다."
                 )
             )
 
+
+        # ------------------------------------
+        # 입찰
+        # ------------------------------------
 
         game["bid"] = new_bid
 
@@ -987,11 +1308,15 @@ def action(game_id):
 
 
         game["log"].append(
-            f"{game['players'][side]} → "
-            f"{current['name']} "
+
+            f"{game['players'][side]} "
+            f"→ {current.get('name')} "
             f"${new_bid} 입찰"
+
         )
 
+
+        # 상대방 차례
 
         game["turn"] = (
             "b"
@@ -1008,26 +1333,23 @@ def action(game_id):
         )
 
 
-    # =====================================================
+    # ========================================================
     # ALL-IN
-    # =====================================================
+    # ========================================================
 
-    if action_type == "allin":
+    if action_type in (
+        "allin",
+        "all_in"
+    ):
 
-        amount = game["money"][side]
+        amount = int(
+            game["money"][side]
+        )
 
 
-        if amount <= game["bid"]:
-
-            return render_template(
-                "draft_game.html",
-                state=template_state(game),
-                game=game,
-                game_id=game_id,
-                save_id=game_id,
-                error="ALL-IN 할 수 있는 금액이 없습니다."
-            )
-
+        # ------------------------------------
+        # 로스터 검사
+        # ------------------------------------
 
         if roster_full(
             game,
@@ -1036,13 +1358,22 @@ def action(game_id):
 
             return render_template(
                 "draft_game.html",
-                state=template_state(game),
+
+                state=make_state(game),
+
                 game=game,
+
                 game_id=game_id,
+
                 save_id=game_id,
+
                 error="이미 로스터가 가득 찼습니다."
             )
 
+
+        # ------------------------------------
+        # 포지션 검사
+        # ------------------------------------
 
         if position_full(
             game,
@@ -1052,29 +1383,54 @@ def action(game_id):
 
             return render_template(
                 "draft_game.html",
-                state=template_state(game),
+
+                state=make_state(game),
+
                 game=game,
+
                 game_id=game_id,
+
                 save_id=game_id,
+
                 error=(
-                    f"{current['group']} "
-                    "포지션을 더 이상 채울 수 없습니다."
+                    f"{current.get('position')} "
+                    "포지션은 더 이상 뽑을 수 없습니다."
                 )
             )
 
 
-        # ---------------------------------------------
-        # 같은 금액 ALL-IN
-        # ---------------------------------------------
+        if amount <= int(
+            game["bid"]
+        ):
+
+            return render_template(
+                "draft_game.html",
+
+                state=make_state(game),
+
+                game=game,
+
+                game_id=game_id,
+
+                save_id=game_id,
+
+                error="ALL-IN 할 수 있는 금액이 없습니다."
+            )
+
+
+        # ------------------------------------
+        # 상대도 같은 금액 ALL-IN 상태
+        #
+        # 사용자 요구:
+        # 동일 금액이면
+        # 나중에 ALL-IN을 선언한 사람이 획득
+        # ------------------------------------
 
         if (
             game["leader"] is not None
-            and game["bid"] == amount
             and game["leader"] != side
+            and game["bid"] == amount
         ):
-
-            # 같은 금액이면
-            # ALL-IN을 선언한 사람이 승리
 
             winner = side
 
@@ -1085,22 +1441,28 @@ def action(game_id):
 
             game["spent"][winner] += price
 
+
             game["rosters"][winner].append(
                 current
             )
 
 
             game["log"].append(
-                f"{game['players'][winner]} → "
-                f"{current['name']} "
-                f"동액 ALL-IN 낙찰 (${price})"
+
+                f"{game['players'][winner]} "
+                f"→ {current.get('name')} "
+                f"동액 ALL-IN 낙찰 "
+                f"(${price})"
+
             )
 
 
-            advance_player(game)
+            next_player(game)
 
 
-            if game["finished"]:
+            if check_finished(
+                game
+            ):
 
                 return redirect(
                     url_for(
@@ -1118,9 +1480,9 @@ def action(game_id):
             )
 
 
-        # ---------------------------------------------
+        # ------------------------------------
         # 일반 ALL-IN
-        # ---------------------------------------------
+        # ------------------------------------
 
         game["bid"] = amount
 
@@ -1128,13 +1490,13 @@ def action(game_id):
 
 
         game["log"].append(
-            f"{game['players'][side]} → "
-            f"{current['name']} "
+
+            f"{game['players'][side]} "
+            f"→ {current.get('name')} "
             f"ALL-IN ${amount}"
+
         )
 
-
-        # 상대 차례
 
         game["turn"] = (
             "b"
@@ -1151,6 +1513,154 @@ def action(game_id):
         )
 
 
+    # ========================================================
+    # PASS
+    # ========================================================
+
+    if action_type == "pass":
+
+        # ----------------------------------------------------
+        # 아무도 입찰하지 않았으면
+        # 선수풀 맨 뒤로 보냄
+        # ----------------------------------------------------
+
+        if game["leader"] is None:
+
+            game["returned"].append(
+                current
+            )
+
+
+            game["log"].append(
+
+                f"{current.get('name')} "
+                "→ 양쪽 모두 PASS, "
+                "선수풀 맨 뒤로 이동"
+
+            )
+
+
+            next_player(game)
+
+
+            return redirect(
+                url_for(
+                    "draft.game",
+                    game_id=game_id
+                )
+            )
+
+
+        # ----------------------------------------------------
+        # 이미 입찰자가 있다면
+        # PASS한 상대가 포기
+        # 선두가 낙찰
+        # ----------------------------------------------------
+
+        winner = game["leader"]
+
+        price = int(
+            game["bid"]
+        )
+
+
+        # 안전 검사
+
+        if winner not in (
+            "a",
+            "b"
+        ):
+
+            game["leader"] = None
+
+            game["returned"].append(
+                current
+            )
+
+            next_player(game)
+
+            return redirect(
+                url_for(
+                    "draft.game",
+                    game_id=game_id
+                )
+            )
+
+
+        if price > int(
+            game["money"][winner]
+        ):
+
+            return render_template(
+                "draft_game.html",
+
+                state=make_state(game),
+
+                game=game,
+
+                game_id=game_id,
+
+                save_id=game_id,
+
+                error="낙찰 금액이 보유 자본보다 큽니다."
+            )
+
+
+        # ----------------------------------------------------
+        # 낙찰
+        # ----------------------------------------------------
+
+        game["money"][winner] -= price
+
+        game["spent"][winner] += price
+
+
+        game["rosters"][winner].append(
+            current
+        )
+
+
+        game["log"].append(
+
+            f"{game['players'][winner]} "
+            f"→ {current.get('name')} "
+            f"낙찰 (${price})"
+
+        )
+
+
+        next_player(game)
+
+
+        # ----------------------------------------------------
+        # 한 명이 로스터를 전부 채웠다면
+        # 남은 선수는 상대에게
+        # ----------------------------------------------------
+
+        if check_finished(
+            game
+        ):
+
+            return redirect(
+                url_for(
+                    "draft.result",
+                    game_id=game_id
+                )
+            )
+
+
+        return redirect(
+            url_for(
+                "draft.game",
+                game_id=game_id
+            )
+        )
+
+
+    # ========================================================
+    # 알 수 없는 액션
+    # ========================================================
+
     return redirect(
         url_for(
             "draft.game",
@@ -1159,26 +1669,52 @@ def action(game_id):
     )
 
 
-# =========================================================
-# 결과
-# =========================================================
+# ============================================================
+# 결과 화면
+# ============================================================
 
 @draft_bp.route(
     "/game/<game_id>/result"
 )
 def result(game_id):
 
-    game = GAMES.get(game_id)
+    game = GAMES.get(
+        game_id
+    )
 
 
-    if not game:
+    if game is None:
 
-        return "존재하지 않는 Draft 게임입니다.", 404
+        return (
+            "존재하지 않는 Draft 게임입니다.",
+            404
+        )
+
+
+    # 혹시 아직 끝나지 않았는데
+    # 결과 URL로 들어온 경우
+
+    if not game["finished"]:
+
+        return redirect(
+            url_for(
+                "draft.game",
+                game_id=game_id
+            )
+        )
+
+
+    state = make_state(
+        game
+    )
 
 
     return render_template(
         "draft_result.html",
-        state=template_state(game),
+
+        state=state,
+
         game=game,
+
         game_id=game_id
     )
