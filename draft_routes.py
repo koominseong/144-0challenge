@@ -45,7 +45,13 @@ DEFAULT_CATCHERS = 1
 def draft_home():
 
     return render_template(
-        "draft_setup.html"
+        "draft_setup.html",
+        state={
+            "turn": None,
+            "current_player": None,
+            "finished": False
+        },
+        game=None
     )
 
 
