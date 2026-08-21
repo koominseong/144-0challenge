@@ -1,1 +1,549 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Draft 결과</title><style>*{box-sizing:border-box}body{margin:0;background:#080d18;color:#eef2ff;font-family:Arial,sans-serif}.wrap{width:min(1050px,94vw);margin:30px auto}.hero{text-align:center;background:#131b2e;border:1px solid #2b395a;border-radius:22px;padding:34px}.win{font-size:40px;font-weight:900;margin:10px}.score{font-size:24px}.teams{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.team{background:#11182a;border:1px solid #2b395a;border-radius:18px;padding:20px}.row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #25314d}.muted{color:#96a4c0;font-size:13px}.strength{margin-top:15px;font-size:20px}@media(max-width:700px){.teams{grid-template-columns:1fr}}</style></head><body><div class="wrap"><div class="hero"><div>🏆 DRAFT RESULT</div><div class="win">{{state.players[state.result.winner]}} 승리!</div><div class="score">최종 전력 {{state.result.strength.a}} : {{state.result.strength.b}}</div>{% if state.result.tie %}<div class="muted">동률 처리로 승자가 결정되었습니다.</div>{% endif %}</div><div class="teams">{% for s in ['a','b'] %}<div class="team"><h2>{{state.players[s]}}</h2><div class="muted">남은 자본 ${{state.money[s]}} · 총 지출 ${{state.spent[s]}}</div>{% for p in state.rosters[s] %}<div class="row"><span>{{p.name}} <span class="muted">{{p.position}}</span></span><b>{{p.overall}}</b></div>{% endfor %}<div class="strength">팀 전력 {{state.result.strength[s]}}</div></div>{% endfor %}</div></div></body></html>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Draft Result</title>
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #1e3a5f,
+            transparent 40%
+        ),
+        #080d18;
+
+    color:#f8fafc;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+}
+
+
+.wrapper{
+
+    width:min(1100px,94vw);
+
+    margin:35px auto 60px;
+
+}
+
+
+.hero{
+
+    background:#111a2d;
+
+    border:
+        1px solid
+        rgba(148,163,184,.18);
+
+    border-radius:24px;
+
+    padding:45px 25px;
+
+    text-align:center;
+
+}
+
+
+.hero-label{
+
+    color:#60a5fa;
+
+    font-size:13px;
+
+    letter-spacing:4px;
+
+    font-weight:900;
+
+}
+
+
+.winner{
+
+    font-size:44px;
+
+    font-weight:900;
+
+    margin-top:12px;
+
+}
+
+
+.final-score{
+
+    margin-top:18px;
+
+    font-size:46px;
+
+    font-weight:900;
+
+}
+
+
+.strength{
+
+    color:#94a3b8;
+
+    margin-top:10px;
+
+}
+
+
+.teams{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+
+    margin-top:16px;
+
+}
+
+
+.team-card{
+
+    background:#111a2d;
+
+    border:
+        1px solid
+        rgba(148,163,184,.18);
+
+    border-radius:20px;
+
+    padding:24px;
+
+}
+
+
+.team-card.winner-card{
+
+    border-color:#fbbf24;
+
+    box-shadow:
+        0 0 30px
+        rgba(251,191,36,.08);
+
+}
+
+
+.team-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+
+}
+
+
+.team-name{
+
+    font-size:24px;
+
+    font-weight:900;
+
+}
+
+
+.team-money{
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+
+.roster{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+.player{
+
+    background:#0b1220;
+
+    border-radius:11px;
+
+    padding:13px 14px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+.player-name{
+
+    font-weight:800;
+
+}
+
+
+.player-meta{
+
+    color:#94a3b8;
+
+    font-size:12px;
+
+}
+
+
+.team-strength{
+
+    margin-top:18px;
+
+    padding-top:15px;
+
+    border-top:
+        1px solid
+        rgba(148,163,184,.1);
+
+    display:flex;
+
+    justify-content:space-between;
+
+}
+
+
+.team-strength span{
+
+    color:#94a3b8;
+
+}
+
+
+.team-strength strong{
+
+    color:#fbbf24;
+
+    font-size:20px;
+
+}
+
+
+.buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    margin-top:25px;
+
+}
+
+
+.button{
+
+    display:inline-block;
+
+    padding:14px 24px;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    color:white;
+
+    background:#2563eb;
+
+    font-weight:900;
+
+}
+
+
+.button.secondary{
+
+    background:#263247;
+
+}
+
+
+@media(max-width:700px){
+
+    .teams{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .winner{
+
+        font-size:34px;
+    }
+
+    .final-score{
+
+        font-size:38px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="wrapper">
+
+
+    <!-- =========================
+         FINAL
+    ========================== -->
+
+    <div class="hero">
+
+
+        <div class="hero-label">
+
+            DRAFT COMPLETE
+
+        </div>
+
+
+        <div class="winner">
+
+            🏆
+
+            {{ state.players[state.result.winner] }}
+
+            승리!
+
+        </div>
+
+
+        <div class="final-score">
+
+            {{ state.result.score.a }}
+
+            :
+
+            {{ state.result.score.b }}
+
+        </div>
+
+
+        <div class="strength">
+
+            최종 전력
+
+            ·
+
+            {{ state.result.strength.a }}
+
+            -
+
+            {{ state.result.strength.b }}
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         TEAMS
+    ========================== -->
+
+    <div class="teams">
+
+
+        {% for s in ['a','b'] %}
+
+
+        <div
+            class="
+                team-card
+                {% if state.result.winner == s %}
+                    winner-card
+                {% endif %}
+            "
+        >
+
+
+            <div class="team-header">
+
+
+                <div class="team-name">
+
+                    {{ state.players[s] }}
+
+                    {% if state.result.winner == s %}
+
+                    🏆
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="team-money">
+
+                    지출 ${{ state.spent[s] }}
+
+                    ·
+
+                    잔액 ${{ state.money[s] }}
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="roster">
+
+
+                {% for p in state.rosters[s] %}
+
+
+                <div class="player">
+
+
+                    <div class="player-name">
+
+                        {{ p.name }}
+
+                    </div>
+
+
+                    <div class="player-meta">
+
+                        {{ p.position }}
+
+                        ·
+
+                        OVR {{ p.overall }}
+
+                        {% if p.team %}
+
+                        · {{ p.team }}
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            <div class="team-strength">
+
+
+                <span>
+
+                    팀 전력
+
+                </span>
+
+
+                <strong>
+
+                    {{ state.result.strength[s] }}
+
+                </strong>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+
+    <!-- =========================
+         BUTTONS
+    ========================== -->
+
+    <div class="buttons">
+
+
+        <a
+            class="button"
+            href="{{ url_for('draft.draft_home', save_id=state.save_id) }}"
+        >
+
+            다시 플레이
+
+        </a>
+
+
+        <a
+            class="button secondary"
+            href="/dynasty"
+        >
+
+            Dynasty로 돌아가기
+
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
