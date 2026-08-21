@@ -1,1 +1,479 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Draft 설정</title><style>*{box-sizing:border-box}body{margin:0;background:#080d18;color:#eef2ff;font-family:Arial,sans-serif;min-height:100vh;display:grid;place-items:center}.card{width:min(720px,94vw);padding:32px;background:#131b2e;border:1px solid #2b395a;border-radius:22px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{padding:18px;background:#0d1425;border-radius:14px}h1{margin:0 0 6px}.muted{color:#9aa8c5;margin-bottom:25px}label{display:flex;justify-content:space-between;margin:13px 0}input{width:120px;padding:9px;border-radius:8px;border:1px solid #3b4867;background:#101827;color:white}button{width:100%;padding:15px;margin-top:18px;border:0;border-radius:11px;background:#4d7cff;color:white;font-size:17px;font-weight:800}.err{background:#5a2030;padding:12px;border-radius:10px;margin-bottom:15px}.total{text-align:center;margin-top:14px;padding:13px;background:#111a2e;border-radius:10px}@media(max-width:650px){.grid{grid-template-columns:1fr}}</style></head><body><main class="card"><h1>⚔️ DRAFT</h1><div class="muted">KBO 역대 선수 180명 기반 1 vs 1 선수 경매</div>{% if error %}<div class="err">{{error}}</div>{% endif %}<form method="post" action="{{url_for('draft.start',save_id=save_id)}}"><div class="grid"><div class="box"><b>플레이어</b><label>PLAYER A <input name="player_a" value="{{form.get('player_a','PLAYER A') if form else 'PLAYER A'}}"></label><label>PLAYER B <input name="player_b" value="{{form.get('player_b','PLAYER B') if form else 'PLAYER B'}}"></label></div><div class="box"><b>초기 자본</b><label>달러 <input type="number" min="1" name="money" value="{{form.get('money',20) if form else 20}}"></label><div class="muted" style="font-size:13px;margin:0">입찰 단위 $1 · ALL-IN 지원</div></div></div><div class="box" style="margin-top:14px"><b>최종 보유 인원 기준</b><label>투수 <input class="n" type="number" min="0" name="pitchers" value="2"></label><label>내야수 <input class="n" type="number" min="0" name="infielders" value="2"></label><label>외야수 <input class="n" type="number" min="0" name="outfielders" value="2"></label><label>포수 <input class="n" type="number" min="0" name="catchers" value="1"></label><div class="total">선수풀 <b id="total">14</b>명</div></div><button>🎲 랜덤 경매 시작</button></form></main><script>const ns=[...document.querySelectorAll('.n')];function c(){document.getElementById('total').textContent=ns.reduce((a,e)=>a+(+e.value||0),0)*2}ns.forEach(x=>x.oninput=c);c()</script></body></html>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Draft Setup</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top left,#26365f 0%,transparent 35%),
+        linear-gradient(135deg,#080d1a,#111827 55%,#080d1a);
+    color:#f8fafc;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+
+.container{
+    width:min(760px,100%);
+    background:rgba(15,23,42,.94);
+    border:1px solid rgba(148,163,184,.2);
+    border-radius:26px;
+    padding:38px;
+    box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.header .logo{
+    font-size:14px;
+    letter-spacing:5px;
+    color:#60a5fa;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.header h1{
+    font-size:42px;
+    font-weight:900;
+}
+
+.header p{
+    margin-top:10px;
+    color:#94a3b8;
+}
+
+.section{
+    background:#0b1222;
+    border:1px solid #26334f;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:16px;
+}
+
+.section-title{
+    font-size:17px;
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.player-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.input-group label{
+    display:block;
+    font-size:13px;
+    color:#94a3b8;
+    margin-bottom:7px;
+}
+
+input{
+    width:100%;
+    background:#111827;
+    border:1px solid #334155;
+    color:white;
+    border-radius:10px;
+    padding:12px 13px;
+    font-size:15px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#60a5fa;
+}
+
+.position-row{
+    display:grid;
+    grid-template-columns:1fr 100px;
+    align-items:center;
+    gap:15px;
+    margin-bottom:12px;
+}
+
+.position-name{
+    color:#cbd5e1;
+}
+
+.position-name small{
+    display:block;
+    color:#64748b;
+    margin-top:3px;
+}
+
+.position-row input{
+    text-align:center;
+}
+
+.total-box{
+    margin-top:18px;
+    background:#111827;
+    border-radius:12px;
+    padding:15px;
+    text-align:center;
+}
+
+.total-number{
+    color:#60a5fa;
+    font-size:26px;
+    font-weight:900;
+}
+
+.money-row{
+    display:grid;
+    grid-template-columns:1fr 120px;
+    align-items:center;
+    gap:15px;
+}
+
+.money-row input{
+    text-align:center;
+}
+
+.notice{
+    color:#94a3b8;
+    font-size:13px;
+    line-height:1.6;
+    margin-top:12px;
+}
+
+.notice strong{
+    color:#e2e8f0;
+}
+
+.error{
+    background:#451a1a;
+    border:1px solid #7f1d1d;
+    color:#fecaca;
+    padding:13px 15px;
+    border-radius:11px;
+    margin-bottom:16px;
+}
+
+.start-btn{
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:17px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+    font-size:17px;
+    font-weight:900;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.start-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 30px rgba(37,99,235,.35);
+}
+
+@media(max-width:600px){
+
+    .container{
+        padding:24px;
+    }
+
+    .player-grid{
+        grid-template-columns:1fr;
+    }
+
+    .header h1{
+        font-size:34px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">1 VS 1 AUCTION</div>
+        <h1>DRAFT</h1>
+        <p>선수를 경매로 영입해 나만의 팀을 완성하세요.</p>
+    </div>
+
+
+    {% if error %}
+    <div class="error">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+
+    <form method="POST"
+          action="{{ url_for('draft.draft_start', save_id=save_id) }}">
+
+
+        <!-- 플레이어 -->
+
+        <div class="section">
+
+            <div class="section-title">
+                👥 플레이어
+            </div>
+
+            <div class="player-grid">
+
+                <div class="input-group">
+                    <label>PLAYER A</label>
+
+                    <input
+                        type="text"
+                        name="player_a"
+                        maxlength="20"
+                        value="{{ form.get('player_a','PLAYER A') if form else 'PLAYER A' }}"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>PLAYER B</label>
+
+                    <input
+                        type="text"
+                        name="player_b"
+                        maxlength="20"
+                        value="{{ form.get('player_b','PLAYER B') if form else 'PLAYER B' }}"
+                    >
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 선수 구성 -->
+
+        <div class="section">
+
+            <div class="section-title">
+                ⚾ 선수 구성
+            </div>
+
+
+            <div class="position-row">
+
+                <div class="position-name">
+                    투수
+                    <small>선발 / 불펜 / 마무리</small>
+                </div>
+
+                <input
+                    class="position-input"
+                    type="number"
+                    min="0"
+                    max="20"
+                    name="pitchers"
+                    value="{{ form.get('pitchers',2) if form else 2 }}"
+                >
+
+            </div>
+
+
+            <div class="position-row">
+
+                <div class="position-name">
+                    내야수
+                    <small>1B / 2B / 3B / SS</small>
+                </div>
+
+                <input
+                    class="position-input"
+                    type="number"
+                    min="0"
+                    max="20"
+                    name="infielders"
+                    value="{{ form.get('infielders',2) if form else 2 }}"
+                >
+
+            </div>
+
+
+            <div class="position-row">
+
+                <div class="position-name">
+                    외야수
+                    <small>LF / CF / RF</small>
+                </div>
+
+                <input
+                    class="position-input"
+                    type="number"
+                    min="0"
+                    max="20"
+                    name="outfielders"
+                    value="{{ form.get('outfielders',2) if form else 2 }}"
+                >
+
+            </div>
+
+
+            <div class="position-row">
+
+                <div class="position-name">
+                    포수
+                    <small>C</small>
+                </div>
+
+                <input
+                    class="position-input"
+                    type="number"
+                    min="0"
+                    max="20"
+                    name="catchers"
+                    value="{{ form.get('catchers',1) if form else 1 }}"
+                >
+
+            </div>
+
+
+            <div class="total-box">
+
+                선수풀
+
+                <div
+                    id="totalPlayers"
+                    class="total-number"
+                >
+                    14명
+                </div>
+
+                <div class="notice">
+                    각 포지션의 설정 인원 × <strong>2</strong>명이
+                    선수풀에 등록됩니다.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 자본 -->
+
+        <div class="section">
+
+            <div class="section-title">
+                💰 초기 자본
+            </div>
+
+            <div class="money-row">
+
+                <div>
+                    <strong>시작 금액</strong>
+
+                    <div class="notice">
+                        경매는 $1 단위로 진행됩니다.
+                    </div>
+                </div>
+
+                <input
+                    type="number"
+                    min="1"
+                    max="999"
+                    name="money"
+                    value="{{ form.get('money',20) if form else 20 }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="notice"
+             style="margin-bottom:18px">
+
+            🎲 경매 순서는 게임 시작 시 무작위로 결정됩니다.<br>
+
+            🔒 다음 선수와 전체 선수풀 순서는 공개되지 않습니다.<br>
+
+            🔥 동일 금액일 경우 <strong>ALL-IN</strong> 플레이어가 우선합니다.
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="start-btn"
+        >
+            🎲 DRAFT START
+        </button>
+
+
+    </form>
+
+</div>
+
+
+<script>
+
+const inputs =
+    document.querySelectorAll(".position-input");
+
+const total =
+    document.getElementById("totalPlayers");
+
+
+function updateTotal(){
+
+    let count = 0;
+
+    inputs.forEach(input => {
+
+        const value =
+            parseInt(input.value) || 0;
+
+        count += value;
+
+    });
+
+    total.textContent =
+        (count * 2) + "명";
+}
+
+
+inputs.forEach(input => {
+
+    input.addEventListener(
+        "input",
+        updateTotal
+    );
+
+});
+
+
+updateTotal();
+
+</script>
+
+</body>
+</html>
