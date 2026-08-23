@@ -71,13 +71,6 @@
   },
   {
     "position": "선발",
-    "rank": 11,
-    "name": "윤학길",
-    "team": "롯데",
-    "overall": 84.0
-  },
-  {
-    "position": "선발",
     "rank": 12,
     "name": "윤성환",
     "team": "삼성",
@@ -134,13 +127,6 @@
   },
   {
     "position": "선발",
-    "rank": 20,
-    "name": "김수경",
-    "team": "현대",
-    "overall": 78.0
-  },
-  {
-    "position": "선발",
     "rank": 21,
     "name": "김시진",
     "team": "삼성",
@@ -158,13 +144,6 @@
     "rank": 23,
     "name": "이대진",
     "team": "해태/KIA",
-    "overall": 77.0
-  },
-  {
-    "position": "선발",
-    "rank": 24,
-    "name": "장명부",
-    "team": "삼미",
     "overall": 77.0
   },
   {
@@ -232,13 +211,6 @@
   },
   {
     "position": "불펜",
-    "rank": 4,
-    "name": "김현욱",
-    "team": "삼성",
-    "overall": 85.0
-  },
-  {
-    "position": "불펜",
     "rank": 5,
     "name": "정우람",
     "team": "SK/한화",
@@ -250,13 +222,6 @@
     "name": "류택현",
     "team": "LG",
     "overall": 83.0
-  },
-  {
-    "position": "불펜",
-    "rank": 7,
-    "name": "차명주",
-    "team": "두산",
-    "overall": 82.0
   },
   {
     "position": "불펜",
@@ -295,20 +260,6 @@
   },
   {
     "position": "불펜",
-    "rank": 13,
-    "name": "신용운",
-    "team": "KIA",
-    "overall": 76.0
-  },
-  {
-    "position": "불펜",
-    "rank": 14,
-    "name": "송신영",
-    "team": "현대/넥센",
-    "overall": 79.0
-  },
-  {
-    "position": "불펜",
     "rank": 15,
     "name": "이동현",
     "team": "LG",
@@ -334,20 +285,6 @@
     "name": "오현택",
     "team": "두산",
     "overall": 78.0
-  },
-  {
-    "position": "불펜",
-    "rank": 19,
-    "name": "박정진",
-    "team": "한화",
-    "overall": 78.0
-  },
-  {
-    "position": "불펜",
-    "rank": 20,
-    "name": "이상열",
-    "team": "현대/LG",
-    "overall": 77.0
   },
   {
     "position": "불펜",
@@ -382,13 +319,6 @@
     "rank": 25,
     "name": "이현승",
     "team": "두산",
-    "overall": 76.0
-  },
-  {
-    "position": "불펜",
-    "rank": 26,
-    "name": "최영필",
-    "team": "한화/KIA",
     "overall": 76.0
   },
   {
@@ -463,13 +393,6 @@
   },
   {
     "position": "불펜",
-    "rank": 37,
-    "name": "박진우",
-    "team": "두산",
-    "overall": 72.0
-  },
-  {
-    "position": "불펜",
     "rank": 38,
     "name": "홍건희",
     "team": "두산",
@@ -484,31 +407,10 @@
   },
   {
     "position": "불펜",
-    "rank": 40,
-    "name": "박준표",
-    "team": "KIA",
-    "overall": 71.0
-  },
-  {
-    "position": "불펜",
-    "rank": 41,
-    "name": "김성배",
-    "team": "롯데",
-    "overall": 71.0
-  },
-  {
-    "position": "불펜",
     "rank": 42,
     "name": "이태양",
     "team": "한화",
     "overall": 71.0
-  },
-  {
-    "position": "불펜",
-    "rank": 43,
-    "name": "박근홍",
-    "team": "삼성",
-    "overall": 70.0
   },
   {
     "position": "불펜",
@@ -523,27 +425,6 @@
     "name": "임기영",
     "team": "KIA",
     "overall": 70.0
-  },
-  {
-    "position": "불펜",
-    "rank": 46,
-    "name": "박승민",
-    "team": "현대",
-    "overall": 69.0
-  },
-  {
-    "position": "불펜",
-    "rank": 47,
-    "name": "김명성",
-    "team": "롯데",
-    "overall": 69.0
-  },
-  {
-    "position": "불펜",
-    "rank": 48,
-    "name": "이민호",
-    "team": "NC",
-    "overall": 69.0
   },
   {
     "position": "불펜",
