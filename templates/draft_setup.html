@@ -2,13 +2,8 @@
 <html lang="ko">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Draft Mode</title>
 
@@ -19,7 +14,6 @@
     padding:0;
     box-sizing:border-box;
 }
-
 
 body{
 
@@ -34,7 +28,8 @@ body{
         linear-gradient(
             135deg,
             #080d18,
-            #0f172a
+            #0f172a,
+            #080d18
         );
 
     color:#f8fafc;
@@ -45,31 +40,27 @@ body{
         "Segoe UI",
         sans-serif;
 
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:30px;
+    padding:30px 15px;
 
 }
 
 
-/* =========================================
+/* =========================
    전체
-========================================= */
+========================= */
 
 .wrapper{
 
-    width:min(900px, 95vw);
+    width:min(900px,96vw);
+
+    margin:0 auto;
 
 }
 
 
-/* =========================================
+/* =========================
    제목
-========================================= */
+========================= */
 
 .header{
 
@@ -82,9 +73,11 @@ body{
 
 .header h1{
 
-    font-size:52px;
+    font-size:56px;
 
-    font-weight:900;
+    font-weight:1000;
+
+    letter-spacing:-2px;
 
     background:
         linear-gradient(
@@ -111,9 +104,9 @@ body{
 }
 
 
-/* =========================================
+/* =========================
    카드
-========================================= */
+========================= */
 
 .card{
 
@@ -124,70 +117,55 @@ body{
         1px solid
         rgba(148,163,184,.18);
 
-    border-radius:24px;
+    border-radius:22px;
 
-    padding:35px;
+    padding:28px;
+
+    margin-bottom:18px;
 
     box-shadow:
-        0 20px 60px
-        rgba(0,0,0,.4);
+        0 15px 50px
+        rgba(0,0,0,.35);
 
 }
 
 
-/* =========================================
-   섹션
-========================================= */
+.card-title{
 
-.section{
-
-    margin-bottom:30px;
-
-}
-
-
-.section:last-child{
-
-    margin-bottom:0;
-
-}
-
-
-.section-title{
-
-    font-size:18px;
+    font-size:19px;
 
     font-weight:900;
 
-    margin-bottom:15px;
+    margin-bottom:20px;
 
 }
 
 
-/* =========================================
+/* =========================
    플레이어
-========================================= */
+========================= */
 
 .players{
 
     display:grid;
 
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:
+        1fr 1fr;
 
     gap:15px;
 
 }
 
 
-.player-box{
+.player{
 
     background:#0b1220;
 
     border:
         1px solid
-        rgba(148,163,184,.12);
+        #263653;
 
-    border-radius:15px;
+    border-radius:16px;
 
     padding:18px;
 
@@ -202,53 +180,61 @@ body{
 
     font-weight:900;
 
-    margin-bottom:8px;
+    letter-spacing:2px;
+
+    margin-bottom:10px;
 
 }
 
 
-input{
+.player input{
 
     width:100%;
+
+    height:50px;
 
     border:none;
 
     outline:none;
 
-    background:#111827;
+    border-radius:10px;
 
-    color:white;
+    background:#111a2d;
 
     border:
         1px solid
-        rgba(148,163,184,.18);
+        #334155;
 
-    border-radius:10px;
+    color:white;
 
-    padding:13px;
+    padding:0 14px;
 
-    font-size:15px;
+    font-size:16px;
 
 }
 
 
-input:focus{
+.player input:focus{
 
     border-color:#60a5fa;
 
+    box-shadow:
+        0 0 0 3px
+        rgba(96,165,250,.1);
+
 }
 
 
-/* =========================================
+/* =========================
    초기 자본
-========================================= */
+========================= */
 
-.money-options{
+.money-box{
 
     display:grid;
 
     grid-template-columns:
-        repeat(5,1fr);
+        repeat(4,1fr);
 
     gap:10px;
 
@@ -268,30 +254,32 @@ input:focus{
 
     opacity:0;
 
-    pointer-events:none;
-
 }
 
 
 .money-option label{
 
-    display:block;
+    display:flex;
 
-    text-align:center;
+    align-items:center;
 
-    padding:14px 5px;
+    justify-content:center;
+
+    height:55px;
 
     background:#0b1220;
 
     border:
         1px solid
-        rgba(148,163,184,.15);
+        #263653;
 
-    border-radius:11px;
+    border-radius:12px;
 
     cursor:pointer;
 
     font-weight:900;
+
+    color:#cbd5e1;
 
     transition:.15s;
 
@@ -302,25 +290,81 @@ input:focus{
 
     border-color:#60a5fa;
 
+    transform:translateY(-2px);
+
 }
 
 
 .money-option input:checked + label{
 
-    background:#1d4ed8;
+    background:#172554;
 
     border-color:#60a5fa;
 
+    color:#93c5fd;
+
     box-shadow:
-        0 0 18px
-        rgba(37,99,235,.25);
+        0 0 20px
+        rgba(59,130,246,.15);
 
 }
 
 
-/* =========================================
-   포지션 설정
-========================================= */
+/* 직접 입력 */
+
+.custom-money{
+
+    margin-top:12px;
+
+}
+
+
+.custom-money input{
+
+    width:100%;
+
+    height:48px;
+
+    background:#0b1220;
+
+    border:
+        1px solid
+        #263653;
+
+    border-radius:10px;
+
+    color:white;
+
+    padding:0 14px;
+
+    font-size:15px;
+
+    outline:none;
+
+}
+
+
+.custom-money input:focus{
+
+    border-color:#60a5fa;
+
+}
+
+
+.help{
+
+    color:#64748b;
+
+    font-size:12px;
+
+    margin-top:8px;
+
+}
+
+
+/* =========================
+   포지션
+========================= */
 
 .position-grid{
 
@@ -334,33 +378,55 @@ input:focus{
 }
 
 
-.position-box{
+.position{
 
     background:#0b1220;
 
-    border-radius:14px;
-
-    padding:18px;
-
-    text-align:center;
-
     border:
         1px solid
-        rgba(148,163,184,.12);
+        #263653;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    text-align:center;
 
 }
 
 
 .position-name{
 
+    font-size:14px;
+
     font-weight:900;
+
+    color:#cbd5e1;
 
     margin-bottom:12px;
 
 }
 
 
-.position-box input{
+.position input{
+
+    width:100%;
+
+    height:46px;
+
+    border:none;
+
+    outline:none;
+
+    background:#111a2d;
+
+    border:
+        1px solid
+        #334155;
+
+    border-radius:9px;
+
+    color:white;
 
     text-align:center;
 
@@ -371,37 +437,119 @@ input:focus{
 }
 
 
-/* =========================================
-   설명
-========================================= */
+.position input:focus{
+
+    border-color:#60a5fa;
+
+}
+
+
+.position-desc{
+
+    margin-top:8px;
+
+    color:#64748b;
+
+    font-size:11px;
+
+}
+
+
+/* =========================
+   규칙
+========================= */
 
 .rules{
 
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:10px;
+
+}
+
+
+.rule{
+
     background:#0b1220;
 
-    border-radius:14px;
+    border-radius:11px;
 
-    padding:18px;
+    padding:13px;
 
     color:#94a3b8;
 
     font-size:13px;
 
-    line-height:1.8;
+    line-height:1.6;
 
 }
 
 
-.rules strong{
+.rule strong{
 
     color:#e2e8f0;
 
 }
 
 
-/* =========================================
-   오류
-========================================= */
+/* =========================
+   시작 버튼
+========================= */
+
+.start-button{
+
+    width:100%;
+
+    height:65px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #0891b2
+        );
+
+    color:white;
+
+    font-size:21px;
+
+    font-weight:1000;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+.start-button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 12px 35px
+        rgba(37,99,235,.3);
+
+}
+
+
+.start-button:active{
+
+    transform:translateY(0);
+
+}
+
+
+/* =========================
+   에러
+========================= */
 
 .error{
 
@@ -413,113 +561,47 @@ input:focus{
 
     color:#fecaca;
 
-    padding:13px;
+    padding:14px;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    margin-bottom:20px;
+    margin-bottom:18px;
+
+    line-height:1.5;
+
+}
+
+
+/* =========================
+   안내
+========================= */
+
+.note{
 
     text-align:center;
-
-}
-
-
-/* =========================================
-   시작 버튼
-========================================= */
-
-.start-button{
-
-    width:100%;
-
-    border:none;
-
-    border-radius:15px;
-
-    padding:18px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #06b6d4
-        );
-
-    color:white;
-
-    font-size:20px;
-
-    font-weight:900;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-}
-
-
-.start-button:hover{
-
-    transform:
-        translateY(-3px);
-
-    box-shadow:
-        0 12px 30px
-        rgba(37,99,235,.3);
-
-}
-
-
-.back-button{
-
-    display:block;
-
-    text-align:center;
-
-    margin-top:15px;
 
     color:#64748b;
 
-    text-decoration:none;
+    font-size:12px;
 
-    font-size:14px;
+    line-height:1.7;
 
-}
-
-
-.back-button:hover{
-
-    color:#cbd5e1;
+    margin-top:15px;
 
 }
 
 
-/* =========================================
+/* =========================
    모바일
-========================================= */
+========================= */
 
 @media(max-width:700px){
 
-    body{
-
-        padding:15px;
-
-    }
-
-
     .header h1{
 
-        font-size:38px;
+        font-size:42px;
 
     }
-
-
-    .card{
-
-        padding:22px;
-
-    }
-
 
     .players{
 
@@ -527,31 +609,48 @@ input:focus{
 
     }
 
-
-    .money-options{
+    .money-box{
 
         grid-template-columns:
-            repeat(3,1fr);
+            1fr 1fr;
 
     }
-
 
     .position-grid{
 
         grid-template-columns:
-            repeat(2,1fr);
+            1fr 1fr;
+
+    }
+
+    .rules{
+
+        grid-template-columns:
+            1fr;
 
     }
 
 }
 
 
-@media(max-width:400px){
+@media(max-width:430px){
 
-    .money-options{
+    .card{
+
+        padding:20px;
+
+    }
+
+    .header h1{
+
+        font-size:36px;
+
+    }
+
+    .position-grid{
 
         grid-template-columns:
-            repeat(2,1fr);
+            1fr 1fr;
 
     }
 
@@ -568,413 +667,610 @@ input:focus{
 <div class="wrapper">
 
 
-    <!-- =====================================
-         제목
-    ====================================== -->
+    <!-- =========================
+         HEADER
+    ========================== -->
 
-    <div class="header">
+    <header class="header">
 
         <h1>Draft</h1>
 
         <p>
-            두 명의 플레이어가 선수들을 경매로 영입합니다.
+            1 VS 1 선수 경매
         </p>
+
+    </header>
+
+
+
+    <!-- =========================
+         ERROR
+    ========================== -->
+
+    {% if error %}
+
+    <div class="error">
+
+        ⚠️ {{ error }}
 
     </div>
 
-
-
-    <!-- =====================================
-         설정 카드
-    ====================================== -->
-
-    <div class="card">
-
-
-        {% if error %}
-
-        <div class="error">
-
-            ⚠️ {{ error }}
-
-        </div>
-
-        {% endif %}
+    {% endif %}
 
 
 
-        <form
-            method="POST"
-            action="/draft/start"
-        >
+    <!-- =========================
+         FORM
+    ========================== -->
+
+    <form
+        method="POST"
+        action="{{ url_for('draft.draft_start') }}"
+    >
 
 
-            <!-- =================================
-                 플레이어
-            ================================== -->
+        <!-- =====================
+             PLAYER
+        ====================== -->
 
-            <div class="section">
+        <section class="card">
 
-                <div class="section-title">
+            <div class="card-title">
 
-                    👥 플레이어
-
-                </div>
-
-
-                <div class="players">
-
-
-                    <div class="player-box">
-
-                        <div class="player-label">
-
-                            PLAYER 1
-
-                        </div>
-
-                        <input
-                            type="text"
-                            name="player1"
-                            value="PLAYER 1"
-                            maxlength="20"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="player-box">
-
-                        <div class="player-label">
-
-                            PLAYER 2
-
-                        </div>
-
-                        <input
-                            type="text"
-                            name="player2"
-                            value="PLAYER 2"
-                            maxlength="20"
-                            required
-                        >
-
-                    </div>
-
-
-                </div>
+                👤 플레이어 설정
 
             </div>
 
 
-
-            <!-- =================================
-                 초기 자본
-            ================================== -->
-
-            <div class="section">
-
-                <div class="section-title">
-
-                    💰 초기 자본
-
-                </div>
+            <div class="players">
 
 
-                <div class="money-options">
+                <div class="player">
 
+                    <div class="player-label">
 
-                    <div class="money-option">
-
-                        <input
-                            type="radio"
-                            name="money"
-                            id="money10"
-                            value="10"
-                        >
-
-                        <label for="money10">
-                            $10
-                        </label>
+                        PLAYER 1
 
                     </div>
 
-
-                    <div class="money-option">
-
-                        <input
-                            type="radio"
-                            name="money"
-                            id="money20"
-                            value="20"
-                            checked
-                        >
-
-                        <label for="money20">
-                            $20
-                        </label>
-
-                    </div>
-
-
-                    <div class="money-option">
-
-                        <input
-                            type="radio"
-                            name="money"
-                            id="money30"
-                            value="30"
-                        >
-
-                        <label for="money30">
-                            $30
-                        </label>
-
-                    </div>
-
-
-                    <div class="money-option">
-
-                        <input
-                            type="radio"
-                            name="money"
-                            id="money50"
-                            value="50"
-                        >
-
-                        <label for="money50">
-                            $50
-                        </label>
-
-                    </div>
-
-
-                    <div class="money-option">
-
-                        <input
-                            type="radio"
-                            name="money"
-                            id="money100"
-                            value="100"
-                        >
-
-                        <label for="money100">
-                            $100
-                        </label>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================
-                 선수 구성
-            ================================== -->
-
-            <div class="section">
-
-                <div class="section-title">
-
-                    ⚾ 선수 구성
-                    <span
-                        style="
-                            color:#64748b;
-                            font-size:12px;
-                            font-weight:normal;
-                        "
+                    <input
+                        type="text"
+                        name="player_a"
+                        value="{{ request.form.get('player_a', 'PLAYER 1') }}"
+                        maxlength="20"
+                        placeholder="Player 1 이름"
                     >
-                        (1팀 기준)
-                    </span>
 
                 </div>
 
 
-                <div class="position-grid">
 
+                <div class="player">
 
-                    <div class="position-box">
+                    <div class="player-label">
 
-                        <div class="position-name">
-
-                            투수
-
-                        </div>
-
-                        <input
-                            type="number"
-                            name="pitchers"
-                            value="2"
-                            min="0"
-                            max="10"
-                            required
-                        >
+                        PLAYER 2
 
                     </div>
 
-
-                    <div class="position-box">
-
-                        <div class="position-name">
-
-                            내야수
-
-                        </div>
-
-                        <input
-                            type="number"
-                            name="infielders"
-                            value="2"
-                            min="0"
-                            max="10"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="position-box">
-
-                        <div class="position-name">
-
-                            외야수
-
-                        </div>
-
-                        <input
-                            type="number"
-                            name="outfielders"
-                            value="2"
-                            min="0"
-                            max="10"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="position-box">
-
-                        <div class="position-name">
-
-                            포수
-
-                        </div>
-
-                        <input
-                            type="number"
-                            name="catchers"
-                            value="1"
-                            min="0"
-                            max="10"
-                            required
-                        >
-
-                    </div>
-
+                    <input
+                        type="text"
+                        name="player_b"
+                        value="{{ request.form.get('player_b', 'PLAYER 2') }}"
+                        maxlength="20"
+                        placeholder="Player 2 이름"
+                    >
 
                 </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             MONEY
+        ====================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+
+                💰 초기 자본
 
             </div>
 
 
+            <div class="money-box">
 
-            <!-- =================================
-                 게임 설명
-            ================================== -->
 
-            <div class="section">
+                <div class="money-option">
 
-                <div class="section-title">
+                    <input
+                        type="radio"
+                        id="money10"
+                        name="initial_money"
+                        value="10"
+                        {% if request.form.get('initial_money','20') == '10' %}
+                        checked
+                        {% endif %}
+                    >
 
-                    📖 Draft 규칙
+                    <label for="money10">
+
+                        $10
+
+                    </label>
+
+                </div>
+
+
+
+                <div class="money-option">
+
+                    <input
+                        type="radio"
+                        id="money20"
+                        name="initial_money"
+                        value="20"
+                        {% if request.form.get('initial_money','20') == '20' %}
+                        checked
+                        {% endif %}
+                    >
+
+                    <label for="money20">
+
+                        $20
+
+                    </label>
 
                 </div>
 
 
-                <div class="rules">
 
-                    <p>
-                        • 선수 경매 순서는
-                        <strong>랜덤</strong>으로 결정됩니다.
-                    </p>
+                <div class="money-option">
 
-                    <p>
-                        • 입찰은
-                        <strong>$1 단위</strong>로 올라갑니다.
-                    </p>
+                    <input
+                        type="radio"
+                        id="money30"
+                        name="initial_money"
+                        value="30"
+                        {% if request.form.get('initial_money','20') == '30' %}
+                        checked
+                        {% endif %}
+                    >
 
-                    <p>
-                        • 원하는 선수가 없으면
-                        <strong>PASS</strong>할 수 있습니다.
-                    </p>
+                    <label for="money30">
 
-                    <p>
-                        • 두 플레이어 모두 PASS하면
-                        해당 선수는 선수풀의
-                        <strong>맨 뒤로 이동</strong>합니다.
-                    </p>
+                        $30
 
-                    <p>
-                        • <strong>ALL-IN</strong> 상황에서
-                        동일 금액이 나오면
-                        먼저 ALL-IN을 선언한 플레이어가
-                        선수를 획득합니다.
-                    </p>
-
-                    <p>
-                        • 한 플레이어가 자신의 로스터를
-                        모두 채우면 남은 선수는
-                        상대 플레이어에게 자동 배정됩니다.
-                    </p>
-
-                    <p>
-                        • 다음에 어떤 선수가 나올지는
-                        <strong>공개되지 않습니다.</strong>
-                    </p>
+                    </label>
 
                 </div>
+
+
+
+                <div class="money-option">
+
+                    <input
+                        type="radio"
+                        id="money50"
+                        name="initial_money"
+                        value="50"
+                        {% if request.form.get('initial_money','20') == '50' %}
+                        checked
+                        {% endif %}
+                    >
+
+                    <label for="money50">
+
+                        $50
+
+                    </label>
+
+                </div>
+
 
             </div>
 
 
+            <div class="custom-money">
 
-            <!-- =================================
-                 시작
-            ================================== -->
+                <input
+                    type="number"
+                    name="custom_money"
+                    min="1"
+                    placeholder="직접 입력하려면 여기에 입력"
+                >
+
+            </div>
+
+
+            <div class="help">
+
+                ※ 직접 입력한 금액이 있으면 위 선택 금액보다 우선 적용됩니다.
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             POSITION
+        ====================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+
+                ⚾ 로스터 구성
+
+            </div>
+
+
+            <div class="position-grid">
+
+
+                <div class="position">
+
+                    <div class="position-name">
+
+                        투수
+
+                    </div>
+
+                    <input
+                        type="number"
+                        name="pitchers"
+                        min="0"
+                        max="20"
+                        value="{{ request.form.get('pitchers', '2') }}"
+                    >
+
+                    <div class="position-desc">
+
+                        선발 · 불펜 · 마무리
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="position">
+
+                    <div class="position-name">
+
+                        내야수
+
+                    </div>
+
+                    <input
+                        type="number"
+                        name="infielders"
+                        min="0"
+                        max="20"
+                        value="{{ request.form.get('infielders', '2') }}"
+                    >
+
+                    <div class="position-desc">
+
+                        1B · 2B · 3B · SS
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="position">
+
+                    <div class="position-name">
+
+                        외야수
+
+                    </div>
+
+                    <input
+                        type="number"
+                        name="outfielders"
+                        min="0"
+                        max="20"
+                        value="{{ request.form.get('outfielders', '2') }}"
+                    >
+
+                    <div class="position-desc">
+
+                        LF · CF · RF
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="position">
+
+                    <div class="position-name">
+
+                        포수
+
+                    </div>
+
+                    <input
+                        type="number"
+                        name="catchers"
+                        min="0"
+                        max="10"
+                        value="{{ request.form.get('catchers', '1') }}"
+                    >
+
+                    <div class="position-desc">
+
+                        C
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="help">
+
+                ※ 입력한 인원은 각 플레이어의 최종 로스터 기준입니다.
+                선수풀에는 각 포지션 설정 인원의 2배가 들어갑니다.
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             RULES
+        ====================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+
+                📖 게임 방식
+
+            </div>
+
+
+            <div class="rules">
+
+
+                <div class="rule">
+
+                    <strong>① 선수 공개</strong><br>
+
+                    현재 경매 선수만 공개됩니다.
+                    다음 선수와 전체 선수 순서는 공개되지 않습니다.
+
+                </div>
+
+
+                <div class="rule">
+
+                    <strong>② 선공</strong><br>
+
+                    정해진 선공자가 없습니다.
+                    PLAYER 1 또는 PLAYER 2 중
+                    먼저 행동한 사람이 첫 제시자가 됩니다.
+
+                </div>
+
+
+                <div class="rule">
+
+                    <strong>③ 자유 입찰</strong><br>
+
+                    $1 단위로 고정되지 않습니다.
+                    원하는 금액을 직접 입력해서 제시할 수 있습니다.
+
+                </div>
+
+
+                <div class="rule">
+
+                    <strong>④ 재입찰</strong><br>
+
+                    한 명이 ALL-IN을 해도 즉시 낙찰되지 않습니다.
+                    상대가 다시 입찰하거나 PASS할 수 있습니다.
+
+                </div>
+
+
+                <div class="rule">
+
+                    <strong>⑤ PASS</strong><br>
+
+                    아무도 입찰하지 않은 상태에서
+                    둘 다 PASS하면 해당 선수는 선수풀 맨 뒤로 이동합니다.
+
+                </div>
+
+
+                <div class="rule">
+
+                    <strong>⑥ ALL-IN</strong><br>
+
+                    자신의 남은 전액을 제시합니다.
+                    상대가 더 높은 금액을 제시할 수 없으면 낙찰됩니다.
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             START
+        ====================== -->
+
+        <section class="card">
 
             <button
                 type="submit"
                 class="start-button"
             >
 
-                ⚾ Draft 시작하기
+                ⚾ DRAFT START
 
             </button>
 
 
-        </form>
+            <div class="note">
+
+                설정한 선수풀은 게임 시작 시 랜덤으로 구성됩니다.<br>
+
+                Player_pool.json 원본 파일은 수정되지 않습니다.
+
+            </div>
+
+        </section>
 
 
-
-        <a
-            href="/"
-            class="back-button"
-        >
-
-            ← 메인으로
-
-        </a>
-
-
-    </div>
+    </form>
 
 
 </div>
+
+
+<script>
+
+/*
+ * 직접 입력한 초기 자본을 선택 금액보다
+ * 우선 적용하기 위한 UI 처리
+ */
+
+const moneyRadios =
+    document.querySelectorAll(
+        'input[name="initial_money"]'
+    );
+
+const customMoney =
+    document.querySelector(
+        'input[name="custom_money"]'
+    );
+
+
+if(customMoney){
+
+    customMoney.addEventListener(
+        "input",
+        function(){
+
+            if(this.value){
+
+                moneyRadios.forEach(
+                    radio => {
+                        radio.checked = false;
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    moneyRadios.forEach(
+        radio => {
+
+            radio.addEventListener(
+                "change",
+                function(){
+
+                    if(this.checked){
+
+                        customMoney.value = "";
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/*
+ * 폼 제출 전에 custom_money가 있으면
+ * initial_money 값으로 실제 전송되도록 한다.
+ */
+
+document.querySelector("form")
+    .addEventListener(
+        "submit",
+        function(){
+
+            if(
+                customMoney &&
+                customMoney.value
+            ){
+
+                const value =
+                    parseInt(
+                        customMoney.value,
+                        10
+                    );
+
+                if(
+                    Number.isInteger(value) &&
+                    value > 0
+                ){
+
+                    let hidden =
+                        this.querySelector(
+                            'input[data-custom-money]'
+                        );
+
+                    if(!hidden){
+
+                        hidden =
+                            document.createElement(
+                                "input"
+                            );
+
+                        hidden.type = "hidden";
+
+                        hidden.name =
+                            "initial_money";
+
+                        hidden.setAttribute(
+                            "data-custom-money",
+                            "true"
+                        );
+
+                        this.appendChild(
+                            hidden
+                        );
+
+                    }
+
+                    hidden.value = value;
+
+                }
+
+            }
+
+        }
+    );
+
+</script>
 
 
 </body>
