@@ -1321,7 +1321,7 @@ def pass_action(
 
         state["log"].append(
 
-            f"{state['players'][side']} PASS"
+            f"{state['players'][side]} PASS"
         )
 
         # 둘 다 PASS
