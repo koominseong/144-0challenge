@@ -1810,27 +1810,16 @@ def game(
     "/game/<game_id>/action",
     methods=["POST"]
 )
-def action(
-    game_id
-):
+def action(game_id):
 
-    state = get_state(
-        game_id
-    )
+    state = get_state(game_id)
 
     if state is None:
-
         return redirect(
-            url_for(
-                "draft.draft_home"
-            )
+            url_for("draft.draft_home")
         )
 
-    # 이미 종료
-    if state.get(
-        "done"
-    ):
-
+    if state.get("done"):
         return redirect(
             url_for(
                 "draft.result",
@@ -1842,175 +1831,144 @@ def action(
 
     try:
 
-        # ----------------------------------------------------
-        # Player
-        # ----------------------------------------------------
-
         side = request.form.get(
-            "side"
-        )
+            "side",
+            ""
+        ).strip()
 
-        if side not in (
-            "a",
-            "b"
-        ):
+        action_type = request.form.get(
+            "action",
+            ""
+        ).strip()
 
+        if side not in ("a", "b"):
             raise ValueError(
                 "잘못된 플레이어입니다."
             )
 
-        # ----------------------------------------------------
-        # 현재 선수 확인
-        # ----------------------------------------------------
-
-        if state.get(
-            "current"
-        ) is None:
-
+        if action_type not in (
+            "bid",
+            "allin",
+            "pass"
+        ):
             raise ValueError(
-                "현재 경매 중인 선수가 없습니다."
+                "잘못된 행동입니다."
             )
 
-        # ----------------------------------------------------
-        # 차례 확인
-        #
-        # turn == None
-        #   → 첫 행동
-        #   → 누구든 먼저 누를 수 있음
-        #
-        # turn != None
-        #   → 해당 플레이어만 행동 가능
-        # ----------------------------------------------------
+        if state.get("current") is None:
+            raise ValueError(
+                "현재 경매 선수가 없습니다."
+            )
 
-        if state.get(
-            "turn"
-        ) is not None:
+        # -----------------------------------------
+        # 차례 검사
+        # -----------------------------------------
 
-            if state[
-                "turn"
-            ] != side:
+        # 아직 아무도 행동하지 않았다면
+        # 두 플레이어 모두 선공 가능
+        if state.get("turn") is not None:
+
+            if state["turn"] != side:
 
                 raise ValueError(
-                    "상대방의 차례입니다."
+                    "현재 상대방의 차례입니다."
                 )
 
-        # ----------------------------------------------------
-        # Action
-        # ----------------------------------------------------
-
-        action_type = request.form.get(
-            "action"
-        )
-
-        # ====================================================
-        # BID
-        # ====================================================
+        # -----------------------------------------
+        # 금액 제시
+        # -----------------------------------------
 
         if action_type == "bid":
 
-            amount_raw = request.form.get(
+            raw_amount = request.form.get(
                 "amount",
                 ""
             ).strip()
 
-            if not amount_raw:
-
+            if not raw_amount:
                 raise ValueError(
-                    "입찰 금액을 입력하세요."
+                    "제시 금액을 입력하세요."
                 )
 
             try:
-
-                amount = int(
-                    amount_raw
-                )
-
+                amount = int(raw_amount)
             except ValueError:
-
                 raise ValueError(
-                    "입찰 금액은 숫자로 입력하세요."
+                    "제시 금액은 숫자로 입력하세요."
                 )
 
             if amount <= 0:
-
                 raise ValueError(
-                    "입찰 금액은 1달러 이상이어야 합니다."
+                    "제시 금액은 1달러 이상이어야 합니다."
                 )
 
-            if not state[
-                "auction_started"
-            ]:
+            if amount > int(state["money"][side]):
+                raise ValueError(
+                    "보유 자금보다 큰 금액을 제시할 수 없습니다."
+                )
 
-                # 첫 행동
+            # 첫 제시
+            if not state.get(
+                "auction_started",
+                False
+            ):
+
                 start_bid(
-
                     state,
-
                     side,
-
                     amount
                 )
 
+            # 이미 경매가 시작된 경우
             else:
 
-                # 이후 입찰
+                if amount <= int(
+                    state["current_bid"]
+                ):
+                    raise ValueError(
+                        f"현재가 ${state['current_bid']}보다 "
+                        f"높은 금액을 입력하세요."
+                    )
+
                 normal_bid(
-
                     state,
-
                     side,
-
                     amount
                 )
 
-        # ====================================================
+        # -----------------------------------------
         # ALL-IN
-        # ====================================================
+        # -----------------------------------------
 
         elif action_type == "allin":
 
             all_in(
-
                 state,
-
                 side
             )
 
-        # ====================================================
+        # -----------------------------------------
         # PASS
-        # ====================================================
+        # -----------------------------------------
 
         elif action_type == "pass":
 
             pass_action(
-
                 state,
-
                 side
             )
 
-        else:
-
-            raise ValueError(
-                "알 수 없는 액션입니다."
-            )
-
-        # ----------------------------------------------------
+        # -----------------------------------------
         # 저장
-        # ----------------------------------------------------
+        # -----------------------------------------
 
         save_state(
             game_id,
             state
         )
 
-        # ----------------------------------------------------
-        # 종료
-        # ----------------------------------------------------
-
-        if state.get(
-            "done"
-        ):
+        # 게임 종료
+        if state.get("done"):
 
             return redirect(
                 url_for(
@@ -2018,10 +1976,6 @@ def action(
                     game_id=game_id
                 )
             )
-
-        # ----------------------------------------------------
-        # 게임 화면
-        # ----------------------------------------------------
 
         return redirect(
             url_for(
@@ -2034,21 +1988,16 @@ def action(
 
         error = str(e)
 
-        # 오류가 발생하더라도 현재 상태 저장
         save_state(
             game_id,
             state
         )
 
         return render_template(
-
             "draft_game.html",
-
             state=state,
-
             game_id=game_id,
-
-            error=error,
+            error=error
         )
 
 
