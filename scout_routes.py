@@ -20,8 +20,8 @@ def scout_home():
     records = (
         sb.table("scout_record")
         .select("*")
-        .order("id", desc=True)
-        .limit(15)
+        .order("total", desc=True)
+        .limit(50)
         .execute()
         .data
     )
