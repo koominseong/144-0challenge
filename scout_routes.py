@@ -18,6 +18,7 @@ scout_bp = Blueprint("scout", __name__)
 def scout_home():
     sb = get_supabase()
 
+    # 전체 스카우트 기록 가져오기
     records = (
         sb.table("scout_record")
         .select("*")
@@ -25,7 +26,8 @@ def scout_home():
         .data
     )
 
-    # 등급 우선 → 같은 등급에서는 점수 높은 순
+    # 등급 우선순위
+    # S → A → B → C → D
     grade_order = {
         "S": 0,
         "A": 1,
@@ -34,16 +36,21 @@ def scout_home():
         "D": 4
     }
 
+    # 등급 우선 → 같은 등급에서는 점수 높은 순
     records.sort(
         key=lambda r: (
-            grade_order.get(r.get("grade"), 99),
+            grade_order.get(str(r.get("grade", "")).upper(), 99),
             -(float(r.get("total") or 0))
         )
     )
 
+    # 상위 100개만 표시
     records = records[:100]
 
-    return render_template("scout_home.html", records=records)
+    return render_template(
+        "scout_home.html",
+        records=records
+    )
 
 @scout_bp.route("/scout/new")
 def scout_new():
