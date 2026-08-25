@@ -36,7 +36,7 @@ def g_home():
     sb = get_supabase()
     records = (
         sb.table("gauntlet_record").select("*")
-        .order("id", desc=True).limit(15).execute().data
+        .order("wins", desc=True).limit(30).execute().data
     )
     ongoing = (
         sb.table("gauntlet_run").select("id, state")
