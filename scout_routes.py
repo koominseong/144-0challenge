@@ -17,16 +17,33 @@ scout_bp = Blueprint("scout", __name__)
 @scout_bp.route("/scout")
 def scout_home():
     sb = get_supabase()
+
     records = (
         sb.table("scout_record")
         .select("*")
-        .order("total", desc=True)
-        .limit(50)
         .execute()
         .data
     )
-    return render_template("scout_home.html", records=records)
 
+    # 등급 우선 → 같은 등급에서는 점수 높은 순
+    grade_order = {
+        "S": 0,
+        "A": 1,
+        "B": 2,
+        "C": 3,
+        "D": 4
+    }
+
+    records.sort(
+        key=lambda r: (
+            grade_order.get(r.get("grade"), 99),
+            -(float(r.get("total") or 0))
+        )
+    )
+
+    records = records[:100]
+
+    return render_template("scout_home.html", records=records)
 
 @scout_bp.route("/scout/new")
 def scout_new():
