@@ -1,34 +1,830 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PLAYER AUCTION</title>
-<style>
-body{margin:0;background:#0b1020;color:#f5f7fb;font-family:Arial,sans-serif}
-.wrap{max-width:760px;margin:70px auto;padding:24px;text-align:center}
-.card{background:#151c31;border:1px solid #29324d;border-radius:22px;padding:35px}
-h1{font-size:42px;margin:0 0 10px}
-.sub{color:#9ca8c4;margin-bottom:30px}
-.btn{display:inline-block;padding:15px 28px;border-radius:12px;background:#4f7cff;color:white;text-decoration:none;font-weight:700}
-.rule{margin-top:30px;text-align:left;background:#0f1527;border-radius:16px;padding:20px;line-height:1.8}
-</style>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Auction | 144-0 Challenge</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #24324a 0%,
+                    #111827 42%,
+                    #070b12 100%
+                );
+
+            color: #f8fafc;
+        }
+
+        .page {
+            width: min(1050px, 94%);
+            margin: 0 auto;
+            padding: 42px 0 70px;
+        }
+
+        /* ================================================== */
+        /* HERO */
+        /* ================================================== */
+
+        .hero {
+            position: relative;
+
+            padding: 44px 28px;
+
+            border: 1px solid
+                rgba(255,255,255,.10);
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,.10),
+                    rgba(255,255,255,.025)
+                );
+
+            box-shadow:
+                0 30px 80px
+                rgba(0,0,0,.35);
+
+            text-align: center;
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 280px;
+            height: 280px;
+
+            top: -140px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,.07);
+
+            filter: blur(10px);
+        }
+
+        .eyebrow {
+            position: relative;
+
+            display: inline-block;
+
+            margin-bottom: 10px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: .18em;
+
+            opacity: .65;
+        }
+
+        h1 {
+            position: relative;
+
+            margin: 0;
+
+            font-size:
+                clamp(42px, 8vw, 76px);
+
+            font-weight: 950;
+
+            letter-spacing:
+                -.055em;
+        }
+
+        .subtitle {
+            position: relative;
+
+            margin: 12px 0 0;
+
+            font-size: 15px;
+
+            color: #cbd5e1;
+        }
+
+        .start-button {
+            position: relative;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-width: 230px;
+
+            margin-top: 30px;
+
+            padding: 16px 28px;
+
+            border-radius: 16px;
+
+            background: #f8fafc;
+            color: #0f172a;
+
+            text-decoration: none;
+
+            font-weight: 900;
+            font-size: 16px;
+
+            box-shadow:
+                0 12px 30px
+                rgba(0,0,0,.25);
+
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease;
+        }
+
+        .start-button:hover {
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 18px 38px
+                rgba(0,0,0,.35);
+        }
+
+        /* ================================================== */
+        /* MY RECORD */
+        /* ================================================== */
+
+        .section {
+            margin-top: 26px;
+        }
+
+        .section-title {
+            margin: 0 0 13px;
+
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 20px;
+
+            border-radius: 18px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            background:
+                rgba(255,255,255,.045);
+
+            backdrop-filter:
+                blur(12px);
+        }
+
+        .stat-label {
+            font-size: 12px;
+
+            color: #94a3b8;
+
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+
+            font-weight: 950;
+
+            letter-spacing: -.03em;
+        }
+
+        /* ================================================== */
+        /* HALL OF FAME */
+        /* ================================================== */
+
+        .hall {
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 20px;
+
+            background:
+                rgba(255,255,255,.045);
+        }
+
+        .hall-header,
+        .hall-row {
+            display: grid;
+
+            grid-template-columns:
+                60px
+                minmax(130px, 1fr)
+                100px
+                90px
+                80px;
+
+            align-items: center;
+        }
+
+        .hall-header {
+            padding: 15px 18px;
+
+            background:
+                rgba(255,255,255,.055);
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: .05em;
+        }
+
+        .hall-row {
+            min-height: 62px;
+
+            padding: 0 18px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.06);
+        }
+
+        .rank {
+            font-size: 15px;
+
+            font-weight: 900;
+        }
+
+        .rank.top {
+            font-size: 21px;
+        }
+
+        .manager {
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-weight: 750;
+        }
+
+        .score {
+            font-weight: 950;
+
+            font-variant-numeric:
+                tabular-nums;
+        }
+
+        /* ================================================== */
+        /* GRADE */
+        /* ================================================== */
+
+        .grade {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 48px;
+            height: 31px;
+
+            border-radius: 9px;
+
+            background:
+                rgba(255,255,255,.10);
+
+            font-size: 12px;
+
+            font-weight: 950;
+        }
+
+        .grade-splus {
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff,
+                    #dbeafe
+                );
+
+            color: #0f172a;
+
+            box-shadow:
+                0 0 22px
+                rgba(255,255,255,.28);
+        }
+
+        .grade-s {
+            background:
+                rgba(255,255,255,.18);
+
+            color: #fff;
+        }
+
+        .grade-aplus,
+        .grade-a {
+            background:
+                rgba(148,163,184,.18);
+        }
+
+        /* ================================================== */
+        /* INFO */
+        /* ================================================== */
+
+        .rules {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+        }
+
+        .rule {
+            padding: 18px;
+
+            border-radius: 17px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            background:
+                rgba(255,255,255,.035);
+        }
+
+        .rule-icon {
+            font-size: 22px;
+
+            margin-bottom: 8px;
+        }
+
+        .rule-title {
+            font-size: 14px;
+
+            font-weight: 900;
+
+            margin-bottom: 5px;
+        }
+
+        .rule-text {
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+        .empty {
+            padding: 45px 20px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+        /* ================================================== */
+        /* RESPONSIVE */
+        /* ================================================== */
+
+        @media (max-width: 720px) {
+
+            .page {
+                width: 92%;
+                padding-top: 22px;
+            }
+
+            .hero {
+                padding: 36px 18px;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .rules {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .hall-header,
+            .hall-row {
+                grid-template-columns:
+                    42px
+                    minmax(90px, 1fr)
+                    70px
+                    55px;
+            }
+
+            .hall-header > :nth-child(5),
+            .hall-row > :nth-child(5) {
+                display: none;
+            }
+
+            .hall-header {
+                font-size: 10px;
+            }
+
+            .hall-row {
+                padding: 0 12px;
+            }
+
+            .manager {
+                font-size: 13px;
+            }
+
+            .score {
+                font-size: 13px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="card">
-    <h1>🏷️ PLAYER AUCTION</h1>
-    <div class="sub">100억으로 최고의 선수단을 만들어라</div>
-    <a class="btn" href="{{ url_for('auction.auction_new') }}">경매 시작</a>
-    <div class="rule">
-      <b>게임 방법</b><br>
-      • 총 10라운드<br>
-      • 매 라운드 랜덤 선수 등장<br>
-      • 100억의 가상 예산으로 영입<br>
-      • AI 단장 3명과 경쟁<br>
-      • 마지막에 전력 + 가성비 + 밸런스로 평가
-    </div>
-  </div>
+
+<div class="page">
+
+    <!-- ================================================== -->
+    <!-- HERO -->
+    <!-- ================================================== -->
+
+    <section class="hero">
+
+        <div class="eyebrow">
+            144-0 CHALLENGE
+        </div>
+
+        <h1>
+            AUCTION
+        </h1>
+
+        <p class="subtitle">
+            AI 단장 3명과 펼치는
+            최고의 선수 영입 경쟁
+        </p>
+
+        <a
+            href="{{ url_for('auction.auction_new') }}"
+            class="start-button"
+        >
+            ⚾ AUCTION START
+        </a>
+
+    </section>
+
+
+    <!-- ================================================== -->
+    <!-- MY RECORD -->
+    <!-- ================================================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            📊 나의 기록
+        </h2>
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    최고 점수
+                </div>
+
+                <div class="stat-value">
+                    {{ "%.1f"|format(best_score or 0) }}
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    최고 등급
+                </div>
+
+                <div class="stat-value">
+                    {{ best_grade }}
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    우승
+                </div>
+
+                <div class="stat-value">
+                    {{ wins }}회
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    S+ 기록
+                </div>
+
+                <div class="stat-value">
+                    {{ s_count }}회
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================== -->
+    <!-- HALL OF FAME -->
+    <!-- ================================================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            🏆 HALL OF FAME
+        </h2>
+
+        <div class="hall">
+
+            {% if hall_of_fame %}
+
+                <div class="hall-header">
+
+                    <div>
+                        RANK
+                    </div>
+
+                    <div>
+                        MANAGER
+                    </div>
+
+                    <div>
+                        SCORE
+                    </div>
+
+                    <div>
+                        GRADE
+                    </div>
+
+                    <div>
+                        RESULT
+                    </div>
+
+                </div>
+
+
+                {% for record in hall_of_fame %}
+
+                    {% set rank = loop.index %}
+
+                    {% set grade =
+                        record.get('grade', '-') %}
+
+                    <div class="hall-row">
+
+                        <div
+                            class="
+                                rank
+                                {% if rank <= 3 %}
+                                    top
+                                {% endif %}
+                            "
+                        >
+
+                            {% if rank == 1 %}
+                                🥇
+
+                            {% elif rank == 2 %}
+                                🥈
+
+                            {% elif rank == 3 %}
+                                🥉
+
+                            {% else %}
+                                {{ rank }}
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="manager">
+
+                            {% if record.get('user_id') %}
+
+                                {% set uid =
+                                    record.get('user_id') %}
+
+                                {% if uid|string|length > 18 %}
+                                    {{ uid|string|truncate(18, True, '...') }}
+                                {% else %}
+                                    {{ uid }}
+                                {% endif %}
+
+                            {% else %}
+                                익명 단장
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="score">
+
+                            {{ "%.1f"|format(
+                                record.get(
+                                    'score',
+                                    0
+                                )|float
+                            ) }}
+
+                        </div>
+
+
+                        <div>
+
+                            <span
+                                class="
+                                    grade
+
+                                    {% if grade == 'S+' %}
+                                        grade-splus
+
+                                    {% elif grade == 'S' %}
+                                        grade-s
+
+                                    {% elif grade == 'A+' %}
+                                        grade-aplus
+
+                                    {% elif grade == 'A' %}
+                                        grade-a
+                                    {% endif %}
+                                "
+                            >
+                                {{ grade }}
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            style="
+                                color:#94a3b8;
+                                font-size:12px;
+                            "
+                        >
+
+                            {% if record.get('rank') == 1 %}
+                                🏆 우승
+                            {% else %}
+                                {{ record.get('rank', '-') }}위
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty">
+
+                    아직 명예의 전당 기록이 없습니다.
+
+                    <br>
+
+                    첫 번째
+                    <strong>S+</strong>
+                    의 주인공이 되어보세요.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================== -->
+    <!-- GAME RULE -->
+    <!-- ================================================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            ⚔️ AUCTION RULES
+        </h2>
+
+        <div class="rules">
+
+            <div class="rule">
+
+                <div class="rule-icon">
+                    🤖
+                </div>
+
+                <div class="rule-title">
+                    AI와 경쟁
+                </div>
+
+                <div class="rule-text">
+                    베테랑, 데이터파,
+                    승부사 3명의 AI 단장과
+                    선수 영입 경쟁을 펼칩니다.
+                </div>
+
+            </div>
+
+
+            <div class="rule">
+
+                <div class="rule-icon">
+                    🎯
+                </div>
+
+                <div class="rule-title">
+                    100 포인트
+                </div>
+
+                <div class="rule-text">
+                    제한된 포인트 안에서
+                    필요한 선수를 골라
+                    최강의 선수단을 만드세요.
+                </div>
+
+            </div>
+
+
+            <div class="rule">
+
+                <div class="rule-icon">
+                    👑
+                </div>
+
+                <div class="rule-title">
+                    S+에 도전
+                </div>
+
+                <div class="rule-text">
+                    95점 이상이면서
+                    최종 1위를 차지하면
+                    전설적인 S+가 됩니다.
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </div>
+
 </body>
 </html>
