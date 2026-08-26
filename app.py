@@ -21,6 +21,7 @@ from dynasty_live_routes import live_bp
 from scout_routes import scout_bp
 from gauntlet_routes import gauntlet_bp
 from draft_routes import draft_bp
+from auction_routes import auction_bp
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -46,6 +47,7 @@ app.register_blueprint(live_bp)
 app.register_blueprint(scout_bp)
 app.register_blueprint(gauntlet_bp)
 app.register_blueprint(draft_bp)
+app.register_blueprint(auction_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
