@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AUCTION RESULT</title>
+<style>
+body{margin:0;background:#0b1020;color:#f5f7fb;font-family:Arial,sans-serif}
+.wrap{max-width:850px;margin:35px auto;padding:18px}
+.card{background:#151c31;border:1px solid #29324d;border-radius:22px;padding:28px;margin-bottom:18px}
+.center{text-align:center}.grade{font-size:72px;font-weight:900;margin:8px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.box{background:#0f1527;border-radius:14px;padding:16px;text-align:center}.num{font-size:25px;font-weight:800}
+table{width:100%;border-collapse:collapse}td{padding:9px;border-bottom:1px solid #252d43}
+.btn{display:inline-block;padding:13px 22px;border-radius:12px;background:#4f7cff;color:#fff;text-decoration:none;font-weight:800;margin:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card center">
+    <div>🏷️ AUCTION RESULT</div>
+    <div class="grade">{{ result.grade }}</div>
+    <div style="font-size:32px;font-weight:800">{{ result.final }}점</div>
+    <p>평균 Overall {{ result.avg_overall }} · 사용 예산 {{ result.spent }}억 · 잔액 {{ result.remaining }}억</p>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="box"><div>전력</div><div class="num">{{ result.avg_overall }}</div></div>
+      <div class="box"><div>가성비</div><div class="num">{{ result.efficiency }}</div></div>
+      <div class="box"><div>밸런스</div><div class="num">{{ result.balance }}</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>내 영입 선수</h3>
+    <table>
+      {% for p in state.roster %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.position }}</td>
+        <td>{{ p.team }}</td>
+        <td>{{ "%.1f"|format(p.overall) }}</td>
+        <td>{{ p.price }}억</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="center">
+    <a class="btn" href="{{ url_for('auction.auction_new') }}">다시 하기</a>
+    <a class="btn" href="{{ url_for('auction.auction_home') }}">AUCTION 홈</a>
+  </div>
+</div>
+</body>
+</html>

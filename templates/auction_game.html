@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PLAYER AUCTION</title>
+<style>
+body{margin:0;background:#0b1020;color:#f5f7fb;font-family:Arial,sans-serif}
+.wrap{max-width:900px;margin:25px auto;padding:18px}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.stat{background:#151c31;border:1px solid #29324d;border-radius:13px;padding:12px 18px}
+.auction{background:#151c31;border:1px solid #29324d;border-radius:24px;padding:30px;text-align:center}
+.pos{color:#8fa8ff;font-weight:700}
+.name{font-size:42px;font-weight:800;margin:10px 0}
+.team{color:#aeb8cc}
+.price{font-size:54px;font-weight:900;margin:22px 0 5px}
+.leader{color:#ffd66b;min-height:25px}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:25px}
+button{border:0;border-radius:12px;padding:14px 22px;font-size:16px;font-weight:800;cursor:pointer}
+.bid1{background:#293a70;color:#fff}.bid3{background:#3c5fc2;color:#fff}.bid5{background:#5c7ff0;color:#fff}
+.pass{background:#2b3040;color:#ddd}
+.msg{margin-top:18px;color:#aeb8cc;min-height:22px}
+.roster{margin-top:18px;background:#151c31;border-radius:18px;padding:18px}
+table{width:100%;border-collapse:collapse}td{padding:8px;border-bottom:1px solid #252d43}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="stat">ROUND <b>{{ round }}/{{ total_rounds }}</b></div>
+    <div class="stat">💰 내 예산 <b>{{ state.budget }}억</b></div>
+    <div class="stat">👥 영입 <b>{{ state.roster|length }}명</b></div>
+  </div>
+
+  <div class="auction">
+    {% set p = state.current %}
+    <div class="pos">{{ p.position }}</div>
+    <div class="name">{{ p.name }}</div>
+    <div class="team">{{ p.team }} · Overall {{ "%.1f"|format(p.overall) }}</div>
+    <div class="price">{{ state.price }}억</div>
+    <div class="leader">
+      {% if state.leader == "user" %}🙋 현재 선두: 나
+      {% elif state.leader in ai_names %}{{ ai_names[state.leader] }} 선두
+      {% else %}경매 시작{% endif %}
+    </div>
+
+    <div class="actions">
+      <form action="{{ url_for('auction.auction_action', action='1') }}"><button class="bid1">+1억</button></form>
+      <form action="{{ url_for('auction.auction_action', action='3') }}"><button class="bid3">+3억</button></form>
+      <form action="{{ url_for('auction.auction_action', action='5') }}"><button class="bid5">+5억</button></form>
+      <form action="{{ url_for('auction.auction_action', action='pass') }}"><button class="pass">포기</button></form>
+    </div>
+    <div class="msg">{{ state.message }}</div>
+  </div>
+
+  <div class="roster">
+    <b>내 선수단</b>
+    {% if state.roster %}
+    <table>
+      {% for p in state.roster %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.position }}</td>
+        <td>{{ p.team }}</td>
+        <td>{{ "%.1f"|format(p.overall) }}</td>
+        <td>{{ p.price }}억</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <div style="color:#8e99b0;margin-top:12px">아직 영입한 선수가 없습니다.</div>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>
