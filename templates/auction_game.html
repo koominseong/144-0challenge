@@ -1,5 +1,3 @@
-<!-- templates/auction_game.html -->
-
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -37,20 +35,14 @@
                     #1f2937
                 );
 
-            color: #ffffff;
+            color: white;
 
             min-height: 100vh;
 
         }
 
 
-        /* ==================================================
-           HEADER
-        ================================================== */
-
         .header {
-
-            width: 100%;
 
             padding: 18px 20px;
 
@@ -73,39 +65,31 @@
 
             font-weight: 900;
 
-            letter-spacing: 1px;
-
         }
 
 
         .round {
 
-            font-size: 14px;
+            opacity: .7;
 
-            opacity: 0.8;
+            font-size: 14px;
 
         }
 
-
-        /* ==================================================
-           MAIN
-        ================================================== */
 
         .container {
 
-            width: min(
-                1100px,
-                calc(100% - 30px)
-            );
+            width:
+                min(
+                    1000px,
+                    calc(100% - 24px)
+                );
 
-            margin: 25px auto 50px;
+            margin:
+                20px auto 50px;
 
         }
 
-
-        /* ==================================================
-           TOP STATUS
-        ================================================== */
 
         .status-grid {
 
@@ -114,93 +98,80 @@
             grid-template-columns:
                 repeat(3, 1fr);
 
-            gap: 12px;
+            gap: 10px;
 
             margin-bottom: 15px;
 
         }
 
 
-        .status-card {
+        .status {
 
             background:
-                rgba(255,255,255,0.07);
+                rgba(255,255,255,.07);
 
             border:
                 1px solid
-                rgba(255,255,255,0.1);
+                rgba(255,255,255,.1);
 
-            border-radius: 15px;
+            border-radius: 14px;
 
-            padding: 15px;
+            padding: 14px;
 
         }
 
 
         .status-label {
 
-            font-size: 12px;
+            font-size: 11px;
 
-            opacity: 0.6;
-
-            margin-bottom: 5px;
+            opacity: .55;
 
         }
 
 
         .status-value {
 
-            font-size: 21px;
+            font-size: 20px;
 
             font-weight: 900;
 
+            margin-top: 4px;
+
         }
 
-
-        /* ==================================================
-           PLAYER
-        ================================================== */
 
         .player-card {
 
+            text-align: center;
+
             background:
-                linear-gradient(
-                    145deg,
-                    rgba(255,255,255,0.13),
-                    rgba(255,255,255,0.05)
-                );
+                rgba(255,255,255,.08);
 
             border:
                 1px solid
-                rgba(255,255,255,0.14);
+                rgba(255,255,255,.13);
 
-            border-radius: 24px;
+            border-radius: 23px;
 
-            padding: 30px;
-
-            text-align: center;
-
-            box-shadow:
-                0 20px 50px
-                rgba(0,0,0,0.25);
+            padding: 30px 20px;
 
         }
 
 
-        .player-position {
+        .position {
 
             display: inline-block;
 
-            padding: 5px 11px;
+            padding:
+                5px 10px;
 
             border-radius: 20px;
 
             background:
-                rgba(255,255,255,0.1);
+                rgba(255,255,255,.1);
 
             font-size: 12px;
-
-            margin-bottom: 10px;
 
         }
 
@@ -211,45 +182,40 @@
 
             font-weight: 950;
 
-            margin: 5px 0;
+            margin:
+                10px 0 4px;
 
         }
 
 
-        .player-team {
+        .team {
 
-            opacity: 0.65;
-
-            margin-bottom: 15px;
+            opacity: .55;
 
         }
 
 
-        .overall {
+        .ovr {
 
-            font-size: 16px;
+            margin-top: 10px;
 
             font-weight: 800;
 
         }
 
 
-        /* ==================================================
-           PRICE
-        ================================================== */
-
         .price-box {
-
-            margin: 25px auto;
 
             max-width: 500px;
 
+            margin: 25px auto;
+
             padding: 20px;
 
-            border-radius: 18px;
-
             background:
-                rgba(0,0,0,0.18);
+                rgba(0,0,0,.18);
+
+            border-radius: 18px;
 
         }
 
@@ -258,7 +224,7 @@
 
             font-size: 12px;
 
-            opacity: 0.6;
+            opacity: .5;
 
         }
 
@@ -269,29 +235,12 @@
 
             font-weight: 950;
 
-            margin: 4px 0;
-
         }
 
 
         .leader {
 
-            font-size: 15px;
-
             font-weight: 800;
-
-        }
-
-
-        /* ==================================================
-           TIMER
-        ================================================== */
-
-        .timer-wrap {
-
-            margin: 20px auto;
-
-            max-width: 500px;
 
         }
 
@@ -302,6 +251,8 @@
 
             font-weight: 950;
 
+            margin-top: 10px;
+
             font-variant-numeric:
                 tabular-nums;
 
@@ -310,16 +261,17 @@
 
         .timer-bar {
 
-            width: 100%;
-
             height: 7px;
 
-            margin-top: 8px;
+            margin:
+                8px auto 15px;
+
+            max-width: 500px;
 
             border-radius: 20px;
 
             background:
-                rgba(255,255,255,0.12);
+                rgba(255,255,255,.1);
 
             overflow: hidden;
 
@@ -328,48 +280,38 @@
 
         .timer-progress {
 
-            height: 100%;
-
             width: 100%;
 
-            border-radius: 20px;
+            height: 100%;
 
-            background:
-                #ffffff;
-
-            transition:
-                width 0.1s linear;
+            background: white;
 
         }
 
-
-        /* ==================================================
-           MESSAGE
-        ================================================== */
 
         .message {
 
-            margin: 18px 0;
+            max-width: 600px;
 
-            padding: 13px 16px;
+            min-height: 44px;
 
-            border-radius: 13px;
+            margin: 15px auto;
+
+            padding: 12px;
+
+            border-radius: 12px;
 
             background:
-                rgba(255,255,255,0.07);
-
-            font-size: 14px;
-
-            min-height: 45px;
+                rgba(255,255,255,.06);
 
         }
 
 
-        /* ==================================================
-           BID BUTTONS
-        ================================================== */
-
         .bid-buttons {
+
+            max-width: 600px;
+
+            margin: auto;
 
             display: grid;
 
@@ -378,14 +320,10 @@
 
             gap: 10px;
 
-            max-width: 600px;
-
-            margin: 15px auto;
-
         }
 
 
-        .bid-form {
+        form {
 
             margin: 0;
 
@@ -398,23 +336,19 @@
 
             border: none;
 
-            cursor: pointer;
-
-            color: #111827;
-
-            background: #ffffff;
-
             border-radius: 13px;
 
-            padding: 16px;
+            padding: 16px 8px;
 
             font-size: 17px;
 
-            font-weight: 950;
+            font-weight: 900;
 
-            transition:
-                transform 0.12s,
-                opacity 0.12s;
+            cursor: pointer;
+
+            background: white;
+
+            color: #111827;
 
         }
 
@@ -427,127 +361,75 @@
         }
 
 
-        button:active {
-
-            transform:
-                translateY(1px);
-
-        }
-
-
-        .bid-button-large {
-
-            font-size: 19px;
-
-        }
-
-
-        /* ==================================================
-           SOLD
-        ================================================== */
-
-        .sold-form {
+        .sold {
 
             max-width: 600px;
 
-            margin: 12px auto;
+            margin:
+                12px auto;
 
         }
 
 
-        .sold-button {
+        .sold button {
 
             background:
                 #fbbf24;
 
-            color:
-                #111827;
-
             font-size: 19px;
 
-            padding: 18px;
-
-            box-shadow:
-                0 8px 25px
-                rgba(251,191,36,0.2);
-
         }
 
 
-        .sold-button:disabled {
-
-            opacity: 0.4;
-
-            cursor: not-allowed;
-
-            transform: none;
-
-        }
-
-
-        /* ==================================================
-           PASS
-        ================================================== */
-
-        .pass-form {
+        .pass {
 
             max-width: 600px;
 
-            margin: 10px auto 0;
+            margin: auto;
 
         }
 
 
-        .pass-button {
+        .pass button {
 
             background:
-                rgba(255,255,255,0.08);
+                rgba(255,255,255,.08);
 
-            color: #ffffff;
+            color: white;
 
             border:
                 1px solid
-                rgba(255,255,255,0.12);
+                rgba(255,255,255,.1);
 
         }
 
 
-        /* ==================================================
-           HISTORY
-        ================================================== */
+        .card {
 
-        .history-card {
-
-            margin-top: 20px;
+            margin-top: 18px;
 
             background:
-                rgba(255,255,255,0.06);
+                rgba(255,255,255,.06);
 
-            border:
-                1px solid
-                rgba(255,255,255,0.1);
+            border-radius: 17px;
 
-            border-radius: 18px;
-
-            padding: 20px;
+            padding: 18px;
 
         }
 
 
-        .history-title {
-
-            font-size: 18px;
+        .card-title {
 
             font-weight: 900;
 
-            margin-bottom: 14px;
+            margin-bottom: 12px;
 
         }
 
 
-        .history-list {
+        .bid-history {
 
-            max-height: 300px;
+            max-height: 280px;
 
             overflow-y: auto;
 
@@ -556,93 +438,52 @@
 
         .bid-row {
 
-            display: flex;
+            display: grid;
 
-            align-items: center;
+            grid-template-columns:
+                1fr auto auto;
 
-            justify-content: space-between;
+            gap: 12px;
 
-            gap: 10px;
-
-            padding: 11px 4px;
+            padding: 10px 3px;
 
             border-bottom:
                 1px solid
-                rgba(255,255,255,0.06);
+                rgba(255,255,255,.06);
 
         }
 
 
-        .bid-row:last-child {
+        .bid-name {
 
-            border-bottom: none;
-
-        }
-
-
-        .bid-person {
-
-            font-weight: 750;
+            font-weight: 700;
 
         }
 
 
         .bid-price {
 
-            font-weight: 950;
+            font-weight: 900;
 
         }
 
 
         .bid-change {
 
+            opacity: .55;
+
             font-size: 12px;
-
-            opacity: 0.6;
-
-            min-width: 35px;
-
-            text-align: right;
 
         }
 
 
-        .empty-history {
+        .empty {
 
             text-align: center;
 
-            padding: 25px;
+            padding: 20px;
 
-            opacity: 0.5;
-
-            font-size: 14px;
-
-        }
-
-
-        /* ==================================================
-           AI STATUS
-        ================================================== */
-
-        .ai-card {
-
-            margin-top: 20px;
-
-            background:
-                rgba(255,255,255,0.05);
-
-            border-radius: 18px;
-
-            padding: 18px;
-
-        }
-
-
-        .ai-title {
-
-            font-weight: 900;
-
-            margin-bottom: 12px;
+            opacity: .45;
 
         }
 
@@ -657,7 +498,7 @@
 
             border-bottom:
                 1px solid
-                rgba(255,255,255,0.05);
+                rgba(255,255,255,.05);
 
         }
 
@@ -669,52 +510,16 @@
         }
 
 
-        .ai-name {
-
-            font-weight: 700;
-
-        }
-
-
-        .ai-budget {
-
-            opacity: 0.7;
-
-        }
-
-
-        /* ==================================================
-           MOBILE
-        ================================================== */
-
         @media (
-            max-width: 700px
+            max-width: 650px
         ) {
-
-            .container {
-
-                width:
-                    calc(100% - 20px);
-
-                margin-top: 15px;
-
-            }
-
 
             .status-grid {
 
                 grid-template-columns:
-                    repeat(2, 1fr);
+                    1fr 1fr;
 
             }
-
-
-            .player-card {
-
-                padding: 22px 15px;
-
-            }
-
 
             .player-name {
 
@@ -722,27 +527,18 @@
 
             }
 
-
             .price {
 
                 font-size: 40px;
 
             }
 
-
-            .bid-buttons {
-
-                grid-template-columns:
-                    1fr 1fr 1fr;
-
-            }
-
-
             button {
 
-                padding: 14px 7px;
+                padding:
+                    14px 5px;
 
-                font-size: 15px;
+                font-size: 14px;
 
             }
 
@@ -755,10 +551,6 @@
 
 <body>
 
-
-<!-- ======================================================
-     HEADER
-====================================================== -->
 
 <header class="header">
 
@@ -787,7 +579,7 @@
 
     <div class="status-grid">
 
-        <div class="status-card">
+        <div class="status">
 
             <div class="status-label">
                 내 예산
@@ -800,7 +592,7 @@
         </div>
 
 
-        <div class="status-card">
+        <div class="status">
 
             <div class="status-label">
                 내 영입
@@ -813,16 +605,14 @@
         </div>
 
 
-        <div class="status-card">
+        <div class="status">
 
             <div class="status-label">
-                경매 선수
+                현재 라운드
             </div>
 
             <div class="status-value">
-
                 {{ state.round }}
-
             </div>
 
         </div>
@@ -837,9 +627,10 @@
     <section class="player-card">
 
 
-        <div class="player-position">
+        <div class="position">
 
-            {{ current.position
+            {{
+                current.position
                 if current.position is defined
                 else current.pos
                 if current.pos is defined
@@ -851,7 +642,8 @@
 
         <div class="player-name">
 
-            {{ current.name
+            {{
+                current.name
                 if current.name is defined
                 else current.player_name
             }}
@@ -859,9 +651,10 @@
         </div>
 
 
-        <div class="player-team">
+        <div class="team">
 
-            {{ current.team
+            {{
+                current.team
                 if current.team is defined
                 else "-"
             }}
@@ -869,11 +662,12 @@
         </div>
 
 
-        <div class="overall">
+        <div class="ovr">
 
             OVR
 
-            {{ current.overall
+            {{
+                current.overall
                 if current.overall is defined
                 else current.ovr
                 if current.ovr is defined
@@ -906,15 +700,18 @@
 
                 {% if state.leader == "user" %}
 
-                    👤 현재 최고 입찰자: <b>나</b>
+                    👤 최고 입찰자: 나
 
                 {% elif state.leader %}
 
-                    🤖 현재 최고 입찰자:
+                    🤖 최고 입찰자:
 
-                    <b>
-                        {{ ai_names[state.leader] }}
-                    </b>
+                    {{
+                        ai_names.get(
+                            state.leader,
+                            state.leader
+                        )
+                    }}
 
                 {% else %}
 
@@ -931,23 +728,20 @@
              TIMER
         ================================================== -->
 
-        <div class="timer-wrap">
+        <div
+            class="timer"
+            id="timer"
+        >
+            5.0
+        </div>
+
+
+        <div class="timer-bar">
 
             <div
-                class="timer"
-                id="timer"
-            >
-                5.0
-            </div>
-
-            <div class="timer-bar">
-
-                <div
-                    class="timer-progress"
-                    id="timerProgress"
-                ></div>
-
-            </div>
+                class="timer-progress"
+                id="timerProgress"
+            ></div>
 
         </div>
 
@@ -964,14 +758,13 @@
 
 
         <!-- ==================================================
-             BID
+             BID BUTTONS
         ================================================== -->
 
         <div class="bid-buttons">
 
 
             <form
-                class="bid-form"
                 method="POST"
                 action="{{
                     url_for(
@@ -987,10 +780,7 @@
                     value="1"
                 >
 
-                <button
-                    type="submit"
-                    class="bid-button-large"
-                >
+                <button type="submit">
                     +1P
                 </button>
 
@@ -998,7 +788,6 @@
 
 
             <form
-                class="bid-form"
                 method="POST"
                 action="{{
                     url_for(
@@ -1014,10 +803,7 @@
                     value="3"
                 >
 
-                <button
-                    type="submit"
-                    class="bid-button-large"
-                >
+                <button type="submit">
                     +3P
                 </button>
 
@@ -1025,7 +811,6 @@
 
 
             <form
-                class="bid-form"
                 method="POST"
                 action="{{
                     url_for(
@@ -1041,10 +826,7 @@
                     value="5"
                 >
 
-                <button
-                    type="submit"
-                    class="bid-button-large"
-                >
+                <button type="submit">
                     +5P
                 </button>
 
@@ -1060,7 +842,7 @@
         {% if state.leader == "user" %}
 
         <form
-            class="sold-form"
+            class="sold"
             method="POST"
             action="{{
                 url_for(
@@ -1078,7 +860,6 @@
 
             <button
                 type="submit"
-                class="sold-button"
                 id="soldButton"
             >
 
@@ -1097,7 +878,7 @@
         ================================================== -->
 
         <form
-            class="pass-form"
+            class="pass"
             method="POST"
             action="{{
                 url_for(
@@ -1113,13 +894,8 @@
                 value="pass"
             >
 
-            <button
-                type="submit"
-                class="pass-button"
-            >
-
+            <button type="submit">
                 PASS
-
             </button>
 
         </form>
@@ -1132,16 +908,14 @@
          BID HISTORY
     ================================================== -->
 
-    <section class="history-card">
+    <section class="card">
 
-        <div class="history-title">
-
+        <div class="card-title">
             📜 입찰 기록
-
         </div>
 
 
-        <div class="history-list">
+        <div class="bid-history">
 
 
             {% if state.bid_log %}
@@ -1151,17 +925,12 @@
 
                 <div class="bid-row">
 
-
-                    <div class="bid-person">
+                    <div class="bid-name">
 
                         {% if bid.bidder == "user" %}
-
                             👤
-
                         {% else %}
-
                             🤖
-
                         {% endif %}
 
                         {{ bid.name }}
@@ -1179,17 +948,12 @@
                     <div class="bid-change">
 
                         {% if bid.amount %}
-
                             +{{ bid.amount }}
-
                         {% else %}
-
                             -
-
                         {% endif %}
 
                     </div>
-
 
                 </div>
 
@@ -1198,13 +962,11 @@
 
             {% else %}
 
-
-                <div class="empty-history">
+                <div class="empty">
 
                     아직 입찰 기록이 없습니다.
 
                 </div>
-
 
             {% endif %}
 
@@ -1218,12 +980,10 @@
          AI STATUS
     ================================================== -->
 
-    <section class="ai-card">
+    <section class="card">
 
-        <div class="ai-title">
-
+        <div class="card-title">
             🤖 경쟁자 현황
-
         </div>
 
 
@@ -1231,15 +991,14 @@
 
         <div class="ai-row">
 
-
-            <div class="ai-name">
+            <div>
 
                 {{ ai_name }}
 
             </div>
 
 
-            <div class="ai-budget">
+            <div>
 
                 {{ state.ai_budgets[ai_key] }}P
 
@@ -1249,11 +1008,9 @@
 
             </div>
 
-
         </div>
 
         {% endfor %}
-
 
     </section>
 
@@ -1262,17 +1019,10 @@
 
 
 <!-- ======================================================
-     TIMER JAVASCRIPT
+     TIMER
 ====================================================== -->
 
 <script>
-
-
-/*
- * 서버가 알려준 마감 시간
- *
- * Python time.time()은 초 단위 Unix timestamp
- */
 
 const deadline =
     {{ state.bid_deadline|default(0) }} * 1000;
@@ -1294,15 +1044,19 @@ const progressElement =
     );
 
 
-let submitted =
-    false;
+let timeoutSent = false;
 
 
-/*
- * 시간 표시
- */
+/* ========================================================
+   TIMER UPDATE
+======================================================== */
 
 function updateTimer() {
+
+    if (timeoutSent) {
+        return;
+    }
+
 
     const now =
         Date.now();
@@ -1328,7 +1082,7 @@ function updateTimer() {
             0,
             Math.min(
                 100,
-                (remaining / timeout) * 100
+                remaining / timeout * 100
             )
         );
 
@@ -1337,48 +1091,19 @@ function updateTimer() {
         percentage + "%";
 
 
-    /*
-     * 시간 종료
-     *
-     * 페이지를 새로고침하면
-     * 서버에서 실제 timeout을 검사한다.
-     */
+    /* -----------------------------------------------
+       TIMEOUT
+    ------------------------------------------------ */
 
     if (
         remaining <= 0
-        && !submitted
     ) {
 
-        submitted = true;
+        timeoutSent = true;
 
-        location.reload();
+        sendTimeout();
 
         return;
-
-    }
-
-
-    /*
-     * 1초 이하일 때
-     * 낙찰 버튼이 있다면 강조
-     */
-
-    if (
-        seconds <= 1
-        && seconds > 0
-    ) {
-
-        const soldButton =
-            document.getElementById(
-                "soldButton"
-            );
-
-        if (soldButton) {
-
-            soldButton.style.transform =
-                "scale(1.03)";
-
-        }
 
     }
 
@@ -1390,8 +1115,96 @@ function updateTimer() {
 }
 
 
-updateTimer();
+/* ========================================================
+   SEND TIMEOUT
+======================================================== */
 
+async function sendTimeout() {
+
+    const form =
+        new FormData();
+
+
+    form.append(
+        "action",
+        "timeout"
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "{{ url_for(
+                    'auction.auction_action',
+                    game_id=game_id
+                ) }}",
+                {
+                    method: "POST",
+                    body: form,
+
+                    credentials:
+                        "same-origin",
+
+                    redirect:
+                        "follow"
+                }
+            );
+
+
+        /*
+         * 서버가 결과 페이지로 redirect한 경우
+         */
+
+        if (
+            response.redirected
+        ) {
+
+            window.location.href =
+                response.url;
+
+            return;
+
+        }
+
+
+        /*
+         * 일반적으로는
+         * 현재 게임 화면으로 redirect된다.
+         *
+         * 여기서 무한 reload가 발생하지 않도록
+         * 딱 한 번만 이동한다.
+         */
+
+        window.location.replace(
+            window.location.href
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Auction timeout:",
+            error
+        );
+
+        /*
+         * 네트워크 오류일 때만
+         * 다시 시도할 수 있도록 한다.
+         */
+
+        timeoutSent = false;
+
+    }
+
+}
+
+
+/* ========================================================
+   START
+======================================================== */
+
+updateTimer();
 
 </script>
 
