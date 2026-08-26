@@ -1,6 +1,5 @@
 # auction_routes.py
 
-import os
 import uuid
 
 from flask import (
@@ -17,7 +16,7 @@ from auction import (
 
 
 # ============================================================
-# Blueprint
+# BLUEPRINT
 # ============================================================
 
 auction_bp = Blueprint(
@@ -76,7 +75,7 @@ def auction_new():
 
 
 # ============================================================
-# GAME PAGE
+# GAME
 # ============================================================
 
 @auction_bp.route(
@@ -91,7 +90,6 @@ def auction_play(game_id):
         game_id
     )
 
-    # 존재하지 않는 게임
     if state is None:
 
         return redirect(
@@ -100,8 +98,7 @@ def auction_play(game_id):
             )
         )
 
-
-    # 이미 끝났으면 결과
+    # 게임 종료
     if state.get(
         "finished",
         False,
@@ -114,12 +111,56 @@ def auction_play(game_id):
             )
         )
 
+    # --------------------------------------------------------
+    # GET 요청에서도 timeout 검사
+    #
+    # 브라우저가 닫혔다가 다시 들어와도
+    # 서버 시간이 이미 끝났다면 처리한다.
+    # --------------------------------------------------------
 
-    # 현재 선수
+    from auction import (
+        is_bid_expired,
+        settle_current_auction,
+        ai_response,
+        next_round,
+    )
+
+    if is_bid_expired(state):
+
+        if state.get("leader"):
+
+            settle_current_auction(
+                state
+            )
+
+        else:
+
+            ai = ai_response(
+                state
+            )
+
+            if not ai:
+                next_round(
+                    state
+                )
+
+        GAMES[game_id] = state
+
+        if state.get(
+            "finished",
+            False,
+        ):
+
+            return redirect(
+                url_for(
+                    "auction.auction_result",
+                    game_id=game_id,
+                )
+            )
+
     current = state.get(
         "current"
     )
-
 
     return render_template(
         "auction_game.html",
@@ -137,17 +178,13 @@ def auction_play(game_id):
 
         ai_names=state.get(
             "ai_names",
-            {
-                "veteran": "베테랑",
-                "data": "데이터파",
-                "gambler": "승부사",
-            },
+            {},
         ),
     )
 
 
 # ============================================================
-# AUCTION ACTION
+# ACTION
 # ============================================================
 
 @auction_bp.route(
@@ -162,7 +199,6 @@ def auction_action(game_id):
         game_id
     )
 
-    # 게임이 없으면 새 게임
     if state is None:
 
         return redirect(
@@ -171,8 +207,6 @@ def auction_action(game_id):
             )
         )
 
-
-    # 끝난 게임
     if state.get(
         "finished",
         False,
@@ -185,11 +219,6 @@ def auction_action(game_id):
             )
         )
 
-
-    # ========================================================
-    # ACTION
-    # ========================================================
-
     action = request.form.get(
         "action"
     )
@@ -199,7 +228,6 @@ def auction_action(game_id):
         action = request.args.get(
             "action"
         )
-
 
     if action is None:
 
@@ -214,24 +242,18 @@ def auction_action(game_id):
             )
         )
 
-
-    # ========================================================
-    # AUCTION.PY
-    # ========================================================
-
     try:
 
         from auction import (
             user_action,
         )
 
-        state = user_action(
+        user_action(
             state,
             action,
         )
 
         GAMES[game_id] = state
-
 
     except Exception as e:
 
@@ -246,10 +268,9 @@ def auction_action(game_id):
 
         GAMES[game_id] = state
 
-
-    # ========================================================
-    # RESULT
-    # ========================================================
+    # --------------------------------------------------------
+    # 끝났으면 결과 페이지
+    # --------------------------------------------------------
 
     if state.get(
         "finished",
@@ -262,11 +283,6 @@ def auction_action(game_id):
                 game_id=game_id,
             )
         )
-
-
-    # ========================================================
-    # GAME
-    # ========================================================
 
     return redirect(
         url_for(
@@ -300,7 +316,6 @@ def auction_result(game_id):
             )
         )
 
-
     if not state.get(
         "finished",
         False,
@@ -313,25 +328,20 @@ def auction_result(game_id):
             )
         )
 
-
-    result = state.get(
-        "result",
-        {},
-    )
-
-
     return render_template(
         "auction_result.html",
 
-        result=result,
+        result=state.get(
+            "result",
+            {},
+        ),
 
         game_id=game_id,
-
     )
 
 
 # ============================================================
-# HALL OF FAME
+# HALL
 # ============================================================
 
 @auction_bp.route(
