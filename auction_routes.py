@@ -3,14 +3,15 @@ from flask import (
     render_template,
     redirect,
     url_for,
-    request,
     session,
+    jsonify,
 )
 
 from auction import (
     create_game,
     user_action,
     seconds_left,
+    run_ai_battle,
 )
 
 
@@ -22,30 +23,41 @@ auction_bp = Blueprint(
 
 
 # ============================================================
-# GAME STORAGE
+# SESSION
 # ============================================================
 
 def get_games():
-    return session.setdefault(
-        "auction_games",
-        {},
-    )
+
+    if "auction_games" not in session:
+
+        session[
+            "auction_games"
+        ] = {}
+
+    return session[
+        "auction_games"
+    ]
 
 
 def get_game(game_id):
+
     games = get_games()
 
-    game = games.get(
+    return games.get(
         str(game_id)
     )
 
-    return game
 
+def save_game(
+    game_id,
+    game
+):
 
-def save_game(game_id, game):
     games = get_games()
 
-    games[str(game_id)] = game
+    games[
+        str(game_id)
+    ] = game
 
     session[
         "auction_games"
@@ -55,7 +67,7 @@ def save_game(game_id, game):
 
 
 # ============================================================
-# AUCTION HOME
+# HOME
 # ============================================================
 
 @auction_bp.route("/")
@@ -66,6 +78,11 @@ def auction_home():
     history = []
 
     for game_id, game in games.items():
+
+        if not game.get(
+            "finished"
+        ):
+            continue
 
         result = game.get(
             "result"
@@ -87,25 +104,25 @@ def auction_home():
             "rank":
                 user.get(
                     "rank",
-                    "-",
+                    "-"
                 ),
 
             "grade":
                 user.get(
                     "grade",
-                    "-",
+                    "-"
                 ),
 
             "score":
                 user.get(
                     "score",
-                    0,
+                    0
                 ),
 
             "date":
                 game.get(
                     "created_at",
-                    "",
+                    ""
                 ),
 
         })
@@ -113,7 +130,7 @@ def auction_home():
     history.sort(
         key=lambda x:
             x["score"],
-        reverse=True,
+        reverse=True
     )
 
     return render_template(
@@ -123,7 +140,7 @@ def auction_home():
 
 
 # ============================================================
-# NEW GAME
+# NEW
 # ============================================================
 
 @auction_bp.route(
@@ -134,24 +151,47 @@ def auction_new():
 
     games = get_games()
 
-    # 간단한 game_id 생성
+    ids = []
+
+    for key in games.keys():
+
+        try:
+            ids.append(
+                int(key)
+            )
+        except (
+            TypeError,
+            ValueError,
+        ):
+            pass
+
     game_id = str(
         max(
-            [
-                int(x)
-                for x in games.keys()
-                if str(x).isdigit()
-            ]
-            or [0]
-        )
-        + 1
+            ids or [0]
+        ) + 1
     )
 
-    game = create_game()
+    # --------------------------------------------------------
+    # 여기 중요
+    #
+    # 네 player_pool.json을 사용하는 기존 코드가 있다면
+    # create_game(players)를 넘겨주면 됨.
+    #
+    # 현재는 session에 저장된 player_pool이 있으면 사용.
+    # --------------------------------------------------------
+
+    players = session.get(
+        "auction_players",
+        []
+    )
+
+    game = create_game(
+        players
+    )
 
     save_game(
         game_id,
-        game,
+        game
     )
 
     return redirect(
@@ -184,7 +224,10 @@ def auction_play(game_id):
             )
         )
 
-    # 이미 끝났으면 결과
+    # --------------------------------------------------------
+    # 게임 종료
+    # --------------------------------------------------------
+
     if game.get(
         "finished"
     ):
@@ -196,24 +239,24 @@ def auction_play(game_id):
             )
         )
 
+    # --------------------------------------------------------
+    # 타임아웃
+    # --------------------------------------------------------
+
     remaining = seconds_left(
         game
     )
-
-    # --------------------------------------------------------
-    # 시간이 끝났으면 서버에서 자동 처리
-    # --------------------------------------------------------
 
     if remaining <= 0:
 
         user_action(
             game,
-            "timeout",
+            "timeout"
         )
 
         save_game(
             game_id,
-            game,
+            game
         )
 
         if game.get(
@@ -234,74 +277,88 @@ def auction_play(game_id):
     return render_template(
         "auction_game.html",
 
-        game_id=game_id,
+        game_id=
+            game_id,
 
-        state=game,
+        state=
+            game,
 
-        player=game.get(
-            "current"
-        ),
-
-        price=game.get(
-            "price",
-            1,
-        ),
-
-        leader=game.get(
-            "leader"
-        ),
-
-        message=game.get(
-            "message",
-            "",
-        ),
-
-        remaining=max(
-            0,
-            int(
-                remaining
+        player=
+            game.get(
+                "current"
             ),
-        ),
 
-        ai_names=game.get(
-            "ai_names",
-            {},
-        ),
+        price=
+            game.get(
+                "price",
+                1
+            ),
 
-        ai_budgets=game.get(
-            "ai_budgets",
-            {},
-        ),
+        leader=
+            game.get(
+                "leader"
+            ),
 
-        ai_rosters=game.get(
-            "ai_rosters",
-            {},
-        ),
+        message=
+            game.get(
+                "message",
+                ""
+            ),
 
-        roster_limits=game.get(
-            "roster_limits",
-            {},
-        ),
+        remaining=
+            max(
+                0,
+                int(
+                    remaining
+                )
+            ),
 
-        bid_log=game.get(
-            "bid_log",
-            [],
-        ),
+        ai_names=
+            game.get(
+                "ai_names",
+                {}
+            ),
 
-        total_rounds=game.get(
-            "total_rounds",
-            0,
-        ),
+        ai_budgets=
+            game.get(
+                "ai_budgets",
+                {}
+            ),
 
-        roster=game.get(
-            "roster",
-            [],
-        ),
+        ai_rosters=
+            game.get(
+                "ai_rosters",
+                {}
+            ),
+
+        roster_limits=
+            game.get(
+                "roster_limits",
+                {}
+            ),
+
+        bid_log=
+            game.get(
+                "bid_log",
+                []
+            ),
+
+        total_rounds=
+            game.get(
+                "total_rounds",
+                0
+            ),
+
+        roster=
+            game.get(
+                "roster",
+                []
+            ),
     )
 
 
 # ============================================================
-# ACTION
+# USER ACTION
 # ============================================================
 
 @auction_bp.route(
@@ -310,7 +367,7 @@ def auction_play(game_id):
 )
 def auction_action(
     game_id,
-    action,
+    action
 ):
 
     game = get_game(
@@ -331,12 +388,12 @@ def auction_action(
 
         user_action(
             game,
-            action,
+            action
         )
 
         save_game(
             game_id,
-            game,
+            game
         )
 
     if game.get(
@@ -356,6 +413,83 @@ def auction_action(
             game_id=game_id,
         )
     )
+
+
+# ============================================================
+# AI
+# ============================================================
+
+@auction_bp.route(
+    "/<game_id>/ai",
+    methods=["POST"],
+)
+def auction_ai(game_id):
+
+    game = get_game(
+        game_id
+    )
+
+    if game is None:
+
+        return jsonify({
+            "error":
+                "game not found"
+        }), 404
+
+    if game.get(
+        "finished"
+    ):
+
+        return jsonify({
+            "finished":
+                True
+        })
+
+    run_ai_battle(
+        game
+    )
+
+    save_game(
+        game_id,
+        game
+    )
+
+    return jsonify({
+
+        "finished":
+            game.get(
+                "finished",
+                False
+            ),
+
+        "leader":
+            game.get(
+                "leader"
+            ),
+
+        "price":
+            game.get(
+                "price"
+            ),
+
+        "remaining":
+            seconds_left(
+                game
+            ),
+
+        "message":
+            game.get(
+                "message",
+                ""
+            ),
+
+        "bid_log":
+            game.get(
+                "bid_log",
+                []
+            ),
+
+    })
 
 
 # ============================================================
@@ -392,39 +526,47 @@ def auction_result(game_id):
 
     result = game.get(
         "result",
-        {},
+        {}
     )
 
     return render_template(
         "auction_result.html",
 
-        game_id=game_id,
+        game_id=
+            game_id,
 
-        state=game,
+        state=
+            game,
 
-        result=result,
+        result=
+            result,
 
-        results=result.get(
-            "results",
-            [],
-        ),
+        results=
+            result.get(
+                "results",
+                []
+            ),
 
-        user=result.get(
-            "user",
-            {},
-        ),
+        user=
+            result.get(
+                "user",
+                {}
+            ),
 
-        history=result.get(
-            "history",
-            [],
-        ),
+        history=
+            result.get(
+                "history",
+                []
+            ),
 
-        best_bargain=result.get(
-            "best_bargain"
-        ),
+        best_bargain=
+            result.get(
+                "best_bargain"
+            ),
 
-        roster_limits=result.get(
-            "roster_limits",
-            {},
-        ),
+        roster_limits=
+            result.get(
+                "roster_limits",
+                {}
+            ),
     )
