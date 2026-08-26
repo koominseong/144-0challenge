@@ -1,1410 +1,1188 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Auction 결과</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0d0f14;
+    color: #f5f5f5;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 24px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.header .small {
+    font-size: 14px;
+    opacity: .55;
+    letter-spacing: 2px;
+}
+
+.header h1 {
+    margin: 8px 0;
+    font-size: 38px;
+    font-weight: 950;
+}
+
+.header p {
+    margin: 0;
+    opacity: .6;
+}
+
+
+/* =========================================================
+   GRADE
+========================================================= */
+
+.grade-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0 30px;
+}
+
+.grade {
+    width: 150px;
+    height: 150px;
+
+    border-radius: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 78px;
+    font-weight: 1000;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #cfd4dc
+        );
+
+    color: #111;
+
+    box-shadow:
+        0 15px 50px
+        rgba(255,255,255,.15);
+
+    animation:
+        gradeIn .7s
+        cubic-bezier(.2,.8,.2,1);
+}
+
+.grade.s {
+    animation:
+        gradeIn .7s
+        cubic-bezier(.2,.8,.2,1),
+        sGlow 1.5s
+        ease-in-out
+        infinite alternate;
+}
+
+.grade.splus {
+    font-size: 68px;
+}
 
-    <title>Auction Result</title>
+@keyframes gradeIn {
 
-    <style>
+    from {
+        transform:
+            scale(.4)
+            rotate(-12deg);
 
-        * {
-            box-sizing: border-box;
-        }
+        opacity: 0;
+    }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
+    to {
+        transform:
+            scale(1)
+            rotate(0);
+
+        opacity: 1;
+    }
 
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+}
+
+@keyframes sGlow {
 
-            background:
-                radial-gradient(
-                    circle at 50% -10%,
-                    #334155 0%,
-                    #111827 42%,
-                    #05080d 100%
-                );
+    from {
+        box-shadow:
+            0 0 20px
+            rgba(255,255,255,.15);
+    }
+
+    to {
+        box-shadow:
+            0 0 55px
+            rgba(255,255,255,.55);
+    }
+
+}
+
+
+/* =========================================================
+   USER RESULT
+========================================================= */
 
-            color: #f8fafc;
-        }
+.user-result {
+    text-align: center;
+    background: #171a21;
+    border-radius: 24px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
 
-        .page {
-            width: min(1000px, 94%);
-            margin: 0 auto;
-            padding: 28px 0 70px;
-        }
+.rank {
+    font-size: 22px;
+    font-weight: 800;
+}
 
-        /* ================================================= */
-        /* HEADER */
-        /* ================================================= */
+.score {
+    font-size: 42px;
+    font-weight: 950;
+    margin: 5px 0;
+}
+
+.margin {
+    opacity: .6;
+}
+
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
+
+.stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
 
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+    gap: 12px;
 
-        .eyebrow {
-            color: #94a3b8;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: .18em;
-        }
+    margin-bottom: 20px;
+}
 
-        .title {
-            margin: 8px 0 0;
+.stat {
+    background: #171a21;
+    border-radius: 16px;
+    padding: 18px;
+}
 
-            font-size:
-                clamp(36px, 8vw, 64px);
+.stat-label {
+    font-size: 13px;
+    opacity: .5;
+}
 
-            line-height: 1;
+.stat-value {
+    font-size: 22px;
+    font-weight: 850;
+    margin-top: 5px;
+}
 
-            font-weight: 950;
 
-            letter-spacing: -.06em;
-        }
+/* =========================================================
+   PANEL
+========================================================= */
 
-        .subtitle {
-            margin: 12px 0 0;
+.panel {
+    background: #171a21;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
 
-            color: #94a3b8;
+.panel-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 16px;
+}
 
-            font-size: 13px;
-        }
 
-        /* ================================================= */
-        /* S+ SPECIAL */
-        /* ================================================= */
+/* =========================================================
+   RANKING
+========================================================= */
 
-        .splus-banner {
-            position: relative;
+.ranking {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-            overflow: hidden;
+.rank-row {
+    display: grid;
 
-            margin-bottom: 22px;
+    grid-template-columns:
+        55px
+        1fr
+        80px
+        90px
+        80px;
 
-            padding: 32px 20px;
+    align-items: center;
 
-            border-radius: 26px;
+    padding: 14px;
 
-            text-align: center;
+    background: #20242d;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(255,255,255,.18),
-                    rgba(255,255,255,.045)
-                );
+    border-radius: 12px;
+}
 
-            border:
-                1px solid
-                rgba(255,255,255,.25);
+.rank-row.me {
+    background: #2a2f39;
+    outline: 1px solid
+        rgba(255,255,255,.15);
+}
 
-            box-shadow:
-                0 0 60px
-                rgba(255,255,255,.13);
-        }
+.rank-number {
+    font-size: 20px;
+    font-weight: 900;
+}
 
-        .splus-banner::before {
-            content: "";
+.rank-name {
+    font-weight: 800;
+}
 
-            position: absolute;
+.rank-score {
+    text-align: right;
+    font-weight: 800;
+}
 
-            width: 300px;
-            height: 300px;
+.rank-grade {
+    text-align: center;
+    font-weight: 950;
+    font-size: 18px;
+}
 
-            left: 50%;
-            top: -190px;
 
-            transform:
-                translateX(-50%);
+/* =========================================================
+   ROSTER
+========================================================= */
 
-            border-radius: 50%;
+.roster-grid {
+    display: grid;
 
-            background:
-                rgba(255,255,255,.13);
+    grid-template-columns:
+        repeat(2, 1fr);
 
-            filter: blur(15px);
+    gap: 8px;
+}
 
-            animation:
-                glow 2.5s ease-in-out
-                infinite alternate;
-        }
+.player-row {
+    display: grid;
 
-        @keyframes glow {
-            from {
-                opacity: .35;
-                transform:
-                    translateX(-50%)
-                    scale(.9);
-            }
+    grid-template-columns:
+        50px
+        1fr
+        55px
+        60px;
 
-            to {
-                opacity: .8;
-                transform:
-                    translateX(-50%)
-                    scale(1.15);
-            }
-        }
+    align-items: center;
 
-        .splus-label {
-            position: relative;
+    background: #20242d;
 
-            font-size: 13px;
+    padding: 11px;
 
-            font-weight: 950;
+    border-radius: 10px;
+}
 
-            letter-spacing: .16em;
-        }
+.pos {
+    font-size: 13px;
+    font-weight: 850;
+    opacity: .65;
+}
 
-        .splus-text {
-            position: relative;
+.player-name {
+    font-weight: 750;
+}
 
-            margin-top: 7px;
+.player-ovr {
+    text-align: right;
+}
 
-            font-size: 52px;
+.player-cost {
+    text-align: right;
+    opacity: .6;
+    font-size: 13px;
+}
 
-            font-weight: 1000;
 
-            letter-spacing: -.06em;
-        }
+/* =========================================================
+   BEST SIGNING
+========================================================= */
 
-        .splus-description {
-            position: relative;
+.best {
+    display: grid;
 
-            margin-top: 5px;
+    grid-template-columns:
+        1fr
+        auto;
 
-            color: #cbd5e1;
+    align-items: center;
 
-            font-size: 13px;
-        }
+    background: #20242d;
 
-        /* ================================================= */
-        /* WINNER */
-        /* ================================================= */
+    padding: 18px;
 
-        .winner {
-            display: grid;
+    border-radius: 14px;
+}
 
-            grid-template-columns:
-                1fr 170px;
+.best-name {
+    font-size: 22px;
+    font-weight: 900;
+}
 
-            gap: 16px;
+.best-info {
+    opacity: .6;
+    margin-top: 3px;
+}
 
-            margin-bottom: 18px;
+.best-value {
+    text-align: right;
+    font-size: 28px;
+    font-weight: 950;
+}
 
-            padding: 24px;
 
-            border-radius: 22px;
+/* =========================================================
+   HISTORY
+========================================================= */
 
-            background:
-                rgba(255,255,255,.065);
+.history {
+    max-height: 500px;
+    overflow-y: auto;
+}
 
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-        }
+.history-row {
+    padding: 12px 5px;
 
-        .winner-left {
-            display: flex;
+    border-bottom:
+        1px solid #292e38;
+}
 
-            flex-direction: column;
+.history-row:last-child {
+    border-bottom: 0;
+}
 
-            justify-content: center;
-        }
+.history-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
 
-        .winner-label {
-            color: #94a3b8;
+.history-player {
+    font-weight: 800;
+}
 
-            font-size: 11px;
+.history-price {
+    font-weight: 900;
+}
 
-            font-weight: 850;
-        }
+.history-sub {
+    margin-top: 4px;
+    font-size: 13px;
+    opacity: .5;
+}
 
-        .winner-name {
-            margin-top: 5px;
 
-            font-size: 31px;
+/* =========================================================
+   BUTTON
+========================================================= */
 
-            font-weight: 950;
+.actions {
+    display: flex;
+    gap: 10px;
 
-            letter-spacing: -.045em;
-        }
+    margin-top: 25px;
+}
 
-        .winner-score {
-            margin-top: 6px;
+.actions a {
+    flex: 1;
 
-            color: #cbd5e1;
+    text-align: center;
 
-            font-size: 13px;
-        }
+    text-decoration: none;
 
-        .winner-grade {
-            display: flex;
+    padding: 16px;
 
-            align-items: center;
-            justify-content: center;
+    border-radius: 13px;
 
-            min-height: 130px;
+    background: #242932;
 
-            border-radius: 18px;
+    color: white;
 
-            background:
-                rgba(255,255,255,.09);
+    font-weight: 850;
+}
 
-            font-size: 55px;
+.actions a.primary {
+    background: #e8e9ec;
+    color: #111;
+}
 
-            font-weight: 1000;
 
-            letter-spacing: -.08em;
-        }
+/* =========================================================
+   MOBILE
+========================================================= */
 
-        /* ================================================= */
-        /* SCOREBOARD */
-        /* ================================================= */
+@media (max-width: 750px) {
 
-        .section-title {
-            margin: 25px 0 11px;
+    .container {
+        padding: 15px;
+    }
 
-            font-size: 17px;
+    .header h1 {
+        font-size: 30px;
+    }
 
-            font-weight: 950;
-        }
+    .grade {
+        width: 120px;
+        height: 120px;
+        font-size: 62px;
+    }
 
-        .scoreboard {
-            overflow: hidden;
+    .stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
 
-            border-radius: 20px;
+    .rank-row {
+        grid-template-columns:
+            40px
+            1fr
+            65px
+            55px;
 
-            background:
-                rgba(255,255,255,.045);
+    }
 
-            border:
-                1px solid
-                rgba(255,255,255,.08);
-        }
+    .rank-row .rank-spent {
+        display: none;
+    }
 
-        .score-head,
-        .score-row {
-            display: grid;
+    .roster-grid {
+        grid-template-columns: 1fr;
+    }
 
-            grid-template-columns:
-                62px
-                minmax(140px, 1fr)
-                100px
-                90px
-                90px;
+    .player-row {
+        grid-template-columns:
+            45px
+            1fr
+            50px
+            55px;
+    }
 
-            align-items: center;
-        }
+}
 
-        .score-head {
-            min-height: 44px;
+</style>
 
-            padding: 0 18px;
-
-            color: #64748b;
-
-            font-size: 10px;
-
-            font-weight: 900;
-
-            letter-spacing: .06em;
-
-            background:
-                rgba(255,255,255,.04);
-        }
-
-        .score-row {
-            min-height: 70px;
-
-            padding: 0 18px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,.055);
-        }
-
-        .score-row.me {
-            background:
-                rgba(255,255,255,.055);
-        }
-
-        .rank {
-            font-size: 17px;
-
-            font-weight: 950;
-        }
-
-        .manager {
-            font-weight: 850;
-        }
-
-        .you {
-            display: inline-block;
-
-            margin-left: 5px;
-
-            padding: 3px 6px;
-
-            border-radius: 5px;
-
-            background:
-                rgba(255,255,255,.10);
-
-            color: #cbd5e1;
-
-            font-size: 9px;
-        }
-
-        .score {
-            font-size: 16px;
-
-            font-weight: 950;
-
-            font-variant-numeric:
-                tabular-nums;
-        }
-
-        /* ================================================= */
-        /* GRADE */
-        /* ================================================= */
-
-        .grade {
-            display: inline-flex;
-
-            width: 48px;
-            height: 31px;
-
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 9px;
-
-            background:
-                rgba(255,255,255,.08);
-
-            font-size: 12px;
-
-            font-weight: 1000;
-        }
-
-        .grade-splus {
-            background: #f8fafc;
-            color: #0f172a;
-
-            box-shadow:
-                0 0 25px
-                rgba(255,255,255,.28);
-        }
-
-        .grade-s {
-            background:
-                rgba(255,255,255,.18);
-        }
-
-        /* ================================================= */
-        /* DETAIL */
-        /* ================================================= */
-
-        .detail-grid {
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 12px;
-        }
-
-        .detail-card {
-            padding: 20px;
-
-            border-radius: 18px;
-
-            background:
-                rgba(255,255,255,.045);
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-        }
-
-        .detail-label {
-            color: #64748b;
-
-            font-size: 10px;
-
-            font-weight: 900;
-
-            letter-spacing: .06em;
-        }
-
-        .detail-value {
-            margin-top: 7px;
-
-            font-size: 24px;
-
-            font-weight: 950;
-        }
-
-        .detail-sub {
-            margin-top: 4px;
-
-            color: #94a3b8;
-
-            font-size: 11px;
-        }
-
-        /* ================================================= */
-        /* BEST SIGNING */
-        /* ================================================= */
-
-        .best-signing {
-            padding: 22px;
-
-            border-radius: 20px;
-
-            background:
-                rgba(255,255,255,.055);
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-        }
-
-        .best-name {
-            margin-top: 7px;
-
-            font-size: 25px;
-
-            font-weight: 950;
-        }
-
-        .best-info {
-            margin-top: 5px;
-
-            color: #94a3b8;
-
-            font-size: 12px;
-        }
-
-        /* ================================================= */
-        /* ROSTER */
-        /* ================================================= */
-
-        .roster {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 9px;
-        }
-
-        .player {
-            padding: 13px;
-
-            border-radius: 14px;
-
-            background:
-                rgba(255,255,255,.04);
-
-            border:
-                1px solid
-                rgba(255,255,255,.06);
-        }
-
-        .player-name {
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-            font-size: 12px;
-
-            font-weight: 900;
-        }
-
-        .player-info {
-            margin-top: 5px;
-
-            color: #94a3b8;
-
-            font-size: 10px;
-        }
-
-        /* ================================================= */
-        /* BUTTONS */
-        /* ================================================= */
-
-        .buttons {
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 10px;
-
-            margin-top: 28px;
-        }
-
-        .button {
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            min-height: 52px;
-
-            border-radius: 14px;
-
-            text-decoration: none;
-
-            font-size: 13px;
-
-            font-weight: 900;
-
-            transition:
-                transform .15s ease;
-        }
-
-        .button:hover {
-            transform:
-                translateY(-2px);
-        }
-
-        .button.primary {
-            background: #f8fafc;
-
-            color: #0f172a;
-        }
-
-        .button.secondary {
-            background:
-                rgba(255,255,255,.07);
-
-            color: #fff;
-
-            border:
-                1px solid
-                rgba(255,255,255,.08);
-        }
-
-        /* ================================================= */
-        /* MOBILE */
-        /* ================================================= */
-
-        @media (max-width: 700px) {
-
-            .winner {
-                grid-template-columns: 1fr;
-            }
-
-            .winner-grade {
-                min-height: 90px;
-            }
-
-            .score-head,
-            .score-row {
-                grid-template-columns:
-                    45px
-                    minmax(100px, 1fr)
-                    75px
-                    55px;
-            }
-
-            .score-head > :nth-child(5),
-            .score-row > :nth-child(5) {
-                display: none;
-            }
-
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .roster {
-                grid-template-columns:
-                    1fr 1fr;
-            }
-        }
-
-        @media (max-width: 450px) {
-
-            .page {
-                width: 92%;
-                padding-top: 18px;
-            }
-
-            .roster {
-                grid-template-columns: 1fr;
-            }
-
-            .buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .score-head,
-            .score-row {
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-        }
-
-    </style>
 </head>
 
 
 <body>
 
-<div class="page">
+
+<div class="container">
 
 
-    <!-- ================================================= -->
-    <!-- HEADER -->
-    <!-- ================================================= -->
+<!-- ======================================================
+     HEADER
+======================================================= -->
 
-    <header class="header">
+<div class="header">
 
-        <div class="eyebrow">
-            144-0 CHALLENGE · AUCTION
+    <div class="small">
+        AUCTION MODE
+    </div>
+
+    <h1>
+        🏆 GAME RESULT
+    </h1>
+
+    <p>
+        나만의 팀을 완성하고 AI와 경쟁했습니다.
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     GRADE
+======================================================= -->
+
+{% set grade =
+    user.get("grade", "D")
+%}
+
+<div class="grade-wrap">
+
+    <div
+        class="
+            grade
+            {% if grade == 'S'
+                  or grade == 'S+' %}
+                s
+            {% endif %}
+
+            {% if grade == 'S+' %}
+                splus
+            {% endif %}
+        "
+    >
+
+        {{ grade }}
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     USER RESULT
+======================================================= -->
+
+<div class="user-result">
+
+    <div class="rank">
+
+        최종
+
+        <strong>
+            {{ user.get("rank", "-") }}위
+        </strong>
+
+    </div>
+
+    <div class="score">
+
+        {{ user.get("score", 0) }}
+
+    </div>
+
+    <div class="margin">
+
+        {% if user.get("rank") == 1 %}
+
+            🏆 전체 1위!
+
+            {% if user.get("win_margin", 0) > 0 %}
+
+                ·
+
+                {{ user.get("win_margin") }}
+
+                점 차이
+
+            {% endif %}
+
+        {% else %}
+
+            1위와
+
+            {{ user.get("win_margin", 0)|abs }}
+
+            점 차이
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     STATS
+======================================================= -->
+
+<div class="stats">
+
+    <div class="stat">
+
+        <div class="stat-label">
+            선수
         </div>
 
-        <h1 class="title">
-            FINAL RESULT
-        </h1>
-
-        <p class="subtitle">
-            이번 시즌의 최종 결과가 결정되었습니다.
-        </p>
-
-    </header>
-
-
-    <!-- ================================================= -->
-    <!-- RESULT DATA -->
-    <!-- ================================================= -->
-
-    {% set r = result or {} %}
-
-    {% set user =
-        r.get(
-            'user',
-            {}
-        )
-    %}
-
-    {% set results =
-        r.get(
-            'results',
-            []
-        )
-    %}
-
-    {% set grade =
-        user.get(
-            'grade',
-            'D'
-        )
-    %}
-
-    {% set rank =
-        user.get(
-            'rank',
-            4
-        )
-    %}
-
-    {% set score =
-        user.get(
-            'score',
-            0
-        )|float
-    %}
-
-
-    <!-- ================================================= -->
-    <!-- S+ SPECIAL -->
-    <!-- ================================================= -->
-
-    {% if grade == 'S+' %}
-
-        <section class="splus-banner">
-
-            <div class="splus-label">
-                LEGENDARY PERFORMANCE
-            </div>
-
-            <div class="splus-text">
-                S+
-            </div>
-
-            <div class="splus-description">
-                압도적인 경매 운영.
-                명예의 전당 최상단에 기록됩니다.
-            </div>
-
-        </section>
-
-    {% endif %}
-
-
-    <!-- ================================================= -->
-    <!-- WINNER -->
-    <!-- ================================================= -->
-
-    <section class="winner">
-
-        <div class="winner-left">
-
-            <div class="winner-label">
-                FINAL RANK
-            </div>
-
-            <div class="winner-name">
-
-                {% if rank == 1 %}
-                    🏆 우승 ·
-                {% else %}
-                    최종 {{ rank }}위 ·
-                {% endif %}
-
-                나
-
-            </div>
-
-            <div class="winner-score">
-
-                최종 점수
-
-                <strong>
-                    {{ "%.1f"|format(score) }}
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="winner-grade">
-
-            {{ grade }}
-
-        </div>
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- SCOREBOARD -->
-    <!-- ================================================= -->
-
-    <h2 class="section-title">
-        🏆 최종 순위
-    </h2>
-
-
-    <section class="scoreboard">
-
-        <div class="score-head">
-
-            <div>
-                RANK
-            </div>
-
-            <div>
-                MANAGER
-            </div>
-
-            <div>
-                SCORE
-            </div>
-
-            <div>
-                GRADE
-            </div>
-
-            <div>
-                STATUS
-            </div>
-
-        </div>
-
-
-        {% for row in results %}
-
-            {% set row_rank =
-                row.get(
-                    'rank',
-                    loop.index
-                )
-            %}
-
-            {% set row_grade =
-                row.get(
-                    'grade',
-                    '-'
-                )
-            %}
-
-            {% set is_user =
-                row.get(
-                    'is_user',
-                    False
-                )
-            %}
-
-
-            <div
-                class="
-                    score-row
-                    {% if is_user %}
-                        me
-                    {% endif %}
-                "
-            >
-
-                <div class="rank">
-
-                    {% if row_rank == 1 %}
-                        🥇
-                    {% elif row_rank == 2 %}
-                        🥈
-                    {% elif row_rank == 3 %}
-                        🥉
-                    {% else %}
-                        {{ row_rank }}
-                    {% endif %}
-
-                </div>
-
-
-                <div class="manager">
-
-                    {{ row.get(
-                        'name',
-                        '단장'
-                    ) }}
-
-                    {% if is_user %}
-
-                        <span class="you">
-                            YOU
-                        </span>
-
-                    {% endif %}
-
-                </div>
-
-
-                <div class="score">
-
-                    {{
-                        "%.1f"|format(
-                            row.get(
-                                'score',
-                                0
-                            )|float
-                        )
-                    }}
-
-                </div>
-
-
-                <div>
-
-                    <span
-                        class="
-                            grade
-
-                            {% if row_grade == 'S+' %}
-                                grade-splus
-
-                            {% elif row_grade == 'S' %}
-                                grade-s
-                            {% endif %}
-                        "
-                    >
-                        {{ row_grade }}
-                    </span>
-
-                </div>
-
-
-                <div
-                    style="
-                        color:#94a3b8;
-                        font-size:11px;
-                    "
-                >
-
-                    {% if row_rank == 1 %}
-                        우승
-                    {% elif row_rank == 2 %}
-                        준우승
-                    {% else %}
-                        완료
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-        {% endfor %}
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- PERFORMANCE -->
-    <!-- ================================================= -->
-
-    <h2 class="section-title">
-        📊 나의 경기 기록
-    </h2>
-
-
-    <div class="detail-grid">
-
-
-        <div class="detail-card">
-
-            <div class="detail-label">
-                FINAL SCORE
-            </div>
-
-            <div class="detail-value">
-                {{ "%.1f"|format(score) }}
-            </div>
-
-            <div class="detail-sub">
-                종합 선수단 평가
-            </div>
-
-        </div>
-
-
-        <div class="detail-card">
-
-            <div class="detail-label">
-                RANK
-            </div>
-
-            <div class="detail-value">
-                #{{ rank }}
-            </div>
-
-            <div class="detail-sub">
-                AI 단장 3명 포함
-            </div>
-
-        </div>
-
-
-        <div class="detail-card">
-
-            <div class="detail-label">
-                SPENT
-            </div>
-
-            <div class="detail-value">
-
-                {{
-                    user.get(
-                        'spent',
-                        0
-                    )
-                }}P
-
-            </div>
-
-            <div class="detail-sub">
-                총 선수 영입 비용
-            </div>
-
-        </div>
-
-
-        <div class="detail-card">
-
-            <div class="detail-label">
-                REMAINING
-            </div>
-
-            <div class="detail-value">
-
-                {{
-                    user.get(
-                        'remaining',
-                        0
-                    )
-                }}P
-
-            </div>
-
-            <div class="detail-sub">
-                남은 포인트
-            </div>
-
-        </div>
-
-
-        <div class="detail-card">
-
-            <div class="detail-label">
-                EFFICIENCY
-            </div>
-
-            <div class="detail-value">
-
-                {{
-                    "%.1f"|format(
-                        user.get(
-                            'efficiency',
-                            0
-                        )|float
-                    )
-                }}
-
-            </div>
-
-            <div class="detail-sub">
-                투자 대비 영입 효율
-            </div>
-
-        </div>
-
-
-        <div class="detail-card">
-
-            <div class="detail-label">
-                WIN MARGIN
-            </div>
-
-            <div class="detail-value">
-
-                {{
-                    "%.1f"|format(
-                        user.get(
-                            'win_margin',
-                            0
-                        )|float
-                    )
-                }}
-
-            </div>
-
-            <div class="detail-sub">
-                2위와의 점수 차이
-            </div>
+        <div class="stat-value">
+
+            {{ user.get("roster", [])|length }}
+            /
+            {{ roster_limits.values()|sum }}
 
         </div>
 
     </div>
 
 
-    <!-- ================================================= -->
-    <!-- BEST SIGNING -->
-    <!-- ================================================= -->
+    <div class="stat">
 
-    {% set best =
-        r.get(
-            'best_bargain'
-        )
-    %}
+        <div class="stat-label">
+            총 지출
+        </div>
 
+        <div class="stat-value">
 
-    {% if best %}
+            {{ user.get("spent", 0) }}P
 
-        <h2 class="section-title">
-            💎 BEST SIGNING
-        </h2>
+        </div>
+
+    </div>
 
 
-        <section class="best-signing">
+    <div class="stat">
 
-            <div class="detail-label">
-                이번 경매 최고의 영입
+        <div class="stat-label">
+            남은 예산
+        </div>
+
+        <div class="stat-value">
+
+            {{ user.get("remaining", 0) }}P
+
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-label">
+            가성비
+        </div>
+
+        <div class="stat-value">
+
+            {{ user.get("efficiency", 0) }}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     RANKING
+======================================================= -->
+
+<div class="panel">
+
+    <div class="panel-title">
+
+        🏆 최종 순위
+
+    </div>
+
+
+    <div class="ranking">
+
+        {% for result in results %}
+
+        <div
+            class="
+                rank-row
+                {% if result.get('is_user') %}
+                    me
+                {% endif %}
+            "
+        >
+
+            <div class="rank-number">
+
+                {% if result.get("rank") == 1 %}
+
+                    🥇
+
+                {% elif result.get("rank") == 2 %}
+
+                    🥈
+
+                {% elif result.get("rank") == 3 %}
+
+                    🥉
+
+                {% else %}
+
+                    {{ result.get("rank") }}
+
+                {% endif %}
+
             </div>
 
 
+            <div class="rank-name">
+
+                {{ result.get("name", "-") }}
+
+                {% if result.get("is_user") %}
+
+                    <span style="opacity:.5;">
+                        · 나
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="rank-score">
+
+                {{ result.get("score", 0) }}
+
+            </div>
+
+
+            <div class="rank-grade">
+
+                {{ result.get("grade", "-") }}
+
+            </div>
+
+
+            <div class="rank-spent">
+
+                {{ result.get("spent", 0) }}P
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     MY TEAM
+======================================================= -->
+
+<div class="panel">
+
+    <div class="panel-title">
+
+        👤 내 최종 팀
+
+    </div>
+
+
+    {% if user.get("roster") %}
+
+    <div class="roster-grid">
+
+        {% for player in user.get("roster", []) %}
+
+        <div class="player-row">
+
+            <div class="pos">
+
+                {{ player.get(
+                    "position",
+                    "-"
+                ) }}
+
+            </div>
+
+
+            <div class="player-name">
+
+                {{ player.get(
+                    "name",
+                    player.get(
+                        "player_name",
+                        "-"
+                    )
+                ) }}
+
+            </div>
+
+
+            <div class="player-ovr">
+
+                {{ player.get(
+                    "overall",
+                    player.get(
+                        "ovr",
+                        "-"
+                    )
+                ) }}
+
+            </div>
+
+
+            <div class="player-cost">
+
+                {{ player.get(
+                    "cost",
+                    0
+                ) }}P
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <div style="opacity:.5;">
+            영입한 선수가 없습니다.
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ======================================================
+     BEST SIGNING
+======================================================= -->
+
+{% if best_bargain %}
+
+<div class="panel">
+
+    <div class="panel-title">
+
+        🔥 최고의 영입
+
+    </div>
+
+
+    <div class="best">
+
+        <div>
+
             <div class="best-name">
 
-                {{
-                    best.get(
-                        'name',
-                        '선수'
+                {{ best_bargain.get(
+                    "name",
+                    best_bargain.get(
+                        "player_name",
+                        "-"
                     )
-                }}
+                ) }}
 
             </div>
 
 
             <div class="best-info">
 
-                OVR
-                {{
-                    best.get(
-                        'overall',
-                        0
-                    )
-                }}
+                {{ best_bargain.get(
+                    "position",
+                    "-"
+                ) }}
 
                 ·
 
-                영입가
-                {{
-                    best.get(
-                        'cost',
-                        0
+                OVR
+
+                {{ best_bargain.get(
+                    "overall",
+                    best_bargain.get(
+                        "ovr",
+                        "-"
                     )
-                }}P
+                ) }}
 
-                {% if best.get('value') is not none %}
+                ·
 
-                    · 가치
-                    {{
-                        "%.1f"|format(
-                            best.get(
-                                'value',
-                                0
-                            )|float
-                        )
-                    }}
+                {{ best_bargain.get(
+                    "cost",
+                    0
+                ) }}P
+
+            </div>
+
+        </div>
+
+
+        <div class="best-value">
+
+            ×{{ best_bargain.get(
+                "value",
+                0
+            ) }}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- ======================================================
+     FULL AUCTION HISTORY
+======================================================= -->
+
+<div class="panel">
+
+    <div class="panel-title">
+
+        📜 전체 경매 기록
+
+    </div>
+
+
+    {% if history %}
+
+    <div class="history">
+
+        {% for item in history %}
+
+        <div class="history-row">
+
+            <div class="history-main">
+
+                <div class="history-player">
+
+                    {{ item.get(
+                        "player",
+                        "-"
+                    ) }}
+
+                    <span
+                        style="
+                            opacity:.45;
+                            font-weight:500;
+                        "
+                    >
+
+                        ·
+
+                        {{ item.get(
+                            "position",
+                            "-"
+                        ) }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="history-price">
+
+                    {{ item.get(
+                        "price",
+                        0
+                    ) }}P
+
+                </div>
+
+            </div>
+
+
+            <div class="history-sub">
+
+                {{ item.get(
+                    "winner_name",
+                    "-"
+                ) }}
+
+                낙찰
+
+                {% if item.get("team") %}
+
+                    ·
+
+                    {{ item.get(
+                        "team"
+                    ) }}
+
+                {% endif %}
+
+                {% if item.get("overall") %}
+
+                    · OVR
+
+                    {{ item.get(
+                        "overall"
+                    ) }}
 
                 {% endif %}
 
             </div>
 
-        </section>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <div style="opacity:.5;">
+            경매 기록이 없습니다.
+        </div>
 
     {% endif %}
 
-
-    <!-- ================================================= -->
-    <!-- MY ROSTER -->
-    <!-- ================================================= -->
-
-    <h2 class="section-title">
-        👤 최종 선수단
-    </h2>
+</div>
 
 
-    <section class="roster">
+<!-- ======================================================
+     BUTTONS
+======================================================= -->
 
+<div class="actions">
 
-        {% set roster =
-            user.get(
-                'roster',
-                []
-            )
-        %}
-
-
-        {% if roster %}
-
-            {% for p in roster %}
-
-                <div class="player">
-
-                    <div class="player-name">
-
-                        {{
-                            p.get(
-                                'name',
-                                p.get(
-                                    'player_name',
-                                    '선수'
-                                )
-                            )
-                        }}
-
-                    </div>
-
-                    <div class="player-info">
-
-                        {{
-                            p.get(
-                                'position',
-                                'UTIL'
-                            )
-                        }}
-
-                        · OVR
-
-                        {{
-                            p.get(
-                                'overall',
-                                0
-                            )
-                        }}
-
-                        ·
-
-                        {{
-                            p.get(
-                                'cost',
-                                0
-                            )
-                        }}P
-
-                    </div>
-
-                </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <div class="player">
-
-                <div class="player-name">
-                    영입 선수 없음
-                </div>
-
-            </div>
-
-        {% endif %}
-
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- BUTTONS -->
-    <!-- ================================================= -->
-
-    <div class="buttons">
-
-        <a
-            href="{{ url_for(
-                'auction.auction_new'
-            ) }}"
-            class="
-                button
-                primary
-            "
-        >
-            🔄 다시 도전
-        </a>
-
-
-        <a
-            href="{{ url_for(
+    <a
+        href="{{
+            url_for(
                 'auction.auction_home'
-            ) }}"
-            class="
-                button
-                secondary
-            "
-        >
-            🏆 명예의 전당
-        </a>
+            )
+        }}"
+    >
 
-    </div>
+        🏠 홈으로
+
+    </a>
+
+
+    <a
+        class="primary"
+        href="{{
+            url_for(
+                'auction.auction_new'
+            )
+        }}"
+    >
+
+        🔄 다시 도전
+
+    </a>
+
+</div>
 
 
 </div>
 
 
-<!-- ===================================================== -->
-<!-- S+ EFFECT -->
-<!-- ===================================================== -->
+<!-- ======================================================
+     S EFFECT
+======================================================= -->
 
-{% if grade == 'S+' %}
+{% if grade == "S"
+      or grade == "S+" %}
 
 <script>
 
-    /*
-     * S+일 때 간단한 축하 효과.
-     * 별도 라이브러리 없이 동작한다.
-     */
+(function () {
 
-    const symbols = [
-        "✦",
-        "✧",
-        "★",
-        "·"
-    ];
+    const count = 35;
 
     for (
         let i = 0;
-        i < 26;
+        i < count;
         i++
     ) {
 
-        const el =
+        const particle =
             document.createElement(
                 "div"
             );
 
-        el.innerText =
-            symbols[
-                Math.floor(
-                    Math.random()
-                    * symbols.length
-                )
-            ];
-
-        el.style.position =
+        particle.style.position =
             "fixed";
 
-        el.style.left =
-            Math.random()
-            * 100
-            + "vw";
+        particle.style.left =
+            Math.random() * 100
+            + "%";
 
-        el.style.top =
-            "-20px";
+        particle.style.top =
+            "-10px";
 
-        el.style.fontSize =
-            (
-                10
-                + Math.random()
-                * 18
-            )
-            + "px";
+        particle.style.width =
+            "5px";
 
-        el.style.opacity =
-            (
-                .35
-                + Math.random()
-                * .65
-            );
+        particle.style.height =
+            "5px";
 
-        el.style.pointerEvents =
+        particle.style.borderRadius =
+            "50%";
+
+        particle.style.background =
+            "white";
+
+        particle.style.opacity =
+            "0.8";
+
+        particle.style.pointerEvents =
             "none";
 
-        el.style.zIndex =
+        particle.style.zIndex =
             "9999";
 
-        el.style.transition =
-            "transform 2.8s linear, opacity 2.8s linear";
+        const duration =
+            1.5
+            +
+            Math.random() * 2;
+
+        particle.style.transition =
+            "transform "
+            +
+            duration
+            +
+            "s linear, opacity "
+            +
+            duration
+            +
+            "s linear";
 
         document.body.appendChild(
-            el
+            particle
         );
 
         setTimeout(
-            function() {
+            function () {
 
-                el.style.transform =
+                particle.style.transform =
                     "translateY("
-                    + (
+                    +
+                    (
                         window.innerHeight
-                        + 80
+                        +
+                        100
                     )
-                    + "px) rotate(360deg)";
+                    +
+                    "px)";
 
-                el.style.opacity =
+                particle.style.opacity =
                     "0";
 
             },
@@ -1412,16 +1190,23 @@
         );
 
         setTimeout(
-            function() {
-                el.remove();
+            function () {
+
+                particle.remove();
+
             },
-            3100
+            (duration + .2) * 1000
         );
+
     }
+
+})();
 
 </script>
 
 {% endif %}
 
+
 </body>
+
 </html>
