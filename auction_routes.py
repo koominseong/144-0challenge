@@ -1,22 +1,18 @@
 # auction_routes.py
 
+import os
+import uuid
+
 from flask import (
     Blueprint,
     render_template,
     redirect,
     url_for,
     request,
-    session,
 )
-
-import json
-import os
-import uuid
 
 from auction import (
     create_game,
-    user_action,
-    AI_NAMES,
 )
 
 
@@ -32,226 +28,10 @@ auction_bp = Blueprint(
 
 
 # ============================================================
-# Supabase
-# ============================================================
-
-SUPABASE_URL = os.getenv(
-    "SUPABASE_URL"
-)
-
-SUPABASE_KEY = os.getenv(
-    "SUPABASE_KEY"
-)
-
-supabase = None
-
-
-try:
-
-    if (
-        SUPABASE_URL
-        and SUPABASE_KEY
-    ):
-
-        from supabase import create_client
-
-        supabase = create_client(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        )
-
-except Exception as e:
-
-    print(
-        "[AUCTION] Supabase disabled:",
-        e
-    )
-
-
-# ============================================================
-# 게임 저장소
-#
-# Render 인스턴스가 재시작되면
-# 메모리 게임은 사라질 수 있다.
-#
-# 실제 영구 저장은 Supabase를 사용.
+# GAME STORAGE
 # ============================================================
 
 GAMES = {}
-
-
-# ============================================================
-# 게임 가져오기
-# ============================================================
-
-def get_game(game_id):
-
-    return GAMES.get(
-        str(game_id)
-    )
-
-
-# ============================================================
-# Supabase 결과 저장
-# ============================================================
-
-def save_result_to_supabase(
-    state
-):
-
-    if supabase is None:
-        return
-
-    result = state.get(
-        "result"
-    )
-
-    if not result:
-        return
-
-    user = result.get(
-        "user",
-        {}
-    )
-
-    try:
-
-        payload = {
-
-            "game_id":
-                str(
-                    state.get(
-                        "game_id",
-                        ""
-                    )
-                ),
-
-            "rank":
-                int(
-                    user.get(
-                        "rank",
-                        4
-                    )
-                ),
-
-            "score":
-                float(
-                    user.get(
-                        "score",
-                        0
-                    )
-                ),
-
-            "grade":
-                user.get(
-                    "grade",
-                    "D"
-                ),
-
-            "spent":
-                int(
-                    user.get(
-                        "spent",
-                        0
-                    )
-                ),
-
-            "remaining":
-                int(
-                    user.get(
-                        "remaining",
-                        0
-                    )
-                ),
-
-            "efficiency":
-                float(
-                    user.get(
-                        "efficiency",
-                        0
-                    )
-                ),
-
-            "win_margin":
-                float(
-                    user.get(
-                        "win_margin",
-                        0
-                    )
-                ),
-
-            "roster":
-                user.get(
-                    "roster",
-                    []
-                ),
-
-            "results":
-                result.get(
-                    "results",
-                    []
-                ),
-
-        }
-
-        supabase.table(
-            "auction_results"
-        ).insert(
-            payload
-        ).execute()
-
-        print(
-            "[AUCTION] result saved"
-        )
-
-    except Exception as e:
-
-        print(
-            "[AUCTION] result save error:",
-            e
-        )
-
-
-# ============================================================
-# 명예의 전당 조회
-# ============================================================
-
-def get_hall_of_fame():
-
-    if supabase is None:
-
-        return []
-
-    try:
-
-        response = (
-            supabase
-            .table(
-                "auction_results"
-            )
-            .select(
-                "rank,score,grade,spent,remaining,created_at"
-            )
-            .order(
-                "score",
-                desc=True
-            )
-            .limit(
-                20
-            )
-            .execute()
-        )
-
-        return response.data or []
-
-    except Exception as e:
-
-        print(
-            "[AUCTION] hall error:",
-            e
-        )
-
-        return []
 
 
 # ============================================================
@@ -261,11 +41,9 @@ def get_hall_of_fame():
 @auction_bp.route("/")
 def auction_home():
 
-    hall = get_hall_of_fame()
-
     return render_template(
         "auction_home.html",
-        hall=hall,
+        hall=[],
     )
 
 
@@ -275,7 +53,7 @@ def auction_home():
 
 @auction_bp.route(
     "/new",
-    methods=["GET"]
+    methods=["GET"],
 )
 def auction_new():
 
@@ -289,36 +67,31 @@ def auction_new():
 
     GAMES[game_id] = state
 
-    session[
-        "auction_game_id"
-    ] = game_id
-
     return redirect(
         url_for(
             "auction.auction_play",
-            game_id=game_id
+            game_id=game_id,
         )
     )
 
 
 # ============================================================
-# PLAY
+# GAME PAGE
 # ============================================================
 
 @auction_bp.route(
     "/<game_id>",
-    methods=["GET"]
+    methods=["GET"],
 )
-def auction_play(
-    game_id
-):
+def auction_play(game_id):
 
     game_id = str(game_id)
 
-    state = get_game(
+    state = GAMES.get(
         game_id
     )
 
+    # 존재하지 않는 게임
     if state is None:
 
         return redirect(
@@ -327,21 +100,26 @@ def auction_play(
             )
         )
 
-    # 게임 끝났으면 결과로
+
+    # 이미 끝났으면 결과
     if state.get(
-        "finished"
+        "finished",
+        False,
     ):
 
         return redirect(
             url_for(
                 "auction.auction_result",
-                game_id=game_id
+                game_id=game_id,
             )
         )
 
+
+    # 현재 선수
     current = state.get(
         "current"
     )
+
 
     return render_template(
         "auction_game.html",
@@ -354,31 +132,37 @@ def auction_play(
 
         total_rounds=state.get(
             "total_rounds",
-            12
+            12,
         ),
 
-        ai_names=AI_NAMES,
+        ai_names=state.get(
+            "ai_names",
+            {
+                "veteran": "베테랑",
+                "data": "데이터파",
+                "gambler": "승부사",
+            },
+        ),
     )
 
 
 # ============================================================
-# ACTION
+# AUCTION ACTION
 # ============================================================
 
 @auction_bp.route(
     "/<game_id>/action",
-    methods=["POST"]
+    methods=["POST"],
 )
-def auction_action(
-    game_id
-):
+def auction_action(game_id):
 
     game_id = str(game_id)
 
-    state = get_game(
+    state = GAMES.get(
         game_id
     )
 
+    # 게임이 없으면 새 게임
     if state is None:
 
         return redirect(
@@ -387,25 +171,23 @@ def auction_action(
             )
         )
 
+
+    # 끝난 게임
     if state.get(
-        "finished"
+        "finished",
+        False,
     ):
 
         return redirect(
             url_for(
                 "auction.auction_result",
-                game_id=game_id
+                game_id=game_id,
             )
         )
 
+
     # ========================================================
-    # 중요
-    #
-    # auction_game.html에서
-    #
-    # <input name="action">
-    #
-    # 으로 POST한다.
+    # ACTION
     # ========================================================
 
     action = request.form.get(
@@ -414,66 +196,82 @@ def auction_action(
 
     if action is None:
 
-        # 기존 URL 방식도 혹시 모르게 지원
         action = request.args.get(
-            "action",
-            "pass"
+            "action"
         )
 
-    try:
 
-        state = user_action(
-            state,
-            action
-        )
-
-    except Exception as e:
-
-        print(
-            "[AUCTION] action error:",
-            e
-        )
+    if action is None:
 
         state["message"] = (
-            "입찰 처리 중 오류가 발생했습니다."
+            "잘못된 요청입니다."
         )
-
-        GAMES[game_id] = state
 
         return redirect(
             url_for(
                 "auction.auction_play",
-                game_id=game_id
+                game_id=game_id,
             )
         )
 
-    state["game_id"] = game_id
-
-    GAMES[game_id] = state
 
     # ========================================================
-    # 종료
+    # AUCTION.PY
+    # ========================================================
+
+    try:
+
+        from auction import (
+            user_action,
+        )
+
+        state = user_action(
+            state,
+            action,
+        )
+
+        GAMES[game_id] = state
+
+
+    except Exception as e:
+
+        print(
+            "[AUCTION ERROR]",
+            repr(e),
+        )
+
+        state["message"] = (
+            "경매 처리 중 오류가 발생했습니다."
+        )
+
+        GAMES[game_id] = state
+
+
+    # ========================================================
+    # RESULT
     # ========================================================
 
     if state.get(
-        "finished"
+        "finished",
+        False,
     ):
-
-        save_result_to_supabase(
-            state
-        )
 
         return redirect(
             url_for(
                 "auction.auction_result",
-                game_id=game_id
+                game_id=game_id,
             )
         )
+
+
+    # ========================================================
+    # GAME
+    # ========================================================
 
     return redirect(
         url_for(
             "auction.auction_play",
-            game_id=game_id
+            game_id=game_id,
         )
     )
 
@@ -484,15 +282,13 @@ def auction_action(
 
 @auction_bp.route(
     "/<game_id>/result",
-    methods=["GET"]
+    methods=["GET"],
 )
-def auction_result(
-    game_id
-):
+def auction_result(game_id):
 
     game_id = str(game_id)
 
-    state = get_game(
+    state = GAMES.get(
         game_id
     )
 
@@ -504,26 +300,33 @@ def auction_result(
             )
         )
 
+
     if not state.get(
-        "finished"
+        "finished",
+        False,
     ):
 
         return redirect(
             url_for(
                 "auction.auction_play",
-                game_id=game_id
+                game_id=game_id,
             )
         )
 
+
     result = state.get(
         "result",
-        {}
+        {},
     )
+
 
     return render_template(
         "auction_result.html",
+
         result=result,
+
         game_id=game_id,
+
     )
 
 
@@ -533,13 +336,11 @@ def auction_result(
 
 @auction_bp.route(
     "/hall",
-    methods=["GET"]
+    methods=["GET"],
 )
 def auction_hall():
 
-    hall = get_hall_of_fame()
-
     return render_template(
         "auction_home.html",
-        hall=hall,
+        hall=[],
     )
