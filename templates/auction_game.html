@@ -1,76 +1,680 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PLAYER AUCTION</title>
-<style>
-body{margin:0;background:#0b1020;color:#f5f7fb;font-family:Arial,sans-serif}
-.wrap{max-width:900px;margin:25px auto;padding:18px}
-.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.stat{background:#151c31;border:1px solid #29324d;border-radius:13px;padding:12px 18px}
-.auction{background:#151c31;border:1px solid #29324d;border-radius:24px;padding:30px;text-align:center}
-.pos{color:#8fa8ff;font-weight:700}
-.name{font-size:42px;font-weight:800;margin:10px 0}
-.team{color:#aeb8cc}
-.price{font-size:54px;font-weight:900;margin:22px 0 5px}
-.leader{color:#ffd66b;min-height:25px}
-.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:25px}
-button{border:0;border-radius:12px;padding:14px 22px;font-size:16px;font-weight:800;cursor:pointer}
-.bid1{background:#293a70;color:#fff}.bid3{background:#3c5fc2;color:#fff}.bid5{background:#5c7ff0;color:#fff}
-.pass{background:#2b3040;color:#ddd}
-.msg{margin-top:18px;color:#aeb8cc;min-height:22px}
-.roster{margin-top:18px;background:#151c31;border-radius:18px;padding:18px}
-table{width:100%;border-collapse:collapse}td{padding:8px;border-bottom:1px solid #252d43}
-</style>
+    <meta charset="utf-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Auction | 144-0 Challenge</title>
+
+    <style>
+        :root {
+            --bg: #090d18;
+            --card: #111827;
+            --card2: #0e1526;
+            --line: #27324b;
+            --text: #f8fafc;
+            --muted: #8e9ab2;
+            --accent: #6d8cff;
+            --accent2: #4966b4;
+            --danger: #343b4b;
+            --gold: #ffd76a;
+            --green: #63d49a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        .wrap {
+            width: min(920px, calc(100% - 28px));
+            margin: 0 auto;
+            padding: 18px 0 50px;
+        }
+
+        /* =========================
+           TOP STATUS
+        ========================= */
+
+        .top {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 13px 15px;
+        }
+
+        .label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .04em;
+        }
+
+        .value {
+            margin-top: 4px;
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        /* =========================
+           MAIN AUCTION CARD
+        ========================= */
+
+        .auction-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 25px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .round {
+            color: #91a4ff;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: .1em;
+        }
+
+        .position {
+            margin-top: 20px;
+            color: #aab6ce;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .player-name {
+            margin-top: 4px;
+            font-size: clamp(38px, 8vw, 62px);
+            line-height: 1.05;
+            font-weight: 950;
+            letter-spacing: -.055em;
+        }
+
+        .team {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .overall {
+            display: inline-block;
+            margin-top: 13px;
+            padding: 6px 12px;
+            background: #18213a;
+            border: 1px solid #293657;
+            border-radius: 999px;
+            color: #b9c5ff;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        /* =========================
+           PRICE
+        ========================= */
+
+        .price-label {
+            margin-top: 27px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .price {
+            margin-top: 1px;
+            font-size: clamp(48px, 10vw, 72px);
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: -.05em;
+        }
+
+        .leader {
+            min-height: 25px;
+            margin-top: 8px;
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 24px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .actions button {
+            min-width: 105px;
+            border: 0;
+            border-radius: 13px;
+            padding: 14px 21px;
+            color: white;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            transition:
+                transform .1s ease,
+                opacity .1s ease;
+        }
+
+        .actions button:hover {
+            transform: translateY(-1px);
+        }
+
+        .actions button:active {
+            transform: translateY(1px);
+        }
+
+        .bid1 {
+            background: #314478;
+        }
+
+        .bid3 {
+            background: var(--accent2);
+        }
+
+        .bid5 {
+            background: var(--accent);
+        }
+
+        .pass {
+            background: var(--danger);
+        }
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+            min-height: 25px;
+            margin-top: 16px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* =========================
+           ROSTER
+        ========================= */
+
+        .roster-card {
+            margin-top: 14px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 21px;
+        }
+
+        .roster-title {
+            margin: 0 0 13px;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            background: var(--card2);
+            border: 1px solid #222d46;
+            border-radius: 12px;
+            padding: 9px 11px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .chip small {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* =========================
+           AI STATUS
+        ========================= */
+
+        .ai-card {
+            margin-top: 14px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 21px;
+        }
+
+        .ai-title {
+            margin-bottom: 13px;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .ai-list {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 9px;
+        }
+
+        .ai-box {
+            background: var(--card2);
+            border: 1px solid #222d46;
+            border-radius: 13px;
+            padding: 13px;
+        }
+
+        .ai-name {
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .ai-budget {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .wrap {
+                width: min(
+                    100% - 20px,
+                    920px
+                );
+
+                padding-top: 10px;
+            }
+
+            .top {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .top .stat:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .auction-card {
+                padding: 27px 15px;
+                border-radius: 20px;
+            }
+
+            .player-name {
+                font-size: 42px;
+            }
+
+            .price {
+                font-size: 56px;
+            }
+
+            .actions {
+                display: grid;
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .actions form {
+                width: 100%;
+            }
+
+            .actions button {
+                width: 100%;
+            }
+
+            .ai-list {
+                grid-template-columns:
+                    1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
 <div class="wrap">
-  <div class="top">
-    <div class="stat">ROUND <b>{{ round }}/{{ total_rounds }}</b></div>
-    <div class="stat">💰 내 예산 <b>{{ state.budget }}억</b></div>
-    <div class="stat">👥 영입 <b>{{ state.roster|length }}명</b></div>
-  </div>
 
-  <div class="auction">
+    <!-- =========================
+         GAME STATUS
+    ========================== -->
+
+    <div class="top">
+
+        <div class="stat">
+            <div class="label">
+                ROUND
+            </div>
+
+            <div class="value">
+                {{ state.round }}
+                /
+                {{ total_rounds }}
+            </div>
+        </div>
+
+
+        <div class="stat">
+            <div class="label">
+                내 예산
+            </div>
+
+            <div class="value">
+                {{ state.budget }}억
+            </div>
+        </div>
+
+
+        <div class="stat">
+            <div class="label">
+                영입 선수
+            </div>
+
+            <div class="value">
+                {{ state.roster|length }}명
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CURRENT PLAYER
+    ========================== -->
+
     {% set p = state.current %}
-    <div class="pos">{{ p.position }}</div>
-    <div class="name">{{ p.name }}</div>
-    <div class="team">{{ p.team }} · Overall {{ "%.1f"|format(p.overall) }}</div>
-    <div class="price">{{ state.price }}억</div>
-    <div class="leader">
-      {% if state.leader == "user" %}🙋 현재 선두: 나
-      {% elif state.leader in ai_names %}{{ ai_names[state.leader] }} 선두
-      {% else %}경매 시작{% endif %}
-    </div>
 
-    <div class="actions">
-      <form action="{{ url_for('auction.auction_action', action='1') }}"><button class="bid1">+1억</button></form>
-      <form action="{{ url_for('auction.auction_action', action='3') }}"><button class="bid3">+3억</button></form>
-      <form action="{{ url_for('auction.auction_action', action='5') }}"><button class="bid5">+5억</button></form>
-      <form action="{{ url_for('auction.auction_action', action='pass') }}"><button class="pass">포기</button></form>
-    </div>
-    <div class="msg">{{ state.message }}</div>
-  </div>
+    <section class="auction-card">
 
-  <div class="roster">
-    <b>내 선수단</b>
-    {% if state.roster %}
-    <table>
-      {% for p in state.roster %}
-      <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.position }}</td>
-        <td>{{ p.team }}</td>
-        <td>{{ "%.1f"|format(p.overall) }}</td>
-        <td>{{ p.price }}억</td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% else %}
-      <div style="color:#8e99b0;margin-top:12px">아직 영입한 선수가 없습니다.</div>
-    {% endif %}
-  </div>
+        <div class="round">
+            PLAYER AUCTION
+            ·
+            ROUND {{ state.round }}
+        </div>
+
+
+        <div class="position">
+            {{ p.position }}
+        </div>
+
+
+        <div class="player-name">
+            {{ p.name }}
+        </div>
+
+
+        <div class="team">
+            {{ p.team }}
+        </div>
+
+
+        <div class="overall">
+            OVR {{ "%.1f"|format(p.overall) }}
+        </div>
+
+
+        <div class="price-label">
+            CURRENT BID
+        </div>
+
+
+        <div class="price">
+            {{ state.price }}억
+        </div>
+
+
+        <div class="leader">
+
+            {% if state.leader == "user" %}
+
+                🙋 현재 선두 · 나
+
+            {% elif state.leader in ai_names %}
+
+                {{ ai_names[state.leader] }}
+                · 현재 선두
+
+            {% else %}
+
+                🔔 경매 시작
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =========================
+             BID BUTTONS
+        ========================== -->
+
+        <div class="actions">
+
+            <form
+                method="POST"
+                action="{{
+                    url_for(
+                        'auction.auction_action',
+                        game_id=game_id
+                    )
+                }}"
+            >
+
+                <button
+                    type="submit"
+                    class="bid1"
+                    name="action"
+                    value="1"
+                >
+                    +1억
+                </button>
+
+            </form>
+
+
+            <form
+                method="POST"
+                action="{{
+                    url_for(
+                        'auction.auction_action',
+                        game_id=game_id
+                    )
+                }}"
+            >
+
+                <button
+                    type="submit"
+                    class="bid3"
+                    name="action"
+                    value="3"
+                >
+                    +3억
+                </button>
+
+            </form>
+
+
+            <form
+                method="POST"
+                action="{{
+                    url_for(
+                        'auction.auction_action',
+                        game_id=game_id
+                    )
+                }}"
+            >
+
+                <button
+                    type="submit"
+                    class="bid5"
+                    name="action"
+                    value="5"
+                >
+                    +5억
+                </button>
+
+            </form>
+
+
+            <form
+                method="POST"
+                action="{{
+                    url_for(
+                        'auction.auction_action',
+                        game_id=game_id
+                    )
+                }}"
+            >
+
+                <button
+                    type="submit"
+                    class="pass"
+                    name="action"
+                    value="pass"
+                >
+                    포기
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =========================
+             MESSAGE
+        ========================== -->
+
+        <div class="message">
+            {{ state.message }}
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MY ROSTER
+    ========================== -->
+
+    <section class="roster-card">
+
+        <div class="roster-title">
+            👥 내 선수단
+        </div>
+
+
+        <div class="chips">
+
+            {% for player in state.roster %}
+
+                <div class="chip">
+
+                    {{ player.name }}
+
+                    <small>
+                        ·
+                        {{ player.position }}
+                        ·
+                        OVR {{ "%.1f"|format(player.overall) }}
+                        ·
+                        {{ player.price }}억
+                    </small>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty">
+                    아직 영입한 선수가 없습니다.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         AI STATUS
+    ========================== -->
+
+    <section class="ai-card">
+
+        <div class="ai-title">
+            🤖 경쟁 단장
+        </div>
+
+
+        <div class="ai-list">
+
+            {% for ai, ai_name in ai_names.items() %}
+
+                <div class="ai-box">
+
+                    <div class="ai-name">
+                        {{ ai_name }}
+                    </div>
+
+                    <div class="ai-budget">
+
+                        예산
+                        {{ state.ai_budget[ai] }}억
+
+                    </div>
+
+                    <div class="ai-budget">
+
+                        영입
+                        {{ state.ai_roster[ai]|length }}명
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
 </div>
+
 </body>
 </html>
