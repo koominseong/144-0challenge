@@ -1,55 +1,1427 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AUCTION RESULT</title>
-<style>
-body{margin:0;background:#0b1020;color:#f5f7fb;font-family:Arial,sans-serif}
-.wrap{max-width:850px;margin:35px auto;padding:18px}
-.card{background:#151c31;border:1px solid #29324d;border-radius:22px;padding:28px;margin-bottom:18px}
-.center{text-align:center}.grade{font-size:72px;font-weight:900;margin:8px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.box{background:#0f1527;border-radius:14px;padding:16px;text-align:center}.num{font-size:25px;font-weight:800}
-table{width:100%;border-collapse:collapse}td{padding:9px;border-bottom:1px solid #252d43}
-.btn{display:inline-block;padding:13px 22px;border-radius:12px;background:#4f7cff;color:#fff;text-decoration:none;font-weight:800;margin:4px}
-</style>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Auction Result</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    #334155 0%,
+                    #111827 42%,
+                    #05080d 100%
+                );
+
+            color: #f8fafc;
+        }
+
+        .page {
+            width: min(1000px, 94%);
+            margin: 0 auto;
+            padding: 28px 0 70px;
+        }
+
+        /* ================================================= */
+        /* HEADER */
+        /* ================================================= */
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .18em;
+        }
+
+        .title {
+            margin: 8px 0 0;
+
+            font-size:
+                clamp(36px, 8vw, 64px);
+
+            line-height: 1;
+
+            font-weight: 950;
+
+            letter-spacing: -.06em;
+        }
+
+        .subtitle {
+            margin: 12px 0 0;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+        /* ================================================= */
+        /* S+ SPECIAL */
+        /* ================================================= */
+
+        .splus-banner {
+            position: relative;
+
+            overflow: hidden;
+
+            margin-bottom: 22px;
+
+            padding: 32px 20px;
+
+            border-radius: 26px;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,.18),
+                    rgba(255,255,255,.045)
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,.25);
+
+            box-shadow:
+                0 0 60px
+                rgba(255,255,255,.13);
+        }
+
+        .splus-banner::before {
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            left: 50%;
+            top: -190px;
+
+            transform:
+                translateX(-50%);
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,.13);
+
+            filter: blur(15px);
+
+            animation:
+                glow 2.5s ease-in-out
+                infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                opacity: .35;
+                transform:
+                    translateX(-50%)
+                    scale(.9);
+            }
+
+            to {
+                opacity: .8;
+                transform:
+                    translateX(-50%)
+                    scale(1.15);
+            }
+        }
+
+        .splus-label {
+            position: relative;
+
+            font-size: 13px;
+
+            font-weight: 950;
+
+            letter-spacing: .16em;
+        }
+
+        .splus-text {
+            position: relative;
+
+            margin-top: 7px;
+
+            font-size: 52px;
+
+            font-weight: 1000;
+
+            letter-spacing: -.06em;
+        }
+
+        .splus-description {
+            position: relative;
+
+            margin-top: 5px;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+        }
+
+        /* ================================================= */
+        /* WINNER */
+        /* ================================================= */
+
+        .winner {
+            display: grid;
+
+            grid-template-columns:
+                1fr 170px;
+
+            gap: 16px;
+
+            margin-bottom: 18px;
+
+            padding: 24px;
+
+            border-radius: 22px;
+
+            background:
+                rgba(255,255,255,.065);
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+        }
+
+        .winner-left {
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+        .winner-label {
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            font-weight: 850;
+        }
+
+        .winner-name {
+            margin-top: 5px;
+
+            font-size: 31px;
+
+            font-weight: 950;
+
+            letter-spacing: -.045em;
+        }
+
+        .winner-score {
+            margin-top: 6px;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+        }
+
+        .winner-grade {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 130px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(255,255,255,.09);
+
+            font-size: 55px;
+
+            font-weight: 1000;
+
+            letter-spacing: -.08em;
+        }
+
+        /* ================================================= */
+        /* SCOREBOARD */
+        /* ================================================= */
+
+        .section-title {
+            margin: 25px 0 11px;
+
+            font-size: 17px;
+
+            font-weight: 950;
+        }
+
+        .scoreboard {
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+        }
+
+        .score-head,
+        .score-row {
+            display: grid;
+
+            grid-template-columns:
+                62px
+                minmax(140px, 1fr)
+                100px
+                90px
+                90px;
+
+            align-items: center;
+        }
+
+        .score-head {
+            min-height: 44px;
+
+            padding: 0 18px;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: .06em;
+
+            background:
+                rgba(255,255,255,.04);
+        }
+
+        .score-row {
+            min-height: 70px;
+
+            padding: 0 18px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.055);
+        }
+
+        .score-row.me {
+            background:
+                rgba(255,255,255,.055);
+        }
+
+        .rank {
+            font-size: 17px;
+
+            font-weight: 950;
+        }
+
+        .manager {
+            font-weight: 850;
+        }
+
+        .you {
+            display: inline-block;
+
+            margin-left: 5px;
+
+            padding: 3px 6px;
+
+            border-radius: 5px;
+
+            background:
+                rgba(255,255,255,.10);
+
+            color: #cbd5e1;
+
+            font-size: 9px;
+        }
+
+        .score {
+            font-size: 16px;
+
+            font-weight: 950;
+
+            font-variant-numeric:
+                tabular-nums;
+        }
+
+        /* ================================================= */
+        /* GRADE */
+        /* ================================================= */
+
+        .grade {
+            display: inline-flex;
+
+            width: 48px;
+            height: 31px;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background:
+                rgba(255,255,255,.08);
+
+            font-size: 12px;
+
+            font-weight: 1000;
+        }
+
+        .grade-splus {
+            background: #f8fafc;
+            color: #0f172a;
+
+            box-shadow:
+                0 0 25px
+                rgba(255,255,255,.28);
+        }
+
+        .grade-s {
+            background:
+                rgba(255,255,255,.18);
+        }
+
+        /* ================================================= */
+        /* DETAIL */
+        /* ================================================= */
+
+        .detail-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .detail-card {
+            padding: 20px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+        }
+
+        .detail-label {
+            color: #64748b;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: .06em;
+        }
+
+        .detail-value {
+            margin-top: 7px;
+
+            font-size: 24px;
+
+            font-weight: 950;
+        }
+
+        .detail-sub {
+            margin-top: 4px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        /* ================================================= */
+        /* BEST SIGNING */
+        /* ================================================= */
+
+        .best-signing {
+            padding: 22px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(255,255,255,.055);
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+        }
+
+        .best-name {
+            margin-top: 7px;
+
+            font-size: 25px;
+
+            font-weight: 950;
+        }
+
+        .best-info {
+            margin-top: 5px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+        /* ================================================= */
+        /* ROSTER */
+        /* ================================================= */
+
+        .roster {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 9px;
+        }
+
+        .player {
+            padding: 13px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(255,255,255,.04);
+
+            border:
+                1px solid
+                rgba(255,255,255,.06);
+        }
+
+        .player-name {
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-size: 12px;
+
+            font-weight: 900;
+        }
+
+        .player-info {
+            margin-top: 5px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+        }
+
+        /* ================================================= */
+        /* BUTTONS */
+        /* ================================================= */
+
+        .buttons {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 10px;
+
+            margin-top: 28px;
+        }
+
+        .button {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 52px;
+
+            border-radius: 14px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 900;
+
+            transition:
+                transform .15s ease;
+        }
+
+        .button:hover {
+            transform:
+                translateY(-2px);
+        }
+
+        .button.primary {
+            background: #f8fafc;
+
+            color: #0f172a;
+        }
+
+        .button.secondary {
+            background:
+                rgba(255,255,255,.07);
+
+            color: #fff;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+        }
+
+        /* ================================================= */
+        /* MOBILE */
+        /* ================================================= */
+
+        @media (max-width: 700px) {
+
+            .winner {
+                grid-template-columns: 1fr;
+            }
+
+            .winner-grade {
+                min-height: 90px;
+            }
+
+            .score-head,
+            .score-row {
+                grid-template-columns:
+                    45px
+                    minmax(100px, 1fr)
+                    75px
+                    55px;
+            }
+
+            .score-head > :nth-child(5),
+            .score-row > :nth-child(5) {
+                display: none;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roster {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            .page {
+                width: 92%;
+                padding-top: 18px;
+            }
+
+            .roster {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .score-head,
+            .score-row {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+        }
+
+    </style>
 </head>
+
+
 <body>
-<div class="wrap">
-  <div class="card center">
-    <div>🏷️ AUCTION RESULT</div>
-    <div class="grade">{{ result.grade }}</div>
-    <div style="font-size:32px;font-weight:800">{{ result.final }}점</div>
-    <p>평균 Overall {{ result.avg_overall }} · 사용 예산 {{ result.spent }}억 · 잔액 {{ result.remaining }}억</p>
-  </div>
 
-  <div class="card">
-    <div class="grid">
-      <div class="box"><div>전력</div><div class="num">{{ result.avg_overall }}</div></div>
-      <div class="box"><div>가성비</div><div class="num">{{ result.efficiency }}</div></div>
-      <div class="box"><div>밸런스</div><div class="num">{{ result.balance }}</div></div>
+<div class="page">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <header class="header">
+
+        <div class="eyebrow">
+            144-0 CHALLENGE · AUCTION
+        </div>
+
+        <h1 class="title">
+            FINAL RESULT
+        </h1>
+
+        <p class="subtitle">
+            이번 시즌의 최종 결과가 결정되었습니다.
+        </p>
+
+    </header>
+
+
+    <!-- ================================================= -->
+    <!-- RESULT DATA -->
+    <!-- ================================================= -->
+
+    {% set r = result or {} %}
+
+    {% set user =
+        r.get(
+            'user',
+            {}
+        )
+    %}
+
+    {% set results =
+        r.get(
+            'results',
+            []
+        )
+    %}
+
+    {% set grade =
+        user.get(
+            'grade',
+            'D'
+        )
+    %}
+
+    {% set rank =
+        user.get(
+            'rank',
+            4
+        )
+    %}
+
+    {% set score =
+        user.get(
+            'score',
+            0
+        )|float
+    %}
+
+
+    <!-- ================================================= -->
+    <!-- S+ SPECIAL -->
+    <!-- ================================================= -->
+
+    {% if grade == 'S+' %}
+
+        <section class="splus-banner">
+
+            <div class="splus-label">
+                LEGENDARY PERFORMANCE
+            </div>
+
+            <div class="splus-text">
+                S+
+            </div>
+
+            <div class="splus-description">
+                압도적인 경매 운영.
+                명예의 전당 최상단에 기록됩니다.
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- WINNER -->
+    <!-- ================================================= -->
+
+    <section class="winner">
+
+        <div class="winner-left">
+
+            <div class="winner-label">
+                FINAL RANK
+            </div>
+
+            <div class="winner-name">
+
+                {% if rank == 1 %}
+                    🏆 우승 ·
+                {% else %}
+                    최종 {{ rank }}위 ·
+                {% endif %}
+
+                나
+
+            </div>
+
+            <div class="winner-score">
+
+                최종 점수
+
+                <strong>
+                    {{ "%.1f"|format(score) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="winner-grade">
+
+            {{ grade }}
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- SCOREBOARD -->
+    <!-- ================================================= -->
+
+    <h2 class="section-title">
+        🏆 최종 순위
+    </h2>
+
+
+    <section class="scoreboard">
+
+        <div class="score-head">
+
+            <div>
+                RANK
+            </div>
+
+            <div>
+                MANAGER
+            </div>
+
+            <div>
+                SCORE
+            </div>
+
+            <div>
+                GRADE
+            </div>
+
+            <div>
+                STATUS
+            </div>
+
+        </div>
+
+
+        {% for row in results %}
+
+            {% set row_rank =
+                row.get(
+                    'rank',
+                    loop.index
+                )
+            %}
+
+            {% set row_grade =
+                row.get(
+                    'grade',
+                    '-'
+                )
+            %}
+
+            {% set is_user =
+                row.get(
+                    'is_user',
+                    False
+                )
+            %}
+
+
+            <div
+                class="
+                    score-row
+                    {% if is_user %}
+                        me
+                    {% endif %}
+                "
+            >
+
+                <div class="rank">
+
+                    {% if row_rank == 1 %}
+                        🥇
+                    {% elif row_rank == 2 %}
+                        🥈
+                    {% elif row_rank == 3 %}
+                        🥉
+                    {% else %}
+                        {{ row_rank }}
+                    {% endif %}
+
+                </div>
+
+
+                <div class="manager">
+
+                    {{ row.get(
+                        'name',
+                        '단장'
+                    ) }}
+
+                    {% if is_user %}
+
+                        <span class="you">
+                            YOU
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="score">
+
+                    {{
+                        "%.1f"|format(
+                            row.get(
+                                'score',
+                                0
+                            )|float
+                        )
+                    }}
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        class="
+                            grade
+
+                            {% if row_grade == 'S+' %}
+                                grade-splus
+
+                            {% elif row_grade == 'S' %}
+                                grade-s
+                            {% endif %}
+                        "
+                    >
+                        {{ row_grade }}
+                    </span>
+
+                </div>
+
+
+                <div
+                    style="
+                        color:#94a3b8;
+                        font-size:11px;
+                    "
+                >
+
+                    {% if row_rank == 1 %}
+                        우승
+                    {% elif row_rank == 2 %}
+                        준우승
+                    {% else %}
+                        완료
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- PERFORMANCE -->
+    <!-- ================================================= -->
+
+    <h2 class="section-title">
+        📊 나의 경기 기록
+    </h2>
+
+
+    <div class="detail-grid">
+
+
+        <div class="detail-card">
+
+            <div class="detail-label">
+                FINAL SCORE
+            </div>
+
+            <div class="detail-value">
+                {{ "%.1f"|format(score) }}
+            </div>
+
+            <div class="detail-sub">
+                종합 선수단 평가
+            </div>
+
+        </div>
+
+
+        <div class="detail-card">
+
+            <div class="detail-label">
+                RANK
+            </div>
+
+            <div class="detail-value">
+                #{{ rank }}
+            </div>
+
+            <div class="detail-sub">
+                AI 단장 3명 포함
+            </div>
+
+        </div>
+
+
+        <div class="detail-card">
+
+            <div class="detail-label">
+                SPENT
+            </div>
+
+            <div class="detail-value">
+
+                {{
+                    user.get(
+                        'spent',
+                        0
+                    )
+                }}P
+
+            </div>
+
+            <div class="detail-sub">
+                총 선수 영입 비용
+            </div>
+
+        </div>
+
+
+        <div class="detail-card">
+
+            <div class="detail-label">
+                REMAINING
+            </div>
+
+            <div class="detail-value">
+
+                {{
+                    user.get(
+                        'remaining',
+                        0
+                    )
+                }}P
+
+            </div>
+
+            <div class="detail-sub">
+                남은 포인트
+            </div>
+
+        </div>
+
+
+        <div class="detail-card">
+
+            <div class="detail-label">
+                EFFICIENCY
+            </div>
+
+            <div class="detail-value">
+
+                {{
+                    "%.1f"|format(
+                        user.get(
+                            'efficiency',
+                            0
+                        )|float
+                    )
+                }}
+
+            </div>
+
+            <div class="detail-sub">
+                투자 대비 영입 효율
+            </div>
+
+        </div>
+
+
+        <div class="detail-card">
+
+            <div class="detail-label">
+                WIN MARGIN
+            </div>
+
+            <div class="detail-value">
+
+                {{
+                    "%.1f"|format(
+                        user.get(
+                            'win_margin',
+                            0
+                        )|float
+                    )
+                }}
+
+            </div>
+
+            <div class="detail-sub">
+                2위와의 점수 차이
+            </div>
+
+        </div>
+
     </div>
-  </div>
 
-  <div class="card">
-    <h3>내 영입 선수</h3>
-    <table>
-      {% for p in state.roster %}
-      <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.position }}</td>
-        <td>{{ p.team }}</td>
-        <td>{{ "%.1f"|format(p.overall) }}</td>
-        <td>{{ p.price }}억</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
 
-  <div class="center">
-    <a class="btn" href="{{ url_for('auction.auction_new') }}">다시 하기</a>
-    <a class="btn" href="{{ url_for('auction.auction_home') }}">AUCTION 홈</a>
-  </div>
+    <!-- ================================================= -->
+    <!-- BEST SIGNING -->
+    <!-- ================================================= -->
+
+    {% set best =
+        r.get(
+            'best_bargain'
+        )
+    %}
+
+
+    {% if best %}
+
+        <h2 class="section-title">
+            💎 BEST SIGNING
+        </h2>
+
+
+        <section class="best-signing">
+
+            <div class="detail-label">
+                이번 경매 최고의 영입
+            </div>
+
+
+            <div class="best-name">
+
+                {{
+                    best.get(
+                        'name',
+                        '선수'
+                    )
+                }}
+
+            </div>
+
+
+            <div class="best-info">
+
+                OVR
+                {{
+                    best.get(
+                        'overall',
+                        0
+                    )
+                }}
+
+                ·
+
+                영입가
+                {{
+                    best.get(
+                        'cost',
+                        0
+                    )
+                }}P
+
+                {% if best.get('value') is not none %}
+
+                    · 가치
+                    {{
+                        "%.1f"|format(
+                            best.get(
+                                'value',
+                                0
+                            )|float
+                        )
+                    }}
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- MY ROSTER -->
+    <!-- ================================================= -->
+
+    <h2 class="section-title">
+        👤 최종 선수단
+    </h2>
+
+
+    <section class="roster">
+
+
+        {% set roster =
+            user.get(
+                'roster',
+                []
+            )
+        %}
+
+
+        {% if roster %}
+
+            {% for p in roster %}
+
+                <div class="player">
+
+                    <div class="player-name">
+
+                        {{
+                            p.get(
+                                'name',
+                                p.get(
+                                    'player_name',
+                                    '선수'
+                                )
+                            )
+                        }}
+
+                    </div>
+
+                    <div class="player-info">
+
+                        {{
+                            p.get(
+                                'position',
+                                'UTIL'
+                            )
+                        }}
+
+                        · OVR
+
+                        {{
+                            p.get(
+                                'overall',
+                                0
+                            )
+                        }}
+
+                        ·
+
+                        {{
+                            p.get(
+                                'cost',
+                                0
+                            )
+                        }}P
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="player">
+
+                <div class="player-name">
+                    영입 선수 없음
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- BUTTONS -->
+    <!-- ================================================= -->
+
+    <div class="buttons">
+
+        <a
+            href="{{ url_for(
+                'auction.auction_new'
+            ) }}"
+            class="
+                button
+                primary
+            "
+        >
+            🔄 다시 도전
+        </a>
+
+
+        <a
+            href="{{ url_for(
+                'auction.auction_home'
+            ) }}"
+            class="
+                button
+                secondary
+            "
+        >
+            🏆 명예의 전당
+        </a>
+
+    </div>
+
+
 </div>
+
+
+<!-- ===================================================== -->
+<!-- S+ EFFECT -->
+<!-- ===================================================== -->
+
+{% if grade == 'S+' %}
+
+<script>
+
+    /*
+     * S+일 때 간단한 축하 효과.
+     * 별도 라이브러리 없이 동작한다.
+     */
+
+    const symbols = [
+        "✦",
+        "✧",
+        "★",
+        "·"
+    ];
+
+    for (
+        let i = 0;
+        i < 26;
+        i++
+    ) {
+
+        const el =
+            document.createElement(
+                "div"
+            );
+
+        el.innerText =
+            symbols[
+                Math.floor(
+                    Math.random()
+                    * symbols.length
+                )
+            ];
+
+        el.style.position =
+            "fixed";
+
+        el.style.left =
+            Math.random()
+            * 100
+            + "vw";
+
+        el.style.top =
+            "-20px";
+
+        el.style.fontSize =
+            (
+                10
+                + Math.random()
+                * 18
+            )
+            + "px";
+
+        el.style.opacity =
+            (
+                .35
+                + Math.random()
+                * .65
+            );
+
+        el.style.pointerEvents =
+            "none";
+
+        el.style.zIndex =
+            "9999";
+
+        el.style.transition =
+            "transform 2.8s linear, opacity 2.8s linear";
+
+        document.body.appendChild(
+            el
+        );
+
+        setTimeout(
+            function() {
+
+                el.style.transform =
+                    "translateY("
+                    + (
+                        window.innerHeight
+                        + 80
+                    )
+                    + "px) rotate(360deg)";
+
+                el.style.opacity =
+                    "0";
+
+            },
+            50
+        );
+
+        setTimeout(
+            function() {
+                el.remove();
+            },
+            3100
+        );
+    }
+
+</script>
+
+{% endif %}
+
 </body>
 </html>
