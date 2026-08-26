@@ -3,955 +3,636 @@
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Auction</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-
-            margin: 0;
-
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #111827,
-                    #1f2937
-                );
-
-            color: white;
-
-            min-height: 100vh;
-
-        }
-
-
-        .header {
-
-            padding: 18px 20px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,0.1);
-
-        }
-
-
-        .logo {
-
-            font-size: 21px;
-
-            font-weight: 900;
-
-        }
-
-
-        .round {
-
-            opacity: .7;
-
-            font-size: 14px;
-
-        }
-
-
-        .container {
-
-            width:
-                min(
-                    1000px,
-                    calc(100% - 24px)
-                );
-
-            margin:
-                20px auto 50px;
-
-        }
-
-
-        .status-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 10px;
-
-            margin-bottom: 15px;
-
-        }
-
-
-        .status {
-
-            background:
-                rgba(255,255,255,.07);
-
-            border:
-                1px solid
-                rgba(255,255,255,.1);
-
-            border-radius: 14px;
-
-            padding: 14px;
-
-        }
-
-
-        .status-label {
-
-            font-size: 11px;
-
-            opacity: .55;
-
-        }
-
-
-        .status-value {
-
-            font-size: 20px;
-
-            font-weight: 900;
-
-            margin-top: 4px;
-
-        }
-
-
-        .player-card {
-
-            text-align: center;
-
-            background:
-                rgba(255,255,255,.08);
-
-            border:
-                1px solid
-                rgba(255,255,255,.13);
-
-            border-radius: 23px;
-
-            padding: 30px 20px;
-
-        }
-
-
-        .position {
-
-            display: inline-block;
-
-            padding:
-                5px 10px;
-
-            border-radius: 20px;
-
-            background:
-                rgba(255,255,255,.1);
-
-            font-size: 12px;
-
-        }
-
-
-        .player-name {
-
-            font-size: 42px;
-
-            font-weight: 950;
-
-            margin:
-                10px 0 4px;
-
-        }
-
-
-        .team {
-
-            opacity: .55;
-
-        }
-
-
-        .ovr {
-
-            margin-top: 10px;
-
-            font-weight: 800;
-
-        }
-
-
-        .price-box {
-
-            max-width: 500px;
-
-            margin: 25px auto;
-
-            padding: 20px;
-
-            background:
-                rgba(0,0,0,.18);
-
-            border-radius: 18px;
-
-        }
-
-
-        .price-label {
-
-            font-size: 12px;
-
-            opacity: .5;
-
-        }
-
-
-        .price {
-
-            font-size: 48px;
-
-            font-weight: 950;
-
-        }
-
-
-        .leader {
-
-            font-weight: 800;
-
-        }
-
-
-        .timer {
-
-            font-size: 38px;
-
-            font-weight: 950;
-
-            margin-top: 10px;
-
-            font-variant-numeric:
-                tabular-nums;
-
-        }
-
-
-        .timer-bar {
-
-            height: 7px;
-
-            margin:
-                8px auto 15px;
-
-            max-width: 500px;
-
-            border-radius: 20px;
-
-            background:
-                rgba(255,255,255,.1);
-
-            overflow: hidden;
-
-        }
-
-
-        .timer-progress {
-
-            width: 100%;
-
-            height: 100%;
-
-            background: white;
-
-        }
-
-
-        .message {
-
-            max-width: 600px;
-
-            min-height: 44px;
-
-            margin: 15px auto;
-
-            padding: 12px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,.06);
-
-        }
-
-
-        .bid-buttons {
-
-            max-width: 600px;
-
-            margin: auto;
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 10px;
-
-        }
-
-
-        form {
-
-            margin: 0;
-
-        }
-
-
-        button {
-
-            width: 100%;
-
-            border: none;
-
-            border-radius: 13px;
-
-            padding: 16px 8px;
-
-            font-size: 17px;
-
-            font-weight: 900;
-
-            cursor: pointer;
-
-            background: white;
-
-            color: #111827;
-
-        }
-
-
-        button:hover {
-
-            transform:
-                translateY(-2px);
-
-        }
-
-
-        .sold {
-
-            max-width: 600px;
-
-            margin:
-                12px auto;
-
-        }
-
-
-        .sold button {
-
-            background:
-                #fbbf24;
-
-            font-size: 19px;
-
-        }
-
-
-        .pass {
-
-            max-width: 600px;
-
-            margin: auto;
-
-        }
-
-
-        .pass button {
-
-            background:
-                rgba(255,255,255,.08);
-
-            color: white;
-
-            border:
-                1px solid
-                rgba(255,255,255,.1);
-
-        }
-
-
-        .card {
-
-            margin-top: 18px;
-
-            background:
-                rgba(255,255,255,.06);
-
-            border-radius: 17px;
-
-            padding: 18px;
-
-        }
-
-
-        .card-title {
-
-            font-weight: 900;
-
-            margin-bottom: 12px;
-
-        }
-
-
-        .bid-history {
-
-            max-height: 280px;
-
-            overflow-y: auto;
-
-        }
-
-
-        .bid-row {
-
-            display: grid;
-
-            grid-template-columns:
-                1fr auto auto;
-
-            gap: 12px;
-
-            padding: 10px 3px;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,.06);
-
-        }
-
-
-        .bid-name {
-
-            font-weight: 700;
-
-        }
-
-
-        .bid-price {
-
-            font-weight: 900;
-
-        }
-
-
-        .bid-change {
-
-            opacity: .55;
-
-            font-size: 12px;
-
-        }
-
-
-        .empty {
-
-            text-align: center;
-
-            padding: 20px;
-
-            opacity: .45;
-
-        }
-
-
-        .ai-row {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            padding: 9px 0;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,.05);
-
-        }
-
-
-        .ai-row:last-child {
-
-            border-bottom: none;
-
-        }
-
-
-        @media (
-            max-width: 650px
-        ) {
-
-            .status-grid {
-
-                grid-template-columns:
-                    1fr 1fr;
-
-            }
-
-            .player-name {
-
-                font-size: 32px;
-
-            }
-
-            .price {
-
-                font-size: 40px;
-
-            }
-
-            button {
-
-                padding:
-                    14px 5px;
-
-                font-size: 14px;
-
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Auction</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #101216;
+    color: white;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.round {
+    opacity: .7;
+}
+
+.player-card {
+    background: #1b1f27;
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.position {
+    font-size: 14px;
+    opacity: .6;
+}
+
+.player-name {
+    font-size: 34px;
+    font-weight: 900;
+    margin: 8px 0;
+}
+
+.team {
+    opacity: .65;
+}
+
+.ovr {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.auction-box {
+    background: #181b22;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.price {
+    font-size: 42px;
+    font-weight: 900;
+}
+
+.leader {
+    margin: 5px 0 20px;
+    font-size: 18px;
+}
+
+.timer {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.bid-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.bid-buttons form {
+    flex: 1;
+}
+
+button {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.bid1 {
+    background: #303640;
+    color: white;
+}
+
+.bid3 {
+    background: #4a5260;
+    color: white;
+}
+
+.bid5 {
+    background: #6b7482;
+    color: white;
+}
+
+.sold {
+    margin-top: 10px;
+    background: #e7e9ed;
+    color: #111;
+}
+
+.pass {
+    margin-top: 10px;
+    background: #242831;
+    color: #aaa;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns:
+        1fr 320px;
+
+    gap: 15px;
+}
+
+.panel {
+    background: #181b22;
+    border-radius: 18px;
+    padding: 18px;
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.slot {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom:
+        1px solid #282d36;
+}
+
+.slot:last-child {
+    border-bottom: 0;
+}
+
+.log {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.log-item {
+    padding: 8px 0;
+    border-bottom:
+        1px solid #282d36;
+    font-size: 14px;
+}
+
+.ai {
+    margin-bottom: 18px;
+}
+
+.ai-name {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.ai-budget {
+    font-size: 13px;
+    opacity: .6;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 12px;
+    background: #20242c;
+    border-radius: 10px;
+    text-align: center;
+}
+
+@media (max-width: 800px) {
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .bid-buttons {
+        flex-direction: column;
+    }
+
+}
+
+</style>
 
 </head>
 
-
 <body>
 
+<div class="container">
 
-<header class="header">
+    <div class="top">
 
-    <div class="logo">
-        ⚾ AUCTION
-    </div>
-
-    <div class="round">
-
-        ROUND
-        {{ state.round }}
-        /
-        {{ state.total_rounds }}
-
-    </div>
-
-</header>
-
-
-<main class="container">
-
-
-    <!-- ==================================================
-         STATUS
-    ================================================== -->
-
-    <div class="status-grid">
-
-        <div class="status">
-
-            <div class="status-label">
-                내 예산
-            </div>
-
-            <div class="status-value">
-                {{ state.budget }}P
-            </div>
-
+        <div class="title">
+            🏷️ AUCTION
         </div>
 
+        <div class="round">
 
-        <div class="status">
-
-            <div class="status-label">
-                내 영입
-            </div>
-
-            <div class="status-value">
-                {{ state.roster|length }}명
-            </div>
-
-        </div>
-
-
-        <div class="status">
-
-            <div class="status-label">
-                현재 라운드
-            </div>
-
-            <div class="status-value">
-                {{ state.round }}
-            </div>
+            ROUND
+            {{ state.round }}
+            /
+            {{ total_rounds }}
 
         </div>
 
     </div>
 
 
-    <!-- ==================================================
-         PLAYER
-    ================================================== -->
+    <!-- CURRENT PLAYER -->
 
-    <section class="player-card">
+    {% if player %}
 
+    <div class="player-card">
 
         <div class="position">
 
-            {{
-                current.position
-                if current.position is defined
-                else current.pos
-                if current.pos is defined
-                else "UTIL"
-            }}
+            {{ player.position
+               if player.position is defined
+               else "" }}
+
+            ·
+
+            {{ player.team
+               if player.team is defined
+               else "" }}
 
         </div>
-
 
         <div class="player-name">
 
-            {{
-                current.name
-                if current.name is defined
-                else current.player_name
-            }}
+            {{ player.name
+               if player.name is defined
+               else player.player_name }}
 
         </div>
-
 
         <div class="team">
 
-            {{
-                current.team
-                if current.team is defined
-                else "-"
-            }}
+            {{ player.team
+               if player.team is defined
+               else "-" }}
 
         </div>
-
 
         <div class="ovr">
 
             OVR
-
             {{
-                current.overall
-                if current.overall is defined
-                else current.ovr
-                if current.ovr is defined
-                else current.rating
-                if current.rating is defined
+                player.overall
+                if player.overall is defined
+                else player.ovr
+                if player.ovr is defined
                 else "-"
             }}
 
         </div>
 
+    </div>
 
-        <!-- ==================================================
-             PRICE
-        ================================================== -->
-
-        <div class="price-box">
-
-            <div class="price-label">
-                CURRENT BID
-            </div>
-
-            <div class="price">
-
-                {{ state.price }}P
-
-            </div>
+    {% endif %}
 
 
-            <div class="leader">
+    <div class="layout">
 
-                {% if state.leader == "user" %}
+        <div>
 
-                    👤 최고 입찰자: 나
+            <div class="auction-box">
 
-                {% elif state.leader %}
+                <div class="price">
 
-                    🤖 최고 입찰자:
+                    {{ price }}P
 
-                    {{
-                        ai_names.get(
-                            state.leader,
-                            state.leader
+                </div>
+
+                <div class="leader">
+
+                    {% if leader == "user" %}
+
+                        👤 현재 최고 입찰자: 나
+
+                    {% elif leader %}
+
+                        🤖 현재 최고 입찰자:
+                        {{ ai_names[leader] }}
+
+                    {% else %}
+
+                        아직 입찰 없음
+
+                    {% endif %}
+
+                </div>
+
+
+                <div
+                    class="timer"
+                    id="timer"
+                >
+
+                    {{ remaining }}초
+
+                </div>
+
+
+                {% if state.roster|length <
+                      roster_limits.values()
+                      |sum %}
+
+                <div class="bid-buttons">
+
+                    <form
+                        method="POST"
+                        action="{{
+                            url_for(
+                                'auction.auction_action',
+                                game_id=game_id,
+                                action='1'
+                            )
+                        }}"
+                    >
+
+                        <button class="bid1">
+                            +1P
+                        </button>
+
+                    </form>
+
+
+                    <form
+                        method="POST"
+                        action="{{
+                            url_for(
+                                'auction.auction_action',
+                                game_id=game_id,
+                                action='3'
+                            )
+                        }}"
+                    >
+
+                        <button class="bid3">
+                            +3P
+                        </button>
+
+                    </form>
+
+
+                    <form
+                        method="POST"
+                        action="{{
+                            url_for(
+                                'auction.auction_action',
+                                game_id=game_id,
+                                action='5'
+                            )
+                        }}"
+                    >
+
+                        <button class="bid5">
+                            +5P
+                        </button>
+
+                    </form>
+
+                </div>
+
+                {% endif %}
+
+
+                {% if leader == "user" %}
+
+                <form
+                    method="POST"
+                    action="{{
+                        url_for(
+                            'auction.auction_action',
+                            game_id=game_id,
+                            action='sold'
                         )
-                    }}
+                    }}"
+                >
 
-                {% else %}
+                    <button class="sold">
 
-                    아직 입찰 없음
+                        🔨 낙찰
+
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+
+                <form
+                    method="POST"
+                    action="{{
+                        url_for(
+                            'auction.auction_action',
+                            game_id=game_id,
+                            action='pass'
+                        )
+                    }}"
+                >
+
+                    <button class="pass">
+
+                        PASS
+
+                    </button>
+
+                </form>
+
+
+                {% if message %}
+
+                <div class="message">
+
+                    {{ message }}
+
+                </div>
 
                 {% endif %}
 
             </div>
 
+
+            <!-- BID LOG -->
+
+            <div class="panel" style="margin-top:15px;">
+
+                <div class="panel-title">
+                    📜 입찰 기록
+                </div>
+
+                <div class="log">
+
+                    {% if bid_log %}
+
+                        {% for log in bid_log|reverse %}
+
+                        <div class="log-item">
+
+                            <strong>
+                                {{ log.name }}
+                            </strong>
+
+                            ·
+
+                            +{{ log.amount }}P
+
+                            →
+
+                            {{ log.price }}P
+
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div style="opacity:.5;">
+                            아직 입찰 기록이 없습니다.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
         </div>
 
 
-        <!-- ==================================================
-             TIMER
-        ================================================== -->
+        <!-- SIDE -->
 
-        <div
-            class="timer"
-            id="timer"
-        >
-            5.0
-        </div>
+        <div>
 
 
-        <div class="timer-bar">
+            <!-- MY TEAM -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    👤 내 팀
+
+                </div>
+
+                <div style="margin-bottom:12px;">
+
+                    예산:
+                    <strong>
+                        {{ state.budget }}P
+                    </strong>
+
+                    <br>
+
+                    선수:
+                    <strong>
+                        {{ roster|length }}
+                        /
+                        {{ roster_limits.values()|sum }}
+                    </strong>
+
+                </div>
+
+
+                {% for pos, limit in roster_limits.items() %}
+
+                {% set count =
+                    namespace(value=0) %}
+
+                {% for p in roster %}
+
+                    {% if
+                        (
+                            p.position
+                            if p.position is defined
+                            else ""
+                        )
+                        == pos
+                    %}
+
+                        {% set count.value =
+                            count.value + 1 %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+                <div class="slot">
+
+                    <span>{{ pos }}</span>
+
+                    <span>
+                        {{ count.value }}
+                        /
+                        {{ limit }}
+                    </span>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- AI -->
 
             <div
-                class="timer-progress"
-                id="timerProgress"
-            ></div>
-
-        </div>
-
-
-        <!-- ==================================================
-             MESSAGE
-        ================================================== -->
-
-        <div class="message">
-
-            {{ state.message }}
-
-        </div>
-
-
-        <!-- ==================================================
-             BID BUTTONS
-        ================================================== -->
-
-        <div class="bid-buttons">
-
-
-            <form
-                method="POST"
-                action="{{
-                    url_for(
-                        'auction.auction_action',
-                        game_id=game_id
-                    )
-                }}"
+                class="panel"
+                style="margin-top:15px;"
             >
 
-                <input
-                    type="hidden"
-                    name="action"
-                    value="1"
-                >
+                <div class="panel-title">
 
-                <button type="submit">
-                    +1P
-                </button>
+                    🤖 경쟁자
 
-            </form>
+                </div>
 
 
-            <form
-                method="POST"
-                action="{{
-                    url_for(
-                        'auction.auction_action',
-                        game_id=game_id
-                    )
-                }}"
-            >
+                {% for ai_key, ai_name
+                    in ai_names.items() %}
 
-                <input
-                    type="hidden"
-                    name="action"
-                    value="3"
-                >
+                <div class="ai">
 
-                <button type="submit">
-                    +3P
-                </button>
+                    <div class="ai-name">
 
-            </form>
+                        {{ ai_name }}
 
+                        {% if leader == ai_key %}
 
-            <form
-                method="POST"
-                action="{{
-                    url_for(
-                        'auction.auction_action',
-                        game_id=game_id
-                    )
-                }}"
-            >
+                            🔥 최고 입찰
 
-                <input
-                    type="hidden"
-                    name="action"
-                    value="5"
-                >
-
-                <button type="submit">
-                    +5P
-                </button>
-
-            </form>
-
-        </div>
-
-
-        <!-- ==================================================
-             SOLD
-        ================================================== -->
-
-        {% if state.leader == "user" %}
-
-        <form
-            class="sold"
-            method="POST"
-            action="{{
-                url_for(
-                    'auction.auction_action',
-                    game_id=game_id
-                )
-            }}"
-        >
-
-            <input
-                type="hidden"
-                name="action"
-                value="sold"
-            >
-
-            <button
-                type="submit"
-                id="soldButton"
-            >
-
-                🔨
-                {{ state.price }}P에 낙찰
-
-            </button>
-
-        </form>
-
-        {% endif %}
-
-
-        <!-- ==================================================
-             PASS
-        ================================================== -->
-
-        <form
-            class="pass"
-            method="POST"
-            action="{{
-                url_for(
-                    'auction.auction_action',
-                    game_id=game_id
-                )
-            }}"
-        >
-
-            <input
-                type="hidden"
-                name="action"
-                value="pass"
-            >
-
-            <button type="submit">
-                PASS
-            </button>
-
-        </form>
-
-
-    </section>
-
-
-    <!-- ==================================================
-         BID HISTORY
-    ================================================== -->
-
-    <section class="card">
-
-        <div class="card-title">
-            📜 입찰 기록
-        </div>
-
-
-        <div class="bid-history">
-
-
-            {% if state.bid_log %}
-
-
-                {% for bid in state.bid_log|reverse %}
-
-                <div class="bid-row">
-
-                    <div class="bid-name">
-
-                        {% if bid.bidder == "user" %}
-                            👤
-                        {% else %}
-                            🤖
                         {% endif %}
-
-                        {{ bid.name }}
 
                     </div>
 
+                    <div class="ai-budget">
 
-                    <div class="bid-price">
+                        {{ ai_budgets[ai_key] }}P
 
-                        {{ bid.price }}P
+                        ·
 
-                    </div>
+                        {{ ai_rosters[ai_key]|length }}
+                        /
+                        {{ roster_limits.values()|sum }}
 
-
-                    <div class="bid-change">
-
-                        {% if bid.amount %}
-                            +{{ bid.amount }}
-                        {% else %}
-                            -
-                        {% endif %}
+                        명
 
                     </div>
 
@@ -959,255 +640,58 @@
 
                 {% endfor %}
 
-
-            {% else %}
-
-                <div class="empty">
-
-                    아직 입찰 기록이 없습니다.
-
-                </div>
-
-            {% endif %}
-
-
-        </div>
-
-    </section>
-
-
-    <!-- ==================================================
-         AI STATUS
-    ================================================== -->
-
-    <section class="card">
-
-        <div class="card-title">
-            🤖 경쟁자 현황
-        </div>
-
-
-        {% for ai_key, ai_name in ai_names.items() %}
-
-        <div class="ai-row">
-
-            <div>
-
-                {{ ai_name }}
-
-            </div>
-
-
-            <div>
-
-                {{ state.ai_budgets[ai_key] }}P
-
-                ·
-
-                {{ state.ai_rosters[ai_key]|length }}명
-
             </div>
 
         </div>
 
-        {% endfor %}
+    </div>
 
-    </section>
+</div>
 
-
-</main>
-
-
-<!-- ======================================================
-     TIMER
-====================================================== -->
 
 <script>
 
-const deadline =
-    {{ state.bid_deadline|default(0) }} * 1000;
+let remaining =
+    Number("{{ remaining }}");
 
+const timer =
+    document.getElementById("timer");
 
-const timeout =
-    {{ state.bid_timeout|default(5) }} * 1000;
-
-
-const timerElement =
-    document.getElementById(
-        "timer"
-    );
-
-
-const progressElement =
-    document.getElementById(
-        "timerProgress"
-    );
-
-
-let timeoutSent = false;
-
-
-/* ========================================================
-   TIMER UPDATE
-======================================================== */
 
 function updateTimer() {
 
-    if (timeoutSent) {
-        return;
-    }
+    if (remaining <= 0) {
 
+        timer.textContent = "0초";
 
-    const now =
-        Date.now();
+        // 새로고침
+        // 단, 1회만 요청
+        if (!window.auctionReloaded) {
 
+            window.auctionReloaded = true;
 
-    const remaining =
-        Math.max(
-            0,
-            deadline - now
-        );
-
-
-    const seconds =
-        remaining / 1000;
-
-
-    timerElement.textContent =
-        seconds.toFixed(1);
-
-
-    const percentage =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                remaining / timeout * 100
-            )
-        );
-
-
-    progressElement.style.width =
-        percentage + "%";
-
-
-    /* -----------------------------------------------
-       TIMEOUT
-    ------------------------------------------------ */
-
-    if (
-        remaining <= 0
-    ) {
-
-        timeoutSent = true;
-
-        sendTimeout();
-
-        return;
-
-    }
-
-
-    requestAnimationFrame(
-        updateTimer
-    );
-
-}
-
-
-/* ========================================================
-   SEND TIMEOUT
-======================================================== */
-
-async function sendTimeout() {
-
-    const form =
-        new FormData();
-
-
-    form.append(
-        "action",
-        "timeout"
-    );
-
-
-    try {
-
-        const response =
-            await fetch(
-                "{{ url_for(
-                    'auction.auction_action',
-                    game_id=game_id
-                ) }}",
-                {
-                    method: "POST",
-                    body: form,
-
-                    credentials:
-                        "same-origin",
-
-                    redirect:
-                        "follow"
-                }
-            );
-
-
-        /*
-         * 서버가 결과 페이지로 redirect한 경우
-         */
-
-        if (
-            response.redirected
-        ) {
-
-            window.location.href =
-                response.url;
-
-            return;
+            window.location.reload();
 
         }
 
-
-        /*
-         * 일반적으로는
-         * 현재 게임 화면으로 redirect된다.
-         *
-         * 여기서 무한 reload가 발생하지 않도록
-         * 딱 한 번만 이동한다.
-         */
-
-        window.location.replace(
-            window.location.href
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Auction timeout:",
-            error
-        );
-
-        /*
-         * 네트워크 오류일 때만
-         * 다시 시도할 수 있도록 한다.
-         */
-
-        timeoutSent = false;
-
+        return;
     }
 
+    timer.textContent =
+        remaining + "초";
+
+    remaining -= 1;
 }
 
 
-/* ========================================================
-   START
-======================================================== */
-
 updateTimer();
 
-</script>
+setInterval(
+    updateTimer,
+    1000
+);
 
+</script>
 
 </body>
 
