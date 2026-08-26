@@ -8,12 +8,11 @@ from copy import deepcopy
 
 
 # ============================================================
-# AUCTION CONFIG
+# CONFIG
 # ============================================================
 
 INITIAL_BUDGET = 100
 ROUNDS = 12
-
 BID_TIMEOUT = 5.0
 
 BID_AMOUNTS = (1, 3, 5)
@@ -26,13 +25,8 @@ AI_NAMES = {
 }
 
 
-# ============================================================
-# AI PROFILES
-# ============================================================
-
 AI_PROFILES = {
 
-    # 안정적으로 좋은 선수 위주
     "veteran": {
         "aggression": 0.78,
         "star_bias": 1.05,
@@ -40,7 +34,6 @@ AI_PROFILES = {
         "randomness": 0.08,
     },
 
-    # 효율을 중요시
     "data": {
         "aggression": 0.62,
         "star_bias": 0.92,
@@ -48,7 +41,6 @@ AI_PROFILES = {
         "randomness": 0.05,
     },
 
-    # 가끔 미친 듯이 지름
     "gambler": {
         "aggression": 1.00,
         "star_bias": 1.18,
@@ -89,13 +81,11 @@ def load_players():
             continue
 
     if data is None:
-
         raise FileNotFoundError(
             "player_pool.json을 찾을 수 없습니다."
         )
 
     if isinstance(data, list):
-
         return data
 
     if isinstance(data, dict):
@@ -110,11 +100,10 @@ def load_players():
             value = data.get(key)
 
             if isinstance(value, list):
-
                 return value
 
     raise ValueError(
-        "player_pool.json의 선수 데이터 형식이 올바르지 않습니다."
+        "player_pool.json 형식이 올바르지 않습니다."
     )
 
 
@@ -183,28 +172,18 @@ def player_overall(player):
             continue
 
         try:
-
             return float(value)
 
         except (
             ValueError,
             TypeError,
         ):
-
             pass
 
     return 70.0
 
 
 def player_value(player):
-
-    """
-    OVR → 기본 경매 가치
-
-    70 OVR ≈ 4P
-    80 OVR ≈ 7P
-    90 OVR ≈ 10P
-    """
 
     ovr = player_overall(player)
 
@@ -226,32 +205,24 @@ def add_bid_log(
 ):
 
     if bidder == "user":
-
         name = "나"
 
     else:
-
         name = AI_NAMES.get(
             bidder,
             bidder,
         )
 
     log = {
-
         "bidder": bidder,
-
         "name": name,
-
         "price": int(price),
-
         "amount": (
             int(amount)
             if amount is not None
             else None
         ),
-
         "timestamp": time.time(),
-
     }
 
     state.setdefault(
@@ -259,10 +230,9 @@ def add_bid_log(
         [],
     ).append(log)
 
-    # 한 화면에 너무 많지 않게
     state["bid_log"] = state[
         "bid_log"
-    ][-20:]
+    ][-30:]
 
 
 # ============================================================
@@ -323,10 +293,7 @@ def seconds_left(state):
 
 def is_bid_expired(state):
 
-    return (
-        seconds_left(state)
-        <= 0
-    )
+    return seconds_left(state) <= 0
 
 
 # ============================================================
@@ -337,7 +304,6 @@ def create_game():
 
     players = load_players()
 
-    # 원본 변경 방지
     players = [
         deepcopy(player)
         for player in players
@@ -362,10 +328,6 @@ def create_game():
 
     state = {
 
-        # --------------------------------------------
-        # 기본
-        # --------------------------------------------
-
         "round": 1,
 
         "total_rounds": total_rounds,
@@ -376,18 +338,12 @@ def create_game():
 
         "current": current,
 
-        # --------------------------------------------
         # USER
-        # --------------------------------------------
-
         "budget": INITIAL_BUDGET,
 
         "roster": [],
 
-        # --------------------------------------------
         # AI
-        # --------------------------------------------
-
         "ai_budgets": {
             key: INITIAL_BUDGET
             for key in AI_NAMES
@@ -398,10 +354,9 @@ def create_game():
             for key in AI_NAMES
         },
 
-        # --------------------------------------------
-        # CURRENT AUCTION
-        # --------------------------------------------
+        "ai_names": AI_NAMES,
 
+        # AUCTION
         "price": 1,
 
         "leader": None,
@@ -415,20 +370,15 @@ def create_game():
             + BID_TIMEOUT
         ),
 
-        # --------------------------------------------
         # GAME
-        # --------------------------------------------
-
-        "message": (
-            "경매가 시작되었습니다."
-        ),
+        "message":
+            "경매가 시작되었습니다.",
 
         "history": [],
 
         "finished": False,
 
         "result": None,
-
     }
 
     return state
@@ -453,7 +403,6 @@ def ai_max_bid(
     ][ai_key]
 
     if budget <= 1:
-
         return 0
 
     ovr = player_overall(
@@ -471,7 +420,6 @@ def ai_max_bid(
         + 1,
     )
 
-    # 남겨둘 최소 예산
     reserve = max(
         5,
         budget * 0.08,
@@ -482,10 +430,10 @@ def ai_max_bid(
         budget - reserve,
     )
 
-    # 스타 선수 선호
     star_multiplier = (
         1.0
-        + (
+        +
+        (
             max(
                 0,
                 ovr - 75,
@@ -501,17 +449,12 @@ def ai_max_bid(
         * star_multiplier
     )
 
-    # 막판이면 조금 공격적으로
     if remaining_rounds <= 3:
-
         target *= 1.15
 
-    # 초반에는 예산 아낌
     elif remaining_rounds >= 9:
-
         target *= 0.90
 
-    # 랜덤 성향
     randomness = profile[
         "randomness"
     ]
@@ -592,7 +535,6 @@ def ai_response(state):
             current_price,
             state,
         ):
-
             continue
 
         maximum = ai_max_bid(
@@ -608,12 +550,9 @@ def ai_response(state):
             )
         )
 
-    # 아무 AI도 안 올라옴
     if not candidates:
-
         return None
 
-    # 최고 의향가가 높은 AI
     candidates.sort(
         key=lambda item: item[1],
         reverse=True,
@@ -621,26 +560,25 @@ def ai_response(state):
 
     ai_key, maximum = candidates[0]
 
-    # AI도 한 번에 너무 많이 올리지 않음
     possible_amounts = [
         amount
         for amount in BID_AMOUNTS
-        if current_price + amount
-        <= maximum
-        and current_price + amount
-        <= state[
-            "ai_budgets"
-        ][ai_key]
+        if (
+            current_price + amount
+            <= maximum
+            and
+            current_price + amount
+            <= state[
+                "ai_budgets"
+            ][ai_key]
+        )
     ]
 
     if not possible_amounts:
-
         return None
 
-    # 기본 +1
     amount = 1
 
-    # 승부사/스타 선수는 가끔 크게
     profile = AI_PROFILES[
         ai_key
     ]
@@ -650,7 +588,6 @@ def ai_response(state):
         and random.random() < 0.25
         and 3 in possible_amounts
     ):
-
         amount = 3
 
     elif (
@@ -658,11 +595,9 @@ def ai_response(state):
         and random.random() < 0.10
         and 5 in possible_amounts
     ):
-
         amount = 5
 
     if amount not in possible_amounts:
-
         amount = max(
             possible_amounts
         )
@@ -671,10 +606,6 @@ def ai_response(state):
         current_price
         + amount
     )
-
-    # --------------------------------------------
-    # AI 입찰
-    # --------------------------------------------
 
     state["price"] = new_price
 
@@ -715,20 +646,16 @@ def user_bid(
     )
 
     if not player:
-
         finish_game(state)
-
         return state
 
     try:
-
         amount = int(amount)
 
     except (
         ValueError,
         TypeError,
     ):
-
         amount = 1
 
     if amount not in BID_AMOUNTS:
@@ -749,7 +676,6 @@ def user_bid(
         + amount
     )
 
-    # 예산
     if new_price > state[
         "budget"
     ]:
@@ -761,10 +687,6 @@ def user_bid(
         )
 
         return state
-
-    # --------------------------------------------
-    # USER BID
-    # --------------------------------------------
 
     state["price"] = new_price
 
@@ -784,19 +706,40 @@ def user_bid(
         f"{new_price}P"
     )
 
-    # --------------------------------------------
-    # AI 응답
-    #
-    # 딱 한 번만 반응
-    # --------------------------------------------
-
+    # AI는 한 번만 반응
     ai_response(state)
 
     return state
 
 
 # ============================================================
-# PASS
+# USER SOLD
+# ============================================================
+
+def user_sold(state):
+
+    if state.get("finished"):
+        return state
+
+    if state.get(
+        "leader"
+    ) != "user":
+
+        state["message"] = (
+            "현재 최고 입찰자가 아닙니다."
+        )
+
+        return state
+
+    settle_current_auction(
+        state
+    )
+
+    return state
+
+
+# ============================================================
+# USER PASS
 # ============================================================
 
 def user_pass(state):
@@ -804,7 +747,7 @@ def user_pass(state):
     if state.get("finished"):
         return state
 
-    # 내가 최고 입찰자일 때 PASS
+    # 내가 최고가라면 PASS = 경매 포기
     if state.get(
         "leader"
     ) == "user":
@@ -813,26 +756,13 @@ def user_pass(state):
             "입찰을 포기했습니다."
         )
 
-        # AI에게 현재 가격으로 낙찰될 수 있게
-        ai = ai_response(state)
-
-        if ai:
-
-            return state
-
-        # 아무 AI도 못 사면
-        # 그냥 현재 최고였던 내가 낙찰되는 것을
-        # 방지하기 위해 자동 낙찰 처리
-        #
-        # PASS는 경매 포기이므로
-        # 다음 가능한 AI가 가져간다.
         settle_after_pass(
             state
         )
 
         return state
 
-    # AI가 최고일 때 PASS
+    # AI가 최고가라면 바로 낙찰
     if state.get(
         "leader"
     ) not in (
@@ -840,32 +770,27 @@ def user_pass(state):
         "user",
     ):
 
-        state["message"] = (
-            f"{AI_NAMES.get(state['leader'], state['leader'])}"
-            "에게 낙찰되었습니다."
-        )
-
         settle_current_auction(
             state
         )
 
         return state
 
-    # 아무도 입찰 안 했다면
-    ai = ai_response(state)
+    # 아무도 입찰하지 않은 경우
+    ai = ai_response(
+        state
+    )
 
     if ai:
-
         return state
 
-    # 정말 아무도 안 삼
     next_round(state)
 
     return state
 
 
 # ============================================================
-# PASS AFTER USER
+# SETTLE AFTER PASS
 # ============================================================
 
 def settle_after_pass(state):
@@ -875,9 +800,7 @@ def settle_after_pass(state):
     )
 
     if not player:
-
         next_round(state)
-
         return
 
     candidates = []
@@ -891,15 +814,20 @@ def settle_after_pass(state):
             0,
         )
 
-        if budget >= state[
+        if budget < state[
             "price"
         ]:
+            continue
 
-            maximum = ai_max_bid(
-                ai_key,
-                player,
-                state,
-            )
+        maximum = ai_max_bid(
+            ai_key,
+            player,
+            state,
+        )
+
+        if maximum >= state[
+            "price"
+        ]:
 
             candidates.append(
                 (
@@ -923,41 +851,15 @@ def settle_after_pass(state):
             state["price"],
         )
 
+        next_round(state)
+
     else:
 
         next_round(state)
 
 
 # ============================================================
-# SOLD
-# ============================================================
-
-def user_sold(state):
-
-    if state.get("finished"):
-        return state
-
-    # 내가 최고가 아니면 낙찰 불가
-    if state.get(
-        "leader"
-    ) != "user":
-
-        state["message"] = (
-            "현재 최고 입찰자가 아닙니다."
-        )
-
-        return state
-
-    # 현재 가격으로 낙찰
-    settle_current_auction(
-        state
-    )
-
-    return state
-
-
-# ============================================================
-# SETTLE CURRENT AUCTION
+# SETTLE AUCTION
 # ============================================================
 
 def settle_current_auction(state):
@@ -983,16 +885,11 @@ def settle_current_auction(state):
         )
     )
 
-    # 아무도 없으면
     if winner is None:
 
         next_round(state)
 
         return
-
-    # --------------------------------------------
-    # USER
-    # --------------------------------------------
 
     if winner == "user":
 
@@ -1018,10 +915,6 @@ def settle_current_auction(state):
 
         return
 
-    # --------------------------------------------
-    # AI
-    # --------------------------------------------
-
     ai_budget = state[
         "ai_budgets"
     ].get(
@@ -1031,8 +924,6 @@ def settle_current_auction(state):
 
     if price > ai_budget:
 
-        # AI가 돈이 없으면
-        # 유저에게 기회
         state["leader"] = None
 
         state["message"] = (
@@ -1053,7 +944,7 @@ def settle_current_auction(state):
 
 
 # ============================================================
-# AWARD PLAYER
+# AWARD
 # ============================================================
 
 def award_player(
@@ -1081,10 +972,6 @@ def award_player(
         "auction_price"
     ] = int(price)
 
-    # --------------------------------------------
-    # USER
-    # --------------------------------------------
-
     if winner == "user":
 
         state["budget"] -= price
@@ -1096,10 +983,6 @@ def award_player(
         )
 
         winner_name = "나"
-
-    # --------------------------------------------
-    # AI
-    # --------------------------------------------
 
     else:
 
@@ -1117,10 +1000,6 @@ def award_player(
             winner,
             winner,
         )
-
-    # --------------------------------------------
-    # HISTORY
-    # --------------------------------------------
 
     history_item = {
 
@@ -1155,7 +1034,6 @@ def award_player(
                     [],
                 )
             ),
-
     }
 
     state[
@@ -1165,8 +1043,8 @@ def award_player(
     )
 
     state["message"] = (
-        f"🔨 {winner_name} "
-        f"→ {player_name(player)} "
+        f"🔨 {winner_name} → "
+        f"{player_name(player)} "
         f"{price}P 낙찰!"
     )
 
@@ -1196,10 +1074,6 @@ def next_round(state):
     state[
         "bid_log"
     ] = []
-
-    # --------------------------------------------
-    # 종료
-    # --------------------------------------------
 
     if (
         state["round"]
@@ -1239,7 +1113,7 @@ def next_round(state):
 
 
 # ============================================================
-# GENERIC USER ACTION
+# USER ACTION
 # ============================================================
 
 def user_action(
@@ -1250,40 +1124,44 @@ def user_action(
     if state.get("finished"):
         return state
 
-    # --------------------------------------------
-    # TIMER CHECK
-    # --------------------------------------------
+    # ========================================================
+    # TIMEOUT
+    # ========================================================
 
-    if is_bid_expired(state):
+    if action == "timeout":
 
-        # 최고 입찰자가 있으면 자동 낙찰
-        if state.get("leader"):
+        if not is_bid_expired(state):
+            return state
+
+        leader = state.get(
+            "leader"
+        )
+
+        # 최고 입찰자 존재
+        if leader:
 
             settle_current_auction(
                 state
             )
 
-            return state
+        else:
 
-        # 아무도 없으면
-        # AI가 마지막으로 반응
-        ai = ai_response(
-            state
-        )
+            # 아무도 입찰 안 함
+            ai = ai_response(
+                state
+            )
 
-        if ai:
+            if not ai:
 
-            return state
-
-        next_round(
-            state
-        )
+                next_round(
+                    state
+                )
 
         return state
 
-    # --------------------------------------------
+    # ========================================================
     # BID
-    # --------------------------------------------
+    # ========================================================
 
     if action in (
         "1",
@@ -1296,9 +1174,9 @@ def user_action(
             int(action),
         )
 
-    # --------------------------------------------
+    # ========================================================
     # SOLD
-    # --------------------------------------------
+    # ========================================================
 
     if action == "sold":
 
@@ -1306,19 +1184,15 @@ def user_action(
             state
         )
 
-    # --------------------------------------------
+    # ========================================================
     # PASS
-    # --------------------------------------------
+    # ========================================================
 
     if action == "pass":
 
         return user_pass(
             state
         )
-
-    # --------------------------------------------
-    # UNKNOWN
-    # --------------------------------------------
 
     state["message"] = (
         "알 수 없는 행동입니다."
@@ -1328,7 +1202,7 @@ def user_action(
 
 
 # ============================================================
-# ROSTER SCORE
+# SCORE
 # ============================================================
 
 def roster_score(roster):
@@ -1358,19 +1232,16 @@ def roster_score(roster):
         / count
     )
 
-    # 선수 수 보너스
     roster_bonus = min(
         count * 1.5,
         12,
     )
 
-    # 선수 퀄리티
     quality_bonus = max(
         0,
         average_ovr - 70,
     ) * 0.45
 
-    # 영입 효율
     efficiency = (
         total_ovr
         /
@@ -1398,15 +1269,12 @@ def roster_score(roster):
 # BEST SIGNING
 # ============================================================
 
-def find_best_signing(
-    roster
-):
+def find_best_signing(roster):
 
     if not roster:
         return None
 
     best = None
-
     best_value = -999999
 
     for player in roster:
@@ -1460,43 +1328,23 @@ def calculate_grade(
     if not results:
         return "D"
 
-    top_score = float(
-        results[0]["score"]
-    )
-
     second_score = (
         float(
             results[1]["score"]
         )
         if len(results) > 1
-        else top_score
+        else score
     )
-
-    # --------------------------------------------
-    # S+
-    #
-    # 압도적인 1위
-    # --------------------------------------------
 
     if (
         rank == 1
         and score >= 105
         and score - second_score >= 10
     ):
-
         return "S+"
 
-    # --------------------------------------------
-    # 1위
-    # --------------------------------------------
-
     if rank == 1:
-
         return "S"
-
-    # --------------------------------------------
-    # 2위
-    # --------------------------------------------
 
     if rank == 2:
 
@@ -1505,20 +1353,12 @@ def calculate_grade(
 
         return "A"
 
-    # --------------------------------------------
-    # 3위
-    # --------------------------------------------
-
     if rank == 3:
 
         if score >= 90:
             return "B+"
 
         return "B"
-
-    # --------------------------------------------
-    # 4위
-    # --------------------------------------------
 
     if score >= 85:
         return "B"
@@ -1530,23 +1370,17 @@ def calculate_grade(
 
 
 # ============================================================
-# FINISH GAME
+# FINISH
 # ============================================================
 
 def finish_game(state):
 
-    if state.get(
-        "finished"
-    ):
-
+    if state.get("finished"):
         return state
 
     results = []
 
-    # --------------------------------------------
     # USER
-    # --------------------------------------------
-
     user_roster = state.get(
         "roster",
         [],
@@ -1578,14 +1412,11 @@ def finish_game(state):
             - user_budget
         ),
 
-        "remaining": user_budget,
-
+        "remaining":
+            user_budget,
     })
 
-    # --------------------------------------------
     # AI
-    # --------------------------------------------
-
     for ai_key, ai_name in AI_NAMES.items():
 
         roster = state[
@@ -1623,51 +1454,35 @@ def finish_game(state):
                 - budget
             ),
 
-            "remaining": budget,
-
+            "remaining":
+                budget,
         })
 
-    # --------------------------------------------
-    # SCORE SORT
-    # --------------------------------------------
-
+    # SORT
     results.sort(
-        key=lambda item: item[
-            "score"
-        ],
+        key=lambda item:
+            item["score"],
         reverse=True,
     )
 
-    # --------------------------------------------
     # RANK
-    # --------------------------------------------
-
     for index, result in enumerate(
         results,
         start=1,
     ):
 
-        result[
-            "rank"
-        ] = index
+        result["rank"] = index
 
-    # --------------------------------------------
     # GRADE
-    # --------------------------------------------
-
     for result in results:
 
-        result[
-            "grade"
-        ] = calculate_grade(
-            result["rank"],
-            result["score"],
-            results,
+        result["grade"] = (
+            calculate_grade(
+                result["rank"],
+                result["score"],
+                results,
+            )
         )
-
-    # --------------------------------------------
-    # USER RESULT
-    # --------------------------------------------
 
     user = next(
         item
@@ -1681,18 +1496,19 @@ def finish_game(state):
 
             margin = (
                 user["score"]
-                - results[1]["score"]
+                -
+                results[1]["score"]
             )
 
         else:
-
             margin = 0
 
     else:
 
         margin = (
             user["score"]
-            - results[0]["score"]
+            -
+            results[0]["score"]
         )
 
     user["win_margin"] = round(
@@ -1710,13 +1526,11 @@ def finish_game(state):
         2,
     )
 
-    best_signing = find_best_signing(
-        user["roster"]
+    best_signing = (
+        find_best_signing(
+            user["roster"]
+        )
     )
-
-    # --------------------------------------------
-    # RESULT
-    # --------------------------------------------
 
     state["result"] = {
 
@@ -1734,16 +1548,11 @@ def finish_game(state):
                     [],
                 )
             ),
-
     }
 
-    state[
-        "finished"
-    ] = True
+    state["finished"] = True
 
-    state[
-        "message"
-    ] = (
+    state["message"] = (
         "🏆 경매 시즌 종료!"
     )
 
