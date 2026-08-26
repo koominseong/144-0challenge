@@ -1,6 +1,10 @@
+<!-- templates/auction_game.html -->
+
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,9 +12,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Auction Game
-    </title>
+    <title>Auction</title>
 
     <style>
 
@@ -19,9 +21,8 @@
         }
 
         body {
-            margin: 0;
 
-            min-height: 100vh;
+            margin: 0;
 
             font-family:
                 -apple-system,
@@ -30,911 +31,797 @@
                 sans-serif;
 
             background:
-                radial-gradient(
-                    circle at top,
-                    #24324a 0%,
-                    #111827 42%,
-                    #070b12 100%
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #1f2937
                 );
 
-            color: #f8fafc;
+            color: #ffffff;
+
+            min-height: 100vh;
+
         }
 
 
-        .page {
-            width: min(1050px, 94%);
+        /* ==================================================
+           HEADER
+        ================================================== */
 
-            margin: 0 auto;
+        .header {
 
-            padding: 22px 0 60px;
-        }
+            width: 100%;
 
+            padding: 18px 20px;
 
-        /* ================================================== */
-        /* TOP BAR */
-        /* ================================================== */
-
-        .topbar {
             display: flex;
-
-            align-items: center;
 
             justify-content: space-between;
 
-            gap: 15px;
+            align-items: center;
 
-            margin-bottom: 16px;
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.1);
+
         }
 
 
         .logo {
-            font-size: 22px;
 
-            font-weight: 950;
+            font-size: 21px;
 
-            letter-spacing: -.04em;
+            font-weight: 900;
+
+            letter-spacing: 1px;
+
         }
 
 
         .round {
-            padding: 9px 13px;
 
-            border-radius: 12px;
+            font-size: 14px;
+
+            opacity: 0.8;
+
+        }
+
+
+        /* ==================================================
+           MAIN
+        ================================================== */
+
+        .container {
+
+            width: min(
+                1100px,
+                calc(100% - 30px)
+            );
+
+            margin: 25px auto 50px;
+
+        }
+
+
+        /* ==================================================
+           TOP STATUS
+        ================================================== */
+
+        .status-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .status-card {
 
             background:
-                rgba(255,255,255,.07);
+                rgba(255,255,255,0.07);
 
             border:
                 1px solid
-                rgba(255,255,255,.08);
+                rgba(255,255,255,0.1);
+
+            border-radius: 15px;
+
+            padding: 15px;
+
+        }
+
+
+        .status-label {
 
             font-size: 12px;
 
-            font-weight: 850;
+            opacity: 0.6;
 
-            color: #cbd5e1;
+            margin-bottom: 5px;
+
         }
 
 
-        /* ================================================== */
-        /* PROGRESS */
-        /* ================================================== */
+        .status-value {
 
-        .progress-wrap {
-            margin-bottom: 18px;
+            font-size: 21px;
+
+            font-weight: 900;
+
         }
 
 
-        .progress-info {
+        /* ==================================================
+           PLAYER
+        ================================================== */
+
+        .player-card {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.13),
+                    rgba(255,255,255,0.05)
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,0.14);
+
+            border-radius: 24px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,0.25);
+
+        }
+
+
+        .player-position {
+
+            display: inline-block;
+
+            padding: 5px 11px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            font-size: 12px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .player-name {
+
+            font-size: 42px;
+
+            font-weight: 950;
+
+            margin: 5px 0;
+
+        }
+
+
+        .player-team {
+
+            opacity: 0.65;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .overall {
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+        }
+
+
+        /* ==================================================
+           PRICE
+        ================================================== */
+
+        .price-box {
+
+            margin: 25px auto;
+
+            max-width: 500px;
+
+            padding: 20px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(0,0,0,0.18);
+
+        }
+
+
+        .price-label {
+
+            font-size: 12px;
+
+            opacity: 0.6;
+
+        }
+
+
+        .price {
+
+            font-size: 48px;
+
+            font-weight: 950;
+
+            margin: 4px 0;
+
+        }
+
+
+        .leader {
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+        }
+
+
+        /* ==================================================
+           TIMER
+        ================================================== */
+
+        .timer-wrap {
+
+            margin: 20px auto;
+
+            max-width: 500px;
+
+        }
+
+
+        .timer {
+
+            font-size: 38px;
+
+            font-weight: 950;
+
+            font-variant-numeric:
+                tabular-nums;
+
+        }
+
+
+        .timer-bar {
+
+            width: 100%;
+
+            height: 7px;
+
+            margin-top: 8px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(255,255,255,0.12);
+
+            overflow: hidden;
+
+        }
+
+
+        .timer-progress {
+
+            height: 100%;
+
+            width: 100%;
+
+            border-radius: 20px;
+
+            background:
+                #ffffff;
+
+            transition:
+                width 0.1s linear;
+
+        }
+
+
+        /* ==================================================
+           MESSAGE
+        ================================================== */
+
+        .message {
+
+            margin: 18px 0;
+
+            padding: 13px 16px;
+
+            border-radius: 13px;
+
+            background:
+                rgba(255,255,255,0.07);
+
+            font-size: 14px;
+
+            min-height: 45px;
+
+        }
+
+
+        /* ==================================================
+           BID BUTTONS
+        ================================================== */
+
+        .bid-buttons {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 10px;
+
+            max-width: 600px;
+
+            margin: 15px auto;
+
+        }
+
+
+        .bid-form {
+
+            margin: 0;
+
+        }
+
+
+        button {
+
+            width: 100%;
+
+            border: none;
+
+            cursor: pointer;
+
+            color: #111827;
+
+            background: #ffffff;
+
+            border-radius: 13px;
+
+            padding: 16px;
+
+            font-size: 17px;
+
+            font-weight: 950;
+
+            transition:
+                transform 0.12s,
+                opacity 0.12s;
+
+        }
+
+
+        button:hover {
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        button:active {
+
+            transform:
+                translateY(1px);
+
+        }
+
+
+        .bid-button-large {
+
+            font-size: 19px;
+
+        }
+
+
+        /* ==================================================
+           SOLD
+        ================================================== */
+
+        .sold-form {
+
+            max-width: 600px;
+
+            margin: 12px auto;
+
+        }
+
+
+        .sold-button {
+
+            background:
+                #fbbf24;
+
+            color:
+                #111827;
+
+            font-size: 19px;
+
+            padding: 18px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(251,191,36,0.2);
+
+        }
+
+
+        .sold-button:disabled {
+
+            opacity: 0.4;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        /* ==================================================
+           PASS
+        ================================================== */
+
+        .pass-form {
+
+            max-width: 600px;
+
+            margin: 10px auto 0;
+
+        }
+
+
+        .pass-button {
+
+            background:
+                rgba(255,255,255,0.08);
+
+            color: #ffffff;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.12);
+
+        }
+
+
+        /* ==================================================
+           HISTORY
+        ================================================== */
+
+        .history-card {
+
+            margin-top: 20px;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+        }
+
+
+        .history-title {
+
+            font-size: 18px;
+
+            font-weight: 900;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .history-list {
+
+            max-height: 300px;
+
+            overflow-y: auto;
+
+        }
+
+
+        .bid-row {
+
             display: flex;
 
             align-items: center;
 
             justify-content: space-between;
 
-            margin-bottom: 7px;
-
-            color: #94a3b8;
-
-            font-size: 11px;
-        }
-
-
-        .progress {
-            width: 100%;
-
-            height: 6px;
-
-            border-radius: 99px;
-
-            overflow: hidden;
-
-            background:
-                rgba(255,255,255,.08);
-        }
-
-
-        .progress-bar {
-            height: 100%;
-
-            width:
-                {{ (
-                    (state.get('round', 1) - 1)
-                    / total_rounds
-                    * 100
-                )|round(2) }}%;
-
-            background: #f8fafc;
-
-            border-radius: 99px;
-
-            transition:
-                width .25s ease;
-        }
-
-
-        /* ================================================== */
-        /* GM CARDS */
-        /* ================================================== */
-
-        .gm-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
             gap: 10px;
 
-            margin-bottom: 18px;
-        }
+            padding: 11px 4px;
 
-
-        .gm {
-            min-width: 0;
-
-            padding: 14px;
-
-            border-radius: 17px;
-
-            background:
-                rgba(255,255,255,.045);
-
-            border:
+            border-bottom:
                 1px solid
-                rgba(255,255,255,.07);
+                rgba(255,255,255,0.06);
+
         }
 
 
-        .gm.you {
-            border-color:
-                rgba(255,255,255,.22);
+        .bid-row:last-child {
 
-            background:
-                rgba(255,255,255,.075);
+            border-bottom: none;
+
         }
 
 
-        .gm-name {
-            overflow: hidden;
+        .bid-person {
 
-            text-overflow: ellipsis;
+            font-weight: 750;
 
-            white-space: nowrap;
-
-            font-size: 13px;
-
-            font-weight: 900;
         }
 
 
-        .gm-budget {
-            margin-top: 7px;
+        .bid-price {
+
+            font-weight: 950;
+
+        }
+
+
+        .bid-change {
 
             font-size: 12px;
 
-            color: #94a3b8;
+            opacity: 0.6;
+
+            min-width: 35px;
+
+            text-align: right;
+
         }
 
 
-        .gm-budget strong {
-            color: #fff;
-
-            font-size: 17px;
-        }
-
-
-        .gm-roster {
-            margin-top: 9px;
-
-            font-size: 11px;
-
-            color: #64748b;
-        }
-
-
-        /* ================================================== */
-        /* PLAYER CARD */
-        /* ================================================== */
-
-        .player-card {
-            position: relative;
-
-            overflow: hidden;
-
-            padding: 30px 24px 24px;
-
-            border-radius: 26px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.11);
-
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(255,255,255,.11),
-                    rgba(255,255,255,.035)
-                );
-
-            box-shadow:
-                0 25px 70px
-                rgba(0,0,0,.28);
+        .empty-history {
 
             text-align: center;
-        }
-
-
-        .player-card::before {
-            content: "";
-
-            position: absolute;
-
-            width: 230px;
-            height: 230px;
-
-            top: -145px;
-            left: 50%;
-
-            transform:
-                translateX(-50%);
-
-            border-radius: 50%;
-
-            background:
-                rgba(255,255,255,.055);
-
-            filter: blur(4px);
-        }
-
-
-        .player-label {
-            position: relative;
-
-            display: inline-block;
-
-            padding: 6px 10px;
-
-            border-radius: 8px;
-
-            background:
-                rgba(255,255,255,.08);
-
-            color: #cbd5e1;
-
-            font-size: 10px;
-
-            font-weight: 850;
-
-            letter-spacing: .08em;
-        }
-
-
-        .player-name {
-            position: relative;
-
-            margin: 14px 0 0;
-
-            font-size:
-                clamp(32px, 7vw, 58px);
-
-            font-weight: 950;
-
-            letter-spacing: -.055em;
-        }
-
-
-        .player-meta {
-            position: relative;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-
-            margin-top: 10px;
-        }
-
-
-        .meta {
-            padding: 6px 10px;
-
-            border-radius: 8px;
-
-            background:
-                rgba(255,255,255,.07);
-
-            color: #cbd5e1;
-
-            font-size: 11px;
-
-            font-weight: 750;
-        }
-
-
-        .ovr {
-            font-size: 15px;
-
-            font-weight: 950;
-
-            color: #fff;
-        }
-
-
-        /* ================================================== */
-        /* CURRENT PRICE */
-        /* ================================================== */
-
-        .current-bid {
-            position: relative;
-
-            margin-top: 23px;
-        }
-
-
-        .current-label {
-            color: #94a3b8;
-
-            font-size: 11px;
-        }
-
-
-        .current-price {
-            margin-top: 3px;
-
-            font-size: 38px;
-
-            line-height: 1;
-
-            font-weight: 950;
-
-            letter-spacing: -.05em;
-        }
-
-
-        .leader {
-            margin-top: 9px;
-
-            color: #cbd5e1;
-
-            font-size: 12px;
-
-            font-weight: 750;
-        }
-
-
-        /* ================================================== */
-        /* MESSAGE */
-        /* ================================================== */
-
-        .message {
-            margin-top: 13px;
-
-            padding: 12px 14px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,.045);
-
-            border:
-                1px solid
-                rgba(255,255,255,.06);
-
-            color: #cbd5e1;
-
-            font-size: 12px;
-
-            line-height: 1.5;
-        }
-
-
-        /* ================================================== */
-        /* ACTIONS */
-        /* ================================================== */
-
-        .actions {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 9px;
-
-            margin-top: 18px;
-        }
-
-
-        .action-form {
-            margin: 0;
-        }
-
-
-        .action-button {
-            width: 100%;
-
-            min-height: 54px;
-
-            border: 0;
-
-            border-radius: 14px;
-
-            cursor: pointer;
-
-            background:
-                rgba(255,255,255,.09);
-
-            color: #fff;
-
-            border:
-                1px solid
-                rgba(255,255,255,.08);
-
-            font-size: 14px;
-
-            font-weight: 900;
-
-            transition:
-                transform .15s ease,
-                background .15s ease;
-        }
-
-
-        .action-button:hover {
-            transform:
-                translateY(-2px);
-
-            background:
-                rgba(255,255,255,.15);
-        }
-
-
-        .action-button.primary {
-            background: #f8fafc;
-
-            color: #0f172a;
-
-            border-color: transparent;
-        }
-
-
-        .action-button.pass {
-            background:
-                transparent;
-
-            color: #94a3b8;
-        }
-
-
-        .action-button:active {
-            transform:
-                translateY(0);
-        }
-
-
-        /* ================================================== */
-        /* ROSTER */
-        /* ================================================== */
-
-        .roster-section {
-            margin-top: 20px;
-        }
-
-
-        .section-title {
-            margin: 0 0 11px;
-
-            font-size: 16px;
-
-            font-weight: 900;
-        }
-
-
-        .roster {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 9px;
-        }
-
-
-        .roster-card {
-            min-width: 0;
-
-            padding: 12px;
-
-            border-radius: 14px;
-
-            background:
-                rgba(255,255,255,.04);
-
-            border:
-                1px solid
-                rgba(255,255,255,.06);
-        }
-
-
-        .roster-name {
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-            font-size: 12px;
-
-            font-weight: 850;
-        }
-
-
-        .roster-info {
-            margin-top: 5px;
-
-            color: #94a3b8;
-
-            font-size: 10px;
-        }
-
-
-        .empty-roster {
-            grid-column:
-                1 / -1;
 
             padding: 25px;
 
-            text-align: center;
+            opacity: 0.5;
 
-            border-radius: 14px;
+            font-size: 14px;
 
-            color: #64748b;
+        }
+
+
+        /* ==================================================
+           AI STATUS
+        ================================================== */
+
+        .ai-card {
+
+            margin-top: 20px;
 
             background:
-                rgba(255,255,255,.025);
+                rgba(255,255,255,0.05);
 
-            font-size: 12px;
+            border-radius: 18px;
+
+            padding: 18px;
+
         }
 
 
-        /* ================================================== */
-        /* MOBILE */
-        /* ================================================== */
+        .ai-title {
 
-        @media (max-width: 800px) {
+            font-weight: 900;
 
-            .gm-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
+            margin-bottom: 12px;
 
-            .roster {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
         }
 
 
-        @media (max-width: 520px) {
+        .ai-row {
 
-            .page {
-                width: 92%;
+            display: flex;
 
-                padding-top: 14px;
+            justify-content: space-between;
+
+            padding: 9px 0;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.05);
+
+        }
+
+
+        .ai-row:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .ai-name {
+
+            font-weight: 700;
+
+        }
+
+
+        .ai-budget {
+
+            opacity: 0.7;
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (
+            max-width: 700px
+        ) {
+
+            .container {
+
+                width:
+                    calc(100% - 20px);
+
+                margin-top: 15px;
+
             }
 
 
-            .gm-grid {
+            .status-grid {
+
                 grid-template-columns:
                     repeat(2, 1fr);
-            }
 
-
-            .gm {
-                padding: 11px;
-            }
-
-
-            .gm-name {
-                font-size: 11px;
-            }
-
-
-            .gm-budget {
-                font-size: 10px;
-            }
-
-
-            .gm-budget strong {
-                font-size: 15px;
             }
 
 
             .player-card {
-                padding:
-                    24px 15px 18px;
+
+                padding: 22px 15px;
+
             }
 
 
             .player-name {
-                font-size: 38px;
-            }
 
-
-            .current-price {
                 font-size: 32px;
+
             }
 
 
-            .actions {
+            .price {
+
+                font-size: 40px;
+
+            }
+
+
+            .bid-buttons {
+
                 grid-template-columns:
-                    1fr 1fr;
+                    1fr 1fr 1fr;
+
             }
 
 
-            .action-form:last-child {
-                grid-column:
-                    1 / -1;
+            button {
+
+                padding: 14px 7px;
+
+                font-size: 15px;
+
             }
 
-
-            .roster {
-                grid-template-columns:
-                    1fr 1fr;
-            }
         }
 
     </style>
+
 </head>
 
 
 <body>
 
-<div class="page">
 
+<!-- ======================================================
+     HEADER
+====================================================== -->
 
-    <!-- ================================================== -->
-    <!-- TOP -->
-    <!-- ================================================== -->
+<header class="header">
 
-    <div class="topbar">
+    <div class="logo">
+        ⚾ AUCTION
+    </div>
 
-        <div class="logo">
-            ⚾ AUCTION
-        </div>
+    <div class="round">
 
-        <div class="round">
-
-            ROUND
-            {{ state.get('round', 1) }}
-            /
-            {{ total_rounds }}
-
-        </div>
+        ROUND
+        {{ state.round }}
+        /
+        {{ state.total_rounds }}
 
     </div>
 
-
-    <!-- ================================================== -->
-    <!-- PROGRESS -->
-    <!-- ================================================== -->
-
-    <div class="progress-wrap">
-
-        <div class="progress-info">
-
-            <span>
-                시즌 영입 진행
-            </span>
-
-            <span>
-                {{ state.get('round', 1) }}
-                / {{ total_rounds }}
-            </span>
-
-        </div>
+</header>
 
 
-        <div class="progress">
-
-            <div
-                class="progress-bar"
-            ></div>
-
-        </div>
-
-    </div>
+<main class="container">
 
 
-    <!-- ================================================== -->
-    <!-- GM STATUS -->
-    <!-- ================================================== -->
+    <!-- ==================================================
+         STATUS
+    ================================================== -->
 
-    <div class="gm-grid">
+    <div class="status-grid">
 
+        <div class="status-card">
 
-        <!-- USER -->
-
-        <div class="gm you">
-
-            <div class="gm-name">
-                👤 나
+            <div class="status-label">
+                내 예산
             </div>
 
-            <div class="gm-budget">
-
-                남은 포인트
-
-                <br>
-
-                <strong>
-                    {{ state.get('budget', 0) }}
-                </strong>
-                P
-
-            </div>
-
-            <div class="gm-roster">
-
-                영입 선수
-                {{ state.get('roster', [])|length }}명
-
+            <div class="status-value">
+                {{ state.budget }}P
             </div>
 
         </div>
 
 
-        <!-- VETERAN -->
+        <div class="status-card">
 
-        <div class="gm">
-
-            <div class="gm-name">
-                🦉 베테랑
+            <div class="status-label">
+                내 영입
             </div>
 
-            <div class="gm-budget">
-
-                남은 포인트
-
-                <br>
-
-                <strong>
-                    {{
-                        state
-                        .get(
-                            'ai_budgets',
-                            {}
-                        )
-                        .get(
-                            'veteran',
-                            100
-                        )
-                    }}
-                </strong>
-                P
-
-            </div>
-
-            <div class="gm-roster">
-
-                영입 선수
-                {{
-                    state
-                    .get(
-                        'ai_rosters',
-                        {}
-                    )
-                    .get(
-                        'veteran',
-                        []
-                    )|length
-                }}명
-
+            <div class="status-value">
+                {{ state.roster|length }}명
             </div>
 
         </div>
 
 
-        <!-- DATA -->
+        <div class="status-card">
 
-        <div class="gm">
-
-            <div class="gm-name">
-                📊 데이터파
+            <div class="status-label">
+                경매 선수
             </div>
 
-            <div class="gm-budget">
+            <div class="status-value">
 
-                남은 포인트
-
-                <br>
-
-                <strong>
-                    {{
-                        state
-                        .get(
-                            'ai_budgets',
-                            {}
-                        )
-                        .get(
-                            'data',
-                            100
-                        )
-                    }}
-                </strong>
-                P
-
-            </div>
-
-            <div class="gm-roster">
-
-                영입 선수
-                {{
-                    state
-                    .get(
-                        'ai_rosters',
-                        {}
-                    )
-                    .get(
-                        'data',
-                        []
-                    )|length
-                }}명
-
-            </div>
-
-        </div>
-
-
-        <!-- GAMBLER -->
-
-        <div class="gm">
-
-            <div class="gm-name">
-                🎲 승부사
-            </div>
-
-            <div class="gm-budget">
-
-                남은 포인트
-
-                <br>
-
-                <strong>
-                    {{
-                        state
-                        .get(
-                            'ai_budgets',
-                            {}
-                        )
-                        .get(
-                            'gambler',
-                            100
-                        )
-                    }}
-                </strong>
-                P
-
-            </div>
-
-            <div class="gm-roster">
-
-                영입 선수
-                {{
-                    state
-                    .get(
-                        'ai_rosters',
-                        {}
-                    )
-                    .get(
-                        'gambler',
-                        []
-                    )|length
-                }}명
+                {{ state.round }}
 
             </div>
 
@@ -943,119 +830,95 @@
     </div>
 
 
-    <!-- ================================================== -->
-    <!-- CURRENT PLAYER -->
-    <!-- ================================================== -->
-
-    {% set p = current or player or {} %}
-
+    <!-- ==================================================
+         PLAYER
+    ================================================== -->
 
     <section class="player-card">
 
 
-        <div class="player-label">
-            NOW AVAILABLE
-        </div>
+        <div class="player-position">
 
-
-        <h1 class="player-name">
-
-            {{
-                p.get(
-                    'name',
-                    p.get(
-                        'player_name',
-                        '선수'
-                    )
-                )
+            {{ current.position
+                if current.position is defined
+                else current.pos
+                if current.pos is defined
+                else "UTIL"
             }}
 
-        </h1>
+        </div>
 
 
-        <div class="player-meta">
+        <div class="player-name">
 
-            <span class="meta">
-
-                {{
-                    p.get(
-                        'position',
-                        p.get(
-                            'pos',
-                            'UTIL'
-                        )
-                    )
-                }}
-
-            </span>
-
-
-            <span class="meta">
-
-                OVR
-
-                <strong class="ovr">
-
-                    {{
-                        p.get(
-                            'overall',
-                            p.get(
-                                'ovr',
-                                p.get(
-                                    'rating',
-                                    0
-                                )
-                            )
-                        )
-                    }}
-
-                </strong>
-
-            </span>
+            {{ current.name
+                if current.name is defined
+                else current.player_name
+            }}
 
         </div>
 
 
-        <!-- CURRENT PRICE -->
+        <div class="player-team">
 
-        <div class="current-bid">
+            {{ current.team
+                if current.team is defined
+                else "-"
+            }}
 
-            <div class="current-label">
-                CURRENT PRICE
+        </div>
+
+
+        <div class="overall">
+
+            OVR
+
+            {{ current.overall
+                if current.overall is defined
+                else current.ovr
+                if current.ovr is defined
+                else current.rating
+                if current.rating is defined
+                else "-"
+            }}
+
+        </div>
+
+
+        <!-- ==================================================
+             PRICE
+        ================================================== -->
+
+        <div class="price-box">
+
+            <div class="price-label">
+                CURRENT BID
             </div>
 
-            <div class="current-price">
+            <div class="price">
 
-                {{ state.get('price', 1) }}P
+                {{ state.price }}P
 
             </div>
 
 
             <div class="leader">
 
-                {% if state.get('leader') == 'user' %}
+                {% if state.leader == "user" %}
 
-                    🔥 현재 최고 입찰자:
-                    <strong>나</strong>
+                    👤 현재 최고 입찰자: <b>나</b>
 
-                {% elif state.get('leader') == 'veteran' %}
+                {% elif state.leader %}
 
-                    🦉 현재 최고:
-                    <strong>베테랑</strong>
+                    🤖 현재 최고 입찰자:
 
-                {% elif state.get('leader') == 'data' %}
-
-                    📊 현재 최고:
-                    <strong>데이터파</strong>
-
-                {% elif state.get('leader') == 'gambler' %}
-
-                    🎲 현재 최고:
-                    <strong>승부사</strong>
+                    <b>
+                        {{ ai_names[state.leader] }}
+                    </b>
 
                 {% else %}
 
-                    경매 대기 중
+                    아직 입찰 없음
 
                 {% endif %}
 
@@ -1064,30 +927,51 @@
         </div>
 
 
-        <!-- MESSAGE -->
+        <!-- ==================================================
+             TIMER
+        ================================================== -->
 
-        {% if state.get('message') %}
+        <div class="timer-wrap">
 
-            <div class="message">
+            <div
+                class="timer"
+                id="timer"
+            >
+                5.0
+            </div>
 
-                {{ state.get('message') }}
+            <div class="timer-bar">
+
+                <div
+                    class="timer-progress"
+                    id="timerProgress"
+                ></div>
 
             </div>
 
-        {% endif %}
+        </div>
 
 
-        <!-- ================================================== -->
-        <!-- ACTIONS -->
-        <!-- ================================================== -->
+        <!-- ==================================================
+             MESSAGE
+        ================================================== -->
 
-        <div class="actions">
+        <div class="message">
+
+            {{ state.message }}
+
+        </div>
 
 
-            <!-- +1 -->
+        <!-- ==================================================
+             BID
+        ================================================== -->
+
+        <div class="bid-buttons">
+
 
             <form
-                class="action-form"
+                class="bid-form"
                 method="POST"
                 action="{{
                     url_for(
@@ -1104,8 +988,8 @@
                 >
 
                 <button
-                    class="action-button primary"
                     type="submit"
+                    class="bid-button-large"
                 >
                     +1P
                 </button>
@@ -1113,10 +997,8 @@
             </form>
 
 
-            <!-- +3 -->
-
             <form
-                class="action-form"
+                class="bid-form"
                 method="POST"
                 action="{{
                     url_for(
@@ -1133,8 +1015,8 @@
                 >
 
                 <button
-                    class="action-button"
                     type="submit"
+                    class="bid-button-large"
                 >
                     +3P
                 </button>
@@ -1142,10 +1024,8 @@
             </form>
 
 
-            <!-- +5 -->
-
             <form
-                class="action-form"
+                class="bid-form"
                 method="POST"
                 action="{{
                     url_for(
@@ -1162,290 +1042,360 @@
                 >
 
                 <button
-                    class="action-button"
                     type="submit"
+                    class="bid-button-large"
                 >
                     +5P
                 </button>
 
             </form>
 
+        </div>
 
-            <!-- PASS -->
 
-            <form
-                class="action-form"
-                method="POST"
-                action="{{
-                    url_for(
-                        'auction.auction_action',
-                        game_id=game_id
-                    )
-                }}"
+        <!-- ==================================================
+             SOLD
+        ================================================== -->
+
+        {% if state.leader == "user" %}
+
+        <form
+            class="sold-form"
+            method="POST"
+            action="{{
+                url_for(
+                    'auction.auction_action',
+                    game_id=game_id
+                )
+            }}"
+        >
+
+            <input
+                type="hidden"
+                name="action"
+                value="sold"
             >
 
-                <input
-                    type="hidden"
-                    name="action"
-                    value="pass"
-                >
+            <button
+                type="submit"
+                class="sold-button"
+                id="soldButton"
+            >
 
-                <button
-                    class="
-                        action-button
-                        pass
-                    "
-                    type="submit"
-                >
-                    PASS
-                </button>
+                🔨
+                {{ state.price }}P에 낙찰
 
-            </form>
+            </button>
+
+        </form>
+
+        {% endif %}
 
 
-        </div>
+        <!-- ==================================================
+             PASS
+        ================================================== -->
+
+        <form
+            class="pass-form"
+            method="POST"
+            action="{{
+                url_for(
+                    'auction.auction_action',
+                    game_id=game_id
+                )
+            }}"
+        >
+
+            <input
+                type="hidden"
+                name="action"
+                value="pass"
+            >
+
+            <button
+                type="submit"
+                class="pass-button"
+            >
+
+                PASS
+
+            </button>
+
+        </form>
+
 
     </section>
 
 
-    <!-- ================================================== -->
-    <!-- MY ROSTER -->
-    <!-- ================================================== -->
+    <!-- ==================================================
+         BID HISTORY
+    ================================================== -->
 
-    <section class="roster-section">
+    <section class="history-card">
 
-        <h2 class="section-title">
-            👤 내 선수단
-        </h2>
+        <div class="history-title">
+
+            📜 입찰 기록
+
+        </div>
 
 
-        <div class="roster">
+        <div class="history-list">
 
-            {% if state.get('roster') %}
 
-                {% for rp in state.get('roster') %}
+            {% if state.bid_log %}
 
-                    <div class="roster-card">
 
-                        <div class="roster-name">
+                {% for bid in state.bid_log|reverse %}
 
-                            {{
-                                rp.get(
-                                    'name',
-                                    rp.get(
-                                        'player_name',
-                                        '선수'
-                                    )
-                                )
-                            }}
+                <div class="bid-row">
 
-                        </div>
 
-                        <div class="roster-info">
+                    <div class="bid-person">
 
-                            {{
-                                rp.get(
-                                    'position',
-                                    'UTIL'
-                                )
-                            }}
+                        {% if bid.bidder == "user" %}
 
-                            · OVR
+                            👤
 
-                            {{
-                                rp.get(
-                                    'overall',
-                                    0
-                                )
-                            }}
+                        {% else %}
 
-                            ·
+                            🤖
 
-                            {{
-                                rp.get(
-                                    'cost',
-                                    0
-                                )
-                            }}P
+                        {% endif %}
 
-                        </div>
+                        {{ bid.name }}
 
                     </div>
 
+
+                    <div class="bid-price">
+
+                        {{ bid.price }}P
+
+                    </div>
+
+
+                    <div class="bid-change">
+
+                        {% if bid.amount %}
+
+                            +{{ bid.amount }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
                 {% endfor %}
+
 
             {% else %}
 
-                <div class="empty-roster">
 
-                    아직 영입한 선수가 없습니다.
+                <div class="empty-history">
 
-                    <br>
-
-                    첫 번째 선수를 노려보세요.
+                    아직 입찰 기록이 없습니다.
 
                 </div>
 
+
             {% endif %}
+
 
         </div>
 
     </section>
 
 
-    <!-- ================================================== -->
-    <!-- AI ROSTERS -->
-    <!-- ================================================== -->
+    <!-- ==================================================
+         AI STATUS
+    ================================================== -->
 
-    <section class="roster-section">
+    <section class="ai-card">
 
-        <h2 class="section-title">
-            🤖 AI 영입 현황
-        </h2>
+        <div class="ai-title">
 
-
-        <div class="roster">
-
-
-            {% set ai_rosters =
-                state.get(
-                    'ai_rosters',
-                    {}
-                )
-            %}
-
-
-            {% for ai_key, ai_name in ai_names.items() %}
-
-                {% set roster =
-                    ai_rosters.get(
-                        ai_key,
-                        []
-                    )
-                %}
-
-
-                {% for rp in roster %}
-
-                    <div class="roster-card">
-
-                        <div class="roster-name">
-
-                            {{ ai_name }}
-
-                            ·
-
-                            {{
-                                rp.get(
-                                    'name',
-                                    '선수'
-                                )
-                            }}
-
-                        </div>
-
-                        <div class="roster-info">
-
-                            {{
-                                rp.get(
-                                    'position',
-                                    'UTIL'
-                                )
-                            }}
-
-                            · OVR
-
-                            {{
-                                rp.get(
-                                    'overall',
-                                    0
-                                )
-                            }}
-
-                            ·
-
-                            {{
-                                rp.get(
-                                    'cost',
-                                    0
-                                )
-                            }}P
-
-                        </div>
-
-                    </div>
-
-                {% endfor %}
-
-            {% endfor %}
-
-
-            {% if
-                not ai_rosters.get('veteran', [])
-                and not ai_rosters.get('data', [])
-                and not ai_rosters.get('gambler', [])
-            %}
-
-                <div class="empty-roster">
-
-                    아직 AI가 영입한 선수가 없습니다.
-
-                    <br>
-
-                    하지만 좋은 선수가 나오면
-                    AI도 적극적으로 경쟁합니다.
-
-                </div>
-
-            {% endif %}
+            🤖 경쟁자 현황
 
         </div>
+
+
+        {% for ai_key, ai_name in ai_names.items() %}
+
+        <div class="ai-row">
+
+
+            <div class="ai-name">
+
+                {{ ai_name }}
+
+            </div>
+
+
+            <div class="ai-budget">
+
+                {{ state.ai_budgets[ai_key] }}P
+
+                ·
+
+                {{ state.ai_rosters[ai_key]|length }}명
+
+            </div>
+
+
+        </div>
+
+        {% endfor %}
+
 
     </section>
 
 
-</div>
+</main>
 
 
-<!-- ====================================================== -->
-<!-- DISABLE DOUBLE SUBMIT -->
-<!-- ====================================================== -->
+<!-- ======================================================
+     TIMER JAVASCRIPT
+====================================================== -->
 
 <script>
 
-    document
-        .querySelectorAll("form")
-        .forEach(function(form) {
 
-            form.addEventListener(
-                "submit",
-                function() {
+/*
+ * 서버가 알려준 마감 시간
+ *
+ * Python time.time()은 초 단위 Unix timestamp
+ */
 
-                    const buttons =
-                        form.querySelectorAll(
-                            "button"
-                        );
+const deadline =
+    {{ state.bid_deadline|default(0) }} * 1000;
 
-                    buttons.forEach(
-                        function(button) {
 
-                            button.disabled = true;
+const timeout =
+    {{ state.bid_timeout|default(5) }} * 1000;
 
-                            button.style.opacity =
-                                "0.55";
 
-                            button.innerText =
-                                "처리 중...";
+const timerElement =
+    document.getElementById(
+        "timer"
+    );
 
-                        }
-                    );
 
-                }
+const progressElement =
+    document.getElementById(
+        "timerProgress"
+    );
+
+
+let submitted =
+    false;
+
+
+/*
+ * 시간 표시
+ */
+
+function updateTimer() {
+
+    const now =
+        Date.now();
+
+
+    const remaining =
+        Math.max(
+            0,
+            deadline - now
+        );
+
+
+    const seconds =
+        remaining / 1000;
+
+
+    timerElement.textContent =
+        seconds.toFixed(1);
+
+
+    const percentage =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                (remaining / timeout) * 100
+            )
+        );
+
+
+    progressElement.style.width =
+        percentage + "%";
+
+
+    /*
+     * 시간 종료
+     *
+     * 페이지를 새로고침하면
+     * 서버에서 실제 timeout을 검사한다.
+     */
+
+    if (
+        remaining <= 0
+        && !submitted
+    ) {
+
+        submitted = true;
+
+        location.reload();
+
+        return;
+
+    }
+
+
+    /*
+     * 1초 이하일 때
+     * 낙찰 버튼이 있다면 강조
+     */
+
+    if (
+        seconds <= 1
+        && seconds > 0
+    ) {
+
+        const soldButton =
+            document.getElementById(
+                "soldButton"
             );
 
-        });
+        if (soldButton) {
+
+            soldButton.style.transform =
+                "scale(1.03)";
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        updateTimer
+    );
+
+}
+
+
+updateTimer();
+
 
 </script>
 
+
 </body>
+
 </html>
