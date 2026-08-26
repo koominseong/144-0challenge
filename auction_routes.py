@@ -1,23 +1,18 @@
-# auction_routes.py
-
-import uuid
-
 from flask import (
     Blueprint,
     render_template,
     redirect,
     url_for,
     request,
+    session,
 )
 
 from auction import (
     create_game,
+    user_action,
+    seconds_left,
 )
 
-
-# ============================================================
-# BLUEPRINT
-# ============================================================
 
 auction_bp = Blueprint(
     "auction",
@@ -30,19 +25,100 @@ auction_bp = Blueprint(
 # GAME STORAGE
 # ============================================================
 
-GAMES = {}
+def get_games():
+    return session.setdefault(
+        "auction_games",
+        {},
+    )
+
+
+def get_game(game_id):
+    games = get_games()
+
+    game = games.get(
+        str(game_id)
+    )
+
+    return game
+
+
+def save_game(game_id, game):
+    games = get_games()
+
+    games[str(game_id)] = game
+
+    session[
+        "auction_games"
+    ] = games
+
+    session.modified = True
 
 
 # ============================================================
-# HOME
+# AUCTION HOME
 # ============================================================
 
 @auction_bp.route("/")
 def auction_home():
 
+    games = get_games()
+
+    history = []
+
+    for game_id, game in games.items():
+
+        result = game.get(
+            "result"
+        )
+
+        if not result:
+            continue
+
+        user = result.get(
+            "user",
+            {}
+        )
+
+        history.append({
+
+            "game_id":
+                game_id,
+
+            "rank":
+                user.get(
+                    "rank",
+                    "-",
+                ),
+
+            "grade":
+                user.get(
+                    "grade",
+                    "-",
+                ),
+
+            "score":
+                user.get(
+                    "score",
+                    0,
+                ),
+
+            "date":
+                game.get(
+                    "created_at",
+                    "",
+                ),
+
+        })
+
+    history.sort(
+        key=lambda x:
+            x["score"],
+        reverse=True,
+    )
+
     return render_template(
         "auction_home.html",
-        hall=[],
+        history=history,
     )
 
 
@@ -56,15 +132,27 @@ def auction_home():
 )
 def auction_new():
 
+    games = get_games()
+
+    # 간단한 game_id 생성
     game_id = str(
-        uuid.uuid4()
+        max(
+            [
+                int(x)
+                for x in games.keys()
+                if str(x).isdigit()
+            ]
+            or [0]
+        )
+        + 1
     )
 
-    state = create_game()
+    game = create_game()
 
-    state["game_id"] = game_id
-
-    GAMES[game_id] = state
+    save_game(
+        game_id,
+        game,
+    )
 
     return redirect(
         url_for(
@@ -84,24 +172,21 @@ def auction_new():
 )
 def auction_play(game_id):
 
-    game_id = str(game_id)
-
-    state = GAMES.get(
+    game = get_game(
         game_id
     )
 
-    if state is None:
+    if game is None:
 
         return redirect(
             url_for(
-                "auction.auction_new"
+                "auction.auction_home"
             )
         )
 
-    # 게임 종료
-    if state.get(
-        "finished",
-        False,
+    # 이미 끝났으면 결과
+    if game.get(
+        "finished"
     ):
 
         return redirect(
@@ -111,44 +196,28 @@ def auction_play(game_id):
             )
         )
 
-    # --------------------------------------------------------
-    # GET 요청에서도 timeout 검사
-    #
-    # 브라우저가 닫혔다가 다시 들어와도
-    # 서버 시간이 이미 끝났다면 처리한다.
-    # --------------------------------------------------------
-
-    from auction import (
-        is_bid_expired,
-        settle_current_auction,
-        ai_response,
-        next_round,
+    remaining = seconds_left(
+        game
     )
 
-    if is_bid_expired(state):
+    # --------------------------------------------------------
+    # 시간이 끝났으면 서버에서 자동 처리
+    # --------------------------------------------------------
 
-        if state.get("leader"):
+    if remaining <= 0:
 
-            settle_current_auction(
-                state
-            )
+        user_action(
+            game,
+            "timeout",
+        )
 
-        else:
+        save_game(
+            game_id,
+            game,
+        )
 
-            ai = ai_response(
-                state
-            )
-
-            if not ai:
-                next_round(
-                    state
-                )
-
-        GAMES[game_id] = state
-
-        if state.get(
-            "finished",
-            False,
+        if game.get(
+            "finished"
         ):
 
             return redirect(
@@ -158,27 +227,75 @@ def auction_play(game_id):
                 )
             )
 
-    current = state.get(
-        "current"
-    )
+        remaining = seconds_left(
+            game
+        )
 
     return render_template(
         "auction_game.html",
 
-        state=state,
-
-        current=current,
-
         game_id=game_id,
 
-        total_rounds=state.get(
-            "total_rounds",
-            12,
+        state=game,
+
+        player=game.get(
+            "current"
         ),
 
-        ai_names=state.get(
+        price=game.get(
+            "price",
+            1,
+        ),
+
+        leader=game.get(
+            "leader"
+        ),
+
+        message=game.get(
+            "message",
+            "",
+        ),
+
+        remaining=max(
+            0,
+            int(
+                remaining
+            ),
+        ),
+
+        ai_names=game.get(
             "ai_names",
             {},
+        ),
+
+        ai_budgets=game.get(
+            "ai_budgets",
+            {},
+        ),
+
+        ai_rosters=game.get(
+            "ai_rosters",
+            {},
+        ),
+
+        roster_limits=game.get(
+            "roster_limits",
+            {},
+        ),
+
+        bid_log=game.get(
+            "bid_log",
+            [],
+        ),
+
+        total_rounds=game.get(
+            "total_rounds",
+            0,
+        ),
+
+        roster=game.get(
+            "roster",
+            [],
         ),
     )
 
@@ -188,93 +305,42 @@ def auction_play(game_id):
 # ============================================================
 
 @auction_bp.route(
-    "/<game_id>/action",
+    "/<game_id>/action/<action>",
     methods=["POST"],
 )
-def auction_action(game_id):
+def auction_action(
+    game_id,
+    action,
+):
 
-    game_id = str(game_id)
-
-    state = GAMES.get(
+    game = get_game(
         game_id
     )
 
-    if state is None:
+    if game is None:
 
         return redirect(
             url_for(
-                "auction.auction_new"
+                "auction.auction_home"
             )
         )
 
-    if state.get(
-        "finished",
-        False,
+    if not game.get(
+        "finished"
     ):
 
-        return redirect(
-            url_for(
-                "auction.auction_result",
-                game_id=game_id,
-            )
-        )
-
-    action = request.form.get(
-        "action"
-    )
-
-    if action is None:
-
-        action = request.args.get(
-            "action"
-        )
-
-    if action is None:
-
-        state["message"] = (
-            "잘못된 요청입니다."
-        )
-
-        return redirect(
-            url_for(
-                "auction.auction_play",
-                game_id=game_id,
-            )
-        )
-
-    try:
-
-        from auction import (
-            user_action,
-        )
-
         user_action(
-            state,
+            game,
             action,
         )
 
-        GAMES[game_id] = state
-
-    except Exception as e:
-
-        print(
-            "[AUCTION ERROR]",
-            repr(e),
+        save_game(
+            game_id,
+            game,
         )
 
-        state["message"] = (
-            "경매 처리 중 오류가 발생했습니다."
-        )
-
-        GAMES[game_id] = state
-
-    # --------------------------------------------------------
-    # 끝났으면 결과 페이지
-    # --------------------------------------------------------
-
-    if state.get(
-        "finished",
-        False,
+    if game.get(
+        "finished"
     ):
 
         return redirect(
@@ -298,27 +364,23 @@ def auction_action(game_id):
 
 @auction_bp.route(
     "/<game_id>/result",
-    methods=["GET"],
 )
 def auction_result(game_id):
 
-    game_id = str(game_id)
-
-    state = GAMES.get(
+    game = get_game(
         game_id
     )
 
-    if state is None:
+    if game is None:
 
         return redirect(
             url_for(
-                "auction.auction_new"
+                "auction.auction_home"
             )
         )
 
-    if not state.get(
-        "finished",
-        False,
+    if not game.get(
+        "finished"
     ):
 
         return redirect(
@@ -328,29 +390,41 @@ def auction_result(game_id):
             )
         )
 
+    result = game.get(
+        "result",
+        {},
+    )
+
     return render_template(
         "auction_result.html",
 
-        result=state.get(
-            "result",
+        game_id=game_id,
+
+        state=game,
+
+        result=result,
+
+        results=result.get(
+            "results",
+            [],
+        ),
+
+        user=result.get(
+            "user",
             {},
         ),
 
-        game_id=game_id,
-    )
+        history=result.get(
+            "history",
+            [],
+        ),
 
+        best_bargain=result.get(
+            "best_bargain"
+        ),
 
-# ============================================================
-# HALL
-# ============================================================
-
-@auction_bp.route(
-    "/hall",
-    methods=["GET"],
-)
-def auction_hall():
-
-    return render_template(
-        "auction_home.html",
-        hall=[],
+        roster_limits=result.get(
+            "roster_limits",
+            {},
+        ),
     )
