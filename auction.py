@@ -284,7 +284,7 @@ def create_game(players):
 
     normalized_players = []
 
-    for player in players:
+    for player:
 
         try:
 
