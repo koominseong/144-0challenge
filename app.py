@@ -47,7 +47,7 @@ app.register_blueprint(live_bp)
 app.register_blueprint(scout_bp)
 app.register_blueprint(gauntlet_bp)
 app.register_blueprint(draft_bp)
-app.register_blueprint(auction_bp)
+app.register_blueprint(auction)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
