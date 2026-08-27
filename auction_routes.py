@@ -1,3 +1,6 @@
+import json
+import os
+
 from flask import (
     Blueprint,
     render_template,
@@ -12,6 +15,7 @@ from auction import (
     user_action,
     seconds_left,
     run_ai_battle,
+    next_round,
 )
 
 
@@ -23,23 +27,139 @@ auction_bp = Blueprint(
 
 
 # ============================================================
+# PLAYER POOL
+# ============================================================
+
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
+
+PLAYER_POOL_PATH = os.path.join(
+    BASE_DIR,
+    "player_pool.json"
+)
+
+
+def load_player_pool():
+
+    if not os.path.exists(
+        PLAYER_POOL_PATH
+    ):
+
+        raise FileNotFoundError(
+            f"player_pool.json을 찾을 수 없습니다: "
+            f"{PLAYER_POOL_PATH}"
+        )
+
+    with open(
+        PLAYER_POOL_PATH,
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        data = json.load(f)
+
+    # --------------------------------------------
+    # [
+    #   {...},
+    #   {...}
+    # ]
+    # --------------------------------------------
+
+    if isinstance(
+        data,
+        list
+    ):
+
+        players = data
+
+    # --------------------------------------------
+    # {
+    #   "players": [...]
+    # }
+    # --------------------------------------------
+
+    elif isinstance(
+        data,
+        dict
+    ):
+
+        if isinstance(
+            data.get("players"),
+            list
+        ):
+
+            players = data[
+                "players"
+            ]
+
+        elif isinstance(
+            data.get("player_pool"),
+            list
+        ):
+
+            players = data[
+                "player_pool"
+            ]
+
+        else:
+
+            # 혹시 dict 안에 선수 데이터가
+            # 직접 들어있는 경우
+            players = []
+
+            for value in data.values():
+
+                if isinstance(
+                    value,
+                    list
+                ):
+
+                    players.extend(
+                        value
+                    )
+
+    else:
+
+        raise ValueError(
+            "player_pool.json 형식이 올바르지 않습니다."
+        )
+
+    if not players:
+
+        raise ValueError(
+            "player_pool.json에 선수가 없습니다."
+        )
+
+    return players
+
+
+# ============================================================
 # SESSION
 # ============================================================
 
 def get_games():
 
-    if "auction_games" not in session:
+    return session.get(
+        "auction_games",
+        {}
+    )
 
-        session[
-            "auction_games"
-        ] = {}
 
-    return session[
+def save_games(
+    games
+):
+
+    session[
         "auction_games"
-    ]
+    ] = games
+
+    session.modified = True
 
 
-def get_game(game_id):
+def get_game(
+    game_id
+):
 
     games = get_games()
 
@@ -59,18 +179,19 @@ def save_game(
         str(game_id)
     ] = game
 
-    session[
-        "auction_games"
-    ] = games
-
-    session.modified = True
+    save_games(
+        games
+    )
 
 
 # ============================================================
 # HOME
 # ============================================================
 
-@auction_bp.route("/")
+@auction_bp.route(
+    "/",
+    methods=["GET"]
+)
 def auction_home():
 
     games = get_games()
@@ -124,7 +245,6 @@ def auction_home():
                     "created_at",
                     ""
                 ),
-
         })
 
     history.sort(
@@ -135,71 +255,99 @@ def auction_home():
 
     return render_template(
         "auction_home.html",
-        history=history,
+        history=history
     )
 
 
 # ============================================================
-# NEW
+# NEW GAME
 # ============================================================
 
 @auction_bp.route(
     "/new",
-    methods=["GET"],
+    methods=["GET"]
 )
 def auction_new():
 
-    games = get_games()
+    try:
 
-    ids = []
+        # ----------------------------------------
+        # 실제 player_pool.json 로딩
+        # ----------------------------------------
 
-    for key in games.keys():
+        players = load_player_pool()
 
-        try:
-            ids.append(
-                int(key)
-            )
-        except (
-            TypeError,
-            ValueError,
-        ):
-            pass
+        # ----------------------------------------
+        # 게임 생성
+        # ----------------------------------------
 
-    game_id = str(
-        max(
-            ids or [0]
-        ) + 1
-    )
-
-    # --------------------------------------------------------
-    # 여기 중요
-    #
-    # 네 player_pool.json을 사용하는 기존 코드가 있다면
-    # create_game(players)를 넘겨주면 됨.
-    #
-    # 현재는 session에 저장된 player_pool이 있으면 사용.
-    # --------------------------------------------------------
-
-    players = session.get(
-        "auction_players",
-        []
-    )
-
-    game = create_game(
-        players
-    )
-
-    save_game(
-        game_id,
-        game
-    )
-
-    return redirect(
-        url_for(
-            "auction.auction_play",
-            game_id=game_id,
+        game = create_game(
+            players
         )
-    )
+
+        # ----------------------------------------
+        # ID 생성
+        # ----------------------------------------
+
+        games = get_games()
+
+        ids = []
+
+        for key in games.keys():
+
+            try:
+
+                ids.append(
+                    int(key)
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                pass
+
+        game_id = str(
+            max(
+                ids or [0]
+            ) + 1
+        )
+
+        # ----------------------------------------
+        # 저장
+        # ----------------------------------------
+
+        games[
+            game_id
+        ] = game
+
+        save_games(
+            games
+        )
+
+        # ----------------------------------------
+        # 반드시 game_id를 전달
+        # ----------------------------------------
+
+        return redirect(
+            url_for(
+                "auction.auction_play",
+                game_id=game_id
+            )
+        )
+
+    except Exception as e:
+
+        print(
+            "[AUCTION NEW ERROR]",
+            repr(e)
+        )
+
+        return render_template(
+            "auction_error.html",
+            error=str(e)
+        ), 500
 
 
 # ============================================================
@@ -208,9 +356,11 @@ def auction_new():
 
 @auction_bp.route(
     "/<game_id>",
-    methods=["GET"],
+    methods=["GET"]
 )
-def auction_play(game_id):
+def auction_play(
+    game_id
+):
 
     game = get_game(
         game_id
@@ -224,9 +374,9 @@ def auction_play(game_id):
             )
         )
 
-    # --------------------------------------------------------
-    # 게임 종료
-    # --------------------------------------------------------
+    # ----------------------------------------
+    # 종료
+    # ----------------------------------------
 
     if game.get(
         "finished"
@@ -235,23 +385,20 @@ def auction_play(game_id):
         return redirect(
             url_for(
                 "auction.auction_result",
-                game_id=game_id,
+                game_id=game_id
             )
         )
 
-    # --------------------------------------------------------
-    # 타임아웃
-    # --------------------------------------------------------
+    # ----------------------------------------
+    # current가 없으면 다음 선수
+    # ----------------------------------------
 
-    remaining = seconds_left(
-        game
-    )
+    if game.get(
+        "current"
+    ) is None:
 
-    if remaining <= 0:
-
-        user_action(
-            game,
-            "timeout"
+        next_round(
+            game
         )
 
         save_game(
@@ -259,111 +406,111 @@ def auction_play(game_id):
             game
         )
 
-        if game.get(
-            "finished"
-        ):
+    # next_round 이후 종료될 수도 있음
+    if game.get(
+        "finished"
+    ):
 
-            return redirect(
-                url_for(
-                    "auction.auction_result",
-                    game_id=game_id,
-                )
+        return redirect(
+            url_for(
+                "auction.auction_result",
+                game_id=game_id
             )
-
-        remaining = seconds_left(
-            game
         )
+
+    # ----------------------------------------
+    # 타이머
+    # ----------------------------------------
+
+    remaining = seconds_left(
+        game
+    )
+
+    # GET 요청마다 강제로 timeout 처리하지 않는다.
+    #
+    # 프론트에서 timeout POST를 보낸다.
+    # 이게 중요하다.
+    #
+    # 이전 버전처럼 GET → timeout → redirect
+    # 를 반복하면 새로고침 루프가 생길 수 있음.
+    # ----------------------------------------
 
     return render_template(
         "auction_game.html",
 
-        game_id=
-            game_id,
+        game_id=game_id,
 
-        state=
-            game,
+        state=game,
 
-        player=
-            game.get(
-                "current"
-            ),
+        player=game.get(
+            "current"
+        ),
 
-        price=
-            game.get(
-                "price",
-                1
-            ),
+        price=game.get(
+            "price",
+            0
+        ),
 
-        leader=
-            game.get(
-                "leader"
-            ),
+        leader=game.get(
+            "leader"
+        ),
 
-        message=
-            game.get(
-                "message",
-                ""
-            ),
+        message=game.get(
+            "message",
+            ""
+        ),
 
-        remaining=
-            max(
-                0,
-                int(
-                    remaining
-                )
-            ),
+        remaining=max(
+            0,
+            int(
+                remaining
+            )
+        ),
 
-        ai_names=
-            game.get(
-                "ai_names",
-                {}
-            ),
+        ai_names=game.get(
+            "ai_names",
+            {}
+        ),
 
-        ai_budgets=
-            game.get(
-                "ai_budgets",
-                {}
-            ),
+        ai_budgets=game.get(
+            "ai_budgets",
+            {}
+        ),
 
-        ai_rosters=
-            game.get(
-                "ai_rosters",
-                {}
-            ),
+        ai_rosters=game.get(
+            "ai_rosters",
+            {}
+        ),
 
-        roster_limits=
-            game.get(
-                "roster_limits",
-                {}
-            ),
+        roster_limits=game.get(
+            "roster_limits",
+            {}
+        ),
 
-        bid_log=
-            game.get(
-                "bid_log",
-                []
-            ),
+        bid_log=game.get(
+            "bid_log",
+            []
+        ),
 
-        total_rounds=
-            game.get(
-                "total_rounds",
-                0
-            ),
+        total_rounds=game.get(
+            "total_rounds",
+            0
+        ),
 
-        roster=
-            game.get(
-                "roster",
-                []
-            ),
+        roster=game.get(
+            "roster",
+            []
+        )
     )
 
 
 # ============================================================
-# USER ACTION
+# ACTION
 # ============================================================
 
 @auction_bp.route(
     "/<game_id>/action/<action>",
-    methods=["POST"],
+    methods=["POST"]
 )
 def auction_action(
     game_id,
@@ -396,6 +543,7 @@ def auction_action(
             game
         )
 
+    # 종료되었으면 결과
     if game.get(
         "finished"
     ):
@@ -403,14 +551,14 @@ def auction_action(
         return redirect(
             url_for(
                 "auction.auction_result",
-                game_id=game_id,
+                game_id=game_id
             )
         )
 
     return redirect(
         url_for(
             "auction.auction_play",
-            game_id=game_id,
+            game_id=game_id
         )
     )
 
@@ -421,9 +569,11 @@ def auction_action(
 
 @auction_bp.route(
     "/<game_id>/ai",
-    methods=["POST"],
+    methods=["POST"]
 )
-def auction_ai(game_id):
+def auction_ai(
+    game_id
+):
 
     game = get_game(
         game_id
@@ -445,7 +595,7 @@ def auction_ai(game_id):
                 True
         })
 
-    run_ai_battle(
+    changed = run_ai_battle(
         game
     )
 
@@ -455,6 +605,9 @@ def auction_ai(game_id):
     )
 
     return jsonify({
+
+        "changed":
+            changed,
 
         "finished":
             game.get(
@@ -469,7 +622,8 @@ def auction_ai(game_id):
 
         "price":
             game.get(
-                "price"
+                "price",
+                0
             ),
 
         "remaining":
@@ -487,8 +641,7 @@ def auction_ai(game_id):
             game.get(
                 "bid_log",
                 []
-            ),
-
+            )
     })
 
 
@@ -498,8 +651,11 @@ def auction_ai(game_id):
 
 @auction_bp.route(
     "/<game_id>/result",
+    methods=["GET"]
 )
-def auction_result(game_id):
+def auction_result(
+    game_id
+):
 
     game = get_game(
         game_id
@@ -520,7 +676,7 @@ def auction_result(game_id):
         return redirect(
             url_for(
                 "auction.auction_play",
-                game_id=game_id,
+                game_id=game_id
             )
         )
 
@@ -532,41 +688,33 @@ def auction_result(game_id):
     return render_template(
         "auction_result.html",
 
-        game_id=
-            game_id,
+        game_id=game_id,
 
-        state=
-            game,
+        state=game,
 
-        result=
-            result,
+        result=result,
 
-        results=
-            result.get(
-                "results",
-                []
-            ),
+        results=result.get(
+            "results",
+            []
+        ),
 
-        user=
-            result.get(
-                "user",
-                {}
-            ),
+        user=result.get(
+            "user",
+            {}
+        ),
 
-        history=
-            result.get(
-                "history",
-                []
-            ),
+        history=result.get(
+            "history",
+            []
+        ),
 
-        best_bargain=
-            result.get(
-                "best_bargain"
-            ),
+        best_bargain=result.get(
+            "best_bargain"
+        ),
 
-        roster_limits=
-            result.get(
-                "roster_limits",
-                {}
-            ),
+        roster_limits=result.get(
+            "roster_limits",
+            {}
+        )
     )
