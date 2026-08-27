@@ -15,6 +15,7 @@ from auction import (
     serialize_game,
     user_bid,
     settle_auction,
+    auction_expired,
 )
 
 
@@ -26,14 +27,14 @@ auction = Blueprint(
 
 
 # =========================================================
-# 임시 게임 저장소
+# 게임 저장소
 # =========================================================
 
 GAMES = {}
 
 
 # =========================================================
-# 경매 홈
+# 홈
 # =========================================================
 
 @auction.route("/")
@@ -78,7 +79,7 @@ def auction_new():
 
         print(
             "[AUCTION START ERROR]",
-            repr(e),
+            repr(e)
         )
 
         return render_template(
@@ -120,30 +121,81 @@ def auction_play(game_id):
         game
     )
 
+    message = session.pop(
+        "auction_message",
+        None
+    )
+
     return render_template(
         "auction_game.html",
+
         game=data,
+
         game_id=game_id,
-        player=data["current_player"],
-        roster=data["roster"],
-        ais=data["ais"],
-        logs=data["logs"],
-        bid_history=data["bid_history"],
-        budget=data["budget"],
-        current_price=data["current_price"],
-        remaining_time=data["remaining_time"],
-        round=data["round"],
-        total_rounds=data["total_rounds"],
+
+        player=data[
+            "current_player"
+        ],
+
+        roster=data[
+            "roster"
+        ],
+
+        ais=data[
+            "ais"
+        ],
+
+        logs=data[
+            "logs"
+        ],
+
+        bid_history=data[
+            "bid_history"
+        ],
+
+        budget=data[
+            "budget"
+        ],
+
+        current_price=data[
+            "current_price"
+        ],
+
+        highest_bidder=data[
+            "highest_bidder"
+        ],
+
+        remaining_time=data[
+            "remaining_time"
+        ],
+
+        initial_time=data[
+            "initial_time"
+        ],
+
+        reset_time=data[
+            "reset_time"
+        ],
+
+        round=data[
+            "round"
+        ],
+
+        total_rounds=data[
+            "total_rounds"
+        ],
+
+        message=message,
     )
 
 
 # =========================================================
-# 입찰
+# 입찰 / 낙찰
 # =========================================================
 
 @auction.route(
     "/<game_id>/action/<action>",
-    methods=["POST", "GET"],
+    methods=["POST"]
 )
 def auction_action(
     game_id,
@@ -170,18 +222,31 @@ def auction_action(
             )
         )
 
-    # -----------------------------------------
-    # 사용자 입찰
-    # -----------------------------------------
+    # =====================================
+    # 입찰
+    # =====================================
 
-    if action in {
-        "bid",
-        "1",
-        "raise",
-    }:
+    if action == "bid":
+
+        try:
+
+            amount = int(
+                request.form.get(
+                    "amount",
+                    0
+                )
+            )
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            amount = 0
 
         success, message = user_bid(
-            game
+            game,
+            amount
         )
 
         session[
@@ -195,27 +260,18 @@ def auction_action(
             )
         )
 
-    # -----------------------------------------
-    # 강제 낙찰
-    # -----------------------------------------
+    # =====================================
+    # 시간 종료 / 낙찰
+    # =====================================
 
-    if action in {
-        "finish",
-        "close",
-        "timeout",
-    }:
+    if action == "timeout":
 
-        settle_auction(
+        if auction_expired(
             game
-        )
+        ):
 
-        if game["finished"]:
-
-            return redirect(
-                url_for(
-                    "auction.auction_result",
-                    game_id=game_id,
-                )
+            settle_auction(
+                game
             )
 
         return redirect(
@@ -275,7 +331,7 @@ def auction_result(game_id):
 
 
 # =========================================================
-# 게임 삭제
+# 삭제
 # =========================================================
 
 @auction.route(
@@ -286,7 +342,7 @@ def auction_delete(game_id):
 
     GAMES.pop(
         str(game_id),
-        None,
+        None
     )
 
     if session.get(
@@ -295,7 +351,7 @@ def auction_delete(game_id):
 
         session.pop(
             "auction_game_id",
-            None,
+            None
         )
 
     return redirect(
