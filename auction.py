@@ -1,265 +1,943 @@
-import copy
+import json
 import random
 import time
-from datetime import datetime
+from pathlib import Path
 
 
-# ============================================================
-# CONFIG
-# ============================================================
+# =========================================================
+# 기본 설정
+# =========================================================
 
-START_BUDGET = 100
+BASE_DIR = Path(__file__).resolve().parent
+PLAYER_POOL_PATH = BASE_DIR / "player_pool.json"
 
-AUCTION_SECONDS = 5
+INITIAL_BUDGET = 1000
 
-BID_AMOUNTS = [1, 3, 5]
-
-
+# 한 팀이 최종적으로 가져갈 선수 수
 ROSTER_LIMITS = {
-    "C": 1,
-    "1B": 1,
-    "2B": 1,
-    "3B": 1,
-    "SS": 1,
-    "LF": 1,
-    "CF": 1,
-    "RF": 1,
-    "DH": 1,
+    "포수": 1,
+    "내야": 4,
+    "외야": 3,
 
-    "SP": 5,
-    "RP": 3,
-    "CP": 1,
+    "선발": 5,
+    "불펜": 3,
+    "마무리": 1,
+}
+
+TOTAL_ROSTER_SIZE = sum(ROSTER_LIMITS.values())
+
+# 경매 한 선수의 제한 시간
+AUCTION_TIME = 10
+
+# 최대 경매 라운드
+MAX_ROUNDS = TOTAL_ROSTER_SIZE * 2
+
+
+# =========================================================
+# 선수 풀
+# =========================================================
+
+VALID_POSITIONS = {
+    "선발",
+    "불펜",
+    "마무리",
+    "포수",
+    "내야",
+    "외야",
 }
 
 
-TOTAL_SLOTS = sum(
-    ROSTER_LIMITS.values()
-)
+def load_player_pool():
+    """
+    실제 player_pool.json 구조:
 
+    [
+        {
+            "position": "선발",
+            "name": "류현진",
+            "team": "한화",
+            "overall": 95.5,
+            "rank": 2
+        }
+    ]
+    """
 
-AI_NAMES = {
-    "ai_1": "승부사",
-    "ai_2": "데이터파",
-    "ai_3": "베테랑",
-    "ai_4": "알뜰단장",
-}
+    if not PLAYER_POOL_PATH.exists():
+        raise FileNotFoundError(
+            f"player_pool.json을 찾을 수 없습니다.\n"
+            f"경로: {PLAYER_POOL_PATH}"
+        )
 
+    with open(
+        PLAYER_POOL_PATH,
+        "r",
+        encoding="utf-8",
+    ) as f:
+        data = json.load(f)
 
-AI_STYLE = {
-    "ai_1": {
-        "aggression": 0.72,
-        "value": 1.20,
-    },
+    if not isinstance(data, list):
+        raise ValueError(
+            "player_pool.json 최상위 구조는 [] 배열이어야 합니다."
+        )
 
-    "ai_2": {
-        "aggression": 0.55,
-        "value": 1.08,
-    },
+    players = []
 
-    "ai_3": {
-        "aggression": 0.45,
-        "value": 1.00,
-    },
+    for index, raw in enumerate(data):
 
-    "ai_4": {
-        "aggression": 0.32,
-        "value": 0.88,
-    },
-}
+        if not isinstance(raw, dict):
+            continue
 
+        name = str(
+            raw.get("name", "")
+        ).strip()
 
-# ============================================================
-# UTIL
-# ============================================================
+        team = str(
+            raw.get("team", "")
+        ).strip()
 
-def now_text():
+        position = str(
+            raw.get("position", "")
+        ).strip()
 
-    return datetime.now().strftime(
-        "%Y-%m-%d %H:%M:%S"
+        try:
+            overall = float(
+                raw.get("overall", 0)
+            )
+        except (TypeError, ValueError):
+            overall = 0.0
+
+        try:
+            rank = int(
+                raw.get("rank", 9999)
+            )
+        except (TypeError, ValueError):
+            rank = 9999
+
+        if not name:
+            continue
+
+        if position not in VALID_POSITIONS:
+            print(
+                "[AUCTION] 알 수 없는 포지션:",
+                name,
+                position,
+            )
+            continue
+
+        players.append(
+            {
+                "id": index,
+                "name": name,
+                "team": team,
+                "position": position,
+                "overall": overall,
+                "rank": rank,
+            }
+        )
+
+    if not players:
+        raise ValueError(
+            "사용 가능한 선수가 없습니다."
+        )
+
+    print(
+        f"[AUCTION] 선수 풀 로딩 완료: "
+        f"{len(players)}명"
     )
 
-
-def safe_int(
-    value,
-    default=0
-):
-
-    try:
-        return int(value)
-    except (
-        TypeError,
-        ValueError
-    ):
-        return default
+    return players
 
 
-def player_name(player):
+# =========================================================
+# 가격 계산
+# =========================================================
 
-    if not player:
-        return "-"
+def starting_price(player):
+    """
+    overall에 따라 시작가를 결정한다.
 
-    return (
-        player.get("name")
-        or player.get("player_name")
-        or player.get("playerName")
-        or player.get("선수명")
-        or "이름없음"
+    너무 높은 가격으로 시작하지 않도록 제한.
+    """
+
+    overall = float(
+        player.get("overall", 70)
     )
 
+    if overall >= 95:
+        return 80
 
-def player_team(player):
+    if overall >= 92:
+        return 65
 
-    if not player:
-        return "-"
+    if overall >= 89:
+        return 50
 
-    return (
-        player.get("team")
-        or player.get("team_name")
-        or player.get("teamName")
-        or player.get("구단")
-        or "-"
-    )
+    if overall >= 86:
+        return 35
 
+    if overall >= 82:
+        return 25
 
-def player_position(player):
+    if overall >= 78:
+        return 15
 
-    if not player:
-        return "-"
-
-    return (
-        player.get("position")
-        or player.get("pos")
-        or player.get("position_name")
-        or player.get("포지션")
-        or "-"
-    )
+    return 10
 
 
-def player_overall(player):
+def bid_increment(current_price):
+    if current_price < 50:
+        return 5
 
-    if not player:
-        return 0
+    if current_price < 100:
+        return 10
 
-    return safe_int(
-        player.get("overall")
-        or player.get("ovr")
-        or player.get("rating")
-        or player.get("능력치")
-        or 0
-    )
+    if current_price < 200:
+        return 20
 
-
-def normalize_player(player):
-
-    p = copy.deepcopy(player)
-
-    p["name"] = player_name(p)
-    p["team"] = player_team(p)
-    p["position"] = player_position(p)
-    p["overall"] = player_overall(p)
-
-    return p
+    return 30
 
 
-# ============================================================
-# POSITION
-# ============================================================
+# =========================================================
+# 로스터
+# =========================================================
 
-def get_position_count(
-    roster,
-    position
-):
-
+def roster_count(roster, position):
     return sum(
         1
         for player in roster
-        if player_position(player) == position
+        if player.get("position") == position
     )
 
 
-def can_add_player(
-    roster,
-    player
-):
-
-    position = player_position(
-        player
-    )
+def can_add_player(roster, player):
+    position = player.get("position")
 
     limit = ROSTER_LIMITS.get(
         position,
-        0
+        0,
     )
 
-    if limit <= 0:
-        return False
+    return roster_count(
+        roster,
+        position,
+    ) < limit
 
-    return (
-        get_position_count(
-            roster,
-            position
-        )
-        < limit
-    )
+
+def roster_full(roster):
+    return len(roster) >= TOTAL_ROSTER_SIZE
 
 
 def roster_complete(roster):
+    if len(roster) != TOTAL_ROSTER_SIZE:
+        return False
 
     for position, limit in ROSTER_LIMITS.items():
 
-        if get_position_count(
+        if roster_count(
             roster,
-            position
-        ) < limit:
-
+            position,
+        ) != limit:
             return False
 
     return True
 
 
-# ============================================================
-# SCORE
-# ============================================================
+# =========================================================
+# AI
+# =========================================================
 
-def roster_score(roster):
+AI_NAMES = [
+    "승부사",
+    "스카우터",
+    "단장님",
+    "야구광",
+]
 
-    total = 0
 
-    for player in roster:
+def create_ai(index):
+    return {
+        "id": f"ai_{index}",
+        "name": AI_NAMES[index],
+        "budget": INITIAL_BUDGET,
+        "roster": [],
+        "spent": 0,
+        "bids": 0,
+        "wins": 0,
+    }
 
-        total += player_overall(
-            player
+
+def ai_can_bid(ai, player):
+    if ai["budget"] <= 0:
+        return False
+
+    return can_add_player(
+        ai["roster"],
+        player,
+    )
+
+
+def ai_max_price(ai, player):
+    """
+    AI가 이 선수에게 쓸 수 있는 최대 금액.
+
+    좋은 선수일수록 적극적으로 입찰한다.
+    """
+
+    overall = float(
+        player.get("overall", 70)
+    )
+
+    # 기본 평가
+    value = overall * 2.0
+
+    # 선수별 성향 차이
+    personality_bonus = {
+        "승부사": 1.15,
+        "스카우터": 0.95,
+        "단장님": 1.05,
+        "야구광": 1.10,
+    }.get(
+        ai["name"],
+        1.0,
+    )
+
+    value *= personality_bonus
+
+    # 남은 예산 보호
+    budget_limit = ai["budget"] * 0.65
+
+    return min(
+        value,
+        budget_limit,
+    )
+
+
+def ai_should_bid(ai, player, current_price):
+    if not ai_can_bid(
+        ai,
+        player,
+    ):
+        return False
+
+    max_price = ai_max_price(
+        ai,
+        player,
+    )
+
+    next_price = (
+        current_price
+        + bid_increment(current_price)
+    )
+
+    if next_price > max_price:
+        return False
+
+    overall = float(
+        player.get("overall", 70)
+    )
+
+    # 기본 입찰 확률
+    probability = 0.25
+
+    if overall >= 90:
+        probability = 0.80
+    elif overall >= 85:
+        probability = 0.60
+    elif overall >= 80:
+        probability = 0.45
+
+    # 현재 가격이 너무 높으면 확률 감소
+    if current_price > max_price * 0.7:
+        probability *= 0.55
+
+    # 랜덤성
+    return random.random() < probability
+
+
+def choose_ai_bidder(game):
+    """
+    현재 선수에 대해 입찰할 AI를 찾는다.
+    """
+
+    player = game["current_player"]
+
+    candidates = []
+
+    for ai in game["ais"]:
+
+        if not ai_can_bid(
+            ai,
+            player,
+        ):
+            continue
+
+        if not ai_should_bid(
+            ai,
+            player,
+            game["current_price"],
+        ):
+            continue
+
+        candidates.append(ai)
+
+    if not candidates:
+        return None
+
+    # 가장 높은 평가를 하는 AI를 우선
+    candidates.sort(
+        key=lambda x: ai_max_price(
+            x,
+            player,
+        ),
+        reverse=True,
+    )
+
+    # 항상 같은 AI만 이기는 것을 방지
+    if len(candidates) >= 2:
+        if random.random() < 0.35:
+            return random.choice(
+                candidates[:2]
+            )
+
+    return candidates[0]
+
+
+# =========================================================
+# 게임 생성
+# =========================================================
+
+def create_game(game_id):
+    players = load_player_pool()
+
+    random.shuffle(players)
+
+    game = {
+        "id": str(game_id),
+
+        "budget": INITIAL_BUDGET,
+
+        "roster": [],
+
+        "ais": [
+            create_ai(i)
+            for i in range(4)
+        ],
+
+        "players": players,
+
+        "used_player_ids": [],
+
+        "round": 0,
+
+        "total_rounds": MAX_ROUNDS,
+
+        "current_player": None,
+
+        "current_price": 0,
+
+        "highest_bidder": None,
+
+        "started_at": None,
+
+        "last_bid_at": None,
+
+        "finished": False,
+
+        "result": None,
+
+        "bid_history": [],
+
+        "logs": [],
+    }
+
+    return game
+
+
+# =========================================================
+# 다음 선수
+# =========================================================
+
+def available_players(game):
+    used = set(
+        game.get(
+            "used_player_ids",
+            [],
+        )
+    )
+
+    return [
+        player
+        for player in game["players"]
+        if player["id"] not in used
+    ]
+
+
+def choose_next_player(game):
+    available = available_players(game)
+
+    if not available:
+        return None
+
+    # 현재 로스터에서 부족한 포지션을 우선
+    needed_positions = []
+
+    for position, limit in ROSTER_LIMITS.items():
+
+        current = roster_count(
+            game["roster"],
+            position,
         )
 
-    return round(
-        total,
-        1
+        remaining = limit - current
+
+        if remaining > 0:
+            needed_positions.append(
+                position
+            )
+
+    # AI 로스터도 고려할 필요가 있으므로
+    # 완전히 한 포지션만 고정하지 않고 가중치 방식
+    candidates = [
+        player
+        for player in available
+        if player["position"]
+        in needed_positions
+    ]
+
+    if not candidates:
+        candidates = available
+
+    # 상위 선수만 계속 나오지 않게 랜덤
+    candidates.sort(
+        key=lambda p: p["overall"],
+        reverse=True,
+    )
+
+    top_count = min(
+        len(candidates),
+        40,
+    )
+
+    return random.choice(
+        candidates[:top_count]
     )
 
 
-def efficiency_score(
-    roster,
-    spent
-):
+def start_round(game):
+    if game["finished"]:
+        return False
 
-    if spent <= 0:
+    if roster_full(
+        game["roster"]
+    ):
+        finish_game(game)
+        return False
+
+    player = choose_next_player(game)
+
+    if player is None:
+        finish_game(game)
+        return False
+
+    game["round"] += 1
+
+    game["current_player"] = player
+
+    game["used_player_ids"].append(
+        player["id"]
+    )
+
+    game["current_price"] = starting_price(
+        player
+    )
+
+    game["highest_bidder"] = None
+
+    game["started_at"] = time.time()
+
+    game["last_bid_at"] = None
+
+    game["bid_history"] = []
+
+    add_log(
+        game,
+        f"🔔 {player['name']} "
+        f"({player['team']}) "
+        f"경매 시작! "
+        f"시작가 {game['current_price']}억",
+    )
+
+    return True
+
+
+# =========================================================
+# 로그
+# =========================================================
+
+def add_log(game, message):
+    game.setdefault(
+        "logs",
+        [],
+    )
+
+    game["logs"].append(
+        {
+            "time": time.strftime(
+                "%H:%M:%S"
+            ),
+            "message": message,
+        }
+    )
+
+    # 너무 길어지지 않게
+    if len(game["logs"]) > 100:
+        game["logs"] = game["logs"][-100:]
+
+
+# =========================================================
+# 사용자 입찰
+# =========================================================
+
+def user_bid(game):
+    if game["finished"]:
+        return False, "게임이 종료되었습니다."
+
+    player = game.get(
+        "current_player"
+    )
+
+    if not player:
+        return False, "현재 경매 선수가 없습니다."
+
+    # 제한시간 확인
+    if auction_expired(game):
+        settle_auction(game)
+        return False, "입찰 시간이 종료되었습니다."
+
+    if not can_add_player(
+        game["roster"],
+        player,
+    ):
+        return (
+            False,
+            f"{player['position']} 포지션은 "
+            f"이미 정원을 채웠습니다.",
+        )
+
+    next_price = (
+        game["current_price"]
+        + bid_increment(
+            game["current_price"]
+        )
+    )
+
+    if next_price > game["budget"]:
+        return (
+            False,
+            "예산이 부족합니다.",
+        )
+
+    game["current_price"] = next_price
+
+    game["highest_bidder"] = "user"
+
+    game["last_bid_at"] = time.time()
+
+    game["bid_history"].append(
+        {
+            "bidder": "나",
+            "price": next_price,
+            "time": time.strftime(
+                "%H:%M:%S"
+            ),
+        }
+    )
+
+    add_log(
+        game,
+        f"🧑 나 → "
+        f"{player['name']} "
+        f"{next_price}억 입찰",
+    )
+
+    return True, "입찰 성공"
+
+
+# =========================================================
+# AI 턴
+# =========================================================
+
+def run_ai_turn(game):
+    if game["finished"]:
+        return
+
+    player = game.get(
+        "current_player"
+    )
+
+    if not player:
+        return
+
+    # 여러 AI가 연속으로 경쟁할 수 있게
+    for _ in range(3):
+
+        ai = choose_ai_bidder(game)
+
+        if ai is None:
+            break
+
+        next_price = (
+            game["current_price"]
+            + bid_increment(
+                game["current_price"]
+            )
+        )
+
+        if next_price > ai["budget"]:
+            continue
+
+        if not can_add_player(
+            ai["roster"],
+            player,
+        ):
+            continue
+
+        game["current_price"] = next_price
+
+        game["highest_bidder"] = ai["id"]
+
+        game["last_bid_at"] = time.time()
+
+        ai["bids"] += 1
+
+        game["bid_history"].append(
+            {
+                "bidder": ai["name"],
+                "price": next_price,
+                "time": time.strftime(
+                    "%H:%M:%S"
+                ),
+            }
+        )
+
+        add_log(
+            game,
+            f"🤖 {ai['name']} → "
+            f"{player['name']} "
+            f"{next_price}억 입찰",
+        )
+
+        # AI끼리 계속 싸우게 약간의 확률
+        if random.random() < 0.35:
+            continue
+
+        break
+
+
+# =========================================================
+# 제한 시간
+# =========================================================
+
+def auction_expired(game):
+    started = game.get(
+        "started_at"
+    )
+
+    if not started:
+        return False
+
+    return (
+        time.time() - started
+        >= AUCTION_TIME
+    )
+
+
+def remaining_time(game):
+    started = game.get(
+        "started_at"
+    )
+
+    if not started:
+        return AUCTION_TIME
+
+    remain = (
+        AUCTION_TIME
+        - (
+            time.time()
+            - started
+        )
+    )
+
+    return max(
+        0,
+        int(remain + 0.999),
+    )
+
+
+# =========================================================
+# 낙찰
+# =========================================================
+
+def settle_auction(game):
+    if game["finished"]:
+        return
+
+    player = game.get(
+        "current_player"
+    )
+
+    if not player:
+        return
+
+    winner = game.get(
+        "highest_bidder"
+    )
+
+    price = game.get(
+        "current_price",
+        0,
+    )
+
+    # 아무도 입찰하지 않은 경우
+    if not winner:
+
+        add_log(
+            game,
+            f"⚪ {player['name']} "
+            f"무입찰 유찰",
+        )
+
+        game["current_player"] = None
+
+        if game["round"] >= game["total_rounds"]:
+            finish_game(game)
+        else:
+            start_round(game)
+
+        return
+
+    # 사용자 낙찰
+    if winner == "user":
+
+        if price > game["budget"]:
+            add_log(
+                game,
+                "❌ 예산 부족으로 낙찰 취소",
+            )
+        else:
+            game["budget"] -= price
+
+            game["roster"].append(
+                dict(player)
+            )
+
+            add_log(
+                game,
+                f"🏆 나 → "
+                f"{player['name']} "
+                f"{price}억 낙찰!",
+            )
+
+    # AI 낙찰
+    else:
+
+        ai = next(
+            (
+                a
+                for a in game["ais"]
+                if a["id"] == winner
+            ),
+            None,
+        )
+
+        if ai:
+
+            if price <= ai["budget"]:
+
+                ai["budget"] -= price
+
+                ai["spent"] += price
+
+                ai["roster"].append(
+                    dict(player)
+                )
+
+                ai["wins"] += 1
+
+                add_log(
+                    game,
+                    f"🏆 {ai['name']} → "
+                    f"{player['name']} "
+                    f"{price}억 낙찰!",
+                )
+
+    game["current_player"] = None
+
+    game["highest_bidder"] = None
+
+    game["current_price"] = 0
+
+    # 사용자 로스터 완성
+    if roster_complete(
+        game["roster"]
+    ):
+        finish_game(game)
+        return
+
+    if game["round"] >= game["total_rounds"]:
+        finish_game(game)
+        return
+
+    start_round(game)
+
+
+# =========================================================
+# 게임 종료
+# =========================================================
+
+def calculate_team_score(roster):
+    if not roster:
         return 0
 
+    overall_total = sum(
+        float(
+            player.get(
+                "overall",
+                0,
+            )
+        )
+        for player in roster
+    )
+
+    average = (
+        overall_total
+        / len(roster)
+    )
+
+    # 포지션 충족 보너스
+    position_bonus = 0
+
+    for position, limit in ROSTER_LIMITS.items():
+
+        count = roster_count(
+            roster,
+            position,
+        )
+
+        if count >= limit:
+            position_bonus += 3
+
     return round(
-        roster_score(roster)
-        / spent
-        * 100,
-        1
+        average
+        + position_bonus,
+        2,
     )
 
 
-# ============================================================
-# GRADE
-# ============================================================
-
-def grade_from_rank(
-    rank
-):
+def calculate_grade(score, rank):
+    """
+    경쟁 순위 기반 등급.
+    """
 
     if rank == 1:
         return "S"
@@ -270,1222 +948,147 @@ def grade_from_rank(
     if rank == 3:
         return "A"
 
-    if rank == 4:
+    if rank <= 5:
         return "B+"
 
-    return "B"
+    if rank <= 8:
+        return "B"
 
+    if rank <= 12:
+        return "C"
 
-# ============================================================
-# CREATE GAME
-# ============================================================
+    return "D"
 
-def create_game(players):
 
-    normalized_players = []
-
-    for player in players:
-
-        try:
-
-            p = normalize_player(
-                player
-            )
-
-            if (
-                p["position"]
-                not in ROSTER_LIMITS
-            ):
-                continue
-
-            normalized_players.append(
-                p
-            )
-
-        except Exception:
-            continue
-
-    if not normalized_players:
-
-        raise ValueError(
-            "사용 가능한 선수가 없습니다."
-        )
-
-    random.shuffle(
-        normalized_players
-    )
-
-    game = {
-
-        "created_at":
-            now_text(),
-
-        "budget":
-            START_BUDGET,
-
-        "start_budget":
-            START_BUDGET,
-
-        "players":
-            normalized_players,
-
-        "roster":
-            [],
-
-        "ai_rosters": {
-            ai: []
-            for ai in AI_NAMES
-        },
-
-        "ai_budgets": {
-            ai: START_BUDGET
-            for ai in AI_NAMES
-        },
-
-        "ai_names":
-            copy.deepcopy(
-                AI_NAMES
-            ),
-
-        "roster_limits":
-            copy.deepcopy(
-                ROSTER_LIMITS
-            ),
-
-        "round":
-            0,
-
-        "total_rounds":
-            TOTAL_SLOTS,
-
-        "current":
-            None,
-
-        "price":
-            0,
-
-        "leader":
-            None,
-
-        "last_bid_at":
-            time.time(),
-
-        "finished":
-            False,
-
-        "message":
-            "",
-
-        "bid_log":
-            [],
-
-        "auction_history":
-            [],
-
-        "passed_players":
-            [],
-
-        "ai_last_bid_at": {
-            ai: 0
-            for ai in AI_NAMES
-        },
-
-        "result":
-            None,
-    }
-
-    next_round(
-        game
-    )
-
-    return game
-
-
-# ============================================================
-# NEXT PLAYER
-# ============================================================
-
-def next_round(game):
-
-    if game.get("finished"):
-        return
-
-    if roster_complete(
-        game["roster"]
-    ):
-
-        finish_game(
-            game
-        )
-
-        return
-
-    candidates = []
-
-    for player in game["players"]:
-
-        if player in game.get(
-            "passed_players",
-            []
-        ):
-            continue
-
-        if can_add_player(
-            game["roster"],
-            player
-        ):
-
-            candidates.append(
-                player
-            )
-
-    if not candidates:
-
-        finish_game(
-            game
-        )
-
-        return
-
-    # OVR이 너무 낮은 선수만 계속 나오지 않게
-    # 랜덤 후보 중 상위권을 선택
-    candidates.sort(
-        key=lambda p:
-            player_overall(p),
-        reverse=True
-    )
-
-    top_count = min(
-        5,
-        len(candidates)
-    )
-
-    player = random.choice(
-        candidates[:top_count]
-    )
-
-    game["current"] = player
-
-    game["round"] += 1
-
-    game["price"] = 0
-
-    game["leader"] = None
-
-    game["last_bid_at"] = time.time()
-
-    game["ai_last_bid_at"] = {
-        ai: 0
-        for ai in AI_NAMES
-    }
-
-    game["message"] = (
-        f"📢 {player_name(player)} "
-        f"선수가 경매에 등장했습니다!"
-    )
-
-
-# ============================================================
-# TIMER
-# ============================================================
-
-def seconds_left(game):
-
-    last_bid = game.get(
-        "last_bid_at",
-        time.time()
-    )
-
-    elapsed = (
-        time.time()
-        - last_bid
-    )
-
-    return max(
-        0,
-        AUCTION_SECONDS
-        - int(elapsed)
-    )
-
-
-def is_expired(game):
-
-    return seconds_left(
-        game
-    ) <= 0
-
-
-def reset_timer(game):
-
-    game["last_bid_at"] = time.time()
-
-
-# ============================================================
-# LOG
-# ============================================================
-
-def add_bid_log(
-    game,
-    bidder,
-    amount,
-    price
-):
-
-    if bidder == "user":
-
-        name = "나"
-
-    else:
-
-        name = AI_NAMES.get(
-            bidder,
-            bidder
-        )
-
-    player = game.get(
-        "current"
-    )
-
-    game.setdefault(
-        "bid_log",
-        []
-    ).append({
-
-        "player":
-            player_name(player),
-
-        "bidder":
-            bidder,
-
-        "name":
-            name,
-
-        "amount":
-            amount,
-
-        "price":
-            price,
-
-        "time":
-            now_text(),
-    })
-
-
-# ============================================================
-# USER BID
-# ============================================================
-
-def user_bid(
-    game,
-    amount
-):
-
-    if game.get("finished"):
-        return False
-
-    player = game.get(
-        "current"
-    )
-
-    if not player:
-        return False
-
-    amount = safe_int(
-        amount
-    )
-
-    if amount not in BID_AMOUNTS:
-
-        game["message"] = (
-            "잘못된 입찰입니다."
-        )
-
-        return False
-
-    new_price = (
-        game["price"]
-        + amount
-    )
-
-    if new_price > game["budget"]:
-
-        game["message"] = (
-            "💸 예산이 부족합니다."
-        )
-
-        return False
-
-    game["price"] = new_price
-
-    game["leader"] = "user"
-
-    reset_timer(
-        game
-    )
-
-    add_bid_log(
-        game,
-        "user",
-        amount,
-        new_price
-    )
-
-    game["message"] = (
-        f"👤 나 +{amount}P "
-        f"→ {new_price}P"
-    )
-
-    return True
-
-
-# ============================================================
-# AI VALUE
-# ============================================================
-
-def base_player_value(
-    player
-):
-
-    ovr = player_overall(
-        player
-    )
-
-    position = player_position(
-        player
-    )
-
-    value = (
-        ovr * 0.65
-    )
-
-    if position in (
-        "SP",
-        "RP",
-        "CP"
-    ):
-
-        value += 5
-
-    return max(
-        5,
-        value
-    )
-
-
-def ai_need(
-    game,
-    ai_key,
-    player
-):
-
-    roster = game[
-        "ai_rosters"
-    ][ai_key]
-
-    position = player_position(
-        player
-    )
-
-    limit = ROSTER_LIMITS.get(
-        position,
-        0
-    )
-
-    current = get_position_count(
-        roster,
-        position
-    )
-
-    if current >= limit:
-        return 0
-
-    return min(
-        1,
-        0.5
-        +
-        (
-            limit
-            - current
-        )
-        * 0.1
-    )
-
-
-def ai_max_bid(
-    game,
-    ai_key,
-    player
-):
-
-    style = AI_STYLE[
-        ai_key
-    ]
-
-    budget = game[
-        "ai_budgets"
-    ][ai_key]
-
-    base = base_player_value(
-        player
-    )
-
-    need = ai_need(
-        game,
-        ai_key,
-        player
-    )
-
-    value = (
-        base
-        *
-        style["value"]
-        *
-        (
-            0.7
-            +
-            need
-        )
-    )
-
-    return min(
-        budget,
-        max(
-            1,
-            int(value)
-        )
-    )
-
-
-# ============================================================
-# AI BID
-# ============================================================
-
-def ai_should_bid(
-    game,
-    ai_key,
-    player
-):
-
-    if not can_add_player(
-        game[
-            "ai_rosters"
-        ][ai_key],
-        player
-    ):
-        return False
-
-    budget = game[
-        "ai_budgets"
-    ][ai_key]
-
-    if budget <= game["price"]:
-        return False
-
-    maximum = ai_max_bid(
-        game,
-        ai_key,
-        player
-    )
-
-    if game["price"] >= maximum:
-        return False
-
-    style = AI_STYLE[
-        ai_key
-    ]
-
-    ratio = (
-        game["price"]
-        /
-        max(
-            1,
-            maximum
-        )
-    )
-
-    probability = (
-        style["aggression"]
-        *
-        (
-            1
-            -
-            ratio * 0.65
-        )
-    )
-
-    # 최고 입찰자면 연속 입찰 확률 감소
-    if game.get(
-        "leader"
-    ) == ai_key:
-
-        probability *= 0.15
-
-    return (
-        random.random()
-        < probability
-    )
-
-
-def ai_bid(
-    game,
-    ai_key
-):
-
-    player = game.get(
-        "current"
-    )
-
-    if not player:
-        return False
-
-    if not ai_should_bid(
-        game,
-        ai_key,
-        player
-    ):
-        return False
-
-    maximum = ai_max_bid(
-        game,
-        ai_key,
-        player
-    )
-
-    budget = game[
-        "ai_budgets"
-    ][ai_key]
-
-    possible = []
-
-    for amount in BID_AMOUNTS:
-
-        price = (
-            game["price"]
-            + amount
-        )
-
-        if (
-            price <= maximum
-            and
-            price <= budget
-        ):
-
-            possible.append(
-                amount
-            )
-
-    if not possible:
-        return False
-
-    # 공격적 AI일수록 큰 금액
-    style = AI_STYLE[
-        ai_key
-    ]
-
-    if (
-        style["aggression"] > 0.65
-        and
-        5 in possible
-        and
-        random.random() < 0.4
-    ):
-
-        amount = 5
-
-    elif (
-        3 in possible
-        and
-        random.random() < 0.5
-    ):
-
-        amount = 3
-
-    else:
-
-        amount = 1
-
-    new_price = (
-        game["price"]
-        + amount
-    )
-
-    game["price"] = new_price
-
-    game["leader"] = ai_key
-
-    game[
-        "ai_last_bid_at"
-    ][ai_key] = time.time()
-
-    reset_timer(
-        game
-    )
-
-    add_bid_log(
-        game,
-        ai_key,
-        amount,
-        new_price
-    )
-
-    game["message"] = (
-        f"🤖 {AI_NAMES[ai_key]} "
-        f"+{amount}P "
-        f"→ {new_price}P"
-    )
-
-    return True
-
-
-# ============================================================
-# RUN AI
-# ============================================================
-
-def run_ai_battle(
-    game
-):
-
-    if game.get("finished"):
-        return False
-
-    player = game.get(
-        "current"
-    )
-
-    if not player:
-        return False
-
-    candidates = []
-
-    for ai_key in AI_NAMES:
-
-        last = game[
-            "ai_last_bid_at"
-        ].get(
-            ai_key,
-            0
-        )
-
-        if (
-            time.time()
-            - last
-            < 1.0
-        ):
-            continue
-
-        if ai_should_bid(
-            game,
-            ai_key,
-            player
-        ):
-
-            candidates.append(
-                ai_key
-            )
-
-    if not candidates:
-        return False
-
-    # 특정 AI만 계속 선택되지 않도록 랜덤
-    selected = random.choice(
-        candidates
-    )
-
-    return ai_bid(
-        game,
-        selected
-    )
-
-
-# ============================================================
-# SETTLE
-# ============================================================
-
-def settle_current_auction(
-    game
-):
-
-    player = game.get(
-        "current"
-    )
-
-    leader = game.get(
-        "leader"
-    )
-
-    if not player:
-        return False
-
-    if not leader:
-        return False
-
-    price = game.get(
-        "price",
-        0
-    )
-
-    # --------------------------------
-    # USER
-    # --------------------------------
-
-    if leader == "user":
-
-        if price > game["budget"]:
-
-            game["message"] = (
-                "예산이 부족합니다."
-            )
-
-            return False
-
-        game["budget"] -= price
-
-        p = copy.deepcopy(
-            player
-        )
-
-        p["cost"] = price
-
-        game["roster"].append(
-            p
-        )
-
-        winner_name = "나"
-
-    # --------------------------------
-    # AI
-    # --------------------------------
-
-    else:
-
-        budget = game[
-            "ai_budgets"
-        ][leader]
-
-        if price > budget:
-            return False
-
-        game[
-            "ai_budgets"
-        ][leader] -= price
-
-        p = copy.deepcopy(
-            player
-        )
-
-        p["cost"] = price
-
-        game[
-            "ai_rosters"
-        ][leader].append(
-            p
-        )
-
-        winner_name = AI_NAMES[
-            leader
-        ]
-
-    game[
-        "auction_history"
-    ].append({
-
-        "player":
-            player_name(player),
-
-        "team":
-            player_team(player),
-
-        "position":
-            player_position(player),
-
-        "overall":
-            player_overall(player),
-
-        "price":
-            price,
-
-        "winner":
-            leader,
-
-        "winner_name":
-            winner_name,
-
-        "time":
-            now_text(),
-    })
-
-    try:
-
-        game["players"].remove(
-            player
-        )
-
-    except ValueError:
-        pass
-
-    game["current"] = None
-
-    game["leader"] = None
-
-    game["price"] = 0
-
-    if roster_complete(
-        game["roster"]
-    ):
-
-        finish_game(
-            game
-        )
-
-        return True
-
-    next_round(
-        game
-    )
-
-    return True
-
-
-# ============================================================
-# PASS
-# ============================================================
-
-def user_pass(
-    game
-):
-
-    if game.get("finished"):
-        return False
-
-    # 최고 입찰자가 나면
-    # PASS가 아니라 AI에게 마지막 도전 기회를 줌
-    if game.get(
-        "leader"
-    ) == "user":
-
-        return run_ai_battle(
-            game
-        )
-
-    # AI가 최고면 낙찰
-    if game.get(
-        "leader"
-    ) in AI_NAMES:
-
-        return settle_current_auction(
-            game
-        )
-
-    # 아무도 입찰하지 않은 경우
-    return run_ai_battle(
-        game
-    )
-
-
-# ============================================================
-# RESULT
-# ============================================================
-
-def build_result(
-    game
-):
-
-    result_players = []
-
-    # USER
-    user_roster = game[
-        "roster"
-    ]
-
-    user_spent = (
-        game["start_budget"]
-        -
-        game["budget"]
-    )
-
-    result_players.append({
-
-        "key":
-            "user",
-
-        "name":
-            "나",
-
-        "roster":
-            user_roster,
-
-        "score":
-            roster_score(
-                user_roster
-            ),
-
-        "spent":
-            user_spent,
-
-        "remaining":
-            game["budget"],
-
-        "efficiency":
-            efficiency_score(
-                user_roster,
-                user_spent
-            ),
-
-        "is_user":
-            True,
-    })
-
-    # AI
-    for ai_key in AI_NAMES:
-
-        roster = game[
-            "ai_rosters"
-        ][ai_key]
-
-        spent = (
-            START_BUDGET
-            -
-            game[
-                "ai_budgets"
-            ][ai_key]
-        )
-
-        result_players.append({
-
-            "key":
-                ai_key,
-
-            "name":
-                AI_NAMES[ai_key],
-
-            "roster":
-                roster,
-
-            "score":
-                roster_score(
-                    roster
-                ),
-
-            "spent":
-                spent,
-
-            "remaining":
-                game[
-                    "ai_budgets"
-                ][ai_key],
-
-            "efficiency":
-                efficiency_score(
-                    roster,
-                    spent
-                ),
-
-            "is_user":
-                False,
-        })
-
-    # 점수 순
-    result_players.sort(
-        key=lambda x:
-            x["score"],
-        reverse=True
-    )
-
-    for rank, result in enumerate(
-        result_players,
-        start=1
-    ):
-
-        result["rank"] = rank
-
-        result["grade"] = (
-            grade_from_rank(
-                rank
-            )
-        )
-
-    user_result = next(
-        x
-        for x in result_players
-        if x["is_user"]
-    )
-
-    # 최고 영입
-    best_bargain = None
-
-    for player in user_roster:
-
-        cost = safe_int(
-            player.get(
-                "cost",
-                0
-            ),
-            1
-        )
-
-        value = (
-            player_overall(player)
-            /
-            max(
-                1,
-                cost
-            )
-        )
-
-        p = copy.deepcopy(
-            player
-        )
-
-        p["value"] = round(
-            value,
-            2
-        )
-
-        if (
-            best_bargain is None
-            or
-            p["value"]
-            >
-            best_bargain["value"]
-        ):
-
-            best_bargain = p
-
-    return {
-
-        "results":
-            result_players,
-
-        "user":
-            user_result,
-
-        "history":
-            game[
-                "auction_history"
-            ],
-
-        "best_bargain":
-            best_bargain,
-
-        "roster_limits":
-            ROSTER_LIMITS.copy(),
-    }
-
-
-# ============================================================
-# FINISH
-# ============================================================
-
-def finish_game(
-    game
-):
-
-    if game.get("finished"):
+def finish_game(game):
+    if game["finished"]:
         return
 
     game["finished"] = True
 
-    game["current"] = None
-
-    game["result"] = build_result(
-        game
+    user_score = calculate_team_score(
+        game["roster"]
     )
 
-    game["message"] = (
-        "🏆 경기가 종료되었습니다!"
+    competitors = []
+
+    competitors.append(
+        {
+            "id": "user",
+            "name": "나",
+            "score": user_score,
+            "roster": list(
+                game["roster"]
+            ),
+        }
     )
 
+    for ai in game["ais"]:
 
-# ============================================================
-# ACTION
-# ============================================================
+        score = calculate_team_score(
+            ai["roster"]
+        )
 
-def user_action(
-    game,
-    action
-):
+        competitors.append(
+            {
+                "id": ai["id"],
+                "name": ai["name"],
+                "score": score,
+                "roster": list(
+                    ai["roster"]
+                ),
+            }
+        )
 
-    if game.get("finished"):
-        return
+    competitors.sort(
+        key=lambda x: x["score"],
+        reverse=True,
+    )
 
-    if action in (
-        "1",
-        "3",
-        "5"
+    for index, competitor in enumerate(
+        competitors,
+        start=1,
     ):
+        competitor["rank"] = index
 
-        user_bid(
-            game,
-            int(action)
+        competitor["grade"] = calculate_grade(
+            competitor["score"],
+            index,
         )
 
+    user_result = next(
+        x
+        for x in competitors
+        if x["id"] == "user"
+    )
+
+    game["result"] = {
+        "score": user_result["score"],
+        "rank": user_result["rank"],
+        "grade": user_result["grade"],
+        "competitors": competitors,
+    }
+
+    add_log(
+        game,
+        f"🏁 경기 종료 "
+        f"내 순위 {user_result['rank']}위 / "
+        f"{user_result['grade']}등급",
+    )
+
+
+# =========================================================
+# 게임 진행
+# =========================================================
+
+def process_game(game):
+    """
+    GET /auction/<id>가 들어올 때마다 호출.
+
+    자동 새로고침을 하지 않는다.
+    브라우저에서 요청이 들어왔을 때만 진행된다.
+    """
+
+    if game["finished"]:
         return
 
-    if action == "pass":
-
-        user_pass(
-            game
-        )
-
+    if not game.get(
+        "current_player"
+    ):
+        start_round(game)
         return
 
-    if action == "sold":
+    # AI 입찰
+    run_ai_turn(game)
 
-        if game.get(
-            "leader"
-        ) != "user":
+    # 제한시간 종료
+    if auction_expired(game):
+        settle_auction(game)
 
-            game["message"] = (
-                "현재 최고 입찰자가 아닙니다."
-            )
 
-            return
+# =========================================================
+# 상태 표시용
+# =========================================================
 
-        settle_current_auction(
-            game
-        )
+def serialize_game(game):
+    player = game.get(
+        "current_player"
+    )
 
-        return
-
-    if action == "timeout":
-
-        if not is_expired(
-            game
-        ):
-            return
-
-        # 최고 입찰자가 있으면 낙찰
-        if game.get(
-            "leader"
-        ):
-
-            settle_current_auction(
-                game
-            )
-
-            return
-
-        # 아무도 안 샀으면
-        # AI에게 마지막 기회
-        if run_ai_battle(
-            game
-        ):
-
-            return
-
-        # 아무도 관심 없음
-        current = game.get(
-            "current"
-        )
-
-        if current:
-
-            game[
-                "passed_players"
-            ].append(
-                current
-            )
-
-        next_round(
-            game
-        )
+    return {
+        "id": game["id"],
+        "budget": game["budget"],
+        "roster": game["roster"],
+        "ais": game["ais"],
+        "round": game["round"],
+        "total_rounds": game["total_rounds"],
+        "current_player": player,
+        "current_price": game["current_price"],
+        "highest_bidder": game["highest_bidder"],
+        "remaining_time": remaining_time(game),
+        "auction_time": AUCTION_TIME,
+        "finished": game["finished"],
+        "result": game["result"],
+        "bid_history": game["bid_history"],
+        "logs": game["logs"],
+    }
