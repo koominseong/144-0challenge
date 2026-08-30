@@ -11,7 +11,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 PLAYER_POOL_PATH = BASE_DIR / "player_pool.json"
 
-INITIAL_BUDGET = 1000
+INITIAL_BUDGET = 10000
 
 # 선수 등장 직후 제한시간
 INITIAL_AUCTION_TIME = 10
