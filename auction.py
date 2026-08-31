@@ -157,21 +157,21 @@ def starting_price(player):
         return 80
 
     if overall >= 92:
-        return 65
+        return 60
 
     if overall >= 89:
-        return 50
+        return 40
 
     if overall >= 86:
-        return 35
+        return 30
 
     if overall >= 82:
-        return 25
+        return 20
 
     if overall >= 78:
-        return 15
+        return 10
 
-    return 10
+    return 5
 
 
 def bid_increment(current_price):
@@ -298,7 +298,7 @@ def ai_max_price(
         )
     )
 
-    value = overall * 2.0
+    value = overall * 22.3
 
     personality_bonus = {
         "승부사": 1.15,
