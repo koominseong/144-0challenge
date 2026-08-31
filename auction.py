@@ -11,7 +11,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 PLAYER_POOL_PATH = BASE_DIR / "player_pool.json"
 
-INITIAL_BUDGET = 10000
+INITIAL_BUDGET = 5000
 
 # 선수 등장 직후 제한시간
 INITIAL_AUCTION_TIME = 10
@@ -298,7 +298,7 @@ def ai_max_price(
         )
     )
 
-    value = overall * 22.3
+    value = overall * 3.7
 
     personality_bonus = {
         "승부사": 1.15,
