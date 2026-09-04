@@ -12,14 +12,67 @@
   <span class="season-pill">NEW SAVE</span>
 </header>
 <main class="creator">
-  <div class="creator-copy"><p class="eyebrow">START YOUR STORY</p><h1>BUILD YOUR<br><em>BASEBALL LIFE.</em></h1><p>국적을 고르고, 리그를 선택하고, 한 명의 선수가 세계 무대로 올라가는 과정을 직접 플레이하세요.</p></div>
-  <form class="creator-card glass" method="post" action="/career/new">
-    <label>PLAYER NAME<input name="name" required maxlength="30" placeholder="선수 이름"></label>
-    <div class="two"><label>NATIONALITY<select name="nationality" required>{% for c in countries|default([]) %}<option value="{{ c.id|default(c) }}">{{ c.name|default(c) }}</option>{% endfor %}</select></label>
-    <label>POSITION<select name="position" required><option>P</option><option>C</option><option>1B</option><option>2B</option><option>3B</option><option>SS</option><option>OF</option><option>DH</option></select></label></div>
-    <label>LEAGUE<select name="league" required>{% for l in leagues|default([]) %}<option value="{{ l.id|default(l) }}">{{ l.name|default(l) }}</option>{% endfor %}</select></label>
-    <label>TEAM<select name="team" required>{% for t in teams|default([]) %}<option value="{{ t.id|default(t) }}">{{ t.name|default(t) }}</option>{% endfor %}</select></label>
+  <div class="creator-copy">
+    <p class="eyebrow">START YOUR STORY</p>
+    <h1>BUILD YOUR<br><em>BASEBALL LIFE.</em></h1>
+    <p>국적을 고르고, 리그와 팀을 선택하고, 한 명의 선수가 세계 무대로 올라가는 과정을 직접 플레이하세요.</p>
+  </div>
+  <form class="creator-card glass" method="post" action="{{ url_for('career.career_new') }}">
+    {% if error %}
+    <div class="form-error">
+      {% if error == 'name' %}선수 이름을 입력해 주세요.
+      {% elif error == 'nationality' %}국적을 선택해 주세요.
+      {% elif error == 'league' %}리그를 선택해 주세요.
+      {% elif error == 'team' %}소속팀을 선택해 주세요.
+      {% elif error == 'position' %}포지션을 선택해 주세요.
+      {% else %}입력값을 다시 확인해 주세요.{% endif %}
+    </div>
+    {% endif %}
+    <label>PLAYER NAME<input name="player_name" required maxlength="30" placeholder="선수 이름"></label>
+    <div class="two">
+      <label>NATIONALITY
+        <select name="nationality" required>
+          <option value="" disabled selected>국가 선택</option>
+          {% for c in countries %}<option value="{{ c.country_id }}">{{ c.name }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>POSITION
+        <select name="position" required>
+          <option value="" disabled selected>포지션 선택</option>
+          <optgroup label="투수">
+            <option value="SP">선발투수 (SP)</option>
+            <option value="RP">불펜투수 (RP)</option>
+          </optgroup>
+          <optgroup label="야수">
+            <option value="C">포수 (C)</option>
+            <option value="1B">1루수 (1B)</option>
+            <option value="2B">2루수 (2B)</option>
+            <option value="3B">3루수 (3B)</option>
+            <option value="SS">유격수 (SS)</option>
+            <option value="LF">좌익수 (LF)</option>
+            <option value="CF">중견수 (CF)</option>
+            <option value="RF">우익수 (RF)</option>
+            <option value="DH">지명타자 (DH)</option>
+          </optgroup>
+        </select>
+      </label>
+    </div>
+    <label>LEAGUE
+      <select name="league_id" id="league-select" required>
+        <option value="" disabled selected>리그 선택</option>
+        {% for l in leagues %}<option value="{{ l.league_id }}">{{ l.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>TEAM
+      <select name="team_id" id="team-select" required disabled>
+        <option value="" disabled selected>먼저 리그를 선택하세요</option>
+      </select>
+    </label>
     <button class="primary-cta full" type="submit">START CAREER <b>→</b></button>
   </form>
 </main>
+<script>
+  window.CAREER_TEAMS = {{ teams|tojson }};
+</script>
+<script src="{{ url_for('static', filename='career.js') }}"></script>
 </body></html>
