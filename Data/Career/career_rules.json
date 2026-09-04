@@ -1,0 +1,13 @@
+{
+  "career_model": "Copero-like baseball career mode",
+  "decision_frequency": "seasonal_primary_decision",
+  "nationality_affects_international": true,
+  "team_logo_field": "logo_key",
+  "default_mode": "default",
+  "special_modes": [
+    "하이 클래스 모드"
+  ],
+  "ovr_system_included": false,
+  "total_teams": 319,
+  "league_count": 24
+}

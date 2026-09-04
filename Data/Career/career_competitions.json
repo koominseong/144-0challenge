@@ -1,0 +1,32 @@
+[
+  {
+    "competition_id": "WBC",
+    "name": "World Baseball Classic",
+    "eligible_rule": "국적 기준"
+  },
+  {
+    "competition_id": "PREMIER12",
+    "name": "WBSC Premier12",
+    "eligible_rule": "국가대표 자격"
+  },
+  {
+    "competition_id": "OLY",
+    "name": "Olympic Baseball",
+    "eligible_rule": "국가대표 자격 및 대회 규정"
+  },
+  {
+    "competition_id": "ASIAN_GAMES",
+    "name": "Asian Games Baseball",
+    "eligible_rule": "아시아 국가대표 규정"
+  },
+  {
+    "competition_id": "U23",
+    "name": "WBSC U-23",
+    "eligible_rule": "연령 제한 + 국적"
+  },
+  {
+    "competition_id": "U18",
+    "name": "WBSC U-18",
+    "eligible_rule": "연령 제한 + 국적"
+  }
+]

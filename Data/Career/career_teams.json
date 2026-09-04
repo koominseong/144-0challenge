@@ -1,0 +1,2554 @@
+[
+  {
+    "team_id": "KBO_01",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "두산 베어스",
+    "level": "KBO",
+    "logo_key": "두산_베어스"
+  },
+  {
+    "team_id": "KBO_02",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "LG 트윈스",
+    "level": "KBO",
+    "logo_key": "lg_트윈스"
+  },
+  {
+    "team_id": "KBO_03",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "키움 히어로즈",
+    "level": "KBO",
+    "logo_key": "키움_히어로즈"
+  },
+  {
+    "team_id": "KBO_04",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "SSG 랜더스",
+    "level": "KBO",
+    "logo_key": "ssg_랜더스"
+  },
+  {
+    "team_id": "KBO_05",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "KT 위즈",
+    "level": "KBO",
+    "logo_key": "kt_위즈"
+  },
+  {
+    "team_id": "KBO_06",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "KIA 타이거즈",
+    "level": "KBO",
+    "logo_key": "kia_타이거즈"
+  },
+  {
+    "team_id": "KBO_07",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "삼성 라이온즈",
+    "level": "KBO",
+    "logo_key": "삼성_라이온즈"
+  },
+  {
+    "team_id": "KBO_08",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "롯데 자이언츠",
+    "level": "KBO",
+    "logo_key": "롯데_자이언츠"
+  },
+  {
+    "team_id": "KBO_09",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "한화 이글스",
+    "level": "KBO",
+    "logo_key": "한화_이글스"
+  },
+  {
+    "team_id": "KBO_10",
+    "league_id": "KBO",
+    "country": "KR",
+    "name": "NC 다이노스",
+    "level": "KBO",
+    "logo_key": "nc_다이노스"
+  },
+  {
+    "team_id": "KBO_FUTURES_01",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "두산 베어스 2군",
+    "level": "Futures",
+    "logo_key": "두산_베어스_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_02",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "LG 트윈스 2군",
+    "level": "Futures",
+    "logo_key": "lg_트윈스_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_03",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "키움 히어로즈 2군",
+    "level": "Futures",
+    "logo_key": "키움_히어로즈_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_04",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "SSG 랜더스 2군",
+    "level": "Futures",
+    "logo_key": "ssg_랜더스_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_05",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "KT 위즈 2군",
+    "level": "Futures",
+    "logo_key": "kt_위즈_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_06",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "KIA 타이거즈 2군",
+    "level": "Futures",
+    "logo_key": "kia_타이거즈_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_07",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "삼성 라이온즈 2군",
+    "level": "Futures",
+    "logo_key": "삼성_라이온즈_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_08",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "롯데 자이언츠 2군",
+    "level": "Futures",
+    "logo_key": "롯데_자이언츠_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_09",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "한화 이글스 2군",
+    "level": "Futures",
+    "logo_key": "한화_이글스_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_10",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "NC 다이노스 2군",
+    "level": "Futures",
+    "logo_key": "nc_다이노스_2군"
+  },
+  {
+    "team_id": "KBO_FUTURES_11",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "상무 피닉스",
+    "level": "Futures",
+    "logo_key": "상무_피닉스"
+  },
+  {
+    "team_id": "KBO_FUTURES_12",
+    "league_id": "KBO_FUTURES",
+    "country": "KR",
+    "name": "고양 히어로즈",
+    "level": "Futures",
+    "logo_key": "고양_히어로즈"
+  },
+  {
+    "team_id": "KR_IND_01",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "연천 미라클",
+    "level": "Independent",
+    "logo_key": "연천_미라클"
+  },
+  {
+    "team_id": "KR_IND_02",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "파주 챌린저스",
+    "level": "Independent",
+    "logo_key": "파주_챌린저스"
+  },
+  {
+    "team_id": "KR_IND_03",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "성남 맥파이스",
+    "level": "Independent",
+    "logo_key": "성남_맥파이스"
+  },
+  {
+    "team_id": "KR_IND_04",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "고양 위너스",
+    "level": "Independent",
+    "logo_key": "고양_위너스"
+  },
+  {
+    "team_id": "KR_IND_05",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "수원 파인 이그니스",
+    "level": "Independent",
+    "logo_key": "수원_파인_이그니스"
+  },
+  {
+    "team_id": "KR_IND_06",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "독립선수단 A",
+    "level": "Independent",
+    "logo_key": "독립선수단_a"
+  },
+  {
+    "team_id": "KR_IND_07",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "독립선수단 B",
+    "level": "Independent",
+    "logo_key": "독립선수단_b"
+  },
+  {
+    "team_id": "KR_IND_08",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "독립선수단 C",
+    "level": "Independent",
+    "logo_key": "독립선수단_c"
+  },
+  {
+    "team_id": "KR_IND_09",
+    "league_id": "KR_IND",
+    "country": "KR",
+    "name": "독립선수단 D",
+    "level": "Independent",
+    "logo_key": "독립선수단_d"
+  },
+  {
+    "team_id": "NPB_01",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "한신 타이거스",
+    "level": "NPB",
+    "logo_key": "한신_타이거스"
+  },
+  {
+    "team_id": "NPB_02",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "히로시마 도요 카프",
+    "level": "NPB",
+    "logo_key": "히로시마_도요_카프"
+  },
+  {
+    "team_id": "NPB_03",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "요코하마 DeNA 베이스타스",
+    "level": "NPB",
+    "logo_key": "요코하마_dena_베이스타스"
+  },
+  {
+    "team_id": "NPB_04",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "요미우리 자이언츠",
+    "level": "NPB",
+    "logo_key": "요미우리_자이언츠"
+  },
+  {
+    "team_id": "NPB_05",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "도쿄 야쿠르트 스왈로스",
+    "level": "NPB",
+    "logo_key": "도쿄_야쿠르트_스왈로스"
+  },
+  {
+    "team_id": "NPB_06",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "주니치 드래건스",
+    "level": "NPB",
+    "logo_key": "주니치_드래건스"
+  },
+  {
+    "team_id": "NPB_07",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "후쿠오카 소프트뱅크 호크스",
+    "level": "NPB",
+    "logo_key": "후쿠오카_소프트뱅크_호크스"
+  },
+  {
+    "team_id": "NPB_08",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "홋카이도 닛폰햄 파이터스",
+    "level": "NPB",
+    "logo_key": "홋카이도_닛폰햄_파이터스"
+  },
+  {
+    "team_id": "NPB_09",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "지바 롯데 마린스",
+    "level": "NPB",
+    "logo_key": "지바_롯데_마린스"
+  },
+  {
+    "team_id": "NPB_10",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "사이타마 세이부 라이온스",
+    "level": "NPB",
+    "logo_key": "사이타마_세이부_라이온스"
+  },
+  {
+    "team_id": "NPB_11",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "도호쿠 라쿠텐 골든이글스",
+    "level": "NPB",
+    "logo_key": "도호쿠_라쿠텐_골든이글스"
+  },
+  {
+    "team_id": "NPB_12",
+    "league_id": "NPB",
+    "country": "JP",
+    "name": "오릭스 버펄로스",
+    "level": "NPB",
+    "logo_key": "오릭스_버펄로스"
+  },
+  {
+    "team_id": "NPB_FARM_01",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "한신 타이거스 2군",
+    "level": "Farm",
+    "logo_key": "한신_타이거스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_02",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "히로시마 도요 카프 2군",
+    "level": "Farm",
+    "logo_key": "히로시마_도요_카프_2군"
+  },
+  {
+    "team_id": "NPB_FARM_03",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "요코하마 DeNA 베이스타스 2군",
+    "level": "Farm",
+    "logo_key": "요코하마_dena_베이스타스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_04",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "요미우리 자이언츠 2군",
+    "level": "Farm",
+    "logo_key": "요미우리_자이언츠_2군"
+  },
+  {
+    "team_id": "NPB_FARM_05",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "도쿄 야쿠르트 스왈로스 2군",
+    "level": "Farm",
+    "logo_key": "도쿄_야쿠르트_스왈로스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_06",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "주니치 드래건스 2군",
+    "level": "Farm",
+    "logo_key": "주니치_드래건스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_07",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "후쿠오카 소프트뱅크 호크스 2군",
+    "level": "Farm",
+    "logo_key": "후쿠오카_소프트뱅크_호크스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_08",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "홋카이도 닛폰햄 파이터스 2군",
+    "level": "Farm",
+    "logo_key": "홋카이도_닛폰햄_파이터스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_09",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "지바 롯데 마린스 2군",
+    "level": "Farm",
+    "logo_key": "지바_롯데_마린스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_10",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "사이타마 세이부 라이온스 2군",
+    "level": "Farm",
+    "logo_key": "사이타마_세이부_라이온스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_11",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "도호쿠 라쿠텐 골든이글스 2군",
+    "level": "Farm",
+    "logo_key": "도호쿠_라쿠텐_골든이글스_2군"
+  },
+  {
+    "team_id": "NPB_FARM_12",
+    "league_id": "NPB_FARM",
+    "country": "JP",
+    "name": "오릭스 버펄로스 2군",
+    "level": "Farm",
+    "logo_key": "오릭스_버펄로스_2군"
+  },
+  {
+    "team_id": "MLB_01",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Arizona Diamondbacks",
+    "level": "MLB",
+    "logo_key": "arizona_diamondbacks"
+  },
+  {
+    "team_id": "MLB_02",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Atlanta Braves",
+    "level": "MLB",
+    "logo_key": "atlanta_braves"
+  },
+  {
+    "team_id": "MLB_03",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Baltimore Orioles",
+    "level": "MLB",
+    "logo_key": "baltimore_orioles"
+  },
+  {
+    "team_id": "MLB_04",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Boston Red Sox",
+    "level": "MLB",
+    "logo_key": "boston_red_sox"
+  },
+  {
+    "team_id": "MLB_05",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Chicago White Sox",
+    "level": "MLB",
+    "logo_key": "chicago_white_sox"
+  },
+  {
+    "team_id": "MLB_06",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Chicago Cubs",
+    "level": "MLB",
+    "logo_key": "chicago_cubs"
+  },
+  {
+    "team_id": "MLB_07",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Cincinnati Reds",
+    "level": "MLB",
+    "logo_key": "cincinnati_reds"
+  },
+  {
+    "team_id": "MLB_08",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Cleveland Guardians",
+    "level": "MLB",
+    "logo_key": "cleveland_guardians"
+  },
+  {
+    "team_id": "MLB_09",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Colorado Rockies",
+    "level": "MLB",
+    "logo_key": "colorado_rockies"
+  },
+  {
+    "team_id": "MLB_10",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Detroit Tigers",
+    "level": "MLB",
+    "logo_key": "detroit_tigers"
+  },
+  {
+    "team_id": "MLB_11",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Houston Astros",
+    "level": "MLB",
+    "logo_key": "houston_astros"
+  },
+  {
+    "team_id": "MLB_12",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Kansas City Royals",
+    "level": "MLB",
+    "logo_key": "kansas_city_royals"
+  },
+  {
+    "team_id": "MLB_13",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Los Angeles Angels",
+    "level": "MLB",
+    "logo_key": "los_angeles_angels"
+  },
+  {
+    "team_id": "MLB_14",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Los Angeles Dodgers",
+    "level": "MLB",
+    "logo_key": "los_angeles_dodgers"
+  },
+  {
+    "team_id": "MLB_15",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Miami Marlins",
+    "level": "MLB",
+    "logo_key": "miami_marlins"
+  },
+  {
+    "team_id": "MLB_16",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Milwaukee Brewers",
+    "level": "MLB",
+    "logo_key": "milwaukee_brewers"
+  },
+  {
+    "team_id": "MLB_17",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Minnesota Twins",
+    "level": "MLB",
+    "logo_key": "minnesota_twins"
+  },
+  {
+    "team_id": "MLB_18",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "New York Mets",
+    "level": "MLB",
+    "logo_key": "new_york_mets"
+  },
+  {
+    "team_id": "MLB_19",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "New York Yankees",
+    "level": "MLB",
+    "logo_key": "new_york_yankees"
+  },
+  {
+    "team_id": "MLB_20",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Oakland Athletics",
+    "level": "MLB",
+    "logo_key": "oakland_athletics"
+  },
+  {
+    "team_id": "MLB_21",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Philadelphia Phillies",
+    "level": "MLB",
+    "logo_key": "philadelphia_phillies"
+  },
+  {
+    "team_id": "MLB_22",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Pittsburgh Pirates",
+    "level": "MLB",
+    "logo_key": "pittsburgh_pirates"
+  },
+  {
+    "team_id": "MLB_23",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "San Diego Padres",
+    "level": "MLB",
+    "logo_key": "san_diego_padres"
+  },
+  {
+    "team_id": "MLB_24",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "San Francisco Giants",
+    "level": "MLB",
+    "logo_key": "san_francisco_giants"
+  },
+  {
+    "team_id": "MLB_25",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Seattle Mariners",
+    "level": "MLB",
+    "logo_key": "seattle_mariners"
+  },
+  {
+    "team_id": "MLB_26",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "St. Louis Cardinals",
+    "level": "MLB",
+    "logo_key": "st._louis_cardinals"
+  },
+  {
+    "team_id": "MLB_27",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Tampa Bay Rays",
+    "level": "MLB",
+    "logo_key": "tampa_bay_rays"
+  },
+  {
+    "team_id": "MLB_28",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Texas Rangers",
+    "level": "MLB",
+    "logo_key": "texas_rangers"
+  },
+  {
+    "team_id": "MLB_29",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Toronto Blue Jays",
+    "level": "MLB",
+    "logo_key": "toronto_blue_jays"
+  },
+  {
+    "team_id": "MLB_30",
+    "league_id": "MLB",
+    "country": "US",
+    "name": "Washington Nationals",
+    "level": "MLB",
+    "logo_key": "washington_nationals"
+  },
+  {
+    "team_id": "AAA_01",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Arizona Diamondbacks AAA",
+    "level": "AAA",
+    "logo_key": "arizona_diamondbacks_aaa"
+  },
+  {
+    "team_id": "AAA_02",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Atlanta Braves AAA",
+    "level": "AAA",
+    "logo_key": "atlanta_braves_aaa"
+  },
+  {
+    "team_id": "AAA_03",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Baltimore Orioles AAA",
+    "level": "AAA",
+    "logo_key": "baltimore_orioles_aaa"
+  },
+  {
+    "team_id": "AAA_04",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Boston Red Sox AAA",
+    "level": "AAA",
+    "logo_key": "boston_red_sox_aaa"
+  },
+  {
+    "team_id": "AAA_05",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Chicago White Sox AAA",
+    "level": "AAA",
+    "logo_key": "chicago_white_sox_aaa"
+  },
+  {
+    "team_id": "AAA_06",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Chicago Cubs AAA",
+    "level": "AAA",
+    "logo_key": "chicago_cubs_aaa"
+  },
+  {
+    "team_id": "AAA_07",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Cincinnati Reds AAA",
+    "level": "AAA",
+    "logo_key": "cincinnati_reds_aaa"
+  },
+  {
+    "team_id": "AAA_08",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Cleveland Guardians AAA",
+    "level": "AAA",
+    "logo_key": "cleveland_guardians_aaa"
+  },
+  {
+    "team_id": "AAA_09",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Colorado Rockies AAA",
+    "level": "AAA",
+    "logo_key": "colorado_rockies_aaa"
+  },
+  {
+    "team_id": "AAA_10",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Detroit Tigers AAA",
+    "level": "AAA",
+    "logo_key": "detroit_tigers_aaa"
+  },
+  {
+    "team_id": "AAA_11",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Houston Astros AAA",
+    "level": "AAA",
+    "logo_key": "houston_astros_aaa"
+  },
+  {
+    "team_id": "AAA_12",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Kansas City Royals AAA",
+    "level": "AAA",
+    "logo_key": "kansas_city_royals_aaa"
+  },
+  {
+    "team_id": "AAA_13",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Los Angeles Angels AAA",
+    "level": "AAA",
+    "logo_key": "los_angeles_angels_aaa"
+  },
+  {
+    "team_id": "AAA_14",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Los Angeles Dodgers AAA",
+    "level": "AAA",
+    "logo_key": "los_angeles_dodgers_aaa"
+  },
+  {
+    "team_id": "AAA_15",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Miami Marlins AAA",
+    "level": "AAA",
+    "logo_key": "miami_marlins_aaa"
+  },
+  {
+    "team_id": "AAA_16",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Milwaukee Brewers AAA",
+    "level": "AAA",
+    "logo_key": "milwaukee_brewers_aaa"
+  },
+  {
+    "team_id": "AAA_17",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Minnesota Twins AAA",
+    "level": "AAA",
+    "logo_key": "minnesota_twins_aaa"
+  },
+  {
+    "team_id": "AAA_18",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "New York Mets AAA",
+    "level": "AAA",
+    "logo_key": "new_york_mets_aaa"
+  },
+  {
+    "team_id": "AAA_19",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "New York Yankees AAA",
+    "level": "AAA",
+    "logo_key": "new_york_yankees_aaa"
+  },
+  {
+    "team_id": "AAA_20",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Oakland Athletics AAA",
+    "level": "AAA",
+    "logo_key": "oakland_athletics_aaa"
+  },
+  {
+    "team_id": "AAA_21",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Philadelphia Phillies AAA",
+    "level": "AAA",
+    "logo_key": "philadelphia_phillies_aaa"
+  },
+  {
+    "team_id": "AAA_22",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Pittsburgh Pirates AAA",
+    "level": "AAA",
+    "logo_key": "pittsburgh_pirates_aaa"
+  },
+  {
+    "team_id": "AAA_23",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "San Diego Padres AAA",
+    "level": "AAA",
+    "logo_key": "san_diego_padres_aaa"
+  },
+  {
+    "team_id": "AAA_24",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "San Francisco Giants AAA",
+    "level": "AAA",
+    "logo_key": "san_francisco_giants_aaa"
+  },
+  {
+    "team_id": "AAA_25",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Seattle Mariners AAA",
+    "level": "AAA",
+    "logo_key": "seattle_mariners_aaa"
+  },
+  {
+    "team_id": "AAA_26",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "St. Louis Cardinals AAA",
+    "level": "AAA",
+    "logo_key": "st._louis_cardinals_aaa"
+  },
+  {
+    "team_id": "AAA_27",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Tampa Bay Rays AAA",
+    "level": "AAA",
+    "logo_key": "tampa_bay_rays_aaa"
+  },
+  {
+    "team_id": "AAA_28",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Texas Rangers AAA",
+    "level": "AAA",
+    "logo_key": "texas_rangers_aaa"
+  },
+  {
+    "team_id": "AAA_29",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Toronto Blue Jays AAA",
+    "level": "AAA",
+    "logo_key": "toronto_blue_jays_aaa"
+  },
+  {
+    "team_id": "AAA_30",
+    "league_id": "AAA",
+    "country": "US",
+    "name": "Washington Nationals AAA",
+    "level": "AAA",
+    "logo_key": "washington_nationals_aaa"
+  },
+  {
+    "team_id": "AA_01",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Arizona Diamondbacks AA",
+    "level": "AA",
+    "logo_key": "arizona_diamondbacks_aa"
+  },
+  {
+    "team_id": "AA_02",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Atlanta Braves AA",
+    "level": "AA",
+    "logo_key": "atlanta_braves_aa"
+  },
+  {
+    "team_id": "AA_03",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Baltimore Orioles AA",
+    "level": "AA",
+    "logo_key": "baltimore_orioles_aa"
+  },
+  {
+    "team_id": "AA_04",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Boston Red Sox AA",
+    "level": "AA",
+    "logo_key": "boston_red_sox_aa"
+  },
+  {
+    "team_id": "AA_05",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Chicago White Sox AA",
+    "level": "AA",
+    "logo_key": "chicago_white_sox_aa"
+  },
+  {
+    "team_id": "AA_06",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Chicago Cubs AA",
+    "level": "AA",
+    "logo_key": "chicago_cubs_aa"
+  },
+  {
+    "team_id": "AA_07",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Cincinnati Reds AA",
+    "level": "AA",
+    "logo_key": "cincinnati_reds_aa"
+  },
+  {
+    "team_id": "AA_08",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Cleveland Guardians AA",
+    "level": "AA",
+    "logo_key": "cleveland_guardians_aa"
+  },
+  {
+    "team_id": "AA_09",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Colorado Rockies AA",
+    "level": "AA",
+    "logo_key": "colorado_rockies_aa"
+  },
+  {
+    "team_id": "AA_10",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Detroit Tigers AA",
+    "level": "AA",
+    "logo_key": "detroit_tigers_aa"
+  },
+  {
+    "team_id": "AA_11",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Houston Astros AA",
+    "level": "AA",
+    "logo_key": "houston_astros_aa"
+  },
+  {
+    "team_id": "AA_12",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Kansas City Royals AA",
+    "level": "AA",
+    "logo_key": "kansas_city_royals_aa"
+  },
+  {
+    "team_id": "AA_13",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Los Angeles Angels AA",
+    "level": "AA",
+    "logo_key": "los_angeles_angels_aa"
+  },
+  {
+    "team_id": "AA_14",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Los Angeles Dodgers AA",
+    "level": "AA",
+    "logo_key": "los_angeles_dodgers_aa"
+  },
+  {
+    "team_id": "AA_15",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Miami Marlins AA",
+    "level": "AA",
+    "logo_key": "miami_marlins_aa"
+  },
+  {
+    "team_id": "AA_16",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Milwaukee Brewers AA",
+    "level": "AA",
+    "logo_key": "milwaukee_brewers_aa"
+  },
+  {
+    "team_id": "AA_17",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Minnesota Twins AA",
+    "level": "AA",
+    "logo_key": "minnesota_twins_aa"
+  },
+  {
+    "team_id": "AA_18",
+    "league_id": "AA",
+    "country": "US",
+    "name": "New York Mets AA",
+    "level": "AA",
+    "logo_key": "new_york_mets_aa"
+  },
+  {
+    "team_id": "AA_19",
+    "league_id": "AA",
+    "country": "US",
+    "name": "New York Yankees AA",
+    "level": "AA",
+    "logo_key": "new_york_yankees_aa"
+  },
+  {
+    "team_id": "AA_20",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Oakland Athletics AA",
+    "level": "AA",
+    "logo_key": "oakland_athletics_aa"
+  },
+  {
+    "team_id": "AA_21",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Philadelphia Phillies AA",
+    "level": "AA",
+    "logo_key": "philadelphia_phillies_aa"
+  },
+  {
+    "team_id": "AA_22",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Pittsburgh Pirates AA",
+    "level": "AA",
+    "logo_key": "pittsburgh_pirates_aa"
+  },
+  {
+    "team_id": "AA_23",
+    "league_id": "AA",
+    "country": "US",
+    "name": "San Diego Padres AA",
+    "level": "AA",
+    "logo_key": "san_diego_padres_aa"
+  },
+  {
+    "team_id": "AA_24",
+    "league_id": "AA",
+    "country": "US",
+    "name": "San Francisco Giants AA",
+    "level": "AA",
+    "logo_key": "san_francisco_giants_aa"
+  },
+  {
+    "team_id": "AA_25",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Seattle Mariners AA",
+    "level": "AA",
+    "logo_key": "seattle_mariners_aa"
+  },
+  {
+    "team_id": "AA_26",
+    "league_id": "AA",
+    "country": "US",
+    "name": "St. Louis Cardinals AA",
+    "level": "AA",
+    "logo_key": "st._louis_cardinals_aa"
+  },
+  {
+    "team_id": "AA_27",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Tampa Bay Rays AA",
+    "level": "AA",
+    "logo_key": "tampa_bay_rays_aa"
+  },
+  {
+    "team_id": "AA_28",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Texas Rangers AA",
+    "level": "AA",
+    "logo_key": "texas_rangers_aa"
+  },
+  {
+    "team_id": "AA_29",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Toronto Blue Jays AA",
+    "level": "AA",
+    "logo_key": "toronto_blue_jays_aa"
+  },
+  {
+    "team_id": "AA_30",
+    "league_id": "AA",
+    "country": "US",
+    "name": "Washington Nationals AA",
+    "level": "AA",
+    "logo_key": "washington_nationals_aa"
+  },
+  {
+    "team_id": "A_01",
+    "league_id": "A",
+    "country": "US",
+    "name": "Arizona Diamondbacks A",
+    "level": "A",
+    "logo_key": "arizona_diamondbacks_a"
+  },
+  {
+    "team_id": "A_02",
+    "league_id": "A",
+    "country": "US",
+    "name": "Atlanta Braves A",
+    "level": "A",
+    "logo_key": "atlanta_braves_a"
+  },
+  {
+    "team_id": "A_03",
+    "league_id": "A",
+    "country": "US",
+    "name": "Baltimore Orioles A",
+    "level": "A",
+    "logo_key": "baltimore_orioles_a"
+  },
+  {
+    "team_id": "A_04",
+    "league_id": "A",
+    "country": "US",
+    "name": "Boston Red Sox A",
+    "level": "A",
+    "logo_key": "boston_red_sox_a"
+  },
+  {
+    "team_id": "A_05",
+    "league_id": "A",
+    "country": "US",
+    "name": "Chicago White Sox A",
+    "level": "A",
+    "logo_key": "chicago_white_sox_a"
+  },
+  {
+    "team_id": "A_06",
+    "league_id": "A",
+    "country": "US",
+    "name": "Chicago Cubs A",
+    "level": "A",
+    "logo_key": "chicago_cubs_a"
+  },
+  {
+    "team_id": "A_07",
+    "league_id": "A",
+    "country": "US",
+    "name": "Cincinnati Reds A",
+    "level": "A",
+    "logo_key": "cincinnati_reds_a"
+  },
+  {
+    "team_id": "A_08",
+    "league_id": "A",
+    "country": "US",
+    "name": "Cleveland Guardians A",
+    "level": "A",
+    "logo_key": "cleveland_guardians_a"
+  },
+  {
+    "team_id": "A_09",
+    "league_id": "A",
+    "country": "US",
+    "name": "Colorado Rockies A",
+    "level": "A",
+    "logo_key": "colorado_rockies_a"
+  },
+  {
+    "team_id": "A_10",
+    "league_id": "A",
+    "country": "US",
+    "name": "Detroit Tigers A",
+    "level": "A",
+    "logo_key": "detroit_tigers_a"
+  },
+  {
+    "team_id": "A_11",
+    "league_id": "A",
+    "country": "US",
+    "name": "Houston Astros A",
+    "level": "A",
+    "logo_key": "houston_astros_a"
+  },
+  {
+    "team_id": "A_12",
+    "league_id": "A",
+    "country": "US",
+    "name": "Kansas City Royals A",
+    "level": "A",
+    "logo_key": "kansas_city_royals_a"
+  },
+  {
+    "team_id": "A_13",
+    "league_id": "A",
+    "country": "US",
+    "name": "Los Angeles Angels A",
+    "level": "A",
+    "logo_key": "los_angeles_angels_a"
+  },
+  {
+    "team_id": "A_14",
+    "league_id": "A",
+    "country": "US",
+    "name": "Los Angeles Dodgers A",
+    "level": "A",
+    "logo_key": "los_angeles_dodgers_a"
+  },
+  {
+    "team_id": "A_15",
+    "league_id": "A",
+    "country": "US",
+    "name": "Miami Marlins A",
+    "level": "A",
+    "logo_key": "miami_marlins_a"
+  },
+  {
+    "team_id": "A_16",
+    "league_id": "A",
+    "country": "US",
+    "name": "Milwaukee Brewers A",
+    "level": "A",
+    "logo_key": "milwaukee_brewers_a"
+  },
+  {
+    "team_id": "A_17",
+    "league_id": "A",
+    "country": "US",
+    "name": "Minnesota Twins A",
+    "level": "A",
+    "logo_key": "minnesota_twins_a"
+  },
+  {
+    "team_id": "A_18",
+    "league_id": "A",
+    "country": "US",
+    "name": "New York Mets A",
+    "level": "A",
+    "logo_key": "new_york_mets_a"
+  },
+  {
+    "team_id": "A_19",
+    "league_id": "A",
+    "country": "US",
+    "name": "New York Yankees A",
+    "level": "A",
+    "logo_key": "new_york_yankees_a"
+  },
+  {
+    "team_id": "A_20",
+    "league_id": "A",
+    "country": "US",
+    "name": "Oakland Athletics A",
+    "level": "A",
+    "logo_key": "oakland_athletics_a"
+  },
+  {
+    "team_id": "A_21",
+    "league_id": "A",
+    "country": "US",
+    "name": "Philadelphia Phillies A",
+    "level": "A",
+    "logo_key": "philadelphia_phillies_a"
+  },
+  {
+    "team_id": "A_22",
+    "league_id": "A",
+    "country": "US",
+    "name": "Pittsburgh Pirates A",
+    "level": "A",
+    "logo_key": "pittsburgh_pirates_a"
+  },
+  {
+    "team_id": "A_23",
+    "league_id": "A",
+    "country": "US",
+    "name": "San Diego Padres A",
+    "level": "A",
+    "logo_key": "san_diego_padres_a"
+  },
+  {
+    "team_id": "A_24",
+    "league_id": "A",
+    "country": "US",
+    "name": "San Francisco Giants A",
+    "level": "A",
+    "logo_key": "san_francisco_giants_a"
+  },
+  {
+    "team_id": "A_25",
+    "league_id": "A",
+    "country": "US",
+    "name": "Seattle Mariners A",
+    "level": "A",
+    "logo_key": "seattle_mariners_a"
+  },
+  {
+    "team_id": "A_26",
+    "league_id": "A",
+    "country": "US",
+    "name": "St. Louis Cardinals A",
+    "level": "A",
+    "logo_key": "st._louis_cardinals_a"
+  },
+  {
+    "team_id": "A_27",
+    "league_id": "A",
+    "country": "US",
+    "name": "Tampa Bay Rays A",
+    "level": "A",
+    "logo_key": "tampa_bay_rays_a"
+  },
+  {
+    "team_id": "A_28",
+    "league_id": "A",
+    "country": "US",
+    "name": "Texas Rangers A",
+    "level": "A",
+    "logo_key": "texas_rangers_a"
+  },
+  {
+    "team_id": "A_29",
+    "league_id": "A",
+    "country": "US",
+    "name": "Toronto Blue Jays A",
+    "level": "A",
+    "logo_key": "toronto_blue_jays_a"
+  },
+  {
+    "team_id": "A_30",
+    "league_id": "A",
+    "country": "US",
+    "name": "Washington Nationals A",
+    "level": "A",
+    "logo_key": "washington_nationals_a"
+  },
+  {
+    "team_id": "RK_01",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Arizona Diamondbacks Rk",
+    "level": "Rk",
+    "logo_key": "arizona_diamondbacks_rk"
+  },
+  {
+    "team_id": "RK_02",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Atlanta Braves Rk",
+    "level": "Rk",
+    "logo_key": "atlanta_braves_rk"
+  },
+  {
+    "team_id": "RK_03",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Baltimore Orioles Rk",
+    "level": "Rk",
+    "logo_key": "baltimore_orioles_rk"
+  },
+  {
+    "team_id": "RK_04",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Boston Red Sox Rk",
+    "level": "Rk",
+    "logo_key": "boston_red_sox_rk"
+  },
+  {
+    "team_id": "RK_05",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Chicago White Sox Rk",
+    "level": "Rk",
+    "logo_key": "chicago_white_sox_rk"
+  },
+  {
+    "team_id": "RK_06",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Chicago Cubs Rk",
+    "level": "Rk",
+    "logo_key": "chicago_cubs_rk"
+  },
+  {
+    "team_id": "RK_07",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Cincinnati Reds Rk",
+    "level": "Rk",
+    "logo_key": "cincinnati_reds_rk"
+  },
+  {
+    "team_id": "RK_08",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Cleveland Guardians Rk",
+    "level": "Rk",
+    "logo_key": "cleveland_guardians_rk"
+  },
+  {
+    "team_id": "RK_09",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Colorado Rockies Rk",
+    "level": "Rk",
+    "logo_key": "colorado_rockies_rk"
+  },
+  {
+    "team_id": "RK_10",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Detroit Tigers Rk",
+    "level": "Rk",
+    "logo_key": "detroit_tigers_rk"
+  },
+  {
+    "team_id": "RK_11",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Houston Astros Rk",
+    "level": "Rk",
+    "logo_key": "houston_astros_rk"
+  },
+  {
+    "team_id": "RK_12",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Kansas City Royals Rk",
+    "level": "Rk",
+    "logo_key": "kansas_city_royals_rk"
+  },
+  {
+    "team_id": "RK_13",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Los Angeles Angels Rk",
+    "level": "Rk",
+    "logo_key": "los_angeles_angels_rk"
+  },
+  {
+    "team_id": "RK_14",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Los Angeles Dodgers Rk",
+    "level": "Rk",
+    "logo_key": "los_angeles_dodgers_rk"
+  },
+  {
+    "team_id": "RK_15",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Miami Marlins Rk",
+    "level": "Rk",
+    "logo_key": "miami_marlins_rk"
+  },
+  {
+    "team_id": "RK_16",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Milwaukee Brewers Rk",
+    "level": "Rk",
+    "logo_key": "milwaukee_brewers_rk"
+  },
+  {
+    "team_id": "RK_17",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Minnesota Twins Rk",
+    "level": "Rk",
+    "logo_key": "minnesota_twins_rk"
+  },
+  {
+    "team_id": "RK_18",
+    "league_id": "RK",
+    "country": "US",
+    "name": "New York Mets Rk",
+    "level": "Rk",
+    "logo_key": "new_york_mets_rk"
+  },
+  {
+    "team_id": "RK_19",
+    "league_id": "RK",
+    "country": "US",
+    "name": "New York Yankees Rk",
+    "level": "Rk",
+    "logo_key": "new_york_yankees_rk"
+  },
+  {
+    "team_id": "RK_20",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Oakland Athletics Rk",
+    "level": "Rk",
+    "logo_key": "oakland_athletics_rk"
+  },
+  {
+    "team_id": "RK_21",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Philadelphia Phillies Rk",
+    "level": "Rk",
+    "logo_key": "philadelphia_phillies_rk"
+  },
+  {
+    "team_id": "RK_22",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Pittsburgh Pirates Rk",
+    "level": "Rk",
+    "logo_key": "pittsburgh_pirates_rk"
+  },
+  {
+    "team_id": "RK_23",
+    "league_id": "RK",
+    "country": "US",
+    "name": "San Diego Padres Rk",
+    "level": "Rk",
+    "logo_key": "san_diego_padres_rk"
+  },
+  {
+    "team_id": "RK_24",
+    "league_id": "RK",
+    "country": "US",
+    "name": "San Francisco Giants Rk",
+    "level": "Rk",
+    "logo_key": "san_francisco_giants_rk"
+  },
+  {
+    "team_id": "RK_25",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Seattle Mariners Rk",
+    "level": "Rk",
+    "logo_key": "seattle_mariners_rk"
+  },
+  {
+    "team_id": "RK_26",
+    "league_id": "RK",
+    "country": "US",
+    "name": "St. Louis Cardinals Rk",
+    "level": "Rk",
+    "logo_key": "st._louis_cardinals_rk"
+  },
+  {
+    "team_id": "RK_27",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Tampa Bay Rays Rk",
+    "level": "Rk",
+    "logo_key": "tampa_bay_rays_rk"
+  },
+  {
+    "team_id": "RK_28",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Texas Rangers Rk",
+    "level": "Rk",
+    "logo_key": "texas_rangers_rk"
+  },
+  {
+    "team_id": "RK_29",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Toronto Blue Jays Rk",
+    "level": "Rk",
+    "logo_key": "toronto_blue_jays_rk"
+  },
+  {
+    "team_id": "RK_30",
+    "league_id": "RK",
+    "country": "US",
+    "name": "Washington Nationals Rk",
+    "level": "Rk",
+    "logo_key": "washington_nationals_rk"
+  },
+  {
+    "team_id": "CBL_01",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Beijing Tigers",
+    "level": "CN-Pro",
+    "logo_key": "beijing_tigers"
+  },
+  {
+    "team_id": "CBL_02",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Tianjin Lions",
+    "level": "CN-Pro",
+    "logo_key": "tianjin_lions"
+  },
+  {
+    "team_id": "CBL_03",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Guangdong Leopards",
+    "level": "CN-Pro",
+    "logo_key": "guangdong_leopards"
+  },
+  {
+    "team_id": "CBL_04",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Jiangsu Dragons",
+    "level": "CN-Pro",
+    "logo_key": "jiangsu_dragons"
+  },
+  {
+    "team_id": "CBL_05",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Sichuan Blue Whales",
+    "level": "CN-Pro",
+    "logo_key": "sichuan_blue_whales"
+  },
+  {
+    "team_id": "CBL_06",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Shanghai Golden Eagles",
+    "level": "CN-Pro",
+    "logo_key": "shanghai_golden_eagles"
+  },
+  {
+    "team_id": "CBL_07",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Chengdu Hunters",
+    "level": "CN-Pro",
+    "logo_key": "chengdu_hunters"
+  },
+  {
+    "team_id": "CBL_08",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Wuhan Bears",
+    "level": "CN-Pro",
+    "logo_key": "wuhan_bears"
+  },
+  {
+    "team_id": "CBL_09",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Xiamen Mariners",
+    "level": "CN-Pro",
+    "logo_key": "xiamen_mariners"
+  },
+  {
+    "team_id": "CBL_10",
+    "league_id": "CBL",
+    "country": "CN",
+    "name": "Shenzhen Eagles",
+    "level": "CN-Pro",
+    "logo_key": "shenzhen_eagles"
+  },
+  {
+    "team_id": "LMB_01",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Acereros de Monclova",
+    "level": "LMB",
+    "logo_key": "acereros_de_monclova"
+  },
+  {
+    "team_id": "LMB_02",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Algodoneros de Unión Laguna",
+    "level": "LMB",
+    "logo_key": "algodoneros_de_unión_laguna"
+  },
+  {
+    "team_id": "LMB_03",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Bravos de León",
+    "level": "LMB",
+    "logo_key": "bravos_de_león"
+  },
+  {
+    "team_id": "LMB_04",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Caliente de Durango",
+    "level": "LMB",
+    "logo_key": "caliente_de_durango"
+  },
+  {
+    "team_id": "LMB_05",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Charros de Jalisco",
+    "level": "LMB",
+    "logo_key": "charros_de_jalisco"
+  },
+  {
+    "team_id": "LMB_06",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Conspiradores de Querétaro",
+    "level": "LMB",
+    "logo_key": "conspiradores_de_querétaro"
+  },
+  {
+    "team_id": "LMB_07",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Diablos Rojos del México",
+    "level": "LMB",
+    "logo_key": "diablos_rojos_del_méxico"
+  },
+  {
+    "team_id": "LMB_08",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "El Águila de Veracruz",
+    "level": "LMB",
+    "logo_key": "el_águila_de_veracruz"
+  },
+  {
+    "team_id": "LMB_09",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Guerreros de Oaxaca",
+    "level": "LMB",
+    "logo_key": "guerreros_de_oaxaca"
+  },
+  {
+    "team_id": "LMB_10",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Leones de Yucatán",
+    "level": "LMB",
+    "logo_key": "leones_de_yucatán"
+  },
+  {
+    "team_id": "LMB_11",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Olmecas de Tabasco",
+    "level": "LMB",
+    "logo_key": "olmecas_de_tabasco"
+  },
+  {
+    "team_id": "LMB_12",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Pericos de Puebla",
+    "level": "LMB",
+    "logo_key": "pericos_de_puebla"
+  },
+  {
+    "team_id": "LMB_13",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Piratas de Campeche",
+    "level": "LMB",
+    "logo_key": "piratas_de_campeche"
+  },
+  {
+    "team_id": "LMB_14",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Rieleros de Aguascalientes",
+    "level": "LMB",
+    "logo_key": "rieleros_de_aguascalientes"
+  },
+  {
+    "team_id": "LMB_15",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Sultanes de Monterrey",
+    "level": "LMB",
+    "logo_key": "sultanes_de_monterrey"
+  },
+  {
+    "team_id": "LMB_16",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Tecolotes de los Dos Laredos",
+    "level": "LMB",
+    "logo_key": "tecolotes_de_los_dos_laredos"
+  },
+  {
+    "team_id": "LMB_17",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Tigres de Quintana Roo",
+    "level": "LMB",
+    "logo_key": "tigres_de_quintana_roo"
+  },
+  {
+    "team_id": "LMB_18",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Toros de Tijuana",
+    "level": "LMB",
+    "logo_key": "toros_de_tijuana"
+  },
+  {
+    "team_id": "LMB_19",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Dorados de Chihuahua",
+    "level": "LMB",
+    "logo_key": "dorados_de_chihuahua"
+  },
+  {
+    "team_id": "LMB_20",
+    "league_id": "LMB",
+    "country": "MX",
+    "name": "Saraperos de Saltillo",
+    "level": "LMB",
+    "logo_key": "saraperos_de_saltillo"
+  },
+  {
+    "team_id": "CPBL_01",
+    "league_id": "CPBL",
+    "country": "TW",
+    "name": "CTBC Brothers",
+    "level": "CPBL",
+    "logo_key": "ctbc_brothers"
+  },
+  {
+    "team_id": "CPBL_02",
+    "league_id": "CPBL",
+    "country": "TW",
+    "name": "Uni-President 7-Eleven Lions",
+    "level": "CPBL",
+    "logo_key": "uni-president_7-eleven_lions"
+  },
+  {
+    "team_id": "CPBL_03",
+    "league_id": "CPBL",
+    "country": "TW",
+    "name": "Rakuten Monkeys",
+    "level": "CPBL",
+    "logo_key": "rakuten_monkeys"
+  },
+  {
+    "team_id": "CPBL_04",
+    "league_id": "CPBL",
+    "country": "TW",
+    "name": "Fubon Guardians",
+    "level": "CPBL",
+    "logo_key": "fubon_guardians"
+  },
+  {
+    "team_id": "CPBL_05",
+    "league_id": "CPBL",
+    "country": "TW",
+    "name": "Wei Chuan Dragons",
+    "level": "CPBL",
+    "logo_key": "wei_chuan_dragons"
+  },
+  {
+    "team_id": "CPBL_06",
+    "league_id": "CPBL",
+    "country": "TW",
+    "name": "TSG Hawks",
+    "level": "CPBL",
+    "logo_key": "tsg_hawks"
+  },
+  {
+    "team_id": "LIDOM_01",
+    "league_id": "LIDOM",
+    "country": "DO",
+    "name": "Águilas Cibaeñas",
+    "level": "LIDOM",
+    "logo_key": "águilas_cibaeñas"
+  },
+  {
+    "team_id": "LIDOM_02",
+    "league_id": "LIDOM",
+    "country": "DO",
+    "name": "Estrellas Orientales",
+    "level": "LIDOM",
+    "logo_key": "estrellas_orientales"
+  },
+  {
+    "team_id": "LIDOM_03",
+    "league_id": "LIDOM",
+    "country": "DO",
+    "name": "Gigantes del Cibao",
+    "level": "LIDOM",
+    "logo_key": "gigantes_del_cibao"
+  },
+  {
+    "team_id": "LIDOM_04",
+    "league_id": "LIDOM",
+    "country": "DO",
+    "name": "Leones del Escogido",
+    "level": "LIDOM",
+    "logo_key": "leones_del_escogido"
+  },
+  {
+    "team_id": "LIDOM_05",
+    "league_id": "LIDOM",
+    "country": "DO",
+    "name": "Tigres del Licey",
+    "level": "LIDOM",
+    "logo_key": "tigres_del_licey"
+  },
+  {
+    "team_id": "LIDOM_06",
+    "league_id": "LIDOM",
+    "country": "DO",
+    "name": "Toros del Este",
+    "level": "LIDOM",
+    "logo_key": "toros_del_este"
+  },
+  {
+    "team_id": "LVBP_01",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Cardenales de Lara",
+    "level": "LVBP",
+    "logo_key": "cardenales_de_lara"
+  },
+  {
+    "team_id": "LVBP_02",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Caribes de Anzoátegui",
+    "level": "LVBP",
+    "logo_key": "caribes_de_anzoátegui"
+  },
+  {
+    "team_id": "LVBP_03",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Bravos de Margarita",
+    "level": "LVBP",
+    "logo_key": "bravos_de_margarita"
+  },
+  {
+    "team_id": "LVBP_04",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Águilas del Zulia",
+    "level": "LVBP",
+    "logo_key": "águilas_del_zulia"
+  },
+  {
+    "team_id": "LVBP_05",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Leones del Caracas",
+    "level": "LVBP",
+    "logo_key": "leones_del_caracas"
+  },
+  {
+    "team_id": "LVBP_06",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Navegantes del Magallanes",
+    "level": "LVBP",
+    "logo_key": "navegantes_del_magallanes"
+  },
+  {
+    "team_id": "LVBP_07",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Tiburones de La Guaira",
+    "level": "LVBP",
+    "logo_key": "tiburones_de_la_guaira"
+  },
+  {
+    "team_id": "LVBP_08",
+    "league_id": "LVBP",
+    "country": "VE",
+    "name": "Tigres de Aragua",
+    "level": "LVBP",
+    "logo_key": "tigres_de_aragua"
+  },
+  {
+    "team_id": "LBPRC_01",
+    "league_id": "LBPRC",
+    "country": "PR",
+    "name": "Caguas Criollos",
+    "level": "LBPRC",
+    "logo_key": "caguas_criollos"
+  },
+  {
+    "team_id": "LBPRC_02",
+    "league_id": "LBPRC",
+    "country": "PR",
+    "name": "Mayagüez Indios",
+    "level": "LBPRC",
+    "logo_key": "mayagüez_indios"
+  },
+  {
+    "team_id": "LBPRC_03",
+    "league_id": "LBPRC",
+    "country": "PR",
+    "name": "Ponce Leones",
+    "level": "LBPRC",
+    "logo_key": "ponce_leones"
+  },
+  {
+    "team_id": "LBPRC_04",
+    "league_id": "LBPRC",
+    "country": "PR",
+    "name": "Santurce Cangrejeros",
+    "level": "LBPRC",
+    "logo_key": "santurce_cangrejeros"
+  },
+  {
+    "team_id": "LBPRC_05",
+    "league_id": "LBPRC",
+    "country": "PR",
+    "name": "Carolina Gigantes",
+    "level": "LBPRC",
+    "logo_key": "carolina_gigantes"
+  },
+  {
+    "team_id": "ABL_01",
+    "league_id": "ABL",
+    "country": "AU",
+    "name": "Adelaide Giants",
+    "level": "ABL",
+    "logo_key": "adelaide_giants"
+  },
+  {
+    "team_id": "ABL_02",
+    "league_id": "ABL",
+    "country": "AU",
+    "name": "Brisbane Bandits",
+    "level": "ABL",
+    "logo_key": "brisbane_bandits"
+  },
+  {
+    "team_id": "ABL_03",
+    "league_id": "ABL",
+    "country": "AU",
+    "name": "Canberra Cavalry",
+    "level": "ABL",
+    "logo_key": "canberra_cavalry"
+  },
+  {
+    "team_id": "ABL_04",
+    "league_id": "ABL",
+    "country": "AU",
+    "name": "Melbourne Aces",
+    "level": "ABL",
+    "logo_key": "melbourne_aces"
+  },
+  {
+    "team_id": "ABL_05",
+    "league_id": "ABL",
+    "country": "AU",
+    "name": "Perth Heat",
+    "level": "ABL",
+    "logo_key": "perth_heat"
+  },
+  {
+    "team_id": "ABL_06",
+    "league_id": "ABL",
+    "country": "AU",
+    "name": "Sydney Blue Sox",
+    "level": "ABL",
+    "logo_key": "sydney_blue_sox"
+  },
+  {
+    "team_id": "HFD_01",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "Amsterdam Pirates",
+    "level": "HFD",
+    "logo_key": "amsterdam_pirates"
+  },
+  {
+    "team_id": "HFD_02",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "HCAW",
+    "level": "HFD",
+    "logo_key": "hcaw"
+  },
+  {
+    "team_id": "HFD_03",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "Neptunus",
+    "level": "HFD",
+    "logo_key": "neptunus"
+  },
+  {
+    "team_id": "HFD_04",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "Quick Amersfoort",
+    "level": "HFD",
+    "logo_key": "quick_amersfoort"
+  },
+  {
+    "team_id": "HFD_05",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "RCH-Pinguins",
+    "level": "HFD",
+    "logo_key": "rch-pinguins"
+  },
+  {
+    "team_id": "HFD_06",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "DSS/Kinheim",
+    "level": "HFD",
+    "logo_key": "dss/kinheim"
+  },
+  {
+    "team_id": "HFD_07",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "Hoofddorp Pioniers",
+    "level": "HFD",
+    "logo_key": "hoofddorp_pioniers"
+  },
+  {
+    "team_id": "HFD_08",
+    "league_id": "HFD",
+    "country": "NL",
+    "name": "Twins Oosterhout",
+    "level": "HFD",
+    "logo_key": "twins_oosterhout"
+  },
+  {
+    "team_id": "NIC_01",
+    "league_id": "NIC",
+    "country": "NI",
+    "name": "Indios del Bóer",
+    "level": "NIC",
+    "logo_key": "indios_del_bóer"
+  },
+  {
+    "team_id": "NIC_02",
+    "league_id": "NIC",
+    "country": "NI",
+    "name": "Leones de León",
+    "level": "NIC",
+    "logo_key": "leones_de_león"
+  },
+  {
+    "team_id": "NIC_03",
+    "league_id": "NIC",
+    "country": "NI",
+    "name": "Tigres de Chinandega",
+    "level": "NIC",
+    "logo_key": "tigres_de_chinandega"
+  },
+  {
+    "team_id": "NIC_04",
+    "league_id": "NIC",
+    "country": "NI",
+    "name": "Gigantes de Rivas",
+    "level": "NIC",
+    "logo_key": "gigantes_de_rivas"
+  },
+  {
+    "team_id": "NIC_05",
+    "league_id": "NIC",
+    "country": "NI",
+    "name": "Tren del Norte",
+    "level": "NIC",
+    "logo_key": "tren_del_norte"
+  },
+  {
+    "team_id": "COL_01",
+    "league_id": "COL",
+    "country": "CO",
+    "name": "Caimanes de Barranquilla",
+    "level": "COL",
+    "logo_key": "caimanes_de_barranquilla"
+  },
+  {
+    "team_id": "COL_02",
+    "league_id": "COL",
+    "country": "CO",
+    "name": "Vaqueros de Montería",
+    "level": "COL",
+    "logo_key": "vaqueros_de_montería"
+  },
+  {
+    "team_id": "COL_03",
+    "league_id": "COL",
+    "country": "CO",
+    "name": "Tigres de Cartagena",
+    "level": "COL",
+    "logo_key": "tigres_de_cartagena"
+  },
+  {
+    "team_id": "COL_04",
+    "league_id": "COL",
+    "country": "CO",
+    "name": "Leones del Barranquilla",
+    "level": "COL",
+    "logo_key": "leones_del_barranquilla"
+  },
+  {
+    "team_id": "PAN_01",
+    "league_id": "PAN",
+    "country": "PA",
+    "name": "Astronautas de Los Santos",
+    "level": "PAN",
+    "logo_key": "astronautas_de_los_santos"
+  },
+  {
+    "team_id": "PAN_02",
+    "league_id": "PAN",
+    "country": "PA",
+    "name": "Federales de Chiriquí",
+    "level": "PAN",
+    "logo_key": "federales_de_chiriquí"
+  },
+  {
+    "team_id": "PAN_03",
+    "league_id": "PAN",
+    "country": "PA",
+    "name": "Águilas Metropolitanas",
+    "level": "PAN",
+    "logo_key": "águilas_metropolitanas"
+  },
+  {
+    "team_id": "PAN_04",
+    "league_id": "PAN",
+    "country": "PA",
+    "name": "Atlánticos de Bocas del Toro",
+    "level": "PAN",
+    "logo_key": "atlánticos_de_bocas_del_toro"
+  },
+  {
+    "team_id": "ITA_01",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "Unipol Bologna",
+    "level": "ITA",
+    "logo_key": "unipol_bologna"
+  },
+  {
+    "team_id": "ITA_02",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "Parma Baseball",
+    "level": "ITA",
+    "logo_key": "parma_baseball"
+  },
+  {
+    "team_id": "ITA_03",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "San Marino",
+    "level": "ITA",
+    "logo_key": "san_marino"
+  },
+  {
+    "team_id": "ITA_04",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "Fortitudo Firenze",
+    "level": "ITA",
+    "logo_key": "fortitudo_firenze"
+  },
+  {
+    "team_id": "ITA_05",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "Grosseto",
+    "level": "ITA",
+    "logo_key": "grosseto"
+  },
+  {
+    "team_id": "ITA_06",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "BSC Nettuno",
+    "level": "ITA",
+    "logo_key": "bsc_nettuno"
+  },
+  {
+    "team_id": "ITA_07",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "Bologna Athletics",
+    "level": "ITA",
+    "logo_key": "bologna_athletics"
+  },
+  {
+    "team_id": "ITA_08",
+    "league_id": "ITA",
+    "country": "IT",
+    "name": "Modena",
+    "level": "ITA",
+    "logo_key": "modena"
+  },
+  {
+    "team_id": "CZE_01",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Draci Brno",
+    "level": "CZE",
+    "logo_key": "draci_brno"
+  },
+  {
+    "team_id": "CZE_02",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Arrows Ostrava",
+    "level": "CZE",
+    "logo_key": "arrows_ostrava"
+  },
+  {
+    "team_id": "CZE_03",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Eagles Prague",
+    "level": "CZE",
+    "logo_key": "eagles_prague"
+  },
+  {
+    "team_id": "CZE_04",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Hrosi Brno",
+    "level": "CZE",
+    "logo_key": "hrosi_brno"
+  },
+  {
+    "team_id": "CZE_05",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Tempo Praha",
+    "level": "CZE",
+    "logo_key": "tempo_praha"
+  },
+  {
+    "team_id": "CZE_06",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Sokol Hluboka",
+    "level": "CZE",
+    "logo_key": "sokol_hluboka"
+  },
+  {
+    "team_id": "CZE_07",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Technika Brno",
+    "level": "CZE",
+    "logo_key": "technika_brno"
+  },
+  {
+    "team_id": "CZE_08",
+    "league_id": "CZE",
+    "country": "CZ",
+    "name": "Trebic Nuclears",
+    "level": "CZE",
+    "logo_key": "trebic_nuclears"
+  },
+  {
+    "team_id": "CUB_01",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Industriales",
+    "level": "CUB",
+    "logo_key": "industriales"
+  },
+  {
+    "team_id": "CUB_02",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Santiago de Cuba",
+    "level": "CUB",
+    "logo_key": "santiago_de_cuba"
+  },
+  {
+    "team_id": "CUB_03",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Villa Clara",
+    "level": "CUB",
+    "logo_key": "villa_clara"
+  },
+  {
+    "team_id": "CUB_04",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Pinar del Río",
+    "level": "CUB",
+    "logo_key": "pinar_del_río"
+  },
+  {
+    "team_id": "CUB_05",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Matanzas",
+    "level": "CUB",
+    "logo_key": "matanzas"
+  },
+  {
+    "team_id": "CUB_06",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Granma",
+    "level": "CUB",
+    "logo_key": "granma"
+  },
+  {
+    "team_id": "CUB_07",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Ciego de Ávila",
+    "level": "CUB",
+    "logo_key": "ciego_de_ávila"
+  },
+  {
+    "team_id": "CUB_08",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Las Tunas",
+    "level": "CUB",
+    "logo_key": "las_tunas"
+  },
+  {
+    "team_id": "CUB_09",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Camagüey",
+    "level": "CUB",
+    "logo_key": "camagüey"
+  },
+  {
+    "team_id": "CUB_10",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Holguín",
+    "level": "CUB",
+    "logo_key": "holguín"
+  },
+  {
+    "team_id": "CUB_11",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Sancti Spíritus",
+    "level": "CUB",
+    "logo_key": "sancti_spíritus"
+  },
+  {
+    "team_id": "CUB_12",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Artemisa",
+    "level": "CUB",
+    "logo_key": "artemisa"
+  },
+  {
+    "team_id": "CUB_13",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Mayabeque",
+    "level": "CUB",
+    "logo_key": "mayabeque"
+  },
+  {
+    "team_id": "CUB_14",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Guantánamo",
+    "level": "CUB",
+    "logo_key": "guantánamo"
+  },
+  {
+    "team_id": "CUB_15",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Isla de la Juventud",
+    "level": "CUB",
+    "logo_key": "isla_de_la_juventud"
+  },
+  {
+    "team_id": "CUB_16",
+    "league_id": "CUB",
+    "country": "CU",
+    "name": "Cienfuegos",
+    "level": "CUB",
+    "logo_key": "cienfuegos"
+  }
+]

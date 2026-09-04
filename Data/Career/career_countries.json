@@ -1,0 +1,104 @@
+[
+  {
+    "country_id": "KR",
+    "name": "대한민국",
+    "region": "Asia",
+    "international_eligible": true
+  },
+  {
+    "country_id": "JP",
+    "name": "일본",
+    "region": "Asia",
+    "international_eligible": true
+  },
+  {
+    "country_id": "US",
+    "name": "미국",
+    "region": "North America",
+    "international_eligible": true
+  },
+  {
+    "country_id": "CN",
+    "name": "중국",
+    "region": "Asia",
+    "international_eligible": true
+  },
+  {
+    "country_id": "MX",
+    "name": "멕시코",
+    "region": "North America",
+    "international_eligible": true
+  },
+  {
+    "country_id": "TW",
+    "name": "대만",
+    "region": "Asia",
+    "international_eligible": true
+  },
+  {
+    "country_id": "DO",
+    "name": "도미니카공화국",
+    "region": "Caribbean",
+    "international_eligible": true
+  },
+  {
+    "country_id": "VE",
+    "name": "베네수엘라",
+    "region": "South America",
+    "international_eligible": true
+  },
+  {
+    "country_id": "PR",
+    "name": "푸에르토리코",
+    "region": "Caribbean",
+    "international_eligible": true
+  },
+  {
+    "country_id": "AU",
+    "name": "호주",
+    "region": "Oceania",
+    "international_eligible": true
+  },
+  {
+    "country_id": "NL",
+    "name": "네덜란드",
+    "region": "Europe",
+    "international_eligible": true
+  },
+  {
+    "country_id": "NI",
+    "name": "니카라과",
+    "region": "Central America",
+    "international_eligible": true
+  },
+  {
+    "country_id": "CO",
+    "name": "콜롬비아",
+    "region": "South America",
+    "international_eligible": true
+  },
+  {
+    "country_id": "PA",
+    "name": "파나마",
+    "region": "Central America",
+    "international_eligible": true
+  },
+  {
+    "country_id": "IT",
+    "name": "이탈리아",
+    "region": "Europe",
+    "international_eligible": true
+  },
+  {
+    "country_id": "CZ",
+    "name": "체코",
+    "region": "Europe",
+    "international_eligible": true
+  },
+  {
+    "country_id": "CU",
+    "name": "쿠바",
+    "region": "Caribbean",
+    "international_eligible": true
+  }
+]

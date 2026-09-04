@@ -1,0 +1,46 @@
+[
+  {
+    "event_id": "season_choice",
+    "trigger": "season_end",
+    "choices": [
+      "훈련 집중",
+      "휴식 우선",
+      "이적 협상",
+      "대표팀 도전"
+    ]
+  },
+  {
+    "event_id": "injury",
+    "trigger": "random",
+    "choices": [
+      "재활 집중",
+      "빠른 복귀"
+    ]
+  },
+  {
+    "event_id": "transfer",
+    "trigger": "season_end",
+    "choices": [
+      "잔류",
+      "상위리그 도전",
+      "해외 진출"
+    ]
+  },
+  {
+    "event_id": "national_team",
+    "trigger": "international_window",
+    "choices": [
+      "대표팀 수락",
+      "불참"
+    ]
+  },
+  {
+    "event_id": "retirement",
+    "trigger": "career_late",
+    "choices": [
+      "은퇴",
+      "1년 연장",
+      "지도자 전환"
+    ]
+  }
+]
