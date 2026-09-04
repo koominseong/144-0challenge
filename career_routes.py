@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from career import (TEAMS, LEAGUES, COUNTRIES, COMPETITIONS, EVENTS, get_state, save_state, new_state,
                      apply_decision, simulate_season, advance, eligible_competitions, team, league,
-                     position_label, country, POSITION_LABELS)
+                     position_label, country, POSITION_LABELS, career_summary, rating_tier)
 
 career_bp = Blueprint('career', __name__, url_prefix='/career')
 
@@ -45,6 +45,7 @@ def career_new():
 def dashboard():
     state = get_state()
     if not state: return redirect(url_for('career.career_new'))
+    latest_rating = state.history[-1]['rating'] if state.history else state.form
     return render_template(
         'career_dashboard.html',
         state=state,
@@ -54,6 +55,8 @@ def dashboard():
         position_label=position_label(state.position),
         decision_labels=DECISION_LABELS,
         competitions=eligible_competitions(state.nationality, state.age),
+        latest_rating=latest_rating,
+        rating_tier=rating_tier(latest_rating),
     )
 
 @career_bp.post('/decision')
@@ -114,11 +117,24 @@ def international_play():
     save_state(state)
     return redirect(url_for('career.international'))
 
+@career_bp.get('/history')
+def history():
+    state = get_state()
+    if not state: return redirect(url_for('career.career_new'))
+    rows = list(reversed(state.history))
+    return render_template(
+        'career_history.html', state=state, rows=rows,
+        position_label=position_label(state.position), rating_tier=rating_tier,
+    )
+
 @career_bp.get('/retire')
 def retire():
     state = get_state()
     if not state: return redirect(url_for('career.career_new'))
-    return render_template('career_retire.html', state=state)
+    return render_template(
+        'career_retire.html', state=state, summary=career_summary(state),
+        country=country(state.nationality), position_label=position_label(state.position),
+    )
 
 @career_bp.post('/reset')
 def reset():
