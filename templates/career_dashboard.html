@@ -30,6 +30,7 @@
         <a class="active" href="{{ url_for('career.dashboard') }}">OVERVIEW</a>
         <a href="#season-decision">SEASON</a>
         <a href="{{ url_for('career.international') }}">INTERNATIONAL</a>
+        <a href="{{ url_for('career.history') }}">HISTORY</a>
       </nav>
       <div class="sidebar-bottom">
         <div class="side-note"><span>CAREER STATUS</span><b>{{ '활동중' if state.status == 'active' else state.status }}</b></div>
@@ -60,6 +61,7 @@
               <p>{{ team.name if team else '무소속' }}</p>
               <div class="chips"><span>{{ country.name if country else state.nationality }}</span><span>{{ position_label }}</span></div>
             </div>
+            <div class="rating-pill tier-{{ rating_tier }}"><small>RTG</small><b>{{ latest_rating }}</b></div>
           </div>
           <div class="stat-strip">
             <div><small>AGE</small><b>{{ state.age }}</b></div>

@@ -1,1 +1,83 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>은퇴</title><link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}"></head><body><main class="wrap hero"><span class="eyebrow">CAREER COMPLETE</span><h1>선수 생활 종료</h1><div class="panel"><h2>{{ state.player_name }}</h2><p>총 {{ state.season-1 }}시즌 · 우승 {{ state.titles }}회 · 대표팀 {{ state.international_caps }}회</p><p>경기 {{ state.career_games }} · 안타 {{ state.career_hits }} · 홈런 {{ state.career_hr }} · 타점 {{ state.career_rbi }}</p></div><a class="btn primary" href="{{ url_for('career.career_new') }}">새 커리어</a><a class="btn ghost" href="/">메인으로</a></main></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>커리어 요약</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
+</head>
+<body class="career-shell">
+<div class="career-bg"></div>
+<header class="career-topbar">
+  <a class="career-brand" href="/"><span class="brand-mark">144</span><span><b>CAREER</b><small>SUMMARY</small></span></a>
+  <span class="season-pill">CAREER COMPLETE</span>
+</header>
+
+<main class="summary-wrap">
+  <div class="summary-top glass">
+    <div class="summary-id">
+      <p class="eyebrow">CAREER COMPLETE</p>
+      <h1>{{ state.player_name }}</h1>
+      <div class="chips"><span>{{ position_label }}</span><span>{{ country.name if country else state.nationality }}</span></div>
+      <div class="summary-stats">
+        {% for label, value in summary.stat_labels %}
+        <div><small>{{ label }}</small><b>{{ value }}</b></div>
+        {% endfor %}
+        <div><small>{{ summary.extra_stat[0] }}</small><b>{{ summary.extra_stat[1] }}</b></div>
+      </div>
+    </div>
+    <div class="summary-rating tier-{{ summary.rating_tier }}">
+      <small>PEAK RTG</small>
+      <b>{{ summary.rating }}</b>
+      <span>VALUE ₩{{ '{:,}'.format(state.money) }}</span>
+    </div>
+  </div>
+
+  <div class="summary-mid">
+    <div class="panel intl-panel">
+      <p class="eyebrow">NATIONAL TEAM</p>
+      <h2>{{ country.name if country else state.nationality }}</h2>
+      <div class="summary-stats compact">
+        <div><small>CAPS</small><b>{{ state.international_caps }}</b></div>
+        <div><small>TITLES</small><b>{{ state.international_titles }}</b></div>
+        <div><small>CLUB TITLES</small><b>{{ state.titles }}</b></div>
+      </div>
+      {% if state.international_titles > 0 %}<div class="trophy-row">{% for i in range(state.international_titles) %}🏆{% endfor %}</div>{% endif %}
+    </div>
+    <div class="panel awards-panel">
+      <p class="eyebrow">INDIVIDUAL AWARDS</p>
+      {% if summary.awards %}
+      <div class="award-grid">
+        {% for a in summary.awards %}
+        <div class="award-item" title="{{ a.desc }}"><span>{{ a.icon }}</span><b>{{ a.name }}</b></div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="muted-line">달성한 개인 수상이 아직 없습니다.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if summary.clubs %}
+  <p class="eyebrow section-label">CAREER HIGHLIGHTS</p>
+  <div class="club-grid">
+    {% for c in summary.clubs %}
+    <div class="club-card {{ c.color }}">
+      <b>{{ c.team }}</b>
+      <div class="summary-stats compact">
+        <div><small>SEASONS</small><b>{{ c.seasons }}</b></div>
+        <div><small>GAMES</small><b>{{ c.games }}</b></div>
+        <div><small>{{ 'W' if summary.is_pitcher else 'HR' }}</small><b>{{ c.primary }}</b></div>
+      </div>
+      {% if c.titles %}<div class="trophy-row small">{% for i in range(c.titles) %}🏆{% endfor %}</div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="summary-actions">
+    <form method="post" action="{{ url_for('career.reset') }}" style="display:inline"><button class="btn primary" type="submit">Play again</button></form>
+    <a class="btn ghost" href="{{ url_for('career.history') }}">View full timeline</a>
+    <a class="btn ghost" href="/">메인으로</a>
+  </div>
+</main>
+</body></html>

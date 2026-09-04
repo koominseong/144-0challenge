@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAREER MODE · HISTORY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
+</head>
+<body class="career-shell">
+  <div class="career-bg"></div>
+
+  <header class="career-topbar">
+    <a class="career-brand" href="/">
+      <span class="brand-mark">144</span>
+      <span><b>CAREER</b><small>BASEBALL LIFE</small></span>
+    </a>
+    <div class="top-status">
+      <span class="season-pill">SEASON <b>{{ state.season }} · {{ state.year }}</b></span>
+      <span class="save-dot"></span><span>CAREER SAVE</span>
+    </div>
+  </header>
+
+  <main class="career-app">
+    <aside class="career-sidebar">
+      <div class="player-mini">
+        <div class="avatar">{{ state.player_name[:1] }}</div>
+        <div><strong>{{ state.player_name }}</strong><small>{{ position_label }}</small></div>
+      </div>
+      <nav>
+        <a href="{{ url_for('career.dashboard') }}">OVERVIEW</a>
+        <a href="{{ url_for('career.dashboard') }}#season-decision">SEASON</a>
+        <a href="{{ url_for('career.international') }}">INTERNATIONAL</a>
+        <a class="active" href="{{ url_for('career.history') }}">HISTORY</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-note"><span>SEASONS PLAYED</span><b>{{ state.season - 1 if state.status == 'retired' else state.season }}</b></div>
+        <a href="/" class="back-link">← MAIN MENU</a>
+      </div>
+    </aside>
+
+    <section class="career-content">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">CAREER TIMELINE</p>
+          <h1>SEASON BY SEASON</h1>
+          <p class="hero-sub">{{ state.player_name }} · {{ position_label }} · 통산 {{ state.career_games }}경기</p>
+        </div>
+        <a class="primary-cta" href="{{ url_for('career.dashboard') }}"><span>BACK TO OVERVIEW</span><b>→</b></a>
+      </div>
+
+      {% if rows %}
+      <div class="timeline-table glass">
+        <div class="tt-row tt-head">
+          <span>AGE</span><span>YEAR</span><span>CLUB</span><span>RTG</span><span>GAMES</span>
+          <span>{{ 'W-SV' if state.position in ('SP','RP') else 'HR' }}</span>
+          <span>{{ 'ERA' if state.position in ('SP','RP') else 'RBI' }}</span><span>NOTE</span>
+        </div>
+        {% for r in rows %}
+        <div class="tt-row">
+          <span class="tt-age">{{ r.age }}</span>
+          <span class="tt-muted">{{ r.year }}</span>
+          <span class="tt-club">{{ r.team }}</span>
+          <span><span class="rating-chip tier-{{ rating_tier(r.rating) }}">{{ r.rating }}</span></span>
+          <span>{{ r.games }}</span>
+          <span>{{ r.primary }}{{ '-' ~ r.secondary if state.position in ('SP','RP') else '' }}</span>
+          <span>{{ r.secondary if state.position not in ('SP','RP') else '' }}</span>
+          <span class="tt-note">
+            {% if r.champion %}<span title="우승">🏆</span>{% endif %}
+            {% if r.injury %}<span title="부상">🩹</span>{% endif %}
+            {% if r.decision %}<span class="tt-decision">{{ r.decision }}</span>{% endif %}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="panel" style="text-align:center">
+        <h2>아직 기록된 시즌이 없습니다</h2>
+        <p>대시보드에서 시즌을 진행하면 이곳에 커리어 기록이 쌓입니다.</p>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
