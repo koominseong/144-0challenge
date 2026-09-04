@@ -1,1 +1,109 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ state.player_name }} Career</title><link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}"></head><body><main class="wrap"><div class="top"><div><span class="eyebrow">SEASON {{ state.season }} · {{ state.year }}</span><h1>{{ state.player_name }}</h1><p>{{ team.name if team else state.team_id }} · {{ league.name if league else state.league_id }} · {{ state.position }}</p></div><div class="badge">AGE {{ state.age }}</div></div><section class="stats"><div><b>{{ state.form }}</b><span>컨디션</span></div><div><b>{{ state.fame }}</b><span>명성</span></div><div><b>{{ state.titles }}</b><span>우승</span></div><div><b>{{ state.money }}</b><span>누적 수입</span></div></section>{% if state.last_event %}<div class="notice">{{ state.last_event }}</div>{% endif %}<section class="panel"><h2>이번 시즌의 결정</h2>{% if not state.decision_used %}<form method="post" action="{{ url_for('career.decision') }}" class="choices"><button name="decision" value="training">집중 훈련<br><small>컨디션 +10</small></button><button name="decision" value="rest">컨디션 관리<br><small>컨디션 +5 · 부상 감소</small></button><button name="decision" value="media">스타 마케팅<br><small>명성 +8</small></button><button name="decision" value="challenge">도전적 역할<br><small>성장 +7 · 명성 +5</small></button></form>{% else %}<p class="locked">결정을 완료했습니다. 이제 시즌을 진행하세요.</p><form method="post" action="{{ url_for('career.season') }}"><button class="btn primary wide">⚾ 시즌 진행</button></form>{% endif %}</section><section class="grid2"><a class="panel link" href="{{ url_for('career.international') }}"><h3>🌏 국제대회</h3><p>국적에 따른 대표팀 커리어 확인</p></a><div class="panel"><h3>통산 기록</h3><p>경기 {{ state.career_games }} · 안타 {{ state.career_hits }} · 홈런 {{ state.career_hr }} · 타점 {{ state.career_rbi }}</p><p>승 {{ state.career_wins }} · 세이브 {{ state.career_saves }} · 대표팀 {{ state.international_caps }}회</p></div></section></main></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAREER MODE</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
+</head>
+<body class="career-shell">
+  <div class="career-bg"></div>
+
+  <header class="career-topbar">
+    <a class="career-brand" href="/">
+      <span class="brand-mark">144</span>
+      <span><b>CAREER</b><small>BASEBALL LIFE</small></span>
+    </a>
+    <div class="top-status">
+      <span class="season-pill">SEASON <b>{{ season|default(2026) }}</b></span>
+      <span class="save-dot"></span><span>CAREER SAVE</span>
+    </div>
+  </header>
+
+  <main class="career-app">
+    <aside class="career-sidebar">
+      <div class="player-mini">
+        <div class="avatar">{{ (player_name|default('ROOKIE'))[:1] }}</div>
+        <div><strong>{{ player_name|default('NEW BALLPLAYER') }}</strong><small>{{ team_name|default('FREE AGENT') }}</small></div>
+      </div>
+      <nav>
+        <a class="active" href="/career">OVERVIEW</a>
+        <a href="/career/season">SEASON</a>
+        <a href="/career/international">INTERNATIONAL</a>
+        <a href="/career/history">HISTORY</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-note"><span>CAREER STATUS</span><b>{{ status|default('ACTIVE') }}</b></div>
+        <a href="/" class="back-link">← MAIN MENU</a>
+      </div>
+    </aside>
+
+    <section class="career-content">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">PLAYER JOURNEY</p>
+          <h1>{{ player_name|default('YOUR BASEBALL STORY') }}</h1>
+          <p class="hero-sub">{{ nationality|default('Choose your nation') }} · {{ position|default('Position') }} · {{ team_name|default('Choose your club') }}</p>
+        </div>
+        <button class="primary-cta" onclick="location.href='/career/season'">
+          <span>PLAY NEXT</span><b>→</b>
+        </button>
+      </div>
+
+      <div class="grid-main">
+        <article class="player-card glass">
+          <div class="player-card-head">
+            <span class="tag">PLAYER</span>
+            <span class="year">{{ season|default(2026) }}</span>
+          </div>
+          <div class="player-display">
+            <div class="big-avatar">{{ (player_name|default('R'))[:1] }}</div>
+            <div>
+              <h2>{{ player_name|default('ROOKIE') }}</h2>
+              <p>{{ team_name|default('Free Agent') }}</p>
+              <div class="chips"><span>{{ nationality|default('KOR') }}</span><span>{{ position|default('P') }}</span></div>
+            </div>
+          </div>
+          <div class="stat-strip">
+            <div><small>AGE</small><b>{{ age|default(19) }}</b></div>
+            <div><small>SEASONS</small><b>{{ seasons|default(0) }}</b></div>
+            <div><small>TITLES</small><b>{{ titles|default(0) }}</b></div>
+            <div><small>STATUS</small><b>{{ status|default('ACTIVE') }}</b></div>
+          </div>
+        </article>
+
+        <article class="season-card glass">
+          <div class="section-head"><div><p class="eyebrow">CURRENT SEASON</p><h3>{{ season|default(2026) }} SEASON</h3></div><span class="live-badge">LIVE</span></div>
+          <div class="season-progress"><div style="width:{{ progress|default(12) }}%"></div></div>
+          <div class="progress-meta"><span>{{ progress|default(12) }}% COMPLETE</span><span>{{ games_played|default(0) }} GAMES</span></div>
+          <div class="season-lines">
+            <div><span>TEAM</span><b>{{ team_name|default('Not selected') }}</b></div>
+            <div><span>LEAGUE</span><b>{{ league_name|default('Not selected') }}</b></div>
+            <div><span>NEXT DECISION</span><b>{{ next_decision|default('Season decision') }}</b></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="lower-grid">
+        <article class="events glass">
+          <div class="section-head"><div><p class="eyebrow">CAREER FEED</p><h3>RECENT EVENTS</h3></div><span class="muted">LATEST</span></div>
+          {% if events %}
+            {% for e in events[:5] %}
+            <div class="event-row"><span class="event-dot"></span><div><b>{{ e.title|default('Career Event') }}</b><p>{{ e.description|default('A new chapter begins.') }}</p></div><time>{{ e.season|default(season|default(2026)) }}</time></div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state"><strong>YOUR STORY STARTS HERE</strong><p>시즌을 진행하면 이곳에 이적, 부상, 대표팀, 수상, 기록 이벤트가 쌓입니다.</p></div>
+          {% endif %}
+        </article>
+
+        <article class="decision glass">
+          <p class="eyebrow">ONE DECISION</p>
+          <h3>THIS SEASON MATTERS.</h3>
+          <p>매 시즌 한 번의 선택이 다음 시즌의 기회를 바꿉니다.</p>
+          <button class="secondary-cta" onclick="location.href='/career/season'">MAKE SEASON DECISION <span>→</span></button>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
