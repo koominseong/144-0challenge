@@ -1,1 +1,21 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>국제대회</title><link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}"></head><body><main class="wrap"><a href="{{ url_for('career.dashboard') }}" class="back">← Career</a><span class="eyebrow">INTERNATIONAL</span><h1>국가대표 커리어</h1><p>{{ country.name if country else state.nationality }} · 만 {{ state.age }}세</p>{% if competitions %}{% for c in competitions %}<div class="panel"><h2>🌎 {{ c.get('name','국제대회') }}</h2><p>{{ c.get('description','국가대표로 참가할 수 있는 국제대회입니다.') }}</p><form method="post" action="{{ url_for('career.international_play') }}"><input type="hidden" name="competition_id" value="{{ c.get('competition_id') }}"><button class="btn primary">대표팀 참가</button></form></div>{% endfor %}{% else %}<div class="panel"><h2>현재 참가 가능한 대회가 없습니다.</h2></div>{% endif %}<div class="notice">대표팀 참가 {{ state.international_caps }}회 · 국제대회 우승 {{ state.international_titles }}회</div></main></body></html>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>국제대회</title><link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}"></head><body>
+<main class="wrap">
+  <a href="{{ url_for('career.dashboard') }}" class="back">← Career</a>
+  <span class="eyebrow">INTERNATIONAL</span>
+  <h1>국가대표 커리어</h1>
+  <p>{{ country.name if country else state.nationality }} · 만 {{ state.age }}세</p>
+  <div class="panel">
+    <h2>통산 기록</h2>
+    <p>대표팀 참가 <b>{{ state.international_caps }}</b>회 · 국제대회 우승 <b>{{ state.international_titles }}</b>회</p>
+  </div>
+  {% if competitions %}
+  <div class="panel">
+    <h2>참가 자격이 있는 대회</h2>
+    {% for c in competitions %}<p>🌎 {{ c.get('name','국제대회') }}</p>{% endfor %}
+    <p class="muted-line">국가대표 소집은 시즌 진행 중 이벤트로 찾아옵니다. 시즌 결정에서 소집을 수락하면 이곳 기록이 올라갑니다.</p>
+  </div>
+  {% else %}
+  <div class="panel"><h2>현재 참가 자격이 있는 대회가 없습니다.</h2></div>
+  {% endif %}
+</main>
+</body></html>

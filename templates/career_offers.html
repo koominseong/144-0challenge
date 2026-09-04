@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>구단 제안 선택</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
+</head>
+<body class="career-shell">
+<div class="career-bg"></div>
+<header class="career-topbar">
+  <a class="career-brand" href="/"><span class="brand-mark">144</span><span><b>CAREER</b><small>ACADEMY OFFERS</small></span></a>
+  <span class="season-pill">STEP 2 / 2</span>
+</header>
+<main class="wrap hero">
+  <span class="eyebrow">{{ country.name if country else state.nationality }} · {{ position_label }}</span>
+  <h1>{{ state.player_name }}, 첫 구단을 선택하세요</h1>
+  <p class="muted-line">유스 계약을 맺으면 그 구단에서 프로 커리어가 시작됩니다. 첫 팀은 목적지가 아니라 출발점입니다 —
+  성장하면 더 큰 무대의 이적 제안이 찾아옵니다.</p>
+  <form method="post" action="{{ url_for('career.offers_choose') }}">
+    <div class="offer-grid">
+      {% for o in offer_list %}
+      <label class="offer-card">
+        <input type="radio" name="team_id" value="{{ o.team_id }}" {% if loop.first %}checked{% endif %}>
+        <div class="offer-tag">{{ o.tag }}</div>
+        <b>{{ o.name }}</b>
+        <small>{{ o.league_name }}</small>
+      </label>
+      {% endfor %}
+    </div>
+    <button class="btn primary" type="submit">계약하기 →</button>
+  </form>
+</main>
+</body></html>

@@ -17,18 +17,19 @@
     <div class="summary-id">
       <p class="eyebrow">CAREER COMPLETE</p>
       <h1>{{ state.player_name }}</h1>
-      <div class="chips"><span>{{ position_label }}</span><span>{{ country.name if country else state.nationality }}</span></div>
+      <div class="chips"><span>{{ position_label }}</span><span>{{ country.name if country else state.nationality }}</span><span>{{ bats_label }}</span></div>
       <div class="summary-stats">
         {% for label, value in summary.stat_labels %}
         <div><small>{{ label }}</small><b>{{ value }}</b></div>
         {% endfor %}
         <div><small>{{ summary.extra_stat[0] }}</small><b>{{ summary.extra_stat[1] }}</b></div>
+        <div><small>TRANSFERS</small><b>{{ summary.transfers }}</b></div>
       </div>
     </div>
     <div class="summary-rating tier-{{ summary.rating_tier }}">
-      <small>PEAK RTG</small>
+      <small>PEAK OVR</small>
       <b>{{ summary.rating }}</b>
-      <span>VALUE ₩{{ '{:,}'.format(state.money) }}</span>
+      <span>PEAK VALUE ₩{{ '{:,}'.format(summary.peak_value) }}</span>
     </div>
   </div>
 
@@ -74,10 +75,37 @@
   </div>
   {% endif %}
 
+  <p class="eyebrow section-label">RESULT CARD</p>
+  <div class="result-card-wrap">
+    <canvas id="result-card-canvas" width="720" height="1000"></canvas>
+  </div>
+
   <div class="summary-actions">
+    <button class="btn primary" type="button" id="save-card-btn">카드 이미지 저장</button>
     <form method="post" action="{{ url_for('career.reset') }}" style="display:inline"><button class="btn primary" type="submit">Play again</button></form>
     <a class="btn ghost" href="{{ url_for('career.history') }}">View full timeline</a>
     <a class="btn ghost" href="/">메인으로</a>
   </div>
 </main>
+<script>
+  window.CAREER_RESULT_CARD = {
+    name: {{ state.player_name|tojson }},
+    nationality: {{ (country.name if country else state.nationality)|tojson }},
+    position: {{ position_label|tojson }},
+    bats: {{ bats_label|tojson }},
+    lastTeam: {{ (team.name if team else '무소속')|tojson }},
+    games: {{ state.career_games }},
+    isPitcher: {{ 'true' if summary.is_pitcher else 'false' }},
+    primaryLabel: {{ summary.stat_labels[1][0]|tojson }},
+    primaryValue: {{ summary.stat_labels[1][1] }},
+    secondaryLabel: {{ summary.stat_labels[2][0]|tojson }},
+    secondaryValue: {{ summary.stat_labels[2][1] }},
+    peakRating: {{ summary.rating }},
+    peakValue: {{ summary.peak_value }},
+    titles: {{ state.titles }},
+    transfers: {{ summary.transfers }},
+    careerScore: {{ summary.career_score }}
+  };
+</script>
+<script src="{{ url_for('static', filename='career.js') }}"></script>
 </body></html>
