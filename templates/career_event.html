@@ -1,0 +1,4 @@
+{% extends "career_base.html" %}{% block title %}{{ event.title }} · Career{% endblock %}{% block content %}
+<section class="hero"><div class="eyebrow">CAREER DECISION · SEASON {{ p.season - 1 }}</div><h1 class="title">{{ event.title }}</h1><p class="subtitle">{{ event.text }}</p></section>
+<section class="card"><div class="section-head"><div><h2>당신의 선택</h2><p>결정 하나가 OVR, 명성, 가치, 이적과 다음 시즌을 바꿀 수 있습니다.</p></div></div>{% for c in event.choices %}<form method="post" action="{{ url_for('career.choice') }}"><input type="hidden" name="choice_id" value="{{ c.id }}"><button class="choice" type="submit"><div class="choice-title">{{ c.label }} <span class="muted">→</span></div><div class="choice-desc">{{ c.result }}</div></button></form>{% endfor %}</section>
+{% endblock %}
