@@ -1,94 +1,162 @@
-"""Career mode engine for 144-0 Challenge."""
-from pathlib import Path
-import json, random
-from flask import Blueprint, session
+import json, os, random
+from dataclasses import dataclass, asdict
+from flask import session
 
-CAREER_BP = Blueprint("career", __name__)
-BASE = Path(__file__).resolve().parent / "Data" / "Career"
+BASE = os.path.join(os.path.dirname(__file__), 'Data', 'Career')
 
 def load(name, default=None):
+    path = os.path.join(BASE, name)
     try:
-        with open(BASE / name, encoding="utf-8") as f: return json.load(f)
-    except (OSError, json.JSONDecodeError): return default if default is not None else []
+        with open(path, encoding='utf-8') as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return default if default is not None else []
 
-def countries(): return load("career_countries.json", [])
-def leagues(): return load("career_leagues.json", [])
-def teams(): return load("career_teams.json", [])
-def events(): return load("career_events.json", [])
-def competitions(): return load("career_competitions.json", [])
+TEAMS = load('career_teams.json')
+LEAGUES = load('career_leagues.json')
+COUNTRIES = load('career_countries.json')
+COMPETITIONS = load('career_competitions.json')
+EVENTS = load('career_events.json')
+RULES = load('career_rules.json', {})
 
-def league_map(): return {x["league_id"]:x for x in leagues()}
-def team_map(): return {x["team_id"]:x for x in teams()}
+@dataclass
+class CareerState:
+    player_name: str
+    nationality: str
+    league_id: str
+    team_id: str
+    position: str
+    age: int = 18
+    season: int = 1
+    year: int = 2026
+    status: str = 'active'
+    decision_used: bool = False
+    form: int = 50
+    fame: int = 0
+    money: int = 0
+    injuries: int = 0
+    titles: int = 0
+    international_caps: int = 0
+    international_titles: int = 0
+    career_games: int = 0
+    career_hits: int = 0
+    career_hr: int = 0
+    career_rbi: int = 0
+    career_wins: int = 0
+    career_saves: int = 0
+    career_era: float = 0.0
+    last_event: str = ''
+    last_result: str = ''
+    last_decision: str = ''
+    history: list = None
 
-def team_list(league_id): return [x for x in teams() if x.get("league_id")==league_id]
+    def __post_init__(self):
+        if self.history is None:
+            self.history = []
 
-def make_player(name, nationality, age=18, position="내야"):
-    return {"name":name or "신인 선수", "nationality":nationality, "age":int(age), "position":position,
-            "career_years":0, "games":0, "hits":0, "home_runs":0, "rbi":0, "wins":0, "saves":0,
-            "championships":0, "all_star":0, "international_caps":0, "money":0, "reputation":0,
-            "health":100, "form":50, "morale":70}
 
-def start(name, nationality, league_id, team_id=None, age=18, position="내야", mode="default"):
-    lm=league_map(); tm=team_map()
-    if league_id not in lm: raise ValueError("존재하지 않는 리그입니다.")
-    choices=team_list(league_id)
-    if not team_id or team_id not in tm: team_id=random.choice(choices)["team_id"] if choices else None
-    team=tm.get(team_id, {"team_id":team_id,"name":"FA","league_id":league_id})
-    c={"active":True,"mode":mode,"season":1,"month":2,"phase":"spring","decision_used":False,
-       "pending_event":None,"nationality":nationality,"league_id":league_id,"team_id":team_id,
-       "team_name":team.get("name","FA"),"player":make_player(name,nationality,age,position),
-       "history":[],"awards":[],"international":[],"season_log":[],"last_result":None}
-    session["career"]=c; session.modified=True; return c
+def save_state(state):
+    session['career_state'] = asdict(state)
+    session.modified = True
 
-def state(): return session.get("career")
 
-def _season_result(c, decision):
-    p=c["player"]; league=league_map().get(c["league_id"],{}); level=str(league.get("level","1"))
-    tier=max(1, min(10, int(level) if level.isdigit() else 5))
-    base=random.randint(55,85) + p["form"]//8 + p["morale"]//12
-    bonus={"훈련 집중":8,"휴식 우선":2,"이적 협상":0,"대표팀 도전":4}.get(decision,0)
-    score=max(20, base+bonus-random.randint(0,12))
-    games=random.randint(60,150) if tier<=3 else random.randint(40,110)
-    hits=max(0,int(games*(0.18+score/700)))
-    hr=max(0,int(games*(0.015+score/3500)))
-    rbi=max(0,int(hr*2.8+hits*.18))
-    wins=max(0,int(games*.02)) if p["position"] in ("선발","투수") else 0
-    p["career_years"]+=1; p["games"]+=games; p["hits"]+=hits; p["home_runs"]+=hr; p["rbi"]+=rbi; p["wins"]+=wins
-    p["reputation"] += max(1,score//12); p["money"] += max(1,score//3)*1000
-    p["health"] = max(45,p["health"]-random.randint(0,18)); p["form"]=max(30,min(90,score)); p["morale"]=max(30,min(95,p["morale"]+random.randint(-8,10)))
-    champ=random.random() < (0.10 if tier<=2 else 0.05)
-    if champ: p["championships"]+=1; c["awards"].append({"season":c["season"],"award":"리그 우승"})
-    if score>=82: p["all_star"]+=1; c["awards"].append({"season":c["season"],"award":"올스타 선정"})
-    result={"season":c["season"],"decision":decision,"games":games,"hits":hits,"home_runs":hr,"rbi":rbi,"wins":wins,"score":score,"championship":champ}
-    c["season_log"].append(result); c["last_result"]=result
-    return result
+def get_state():
+    raw = session.get('career_state')
+    if not raw:
+        return None
+    return CareerState(**raw)
 
-def season_decision(c, decision):
-    if c.get("decision_used"): raise ValueError("이번 시즌의 결정은 이미 사용했습니다.")
-    allowed={x for e in events() if e.get("event_id")=="season_choice" for x in e.get("choices",[])}
-    if allowed and decision not in allowed: raise ValueError("허용되지 않은 선택입니다.")
-    c["decision_used"]=True
-    # international chance is nationality-driven; choice can unlock a representative appearance
-    if decision=="대표팀 도전" and c["player"]["age"]>=18:
-        c["pending_event"]={"type":"international","title":"대표팀 제안","message":"국적을 기준으로 국제대회 대표팀 후보에 이름이 올랐습니다."}
-    else: c["pending_event"]=None
-    return _season_result(c,decision)
 
-def advance(c):
-    p=c["player"]; p["age"]+=1
-    c["season"]+=1; c["decision_used"]=False; c["phase"]="spring"; c["month"]=2
-    c["pending_event"]={"type":"season","title":"새 시즌 시작","message":f"{c['season']}년차 시즌이 시작되었습니다."}
-    # small chance of transfer/retirement pressure after 12+ years
-    if p["career_years"]>=12 and random.random()<0.18:
-        c["pending_event"]={"type":"retirement","title":"커리어의 갈림길","message":"베테랑이 된 선수에게 은퇴 또는 마지막 도전의 선택지가 열렸습니다."}
-    return c
+def team(team_id):
+    return next((x for x in TEAMS if x.get('team_id') == team_id), None)
 
-def choose_transfer(c, target_league):
-    opts=team_list(target_league)
-    if not opts: raise ValueError("이적 가능한 팀이 없습니다.")
-    t=random.choice(opts); c["league_id"]=target_league; c["team_id"]=t["team_id"]; c["team_name"]=t["name"]
-    c["history"].append({"season":c["season"],"type":"transfer","team":t["name"]}); return c
+def league(league_id):
+    return next((x for x in LEAGUES if x.get('league_id') == league_id), None)
 
-def international_status(c):
-    eligible={x.get("country_id"):x for x in countries()}.get(c.get("nationality"),{}).get("international_eligible",False)
-    return {"eligible":bool(eligible),"age":c["player"]["age"],"nationality":c.get("nationality"),"competitions":competitions() if eligible else []}
+def country(country_id):
+    return next((x for x in COUNTRIES if x.get('country_id') == country_id or x.get('id') == country_id or x.get('code') == country_id), None)
+
+def eligible_competitions(nationality, age):
+    out = []
+    for c in COMPETITIONS:
+        min_age = c.get('min_age', 0)
+        max_age = c.get('max_age', 99)
+        if min_age <= age <= max_age:
+            out.append(c)
+    return out
+
+def new_state(name, nationality, league_id, team_id, position):
+    return CareerState(name.strip() or '신인', nationality, league_id, team_id, position)
+
+def simulate_season(state):
+    # Position-specific lightweight baseball simulation; no OVR dependency.
+    strength = max(25, min(90, state.form + random.randint(-8, 12)))
+    games = random.randint(95, 144)
+    if state.position in ('SP', 'RP'):
+        wins = max(0, round(games * (0.025 + strength / 3000) + random.randint(-2, 5)))
+        saves = max(0, round((strength - 48) / 8) + random.randint(0, 8)) if state.position == 'RP' else 0
+        era = round(max(1.80, 6.0 - strength / 14 + random.uniform(-0.45, 0.45)), 2)
+        hits = hr = rbi = 0
+        state.career_wins += wins
+        state.career_saves += saves
+        state.career_era = round(((state.career_era * max(1, state.season-1)) + era) / state.season, 2)
+        line = f'{games}경기 · {wins}승 · {saves}세이브 · 평균자책 {era}'
+    else:
+        avg = max(.210, min(.390, .220 + strength / 900 + random.uniform(-.018, .018)))
+        hits = round(games * 3.4 * avg)
+        hr = max(0, round(games * (strength - 40) / 250 + random.randint(-3, 7)))
+        rbi = max(0, round(hr * 2.8 + hits * .18 + random.randint(-8, 12)))
+        wins = saves = 0
+        state.career_hits += hits
+        state.career_hr += hr
+        state.career_rbi += rbi
+        line = f'{games}경기 · 타율 {avg:.3f} · {hr}홈런 · {rbi}타점'
+    state.career_games += games
+    team_obj = team(state.team_id) or {}
+    title_chance = (strength + state.fame) / 170
+    champion = random.random() < max(.08, min(.65, title_chance))
+    if champion:
+        state.titles += 1
+        line += ' · 팀 우승'
+    injury = random.random() < max(.03, .13 - state.form / 1000)
+    if injury:
+        state.injuries += 1
+        line += ' · 부상 이탈'
+    state.form = max(20, min(90, state.form + random.randint(-8, 10) + (5 if champion else 0) - (8 if injury else 0)))
+    state.fame = max(0, state.fame + (8 if champion else 2) + (2 if state.form >= 70 else 0))
+    state.money += max(1000, 1500 + state.fame * 120)
+    state.last_result = line
+    state.history.append({'season': state.season, 'year': state.year, 'team': team_obj.get('name', state.team_id), 'result': line, 'decision': state.last_decision})
+    state.decision_used = False
+    state.last_decision = ''
+    return line
+
+def apply_decision(state, decision):
+    choices = {
+        'training': ('집중 훈련', 10, -2, 0),
+        'rest': ('컨디션 관리', 5, 3, 0),
+        'media': ('스타 마케팅', 2, 0, 8),
+        'challenge': ('도전적인 역할 수락', 7, -1, 5),
+    }
+    label, form_delta, injury_delta, fame_delta = choices.get(decision, choices['rest'])
+    state.form = max(20, min(90, state.form + form_delta))
+    state.injuries = max(0, state.injuries + injury_delta)
+    state.fame = max(0, state.fame + fame_delta)
+    state.last_decision = label
+    state.decision_used = True
+    state.last_event = f'{label}을 선택했다.'
+    return state
+
+def advance(state):
+    state.age += 1
+    state.season += 1
+    state.year += 1
+    state.last_result = ''
+    state.last_event = random.choice([
+        '구단이 다음 시즌 주전 경쟁을 예고했다.',
+        '현지 언론이 당신을 차세대 스타로 조명했다.',
+        '에이전트가 여러 구단의 관심을 전달했다.',
+        '국가대표 예비 명단에 이름이 올랐다.',
+        '팬들의 기대치가 크게 상승했다.'
+    ])
+    return state
