@@ -67,6 +67,15 @@ def get_state():
     return CareerState(**raw)
 
 
+POSITION_LABELS = {
+    'SP': '선발투수', 'RP': '불펜투수', 'C': '포수', '1B': '1루수', '2B': '2루수',
+    '3B': '3루수', 'SS': '유격수', 'LF': '좌익수', 'CF': '중견수', 'RF': '우익수', 'DH': '지명타자',
+}
+
+def position_label(position):
+    return POSITION_LABELS.get(position, position or '-')
+
+
 def team(team_id):
     return next((x for x in TEAMS if x.get('team_id') == team_id), None)
 
@@ -86,7 +95,8 @@ def eligible_competitions(nationality, age):
     return out
 
 def new_state(name, nationality, league_id, team_id, position):
-    return CareerState(name.strip() or '신인', nationality, league_id, team_id, position)
+    clean_name = (name or '').strip() or '신인'
+    return CareerState(clean_name, nationality, league_id, team_id, position)
 
 def simulate_season(state):
     # Position-specific lightweight baseball simulation; no OVR dependency.
