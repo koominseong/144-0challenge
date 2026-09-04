@@ -103,5 +103,26 @@ a.secondary-cta{text-decoration:none;display:inline-flex}
 body:not(.career-shell){background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;margin:0}
 body:not(.career-shell)::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 72% 8%,rgba(217,255,63,.09),transparent 28%),radial-gradient(circle at 10% 90%,rgba(71,103,255,.07),transparent 28%),linear-gradient(135deg,#080a0d,#0a0d11 60%,#090b0e);z-index:0}
 
-@media(max-width:900px){.career-app{grid-template-columns:1fr}.career-sidebar{display:none}.grid-main,.lower-grid,.creator,.career-intro.creator{grid-template-columns:1fr}.hero-row{align-items:start;flex-direction:column}.career-content{padding:28px 16px 45px}.primary-cta{width:100%}.creator{padding:45px 18px;gap:35px}.top-status{display:none}.intl-teaser{flex-direction:column;align-items:flex-start}.summary-mid{grid-template-columns:1fr}}
+/* ---- pace picker (creator form) ---- */
+.pace-grid{display:grid;gap:8px;margin-top:7px}
+.pace-option{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);padding:11px;cursor:pointer;background:rgba(255,255,255,.02);font-weight:400}
+.pace-option input{margin-top:3px}
+.pace-option b{display:block;font-size:11px;letter-spacing:.3px}
+.pace-option small{display:block;color:#8d97a3;font-size:9.5px;margin-top:3px;line-height:1.5}
+.pace-option.is-selected{border-color:rgba(217,255,63,.55);background:rgba(217,255,63,.05)}
+
+/* ---- academy offer cards ---- */
+.offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.offer-card{display:block;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:20px 16px;cursor:pointer;text-align:left;position:relative}
+.offer-card input{position:absolute;top:14px;right:14px}
+.offer-tag{display:inline-block;font-size:8px;letter-spacing:1px;color:var(--accent);border:1px solid rgba(217,255,63,.35);padding:4px 7px;margin-bottom:12px}
+.offer-card b{display:block;font:800 18px 'Barlow Condensed';margin-bottom:4px}
+.offer-card small{color:#8d97a3;font-size:10px}
+.offer-card.is-selected{border-color:rgba(217,255,63,.55);background:rgba(217,255,63,.06)}
+
+/* ---- shareable result card canvas ---- */
+.result-card-wrap{display:flex;justify-content:center;margin:18px 0 8px}
+#result-card-canvas{max-width:100%;height:auto;border-radius:8px}
+
+@media(max-width:900px){.offer-grid{grid-template-columns:1fr}.career-app{grid-template-columns:1fr}.career-sidebar{display:none}.grid-main,.lower-grid,.creator,.career-intro.creator{grid-template-columns:1fr}.hero-row{align-items:start;flex-direction:column}.career-content{padding:28px 16px 45px}.primary-cta{width:100%}.creator{padding:45px 18px;gap:35px}.top-status{display:none}.intl-teaser{flex-direction:column;align-items:flex-start}.summary-mid{grid-template-columns:1fr}}
 @media(max-width:520px){.career-topbar{padding:0 15px}.career-content{padding-top:24px}.hero-row h1{font-size:52px}.player-display h2{font-size:30px}.big-avatar{width:70px;height:70px}.stat-strip{grid-template-columns:repeat(2,1fr);gap:14px}.stat-strip div:nth-child(3){border-left:0;padding-left:0}.creator h1{font-size:54px}.two{grid-template-columns:1fr}.wrap{padding:36px 18px 60px}.summary-top{flex-direction:column;align-items:flex-start}.summary-rating{width:100%}.player-display{flex-wrap:wrap}.rating-pill{margin-left:0}}
