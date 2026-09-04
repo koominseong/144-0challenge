@@ -1,4 +1,675 @@
-{% extends "career_base.html" %}{% block title %}새 커리어 · 144-0 Challenge{% endblock %}{% block content %}
-<section class="hero"><div class="eyebrow">BUILD YOUR BASEBALL CAREER</div><h1 class="title">한 명의 선수로,<br>하나의 전설을 만들어라.</h1><p class="subtitle">출신과 시작 조건을 정한 뒤 시즌을 살아가세요.<br>성적, 선택, 이적, 국가대표 승선이 당신의 커리어를 바꿉니다.</p></section>
-<form class="card" method="post" action="{{ url_for('career.start') }}"><div class="section-head"><div><h2>선수 프로필</h2><p>커리어의 출발점을 설정합니다.</p></div></div><div class="grid"><label>선수 이름<input name="name" value="신인 선수" maxlength="20" required></label><label>시작 나이<input name="age" type="number" min="16" max="30" value="19"></label><label>국적<select name="nationality">{% for code,name in nations.items() %}<option value="{{ code }}">{{ name }}</option>{% endfor %}</select></label><label>포지션<select name="position"><option>투수</option><option>포수</option><option>내야수</option><option>외야수</option></select></label><label>시작 팀<select name="team">{% for league,name in teams %}<option value="{{ name }}">{{ name }}</option>{% endfor %}</select></label><label>커리어 모드<select name="mode"><option value="intense">INTENSE · 매 시즌 결정</option><option value="normal" selected>NORMAL · 보통 빈도</option><option value="express">EXPRESS · 큰 사건 중심</option></select></label></div><div class="grid3" style="margin-top:14px"><div class="stat"><div class="stat-label">INTENSE</div><div class="stat-small">매 시즌 중요한 결정</div></div><div class="stat"><div class="stat-label">NORMAL</div><div class="stat-small">2~3시즌마다 결정</div></div><div class="stat"><div class="stat-label">EXPRESS</div><div class="stat-small">커리어의 큰 순간 중심</div></div></div><div class="btnrow"><button class="btn" type="submit">⚾ 커리어 시작하기</button></div></form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>Career Mode</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+
+    min-height:100vh;
+
+    font-family:
+    'Segoe UI',
+    sans-serif;
+
+    color:white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #0f172a
+    );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+.container{
+
+    width:100%;
+    max-width:900px;
+
+    padding:30px;
+
+}
+
+.logo{
+
+    text-align:center;
+
+    font-size:54px;
+
+    font-weight:900;
+
+    margin-bottom:8px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #60a5fa,
+        #22d3ee
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    margin-bottom:35px;
+
+}
+
+.card{
+
+    background:
+    rgba(255,255,255,.06);
+
+    border:
+    1px solid
+    rgba(255,255,255,.10);
+
+    border-radius:24px;
+
+    padding:32px;
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.35);
+
+}
+
+.title{
+
+    font-size:26px;
+
+    margin-bottom:25px;
+
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:18px;
+
+}
+
+.field{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.field.full{
+
+    grid-column:
+    1 / -1;
+
+}
+
+label{
+
+    color:#cbd5e1;
+
+    font-size:14px;
+
+}
+
+input,
+select{
+
+    width:100%;
+
+    padding:15px;
+
+    border-radius:13px;
+
+    border:
+    1px solid
+    rgba(255,255,255,.12);
+
+    background:
+    rgba(15,23,42,.8);
+
+    color:white;
+
+    outline:none;
+
+    font-size:16px;
+
+}
+
+input:focus,
+select:focus{
+
+    border-color:#38bdf8;
+
+}
+
+.modes{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:12px;
+
+}
+
+.mode{
+
+    position:relative;
+
+}
+
+.mode input{
+
+    display:none;
+
+}
+
+.mode label{
+
+    display:block;
+
+    padding:18px;
+
+    border-radius:15px;
+
+    border:
+    1px solid
+    rgba(255,255,255,.1);
+
+    background:
+    rgba(255,255,255,.04);
+
+    cursor:pointer;
+
+    text-align:center;
+
+}
+
+.mode input:checked + label{
+
+    border-color:#38bdf8;
+
+    background:
+    rgba(14,165,233,.15);
+
+    box-shadow:
+    0 0 20px
+    rgba(34,211,238,.12);
+
+}
+
+.start{
+
+    width:100%;
+
+    margin-top:25px;
+
+    padding:17px;
+
+    border:0;
+
+    border-radius:15px;
+
+    color:white;
+
+    font-size:19px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    background:
+    linear-gradient(
+        135deg,
+        #3b82f6,
+        #06b6d4
+    );
+
+    transition:.2s;
+
+}
+
+.start:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 12px 30px
+    rgba(14,165,233,.25);
+
+}
+
+@media(max-width:700px){
+
+    .container{
+        padding:15px;
+    }
+
+    .card{
+        padding:20px;
+    }
+
+    .logo{
+        font-size:40px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+
+    .modes{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        CAREER MODE
+    </div>
+
+    <div class="subtitle">
+        당신만의 야구 인생을 시작하세요
+    </div>
+
+
+    <div class="card">
+
+        <div class="title">
+            선수 생성
+        </div>
+
+
+        <form
+        action="/career/start"
+        method="POST"
+        >
+
+            <div class="grid">
+
+
+                <div class="field full">
+
+                    <label>
+                        선수 이름
+                    </label>
+
+                    <input
+                    type="text"
+                    name="name"
+                    placeholder="선수 이름"
+                    required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        국적
+                    </label>
+
+                    <select name="nationality">
+
+                        <option value="KOR">
+                            🇰🇷 대한민국
+                        </option>
+
+                        <option value="JPN">
+                            🇯🇵 일본
+                        </option>
+
+                        <option value="USA">
+                            🇺🇸 미국
+                        </option>
+
+                        <option value="TPE">
+                            🇹🇼 대만
+                        </option>
+
+                        <option value="MEX">
+                            🇲🇽 멕시코
+                        </option>
+
+                        <option value="DOM">
+                            🇩🇴 도미니카
+                        </option>
+
+                        <option value="VEN">
+                            🇻🇪 베네수엘라
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        시작 나이
+                    </label>
+
+                    <input
+                    type="number"
+                    name="age"
+                    value="18"
+                    min="16"
+                    max="30"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        포지션
+                    </label>
+
+                    <select name="position">
+
+                        <option value="SP">
+                            선발투수
+                        </option>
+
+                        <option value="RP">
+                            불펜투수
+                        </option>
+
+                        <option value="CP">
+                            마무리투수
+                        </option>
+
+                        <option value="C">
+                            포수
+                        </option>
+
+                        <option value="1B">
+                            1루수
+                        </option>
+
+                        <option value="2B">
+                            2루수
+                        </option>
+
+                        <option value="3B">
+                            3루수
+                        </option>
+
+                        <option value="SS">
+                            유격수
+                        </option>
+
+                        <option value="OF">
+                            외야수
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        시작 리그
+                    </label>
+
+                    <select name="league_id">
+
+                        <option value="KBO">
+                            KBO
+                        </option>
+
+                        <option value="NPB">
+                            NPB
+                        </option>
+
+                        <option value="MLB">
+                            MLB
+                        </option>
+
+                        <option value="CPBL">
+                            CPBL
+                        </option>
+
+                        <option value="LMB">
+                            LMB
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        시작 팀
+                    </label>
+
+                    <select name="team_id">
+
+                        <option value="LG">
+                            LG 트윈스
+                        </option>
+
+                        <option value="DOOSAN">
+                            두산 베어스
+                        </option>
+
+                        <option value="HANWHA">
+                            한화 이글스
+                        </option>
+
+                        <option value="KIA">
+                            KIA 타이거즈
+                        </option>
+
+                        <option value="LOTTE">
+                            롯데 자이언츠
+                        </option>
+
+                        <option value="SAMSUNG">
+                            삼성 라이온즈
+                        </option>
+
+                        <option value="SSG">
+                            SSG 랜더스
+                        </option>
+
+                        <option value="KT">
+                            KT 위즈
+                        </option>
+
+                        <option value="NC">
+                            NC 다이노스
+                        </option>
+
+                        <option value="KIWOOM">
+                            키움 히어로즈
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Career 난이도
+                    </label>
+
+
+                    <div class="modes">
+
+
+                        <div class="mode">
+
+                            <input
+                            id="intense"
+                            type="radio"
+                            name="mode"
+                            value="intense"
+                            checked
+                            >
+
+                            <label for="intense">
+
+                                🔥<br>
+
+                                <strong>
+                                    INTENSE
+                                </strong>
+
+                                <br>
+
+                                <small>
+                                    매 시즌 중요 결정
+                                </small>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="mode">
+
+                            <input
+                            id="normal"
+                            type="radio"
+                            name="mode"
+                            value="normal"
+                            >
+
+                            <label for="normal">
+
+                                ⚾<br>
+
+                                <strong>
+                                    NORMAL
+                                </strong>
+
+                                <br>
+
+                                <small>
+                                    적당한 이벤트
+                                </small>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="mode">
+
+                            <input
+                            id="express"
+                            type="radio"
+                            name="mode"
+                            value="express"
+                            >
+
+                            <label for="express">
+
+                                ⚡<br>
+
+                                <strong>
+                                    EXPRESS
+                                </strong>
+
+                                <br>
+
+                                <small>
+                                    주요 사건 중심
+                                </small>
+
+                            </label>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+            class="start"
+            type="submit"
+            >
+
+                커리어 시작하기 →
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
