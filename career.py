@@ -252,9 +252,16 @@ def eligible_competitions(nationality, age):
     return out
 
 def flavor(category):
-    bank = FLAVOR.get('flavor', {}).get(category) or ['새로운 국면을 맞이했다.']
-    return random.choice(bank)
+    if isinstance(FLAVOR, dict):
+        flavor_data = FLAVOR.get('flavor', {})
+        if isinstance(flavor_data, dict):
+            bank = flavor_data.get(category)
+        else:
+            bank = None
+    else:
+        bank = None
 
+    return random.choice(bank or ['새로운 국면을 맞이했다.'])
 
 # ---------------------------------------------------------------------------
 # Career creation: name/nationality/position first, then 3 academy offers
