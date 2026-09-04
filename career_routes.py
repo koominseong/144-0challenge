@@ -1,103 +1,321 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-from career_engine import create_player, start_career, simulate_season, apply_choice, retire, NATIONS, KBO_TEAMS
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session
+)
 
-career_bp = Blueprint("career", __name__, url_prefix="/career")
-
-
-def _save(p):
-    session["career"] = p
-    session.modified = True
-
-
-def _get():
-    return session.get("career")
+from Career import Career
 
 
-@career_bp.get("/")
-def create():
-    return render_template("career/create.html", nations=NATIONS, teams=KBO_TEAMS)
+career_bp = Blueprint(
+    "career",
+    __name__,
+    url_prefix="/career"
+)
 
 
-@career_bp.post("/start")
-def start():
-    try:
-        age = int(request.form.get("age", 19))
-    except ValueError:
-        age = 19
-    player = create_player(
-        request.form.get("name", "신인 선수"),
-        request.form.get("nationality", "KOR"),
-        request.form.get("position", "내야수"),
-        age,
-        request.form.get("mode", "normal"),
-        {"league": "KBO", "name": request.form.get("team", "LG 트윈스")},
+# ---------------------------------
+# 임시 Career 저장소
+# ---------------------------------
+
+CAREERS = {}
+
+
+def get_career():
+    career_id = session.get("career_id")
+
+    if not career_id:
+        return None
+
+    return CAREERS.get(career_id)
+
+
+# ---------------------------------
+# Career 시작
+# ---------------------------------
+
+@career_bp.route("/")
+def career_create():
+    return render_template(
+        "career_create.html"
     )
-    _save(start_career(player))
-    return redirect(url_for("career.home"))
 
 
-@career_bp.get("/home")
-def home():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    return render_template("career/home.html", p=p)
+@career_bp.route("/start", methods=["POST"])
+def career_start():
+
+    name = request.form.get(
+        "name",
+        "Unknown Player"
+    )
+
+    nationality = request.form.get(
+        "nationality",
+        "KOR"
+    )
+
+    position = request.form.get(
+        "position",
+        "외야수"
+    )
+
+    team = request.form.get(
+        "team",
+        "LG Twins"
+    )
+
+    mode = request.form.get(
+        "mode",
+        "normal"
+    )
+
+    try:
+        age = int(
+            request.form.get(
+                "age",
+                18
+            )
+        )
+    except ValueError:
+        age = 18
+
+    career = Career(
+        name=name,
+        nationality=nationality,
+        position=position,
+        age=age,
+        team=team,
+        mode=mode
+    )
+
+    import uuid
+
+    career_id = str(
+        uuid.uuid4()
+    )
+
+    CAREERS[career_id] = career
+
+    session["career_id"] = career_id
+
+    return redirect(
+        url_for(
+            "career.career_home"
+        )
+    )
 
 
-@career_bp.post("/season")
-def season():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    _save(simulate_season(p))
-    return redirect(url_for("career.event" if session["career"].get("pending_event") else "career.home"))
+# ---------------------------------
+# Career Home
+# ---------------------------------
+
+@career_bp.route("/home")
+def career_home():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    return render_template(
+        "career_home.html",
+        career=career.to_dict()
+    )
 
 
-@career_bp.get("/event")
-def event():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    if not p.get("pending_event"):
-        return redirect(url_for("career.home"))
-    return render_template("career/event.html", p=p, event=p["pending_event"])
+# ---------------------------------
+# 시즌 진행
+# ---------------------------------
+
+@career_bp.route(
+    "/season",
+    methods=["POST"]
+)
+def career_season():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    season = career.play_season()
+
+    event = career.check_event()
+
+    if event:
+
+        session["career_event"] = event
+
+        return redirect(
+            url_for(
+                "career.career_event"
+            )
+        )
+
+    return render_template(
+        "career_home.html",
+        career=career.to_dict(),
+        season_result=season
+    )
 
 
-@career_bp.post("/event/choice")
-def choice():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    _save(apply_choice(p, request.form.get("choice_id", "0")))
-    return redirect(url_for("career.home"))
+# ---------------------------------
+# 이벤트
+# ---------------------------------
+
+@career_bp.route("/event")
+def career_event():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    event = session.get(
+        "career_event"
+    )
+
+    if not event:
+        return redirect(
+            url_for(
+                "career.career_home"
+            )
+        )
+
+    return render_template(
+        "career_event.html",
+        career=career.to_dict(),
+        event=event
+    )
 
 
-@career_bp.get("/timeline")
-def timeline():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    return render_template("career/timeline.html", p=p)
+# ---------------------------------
+# 이벤트 선택
+# ---------------------------------
+
+@career_bp.route(
+    "/event/choice",
+    methods=["POST"]
+)
+def career_event_choice():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    event = session.get(
+        "career_event"
+    )
+
+    choice = request.form.get(
+        "choice"
+    )
+
+    if event and choice:
+        career.apply_event_choice(
+            event,
+            choice
+        )
+
+    session.pop(
+        "career_event",
+        None
+    )
+
+    return redirect(
+        url_for(
+            "career.career_home"
+        )
+    )
 
 
-@career_bp.post("/retire")
-def do_retire():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    _save(retire(p))
-    return redirect(url_for("career.summary"))
+# ---------------------------------
+# Timeline
+# ---------------------------------
+
+@career_bp.route("/timeline")
+def career_timeline():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    return render_template(
+        "career_timeline.html",
+        career=career.to_dict()
+    )
 
 
-@career_bp.get("/summary")
-def summary():
-    p = _get()
-    if not p:
-        return redirect(url_for("career.create"))
-    return render_template("career/summary.html", p=p)
+# ---------------------------------
+# 은퇴
+# ---------------------------------
+
+@career_bp.route(
+    "/retire",
+    methods=["POST"]
+)
+def career_retire():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    career.retire()
+
+    return redirect(
+        url_for(
+            "career.career_summary"
+        )
+    )
 
 
-@career_bp.post("/reset")
-def reset():
-    session.pop("career", None)
-    return redirect(url_for("career.create"))
+# ---------------------------------
+# Career Summary
+# ---------------------------------
+
+@career_bp.route("/summary")
+def career_summary():
+
+    career = get_career()
+
+    if not career:
+        return redirect(
+            url_for(
+                "career.career_create"
+            )
+        )
+
+    return render_template(
+        "career_summary.html",
+        career=career.to_dict()
+    )
