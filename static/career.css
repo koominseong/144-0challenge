@@ -31,6 +31,61 @@ a.primary-cta{text-decoration:none}
 a.secondary-cta{text-decoration:none;display:inline-flex}
 .decision form,.decision .decision-form{margin-top:14px}
 
+/* ---- rating pills / chips (FIFA-card style tiers) ---- */
+.rating-pill{margin-left:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;width:64px;height:64px;border-radius:10px;font-family:'Barlow Condensed';flex-shrink:0}
+.rating-pill small{font-size:7px;letter-spacing:1px;opacity:.85}
+.rating-pill b{font-size:24px;line-height:1}
+.rating-chip{display:inline-block;padding:3px 9px;border-radius:5px;font:800 12px 'Barlow Condensed'}
+.tier-low{background:linear-gradient(160deg,#8a5a2e,#6b4321);color:#ffe6c9}
+.tier-mid{background:linear-gradient(160deg,#d99a2b,#b97e1a);color:#2a1a00}
+.tier-high{background:linear-gradient(160deg,#4fa3e3,#2f7fc4);color:#04121e}
+.tier-elite{background:linear-gradient(160deg,#b06fe0,#7d3fce);color:#f6ecff}
+
+/* ---- career timeline table ---- */
+.timeline-table{padding:6px 10px;overflow-x:auto}
+.tt-row{display:grid;grid-template-columns:44px 56px 1.4fr 56px 64px 72px 64px 1fr;gap:10px;align-items:center;padding:12px 10px;border-top:1px solid var(--line);font-size:11px;min-width:640px}
+.tt-row:first-child{border-top:0}
+.tt-head{color:#69737f;font-size:8px;letter-spacing:1.3px;font-weight:800}
+.tt-age{font:800 15px 'Barlow Condensed';color:var(--accent)}
+.tt-club{font-weight:700}
+.tt-muted{color:#8d97a3}
+.tt-note{display:flex;gap:6px;align-items:center;font-size:13px;flex-wrap:wrap}
+.tt-decision{font-size:8px;color:#8d97a3;border:1px solid var(--line);padding:2px 6px;letter-spacing:.3px}
+
+/* ---- career summary / retire screen ---- */
+.summary-wrap{max-width:1100px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:1}
+.summary-top{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:32px;margin-bottom:18px;flex-wrap:wrap}
+.summary-top h1{font:900 clamp(34px,5vw,56px)/1 'Barlow Condensed';text-transform:uppercase;margin:8px 0 12px;letter-spacing:-1px}
+.summary-stats{display:flex;gap:26px;margin-top:22px;flex-wrap:wrap}
+.summary-stats div{min-width:60px}
+.summary-stats small{display:block;color:#69737f;font-size:8px;letter-spacing:1.3px}
+.summary-stats b{display:block;font:700 22px 'Barlow Condensed';margin-top:4px}
+.summary-stats.compact b{font-size:17px}
+.summary-rating{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:14px;padding:20px 30px;text-align:center;flex-shrink:0}
+.summary-rating small{font-size:8px;letter-spacing:1.2px;opacity:.85}
+.summary-rating b{font:900 46px 'Barlow Condensed';line-height:1}
+.summary-rating span{font-size:9px;margin-top:6px;opacity:.9}
+.summary-mid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+.summary-mid .panel h2{margin-top:2px}
+.trophy-row{margin-top:14px;font-size:20px;letter-spacing:4px}
+.trophy-row.small{margin-top:10px;font-size:14px;letter-spacing:2px}
+.award-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:14px}
+.award-item{border:1px solid var(--line);background:rgba(255,255,255,.03);padding:14px 10px;text-align:center}
+.award-item span{display:block;font-size:24px;margin-bottom:6px}
+.award-item b{display:block;font-size:10px;letter-spacing:.3px}
+.muted-line{color:#8d97a3;font-size:11px;margin-top:12px}
+.section-label{margin:26px 0 10px}
+.club-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.club-card{padding:22px 18px;border-radius:6px;color:#f5f7fa}
+.club-card b{display:block;font:800 16px 'Barlow Condensed';margin-bottom:14px;text-transform:uppercase}
+.card-red{background:linear-gradient(160deg,#8f2734,#5c1720)}
+.card-blue{background:linear-gradient(160deg,#1f5fa8,#123a6b)}
+.card-navy{background:linear-gradient(160deg,#1c2540,#10162a)}
+.card-gray{background:linear-gradient(160deg,#454b54,#2a2e34)}
+.card-teal{background:linear-gradient(160deg,#136a63,#0b433e)}
+.card-purple{background:linear-gradient(160deg,#5e2f8a,#3b1c58)}
+.summary-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px}
+
 /* ---- shared light-weight pages: season result / international / retire ---- */
 .wrap{max-width:640px;margin:0 auto;padding:60px 24px 80px;position:relative;z-index:1}
 .wrap.hero{text-align:center;padding-top:14vh}
@@ -48,5 +103,5 @@ a.secondary-cta{text-decoration:none;display:inline-flex}
 body:not(.career-shell){background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;margin:0}
 body:not(.career-shell)::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 72% 8%,rgba(217,255,63,.09),transparent 28%),radial-gradient(circle at 10% 90%,rgba(71,103,255,.07),transparent 28%),linear-gradient(135deg,#080a0d,#0a0d11 60%,#090b0e);z-index:0}
 
-@media(max-width:900px){.career-app{grid-template-columns:1fr}.career-sidebar{display:none}.grid-main,.lower-grid,.creator,.career-intro.creator{grid-template-columns:1fr}.hero-row{align-items:start;flex-direction:column}.career-content{padding:28px 16px 45px}.primary-cta{width:100%}.creator{padding:45px 18px;gap:35px}.top-status{display:none}.intl-teaser{flex-direction:column;align-items:flex-start}}
-@media(max-width:520px){.career-topbar{padding:0 15px}.career-content{padding-top:24px}.hero-row h1{font-size:52px}.player-display h2{font-size:30px}.big-avatar{width:70px;height:70px}.stat-strip{grid-template-columns:repeat(2,1fr);gap:14px}.stat-strip div:nth-child(3){border-left:0;padding-left:0}.creator h1{font-size:54px}.two{grid-template-columns:1fr}.wrap{padding:36px 18px 60px}}
+@media(max-width:900px){.career-app{grid-template-columns:1fr}.career-sidebar{display:none}.grid-main,.lower-grid,.creator,.career-intro.creator{grid-template-columns:1fr}.hero-row{align-items:start;flex-direction:column}.career-content{padding:28px 16px 45px}.primary-cta{width:100%}.creator{padding:45px 18px;gap:35px}.top-status{display:none}.intl-teaser{flex-direction:column;align-items:flex-start}.summary-mid{grid-template-columns:1fr}}
+@media(max-width:520px){.career-topbar{padding:0 15px}.career-content{padding-top:24px}.hero-row h1{font-size:52px}.player-display h2{font-size:30px}.big-avatar{width:70px;height:70px}.stat-strip{grid-template-columns:repeat(2,1fr);gap:14px}.stat-strip div:nth-child(3){border-left:0;padding-left:0}.creator h1{font-size:54px}.two{grid-template-columns:1fr}.wrap{padding:36px 18px 60px}.summary-top{flex-direction:column;align-items:flex-start}.summary-rating{width:100%}.player-display{flex-wrap:wrap}.rating-pill{margin-left:0}}
