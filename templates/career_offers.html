@@ -21,6 +21,7 @@
       {% for o in offer_list %}
       <label class="offer-card">
         <input type="radio" name="team_id" value="{{ o.team_id }}" {% if loop.first %}checked{% endif %}>
+        <span class="team-badge" style="background:{{ o.badge.color }}">{{ o.badge.text }}</span>
         <div class="offer-tag">{{ o.tag }}</div>
         <b>{{ o.name }}</b>
         <small>{{ o.league_name }}</small>
