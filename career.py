@@ -19,6 +19,9 @@ COMPETITIONS = load('career_competitions.json')
 FLAVOR = load('career_events.json', {})
 RULES = load('career_rules.json', {})
 
+RETIREMENT_AGE = 40
+START_AGE = 16
+
 # ---------------------------------------------------------------------------
 # World model: league prestige tiers + each country's entry (academy) league
 # and its domestic promotion ladder. Built from the real leagues/teams data.
@@ -56,6 +59,9 @@ ROLE_INFO = {
     'bench': {'label': '벤치/후보', 'games_mult': 0.55, 'growth_mult': 0.7},
 }
 
+BADGE_PALETTE = ['#8f2734', '#1f5fa8', '#1c2540', '#454b54', '#136a63', '#5e2f8a',
+                 '#b97e1a', '#2f7fc4', '#7d3fce', '#0b433e', '#a83279', '#3c6e47']
+
 
 @dataclass
 class CareerState:
@@ -65,23 +71,23 @@ class CareerState:
     bats: str = 'R'
     league_id: str = ''
     team_id: str = ''
-    age: int = 18
+    age: int = START_AGE
     season: int = 1
     year: int = 2026
     status: str = 'active'          # active | retired
     pace: str = 'normal'            # focus | normal | fast
     pace_counter: int = 0
 
-    overall: int = 50               # long-term skill level (grows/declines)
+    overall: int = 48               # long-term skill level (grows/declines)
     stamina: int = 85               # short-term condition, drives injury risk
     fame: int = 0
     loyalty: int = 60
     money: int = 0
-    contract_years_left: int = 2
-    role: str = 'rotation'          # starter | rotation | bench
+    role: str = 'bench'             # starter | rotation | bench
     transfers_count: int = 0
     captain: bool = False
     injury_active: bool = False
+    high_school_done: bool = False
 
     injuries: int = 0
     titles: int = 0
@@ -142,6 +148,13 @@ def rating_tier(value):
     return 'low'
 
 
+def team_badge(team_id, name):
+    key = team_id or name or '?'
+    idx = sum(ord(c) for c in key) % len(BADGE_PALETTE)
+    letters = (name or '?').strip()[:2] or '?'
+    return {'text': letters, 'color': BADGE_PALETTE[idx]}
+
+
 AWARD_DEFS = [
     ('titles', 1, '🏆', '우승 반지', '팀 우승을 1회 이상 경험했습니다.'),
     ('titles', 3, '🏆', '명문 구단의 핵심', '팀 우승 3회 이상을 달성했습니다.'),
@@ -185,6 +198,7 @@ def club_history(state):
     for i, key in enumerate(order):
         g = grouped[key]
         g['color'] = CLUB_CARD_PALETTE[i % len(CLUB_CARD_PALETTE)]
+        g['badge'] = team_badge(None, key)
         cards.append(g)
     return cards
 
@@ -252,16 +266,13 @@ def eligible_competitions(nationality, age):
     return out
 
 def flavor(category):
-    if isinstance(FLAVOR, dict):
-        flavor_data = FLAVOR.get('flavor', {})
-        if isinstance(flavor_data, dict):
-            bank = flavor_data.get(category)
-        else:
-            bank = None
-    else:
-        bank = None
+    bank = None
+    if isinstance(FLAVOR, dict) and isinstance(FLAVOR.get('flavor'), dict):
+        bank = FLAVOR['flavor'].get(category)
+    if not bank or not isinstance(bank, list):
+        return '새로운 국면을 맞이했다.'
+    return random.choice(bank)
 
-    return random.choice(bank or ['새로운 국면을 맞이했다.'])
 
 # ---------------------------------------------------------------------------
 # Career creation: name/nationality/position first, then 3 academy offers
@@ -285,13 +296,15 @@ def generate_academy_offers(nationality):
     random.shuffle(tags)
     offers = []
     for t, tag in zip(picks, tags):
-        offers.append({'team_id': t.get('team_id'), 'name': t.get('name'), 'league_id': t.get('league_id'), 'tag': tag})
+        offers.append({
+            'team_id': t.get('team_id'), 'name': t.get('name'), 'league_id': t.get('league_id'), 'tag': tag,
+            'badge': team_badge(t.get('team_id'), t.get('name')),
+        })
     return offers
 
 def start_career(state, team_id, league_id):
     state.team_id = team_id
     state.league_id = league_id
-    state.contract_years_left = 2
     state.role = 'bench'
     t = team(team_id)
     state.last_event = f"{t.get('name', team_id) if t else team_id}과(와) 유스 계약을 맺었다."
@@ -319,74 +332,104 @@ def _offer_candidates(state, count=2):
     return random.sample(pool, min(count, len(pool)))
 
 
+def _club_option(t, tier_now):
+    tier_t = LEAGUE_TIER.get(t.get('league_id'), tier_now)
+    if tier_t > tier_now:
+        detail = '상위 무대 도전 · 벤치 위험'
+    elif tier_t < tier_now:
+        detail = '안정적인 주전 확보'
+    else:
+        detail = '동급 이적 · 새 출발'
+    return {
+        'id': f"club_{t.get('team_id')}", 'kind': 'club', 'label': f"{t.get('name')}(으)로 이적",
+        'detail': detail, 'team_id': t.get('team_id'), 'league_id': t.get('league_id'),
+        'name': t.get('name'), 'league_name': (league(t.get('league_id')) or {}).get('name', ''),
+        'badge': team_badge(t.get('team_id'), t.get('name')),
+    }
+
+
 def generate_event(state):
     """Priority-based picker for the next season's narrative decision point."""
     if state.injury_active:
-        ev = {
-            'type': 'injury',
-            'title': '부상에서의 갈림길',
-            'desc': flavor('injury'),
+        return {
+            'type': 'injury', 'title': '부상에서의 갈림길', 'desc': flavor('injury'),
             'options': [
-                {'id': 'early_return', 'label': '조기 복귀', 'detail': '출전은 빨리 재개하지만 재부상 위험이 남습니다.'},
-                {'id': 'full_rehab', 'label': '충분한 재활', 'detail': '한동안 출전은 줄지만 몸 상태를 확실히 회복합니다.'},
+                {'id': 'early_return', 'kind': 'plain', 'icon': '⚡', 'label': '조기 복귀',
+                 'detail': '출전은 빨리 재개하지만 재부상 위험이 남습니다.'},
+                {'id': 'full_rehab', 'kind': 'plain', 'icon': '🩹', 'label': '충분한 재활',
+                 'detail': '한동안 출전은 줄지만 몸 상태를 확실히 회복합니다.'},
             ],
         }
-    elif state.contract_years_left <= 1:
-        offers = _offer_candidates(state, 2)
-        options = [{'id': 'renew', 'label': f"{(team(state.team_id) or {}).get('name','현재 구단')}와 재계약",
-                    'detail': '충성도 상승 · 안정적인 역할 유지'}]
-        for i, t in enumerate(offers):
-            tier_now = LEAGUE_TIER.get(state.league_id, 1)
-            tier_t = LEAGUE_TIER.get(t.get('league_id'), tier_now)
-            move_desc = '상위 무대 도전 · 벤치 위험' if tier_t > tier_now else ('안정적인 주전 확보' if tier_t < tier_now else '동급 이적 · 새 출발')
-            options.append({'id': f'offer_{i}', 'label': f"{t.get('name')} 이적", 'detail': move_desc,
-                             'team_id': t.get('team_id'), 'league_id': t.get('league_id')})
-        ev = {'type': 'contract', 'title': '계약이 만료됩니다', 'desc': flavor('contract'), 'options': options}
-    elif eligible_competitions(state.nationality, state.age) and state.season >= 2 and random.random() < 0.35:
-        ev = {
-            'type': 'national_call',
-            'title': '국가대표 소집',
-            'desc': flavor('national_call'),
+
+    if not state.high_school_done and 17 <= state.age <= 19 and random.random() < 0.35:
+        state.high_school_done = True
+        return {
+            'type': 'high_school', 'title': '학업과 커리어 사이', 'desc': flavor('focus') if False else
+            '학업을 마저 끝낼지, 야구에만 전념할지 결정할 시간이다.',
             'options': [
-                {'id': 'accept', 'label': '국가대표 합류', 'detail': '대표팀 경력/명성 상승 · 체력 소모, 클럽 내 입지에는 부담'},
-                {'id': 'decline', 'label': '클럽에 집중', 'detail': '클럽 우승 기회와 충성도를 지키지만 대표 경력은 미룹니다.'},
+                {'id': 'accept', 'kind': 'plain', 'icon': '🎓', 'label': '학업 병행',
+                 'detail': '일시적으로 OVR -1, 대신 정신적으로 안정되어 충성도가 오릅니다.'},
+                {'id': 'reject', 'kind': 'plain', 'icon': '⚾', 'label': '야구에 전념',
+                 'detail': '변화 없이 훈련에 집중합니다.'},
             ],
         }
-    elif not state.captain and state.loyalty >= 65 and state.season >= 3 and random.random() < 0.3:
-        ev = {
-            'type': 'captain',
-            'title': '주장 완장 제안',
-            'desc': flavor('captain'),
+
+    if not state.captain and state.loyalty >= 65 and state.season >= 3 and random.random() < 0.25:
+        return {
+            'type': 'captain', 'title': '주장 완장 제안', 'desc': flavor('captain'),
             'options': [
-                {'id': 'accept', 'label': '주장 수락', 'detail': '명성/충성도 상승 · 부담감으로 폼 기복 가능'},
-                {'id': 'decline', 'label': '정중히 거절', 'detail': '부담 없이 선수 본연에 집중합니다.'},
+                {'id': 'accept', 'kind': 'plain', 'icon': '🎖️', 'label': '주장 수락',
+                 'detail': '명성/충성도 상승 · 부담감으로 폼 기복 가능'},
+                {'id': 'decline', 'kind': 'plain', 'icon': '🙅', 'label': '정중히 거절',
+                 'detail': '부담 없이 선수 본연에 집중합니다.'},
             ],
         }
-    elif state.role == 'bench' and random.random() < 0.4:
-        loan_targets = _offer_candidates(state, 1)
-        lt = loan_targets[0] if loan_targets else None
-        ev = {
-            'type': 'loan',
-            'title': '임대 제안',
-            'desc': flavor('loan'),
+
+    if eligible_competitions(state.nationality, state.age) and state.season >= 2 and random.random() < 0.3:
+        return {
+            'type': 'national_call', 'title': '국가대표 소집', 'desc': flavor('national_call'),
             'options': [
-                {'id': 'loan', 'label': f"{(lt or {}).get('name','다른 구단')}(으)로 임대", 'detail': '출전 시간 확보 · 소속팀 입지는 불확실',
-                 'team_id': (lt or {}).get('team_id'), 'league_id': (lt or {}).get('league_id')},
-                {'id': 'stay', 'label': '팀에 잔류', 'detail': '벤치 경쟁을 이어가며 기회를 기다립니다.'},
+                {'id': 'accept', 'kind': 'plain', 'icon': '🌍', 'label': '국가대표 합류',
+                 'detail': '대표팀 경력/명성 상승 · 체력 소모, 클럽 내 입지에는 부담'},
+                {'id': 'decline', 'kind': 'plain', 'icon': '🏟️', 'label': '클럽에 집중',
+                 'detail': '클럽 우승 기회와 충성도를 지키지만 대표 경력은 미룹니다.'},
             ],
         }
-    else:
-        ev = {
-            'type': 'focus',
-            'title': '이번 시즌의 준비',
-            'desc': flavor('focus'),
-            'options': [
-                {'id': 'training', 'label': '집중 훈련', 'detail': '기량 +, 부상 위험 소폭 상승'},
-                {'id': 'rest', 'label': '컨디션 관리', 'detail': '부상 위험 감소, 체력 회복'},
-                {'id': 'media', 'label': '미디어 활동', 'detail': '명성 상승, 기량 변화 없음'},
-            ],
-        }
-    return ev
+
+    if state.fame >= 40 and state.age >= 23 and random.random() < 0.2:
+        alt = _offer_candidates(state, 1)
+        alt_t = alt[0] if alt else None
+        cur = team(state.team_id) or {}
+        options = [
+            {'id': 'fight', 'kind': 'plain', 'icon': '💢', 'label': f"{cur.get('name','현 구단')}에서 버티기",
+             'detail': '일시적으로 OVR -2 (심리적 압박), 버텨내면 팬 신뢰 회복'},
+        ]
+        if alt_t:
+            options.append(_club_option(alt_t, LEAGUE_TIER.get(state.league_id, 1)) | {
+                'id': 'leave', 'label': f"{alt_t.get('name')}(으)로 떠나기", 'detail': '새 출발 · 이적 기록 +1',
+            })
+        return {'type': 'fan_backlash', 'title': '팬들의 반발', 'desc': flavor('injury') if False else
+                '최근 부진으로 팬들이 당신의 입지에 의문을 제기하기 시작했다.', 'options': options}
+
+    # default: transfer window (stay + 2 real-club offers), every decision point
+    tier_now = LEAGUE_TIER.get(state.league_id, 1)
+    offers = _offer_candidates(state, 2)
+    cur = team(state.team_id) or {}
+    options = [{
+        'id': 'stay', 'kind': 'club', 'label': f"{cur.get('name','현재 구단')}에 잔류",
+        'detail': '안정적인 역할 유지', 'team_id': state.team_id, 'league_id': state.league_id,
+        'name': cur.get('name', '현재 구단'), 'league_name': (league(state.league_id) or {}).get('name', ''),
+        'badge': team_badge(state.team_id, cur.get('name')), 'stay': True,
+    }]
+    for t in offers:
+        options.append(_club_option(t, tier_now))
+    if state.age >= 34:
+        options.append({'id': 'retire_now', 'kind': 'plain', 'icon': '🏁', 'label': '은퇴 결심',
+                         'detail': '지금까지의 커리어를 마무리합니다.'})
+    return {
+        'type': 'transfer_window', 'title': '이적 시장이 열렸다', 'desc': flavor('contract'),
+        'options': options,
+    }
 
 
 def resolve_event(state, option_id):
@@ -407,21 +450,16 @@ def resolve_event(state, option_id):
             state.stamina = min(100, state.stamina + 20)
         state.injury_active = False
 
-    elif etype == 'contract':
-        if chosen['id'] == 'renew':
-            state.contract_years_left = random.randint(2, 4)
-            state.loyalty = min(100, state.loyalty + 12)
-            state.fame = min(100, state.fame + 3)
-        else:
-            new_team, new_league = chosen.get('team_id'), chosen.get('league_id')
-            tier_now = LEAGUE_TIER.get(state.league_id, 1)
-            tier_new = LEAGUE_TIER.get(new_league, tier_now)
-            state.team_id, state.league_id = new_team, new_league
-            state.contract_years_left = random.randint(2, 3)
-            state.transfers_count += 1
-            state.loyalty = max(10, state.loyalty - 20)
-            state.role = 'starter' if tier_new < tier_now else ('bench' if tier_new > tier_now else 'rotation')
-            state.fame = min(100, state.fame + (6 if tier_new > tier_now else 2))
+    elif etype == 'high_school':
+        if chosen['id'] == 'accept':
+            state.overall = max(30, state.overall - 1)
+            state.loyalty = min(100, state.loyalty + 8)
+
+    elif etype == 'captain':
+        if chosen['id'] == 'accept':
+            state.captain = True
+            state.fame = min(100, state.fame + 10)
+            state.loyalty = min(100, state.loyalty + 10)
 
     elif etype == 'national_call':
         if chosen['id'] == 'accept':
@@ -435,45 +473,38 @@ def resolve_event(state, option_id):
         else:
             state.loyalty = min(100, state.loyalty + 5)
 
-    elif etype == 'captain':
-        if chosen['id'] == 'accept':
-            state.captain = True
-            state.fame = min(100, state.fame + 10)
-            state.loyalty = min(100, state.loyalty + 10)
-        # decline: no change
-
-    elif etype == 'loan':
-        if chosen['id'] == 'loan':
+    elif etype == 'fan_backlash':
+        if chosen['id'] == 'fight':
+            state.overall = max(30, state.overall - 2)
+            state.loyalty = min(100, state.loyalty + 15)
+        else:
             state.team_id = chosen.get('team_id') or state.team_id
             state.league_id = chosen.get('league_id') or state.league_id
-            state.role = 'starter'
             state.transfers_count += 1
-        else:
-            state.stamina = min(100, state.stamina + 5)
+            state.loyalty = max(10, state.loyalty - 15)
+            state.fame = min(100, state.fame + 2)
 
-    elif etype == 'focus':
-        if chosen['id'] == 'training':
-            state.overall = min(99, state.overall + random.randint(1, 3))
-            state.stamina = max(20, state.stamina - 5)
-        elif chosen['id'] == 'rest':
-            state.stamina = min(100, state.stamina + 12)
-        elif chosen['id'] == 'media':
-            state.fame = min(100, state.fame + 6)
+    elif etype == 'transfer_window':
+        if chosen['id'] == 'retire_now':
+            state.status = 'retired'
+        elif chosen.get('stay'):
+            state.loyalty = min(100, state.loyalty + 6)
+            state.fame = min(100, state.fame + 1)
+        else:
+            new_team, new_league = chosen.get('team_id'), chosen.get('league_id')
+            tier_now = LEAGUE_TIER.get(state.league_id, 1)
+            tier_new = LEAGUE_TIER.get(new_league, tier_now)
+            state.team_id, state.league_id = new_team, new_league
+            state.transfers_count += 1
+            state.loyalty = max(10, state.loyalty - 20)
+            state.role = 'starter' if tier_new < tier_now else ('bench' if tier_new > tier_now else 'rotation')
+            state.fame = min(100, state.fame + (6 if tier_new > tier_now else 2))
 
     state.last_decision = label
     state.decision_used = True
-    if not state.last_event or etype == 'contract':
+    if not state.last_event or etype in ('transfer_window', 'fan_backlash'):
         state.last_event = f'{label}을(를) 선택했다.'
     state.pending_event = None
-    return state
-
-
-def auto_offseason(state):
-    """Used on pace-skip seasons: a light, non-interactive default action."""
-    state.overall = min(99, state.overall + random.randint(0, 2))
-    state.stamina = min(100, state.stamina + random.randint(2, 8))
-    state.last_decision = '자동 진행'
-    state.last_event = random.choice(FLAVOR.get('milestones', ['조용히 시즌을 준비했다.']))
     return state
 
 
@@ -491,7 +522,6 @@ def simulate_season(state):
         wins = max(0, round(games * (0.02 + strength / 3200) + random.randint(-2, 5)))
         saves = max(0, round((strength - 48) / 8) + random.randint(0, 8)) if state.position == 'RP' else 0
         era = round(max(1.80, 6.0 - strength / 14 + random.uniform(-0.45, 0.45)), 2)
-        hits = hr = rbi = 0
         state.career_wins += wins
         state.career_saves += saves
         state.career_era = round(((state.career_era * max(1, state.season - 1)) + era) / state.season, 2)
@@ -526,34 +556,53 @@ def simulate_season(state):
         line += ' · 시즌 중 부상'
 
     state.stamina = max(15, min(100, state.stamina - random.randint(3, 10)))
-    state.contract_years_left = max(0, state.contract_years_left - 1)
     state.money += max(1000, 1500 + state.fame * 120)
     state.last_result = line
 
     state.history.append({
         'season': state.season, 'year': state.year, 'age': state.age,
-        'team': team_obj.get('name', state.team_id), 'result': line,
+        'team_id': state.team_id, 'team': team_obj.get('name', state.team_id), 'result': line,
         'decision': state.last_decision, 'rating': strength, 'games': games,
         'primary': primary, 'secondary': secondary, 'champion': champion,
         'injury': injury, 'market_value': market_value(state),
     })
-    state.decision_used = False
-    state.last_decision = ''
     return line
 
 
-def advance(state):
-    state.age += 1
-    state.season += 1
-    state.year += 1
-    state.last_result = ''
-    interval = PACE_INFO.get(state.pace, PACE_INFO['normal'])['interval']
-    state.pace_counter += 1
-    if state.pace_counter >= interval:
-        state.pace_counter = 0
-        state.pending_event = generate_event(state)
-    else:
-        auto_offseason(state)
-        state.pending_event = None
-        state.decision_used = True
-    return state
+def advance_after_season(state):
+    """Move the clock forward after a season was simulated, and either land on
+    the next interactive decision point (per pace) or auto-resolve quiet
+    seasons (a neutral 'stay' transfer window) until one is reached."""
+    while True:
+        if state.status == 'retired':
+            state.pending_event = None
+            state.decision_used = True
+            return state
+
+        state.age += 1
+        state.season += 1
+        state.year += 1
+        state.last_result = ''
+
+        if state.age >= RETIREMENT_AGE:
+            state.status = 'retired'
+            state.pending_event = None
+            state.decision_used = True
+            return state
+
+        interval = PACE_INFO.get(state.pace, PACE_INFO['normal'])['interval']
+        state.pace_counter += 1
+
+        if state.pace_counter >= interval:
+            state.pace_counter = 0
+            state.pending_event = generate_event(state)
+            state.decision_used = False
+            return state
+        else:
+            # quiet season: auto "stay" and simulate immediately, then loop
+            state.loyalty = min(100, state.loyalty + 3)
+            state.last_decision = '자동 진행'
+            state.last_event = random.choice(FLAVOR.get('milestones', ['조용히 시즌을 준비했다.'])) \
+                if isinstance(FLAVOR, dict) else '조용히 시즌을 준비했다.'
+            simulate_season(state)
+            # loop again to check the next season

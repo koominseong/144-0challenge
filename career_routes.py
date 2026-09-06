@@ -1,15 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from career import (
     TEAMS, COUNTRIES, get_state, save_state, new_state, generate_academy_offers,
-    start_career, generate_event, resolve_event, simulate_season, advance,
+    start_career, generate_event, resolve_event, simulate_season, advance_after_season,
     eligible_competitions, team, league, position_label, bats_label, country,
     POSITION_LABELS, BATS_LABELS, PACE_INFO, career_summary, market_value,
-    rating_tier, ROLE_INFO,
+    rating_tier, ROLE_INFO, team_badge, RETIREMENT_AGE, START_AGE,
 )
 
 career_bp = Blueprint('career', __name__, url_prefix='/career')
-
-RETIREMENT_AGE = 40
 
 
 @career_bp.get('')
@@ -79,11 +77,23 @@ def offers_choose():
     if not chosen:
         return redirect(url_for('career.offers'))
     start_career(state, chosen['team_id'], chosen['league_id'])
-    state.pending_event = generate_event(state)
-    state.decision_used = False
+    # the academy signing immediately plays out its first season, Copero-style
+    simulate_season(state)
+    advance_after_season(state)
     save_state(state)
     session.pop('career_offers', None)
+    if state.status == 'retired':
+        return redirect(url_for('career.retire'))
     return redirect(url_for('career.dashboard'))
+
+
+def _timeline_rows(state):
+    rows = [dict(r) for r in state.history]
+    for i, r in enumerate(rows):
+        r['badge'] = team_badge(r.get('team_id'), r.get('team'))
+        r['transferred_out'] = i + 1 < len(rows) and rows[i + 1].get('team') != r.get('team')
+        r['tier'] = rating_tier(r.get('rating', 50))
+    return rows
 
 
 @career_bp.get('/dashboard')
@@ -95,6 +105,16 @@ def dashboard():
         return redirect(url_for('career.offers'))
     if state.status == 'retired':
         return redirect(url_for('career.retire'))
+
+    rows = _timeline_rows(state)
+    last_age = rows[-1]['age'] if rows else state.age - 1
+    future_ages = list(range(last_age + 1, RETIREMENT_AGE)) if not state.pending_event else \
+        list(range(state.age + 1, RETIREMENT_AGE))
+    # the "current" row (being decided) sits at state.age when a decision is pending
+    pending_age = state.age if state.pending_event else None
+    if pending_age is not None and pending_age in future_ages:
+        future_ages.remove(pending_age)
+
     return render_template(
         'career_dashboard.html',
         state=state,
@@ -105,52 +125,26 @@ def dashboard():
         bats_label=bats_label(state.bats),
         role_label=ROLE_INFO.get(state.role, {}).get('label', state.role),
         pace_label=PACE_INFO.get(state.pace, {}).get('label', state.pace),
-        competitions=eligible_competitions(state.nationality, state.age),
         rating_tier=rating_tier(state.overall),
         market_value=market_value(state),
+        rows=rows,
+        pending_age=pending_age,
+        future_ages=future_ages,
     )
 
 
 @career_bp.post('/decision')
 def decision():
     state = get_state()
-    if not state or state.decision_used or not state.pending_event:
+    if not state or not state.pending_event:
         return redirect(url_for('career.dashboard'))
     resolve_event(state, request.form.get('option_id', ''))
+    if state.status != 'retired':
+        simulate_season(state)
+        advance_after_season(state)
     save_state(state)
-    return redirect(url_for('career.dashboard'))
-
-
-@career_bp.post('/season')
-def season():
-    state = get_state()
-    if not state or not state.decision_used:
-        return redirect(url_for('career.dashboard'))
-    simulate_season(state)
-    save_state(state)
-    return redirect(url_for('career.season_result'))
-
-
-@career_bp.get('/season-result')
-def season_result():
-    state = get_state()
-    if not state:
-        return redirect(url_for('career.career_new'))
-    return render_template('career_season_result.html', state=state, retirement_age=RETIREMENT_AGE,
-                            team=team(state.team_id), market_value=market_value(state))
-
-
-@career_bp.post('/next-season')
-def next_season():
-    state = get_state()
-    if not state:
-        return redirect(url_for('career.career_new'))
-    if state.age >= RETIREMENT_AGE:
-        state.status = 'retired'
-        save_state(state)
+    if state.status == 'retired':
         return redirect(url_for('career.retire'))
-    advance(state)
-    save_state(state)
     return redirect(url_for('career.dashboard'))
 
 
@@ -169,7 +163,7 @@ def history():
     state = get_state()
     if not state:
         return redirect(url_for('career.career_new'))
-    rows = list(reversed(state.history))
+    rows = list(reversed(_timeline_rows(state)))
     return render_template(
         'career_history.html', state=state, rows=rows,
         position_label=position_label(state.position), rating_tier=rating_tier,
