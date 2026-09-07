@@ -1,0 +1,10 @@
+KBO_10 <- IMG_0082.jpeg
+KBO_04 <- IMG_0081.png
+KBO_09 <- IMG_0080.png
+KBO_05 <- IMG_0079.jpeg
+KBO_06 <- IMG_0078.png
+KBO_02 <- IMG_0077.png
+KBO_08 <- IMG_0076.png
+KBO_07 <- IMG_0075.png
+KBO_03 <- IMG_0074.png
+KBO_01 <- IMG_0073.png
