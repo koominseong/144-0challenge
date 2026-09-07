@@ -137,6 +137,7 @@ body:not(.career-shell)::before{content:'';position:fixed;inset:0;pointer-events
 .pcard-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
 .pcard-tags span{font-size:8px;font-weight:800;letter-spacing:.8px;padding:4px 7px;border:1px solid var(--line);color:#aeb7c1}
 .pcard-tags .num-chip{background:#d92b3f;color:#fff;border-color:transparent}
+.logo-chip{display:inline-flex!important;align-items:center;justify-content:center;width:28px;height:28px;padding:2px!important;border:0!important;background:rgba(255,255,255,.08)!important;border-radius:50%;overflow:hidden!important}.logo-chip img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .pcard-id h1{font:800 24px 'Barlow Condensed';margin:0;text-transform:uppercase;overflow-wrap:anywhere}
 .pcard-meta{text-align:right;flex-shrink:0}
 .age-big{display:block;font:800 20px 'Barlow Condensed'}
@@ -184,3 +185,23 @@ body:not(.career-shell)::before{content:'';position:fixed;inset:0;pointer-events
 
 @media(max-width:900px){.offer-grid{grid-template-columns:1fr}.career-app{grid-template-columns:1fr}.career-sidebar{display:none}.grid-main,.lower-grid,.creator,.career-intro.creator{grid-template-columns:1fr}.hero-row{align-items:start;flex-direction:column}.career-content{padding:28px 16px 45px}.primary-cta{width:100%}.creator{padding:45px 18px;gap:35px}.top-status{display:none}.intl-teaser{flex-direction:column;align-items:flex-start}.summary-mid{grid-template-columns:1fr}}
 @media(max-width:520px){.career-topbar{padding:0 15px}.career-content{padding-top:24px}.hero-row h1{font-size:52px}.player-display h2{font-size:30px}.big-avatar{width:70px;height:70px}.stat-strip{grid-template-columns:repeat(2,1fr);gap:14px}.stat-strip div:nth-child(3){border-left:0;padding-left:0}.creator h1{font-size:54px}.two{grid-template-columns:1fr}.wrap{padding:36px 18px 60px}.summary-top{flex-direction:column;align-items:flex-start}.summary-rating{width:100%}.player-display{flex-wrap:wrap}.rating-pill{margin-left:0}}
+
+/* ---- team logo hard size guard ---- */
+.team-badge,
+.offer-card .team-badge,
+.club-option .team-badge{box-sizing:border-box!important;width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;max-width:26px!important;max-height:26px!important;overflow:hidden!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;}
+.offer-card .team-badge{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;max-width:34px!important;max-height:34px!important;}
+.team-badge.sm{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;max-width:20px!important;max-height:20px!important;}
+.team-badge img,
+.logo-chip img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:contain!important;border-radius:50%!important;}
+.team-badge:has(img){padding:2px!important;overflow:hidden!important;}
+.logo-chip{box-sizing:border-box!important;width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px!important;max-height:28px!important;overflow:hidden!important;}
+
+
+/* League-separated championship trophies */
+.trophy-leagues{display:grid;gap:14px}
+.trophy-league-block{padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025)}
+.trophy-league-title{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.trophy-league-title span{font-size:20px}
+.trophy-league-title strong{font-size:15px}
+.trophy-league-title em{margin-left:auto;font-style:normal;opacity:.65;font-size:12px}
