@@ -133,6 +133,7 @@ class CareerState:
     titles: int = 0
     international_caps: int = 0
     international_titles: int = 0
+    international_trophies: list = None  # tournament-specific national-team titles
     career_games: int = 0
     career_hits: int = 0
     career_hr: int = 0
@@ -151,6 +152,8 @@ class CareerState:
     def __post_init__(self):
         if self.history is None:
             self.history = []
+        if self.international_trophies is None:
+            self.international_trophies = []
 
 
 def _normalize_state(raw):
@@ -170,6 +173,8 @@ def _normalize_state(raw):
             r['team'] = TEAM_REGISTRY[rid].get('name', r.get('team', rid))
         history.append(r)
     data['history'] = history
+    # Older saves only have the total count; keep them compatible.
+    data.setdefault('international_trophies', [])
     return data
 
 
@@ -280,6 +285,24 @@ def market_value(state):
     value = base * max(0.25, age_factor) * (1 + state.fame / 220)
     return max(50000, round(value))
 
+def international_trophy_groups(state):
+    """Group national-team trophies by the actual international tournament."""
+    order = []
+    groups = {}
+    for t in (state.international_trophies or []):
+        if isinstance(t, str):
+            cid, cname, year = 'LEGACY', t, '-'
+        else:
+            cid = t.get('competition_id', 'INTL')
+            cname = t.get('competition_name', t.get('name', '국제대회'))
+            year = t.get('year', '-')
+        if cid not in groups:
+            groups[cid] = {'competition_id': cid, 'name': cname, 'count': 0, 'items': []}
+            order.append(cid)
+        groups[cid]['count'] += 1
+        groups[cid]['items'].append({'name': cname, 'year': year})
+    return [groups[cid] for cid in order]
+
 def career_score(state):
     return round(
         state.career_games * 2 + state.career_hr * 8 + state.career_rbi * 3 +
@@ -325,14 +348,96 @@ def country(country_id):
 def teams_in_league(league_id):
     return [t for t in TEAMS if t.get('league_id') == league_id]
 
-def eligible_competitions(nationality, age):
+def eligible_competitions(nationality, age, year=None):
+    """Return national-team competitions that make sense for this season.
+
+    National-team duty is intentionally sparse: senior competitions only appear
+    in their rough real-world cycles, while U18/U23 are limited by age.
+    """
+    year = year or 2026
     out = []
     for c in COMPETITIONS:
+        name = str(c.get('name', '')).lower()
         min_age = c.get('min_age', 0)
         max_age = c.get('max_age', 99)
-        if min_age <= age <= max_age:
-            out.append(c)
+        if not (min_age <= age <= max_age):
+            if 'u-23' in name or 'u23' in name:
+                if age > 23:
+                    continue
+            elif 'u-18' in name or 'u18' in name:
+                if age > 18:
+                    continue
+            else:
+                continue
+
+        # Keep national duty from becoming an annual event.
+        if 'world baseball classic' in name:
+            if (year - 2026) % 3 != 0:
+                continue
+        elif 'premier12' in name:
+            if (year - 2027) % 4 != 0:
+                continue
+        elif 'olympic' in name:
+            if (year - 2028) % 4 != 0:
+                continue
+        elif 'asian games' in name:
+            if (year - 2026) % 4 != 0:
+                continue
+        elif 'u-23' in name or 'u23' in name:
+            if age > 23 or year % 2 == 0:
+                continue
+        elif 'u-18' in name or 'u18' in name:
+            if age > 18:
+                continue
+
+        out.append(c)
     return out
+
+
+def _national_selection_probability(state):
+    """Small automatic selection chance driven mainly by OVR."""
+    if state.age < 18 or state.overall < 65:
+        return 0.0
+    # OVR is the main selector; fame is only a light tie-breaker.
+    chance = 0.025 + max(0, state.overall - 65) * 0.007
+    chance += min(0.035, state.fame * 0.00035)
+    if state.overall >= 85:
+        chance += 0.025
+    return min(0.24, chance)
+
+
+def _maybe_national_team_selection(state):
+    """Rare, mostly automatic national-team call-up.
+
+    This runs once per simulated season and selects at most one competition.
+    The player does not choose in the normal case; the game simply decides
+    whether the player made the roster based on ability.
+    """
+    if getattr(state, 'status', 'active') == 'retired':
+        return False
+    competitions = eligible_competitions(state.nationality, state.age, state.year)
+    if not competitions:
+        return False
+    chance = _national_selection_probability(state)
+    if random.random() >= chance:
+        return False
+
+    competition = random.choice(competitions)
+    state.international_caps += 1
+    if random.random() < (0.08 + max(0, state.overall - 70) * 0.004):
+        state.international_titles += 1
+        state.international_trophies.append({
+            'competition_id': competition.get('competition_id', 'INTL'),
+            'competition_name': competition.get('name', '국제대회'),
+            'year': state.year,
+            'age': state.age,
+        })
+        state.last_event = f'{competition.get("name", "국제대회")}에서 대표팀 우승을 경험했다!'
+    else:
+        state.last_event = f'{competition.get("name", "국제대회")} 대표팀에 자동 차출됐다.'
+    state.fame = min(100, state.fame + 4)
+    state.stamina = max(20, state.stamina - 4)
+    return True
 
 def flavor(category):
     bank = None
@@ -395,117 +500,87 @@ def start_career(state, team_id, league_id):
 # ---------------------------------------------------------------------------
 
 def _offer_candidates(state, count=2):
-    """Generate transfer offers that match the player's current OVR.
-
-    League movement remains possible, but an OVR gate prevents a developing
-    player from receiving elite-team offers too early.
-    """
+    """OVR와 리그 수준이 맞는 현실적인 이적 제안을 만든다."""
     cur_tier = LEAGUE_TIER.get(state.league_id, 1)
-    ladder = PROMOTION_PATH.get(state.nationality, [])
     ovr = state.overall
+
+    # 리그에 진입하기 위해 필요한 대략적인 OVR.
+    min_ovr_by_tier = {1: 50, 2: 55, 3: 60, 4: 66, 5: 70, 6: 80}
+    max_reasonable_tier = max(
+        tier for tier, minimum in min_ovr_by_tier.items() if ovr >= minimum
+    )
+
     pool = []
-
-    # Same league is always the most realistic market.
-    pool.extend(teams_in_league(state.league_id))
-
-    # Domestic promotion/relegation path.
-    if state.league_id in ladder:
-        idx = ladder.index(state.league_id)
-        for j in (idx - 1, idx + 1):
-            if 0 <= j < len(ladder):
-                pool.extend(teams_in_league(ladder[j]))
-
-    # Determine which league tiers this OVR can realistically reach.
-    # Tier 5 = KBO/NPB top level, Tier 6 = MLB.
-    if ovr < 60:
-        max_tier = min(cur_tier + 1, 3)
-    elif ovr < 66:
-        max_tier = min(cur_tier + 1, 4)
-    elif ovr < 71:
-        max_tier = min(cur_tier + 1, 5)
-    elif ovr < 76:
-        max_tier = 5
-    elif ovr < 82:
-        max_tier = 6
-    else:
-        max_tier = 6
-
-    # Nearby leagues, filtered by OVR.
     for t in TEAMS:
-        if t.get('team_id') == state.team_id:
-            continue
-        tier = LEAGUE_TIER.get(t.get('league_id'), cur_tier)
-        if tier <= max_tier and abs(tier - cur_tier) <= 1:
-            pool.append(t)
-
-    # Direct elite-league access only after reaching the appropriate OVR.
-    elite_thresholds = {'NPB': 70, 'KBO': 70, 'MLB': 80}
-    for t in TEAMS:
-        lid = t.get('league_id')
-        threshold = elite_thresholds.get(lid)
-        if threshold is not None and ovr >= threshold:
-            pool.append(t)
-
-    unique = {}
-    for t in pool:
         tid = t.get('team_id')
-        if tid and tid != state.team_id:
-            unique[tid] = t
-    pool = list(unique.values())
+        lid = t.get('league_id')
+        if not tid or tid == state.team_id:
+            continue
+        tier = LEAGUE_TIER.get(lid, 1)
 
-    if not pool:
-        pool = [t for t in TEAMS if t.get('team_id') != state.team_id]
+        # OVR보다 한 단계 이상 높은 리그는 일반 제안에서 제외한다.
+        if tier > max_reasonable_tier:
+            continue
 
+        # 현재 수준에서 너무 동떨어진 하위팀도 무작정 제안하지 않는다.
+        if tier < cur_tier - 1:
+            continue
+
+        # 한 단계 상승은 가능하지만 OVR이 낮으면 확률적으로만 허용한다.
+        if tier == cur_tier + 1 and ovr < min_ovr_by_tier.get(tier, 99) + 2:
+            if random.random() > 0.22:
+                continue
+
+        pool.append(t)
+
+    # 같은 리그가 너무 많이 나오지 않으면서도 OVR에 맞는 팀을 우선한다.
     def _score(t):
         tier = LEAGUE_TIER.get(t.get('league_id'), cur_tier)
         score = random.random() * 5
-
-        # Strong preference for teams close to the player's current level.
         if tier == cur_tier:
             score += 18
         elif tier == cur_tier + 1:
-            score += 13
+            score += 17
         elif tier == cur_tier - 1:
-            score += 9
+            score += 8
         else:
-            score -= abs(tier - cur_tier) * 5
+            score -= abs(tier - cur_tier) * 4
 
-        # Do not make elite leagues common before the player is ready.
-        if t.get('league_id') == 'MLB':
-            score += 8 if ovr >= 82 else (-20 if ovr < 78 else 0)
-        elif t.get('league_id') in ('KBO', 'NPB'):
-            score += 5 if ovr >= 70 else (-10 if ovr < 66 else 0)
+        # OVR과 리그의 적합도가 높을수록 우선.
+        gap = ovr - min_ovr_by_tier.get(tier, 50)
+        score += max(-10, min(10, gap * 0.45))
 
-        # Overseas moves are more attractive as OVR/reputation rises.
-        if (league(t.get('league_id')) or {}).get('country') != state.nationality:
-            score += max(0, (ovr - 65) * 0.15)
-
+        # KBO/NPB는 70+, MLB는 80+부터 정상적인 상위 선택지로 취급.
+        if t.get('league_id') in ('KBO', 'NPB'):
+            score += 4 if ovr >= 70 else -8
+        elif t.get('league_id') == 'MLB':
+            score += 7 if ovr >= 80 else -15
         return score
 
     pool.sort(key=_score, reverse=True)
-    top = pool[:min(20, len(pool))]
-
-    buckets = {
-        'same': [t for t in top if LEAGUE_TIER.get(t.get('league_id'), cur_tier) == cur_tier],
-        'up': [t for t in top if LEAGUE_TIER.get(t.get('league_id'), cur_tier) > cur_tier],
-        'overseas': [t for t in top if (league(t.get('league_id')) or {}).get('country') != state.nationality],
-        'down': [t for t in top if LEAGUE_TIER.get(t.get('league_id'), cur_tier) < cur_tier],
-    }
+    if not pool:
+        pool = [t for t in TEAMS if t.get('team_id') != state.team_id]
 
     chosen, used = [], set()
-    # Usually give a realistic same-level offer first, then one challenge.
-    for key in ('same', 'up', 'overseas', 'down'):
-        candidates = [x for x in buckets[key] if x.get('team_id') not in used]
+    # 우선 현재 수준/한 단계 상승을 섞고, 나머지는 적합도 순으로 채운다.
+    buckets = {
+        'same': [t for t in pool if LEAGUE_TIER.get(t.get('league_id'), cur_tier) == cur_tier],
+        'up': [t for t in pool if LEAGUE_TIER.get(t.get('league_id'), cur_tier) == cur_tier + 1],
+        'other': [t for t in pool if LEAGUE_TIER.get(t.get('league_id'), cur_tier) != cur_tier and LEAGUE_TIER.get(t.get('league_id'), cur_tier) != cur_tier + 1],
+    }
+    for key in ('same', 'up', 'other'):
+        candidates = [t for t in buckets[key] if t.get('team_id') not in used]
         if candidates and len(chosen) < count:
             pick = random.choice(candidates)
             chosen.append(pick)
             used.add(pick.get('team_id'))
 
-    if len(chosen) < count:
-        rest = [x for x in top if x.get('team_id') not in used]
-        random.shuffle(rest)
-        chosen.extend(rest[:count-len(chosen)])
-
+    for t in pool:
+        if len(chosen) >= count:
+            break
+        if t.get('team_id') not in used:
+            chosen.append(t)
+            used.add(t.get('team_id'))
     return chosen[:count]
 
 def _club_option(t, tier_now):
@@ -561,14 +636,22 @@ def generate_event(state):
             ],
         }
 
-    if eligible_competitions(state.nationality, state.age) and state.season >= 2 and random.random() < 0.20:
+    # National-team duty is normally automatic.  A user-choice call-up is
+    # intentionally rare and only appears when the player is genuinely good
+    # enough to be in the conversation.
+    if (state.overall >= 72 and state.age >= 19 and
+            eligible_competitions(state.nationality, state.age, state.year) and
+            random.random() < 0.035):
+        competition = random.choice(eligible_competitions(state.nationality, state.age, state.year))
         return {
-            'type': 'national_call', 'title': '국가대표 소집', 'desc': flavor('national_call'),
+            'type': 'national_call', 'title': '국가대표 합류 여부', 'desc':
+                f'{competition.get("name", "국제대회")} 대표팀 선발 경쟁에 이름을 올렸다. 이번에는 직접 결정할 수 있다.',
+            'competition': competition,
             'options': [
                 {'id': 'accept', 'kind': 'plain', 'icon': '🌍', 'label': '국가대표 합류',
-                 'detail': '대표팀 경력/명성 상승 · 체력 소모, 클럽 내 입지에는 부담'},
+                 'detail': '대표팀 경력/명성 상승 · 체력 소모'},
                 {'id': 'decline', 'kind': 'plain', 'icon': '🏟️', 'label': '클럽에 집중',
-                 'detail': '클럽 우승 기회와 충성도를 지키지만 대표 경력은 미룹니다.'},
+                 'detail': '이번 소집을 고사하고 클럽 시즌에 집중합니다.'},
             ],
         }
 
@@ -645,7 +728,14 @@ def resolve_event(state, option_id):
             state.loyalty = max(10, state.loyalty - 3)
             if random.random() < 0.18:
                 state.international_titles += 1
-                state.last_event = '국가대표팀 우승을 경험했다!'
+                competition = ev.get('competition') or {}
+                state.international_trophies.append({
+                    'competition_id': competition.get('competition_id', 'INTL'),
+                    'competition_name': competition.get('name', '국제대회'),
+                    'year': state.year,
+                    'age': state.age,
+                })
+                state.last_event = f'{competition.get("name", "국제대회")} 우승을 경험했다!'
         else:
             state.loyalty = min(100, state.loyalty + 5)
 
@@ -689,49 +779,36 @@ def simulate_season(state):
     role_mult = ROLE_INFO.get(state.role, ROLE_INFO['rotation'])
     diff = DIFFICULTY_INFO.get(state.difficulty, DIFFICULTY_INFO['pro'])
 
-    # Copero-style growth, but with a soft ceiling so OVR does not outrun
-    # the level of competition too quickly. Difficulty settings are unchanged.
-    # Early career: about +5 on average while the player is still developing.
-    # Once OVR reaches the next tier, growth naturally slows.
-    ovr = state.overall
-    if state.age <= 19:
-        base_growth = random.randint(3, 5)
-    elif state.age <= 22:
-        base_growth = random.randint(3, 5)
-    elif state.age <= 25:
-        base_growth = random.randint(2, 4)
-    elif state.age <= 29:
-        base_growth = random.randint(0, 3)
-    elif state.age <= 33:
-        base_growth = random.randint(-1, 2)
+    # OVR 성장 곡선: 초반은 빠르지만 60대 후반부터 확실히 둔화한다.
+    # 기존 role_mult 전체 곱연산은 주전의 성장폭을 과도하게 키웠으므로
+    # 성장량에는 작은 역할 보정만 적용한다. 난이도 설정 자체는 변경하지 않는다.
+    if state.age <= 18:
+        base_growth = random.randint(4, 6)       # avg 5.0
+    elif state.age <= 21:
+        base_growth = random.randint(3, 5)       # avg 4.0
+    elif state.age <= 24:
+        base_growth = random.randint(2, 4)       # avg 3.0
+    elif state.age <= 27:
+        base_growth = random.randint(1, 3)       # avg 2.0
+    elif state.age <= 31:
+        base_growth = random.randint(0, 2)       # avg 1.0
     elif state.age <= 35:
-        base_growth = random.randint(-2, 1)
+        base_growth = random.randint(-1, 1)      # avg 0.0
     else:
-        base_growth = random.randint(-4, 0)
+        base_growth = random.randint(-4, 0)      # decline
 
-    growth = base_growth + diff['growth_bonus']
+    # 능력치가 높아질수록 성장 자체를 추가로 감속한다.
+    if state.overall >= 82:
+        base_growth = min(base_growth, 1)
+    elif state.overall >= 76:
+        base_growth = min(base_growth, 2)
+    elif state.overall >= 70:
+        base_growth = min(base_growth, 3)
+    elif state.overall >= 65:
+        base_growth = min(base_growth, 4)
 
-    # Prevent an ordinary prospect from racing into elite-player OVR.
-    # The closer the player is to the next competition tier, the smaller the
-    # effective development becomes.
-    if ovr >= 78:
-        growth = min(growth, 1)
-    elif ovr >= 74:
-        growth = min(growth, 2)
-    elif ovr >= 70:
-        growth = min(growth, 3)
-    elif ovr >= 66:
-        growth = min(growth, 4)
-
-    # Role still matters, but much less than before. A starter should not gain
-    # 20% extra OVR every year and break the league/team relationship.
-    role_factor = {
-        'starter': 1.05,
-        'rotation': 1.00,
-        'bench': 0.85,
-    }.get(state.role, 1.0)
-
-    growth = round(growth * role_factor)
+    role_bonus = {'starter': 1, 'rotation': 0, 'bench': -1}.get(state.role, 0)
+    growth = base_growth + diff['growth_bonus'] + role_bonus
     state.overall = max(30, min(99, round(state.overall + growth)))
     strength = state.overall
 
@@ -791,6 +868,12 @@ def simulate_season(state):
 
     state.stamina = max(25, min(100, state.stamina - random.randint(2, 7)))
     state.money += max(1000, 1500 + state.fame * 120)
+
+    # National-team selection is primarily automatic and rare.  It happens
+    # independently of the regular decision event, so quiet seasons can still
+    # produce an occasional call-up without turning every season into a choice.
+    _maybe_national_team_selection(state)
+
     state.last_result = line
 
     state.history.append({
