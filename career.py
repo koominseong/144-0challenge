@@ -1,4 +1,4 @@
-import json, os, random
+import json, os, random, re
 from dataclasses import dataclass, asdict
 from flask import session
 
@@ -18,6 +18,38 @@ COUNTRIES = load('career_countries.json')
 COMPETITIONS = load('career_competitions.json')
 FLAVOR = load('career_events.json', {})
 RULES = load('career_rules.json', {})
+
+# ---------------------------------------------------------------------------
+# Canonical team registry
+# team_id -> exact display name / league / logo is the single source of truth.
+# ---------------------------------------------------------------------------
+TEAM_REGISTRY = {t.get('team_id'): dict(t) for t in TEAMS if t.get('team_id')}
+TEAM_ALIASES = {}
+for _team in TEAMS:
+    _tid = _team.get('team_id')
+    for _value in (_team.get('name'), _team.get('logo_key'), _tid):
+        if _value:
+            TEAM_ALIASES[str(_value).strip().lower()] = _tid
+
+
+def canonical_team_id(team_id=None, team_name=None):
+    if team_id and team_id in TEAM_REGISTRY:
+        return team_id
+    if team_name:
+        return TEAM_ALIASES.get(str(team_name).strip().lower())
+    return None
+
+
+def canonical_team_name(team_id=None, fallback='무소속'):
+    tid = canonical_team_id(team_id)
+    if tid:
+        return TEAM_REGISTRY[tid].get('name', fallback)
+    return fallback
+
+
+def team_logo_filename(team_id):
+    tid = canonical_team_id(team_id)
+    return f'team_logo_{tid}.jpg' if tid else None
 
 RETIREMENT_AGE = 40
 START_AGE = 16
@@ -45,6 +77,12 @@ PROMOTION_PATH = {
     'KR': ['KR_IND', 'KBO_FUTURES', 'KBO'],
     'JP': ['NPB_FARM', 'NPB'],
     'US': ['RK', 'A', 'AA', 'AAA', 'MLB'],
+}
+
+DIFFICULTY_INFO = {
+    'rookie': {'label': '루키', 'desc': '성장과 출전이 비교적 쉽습니다.', 'start_ovr': 52, 'growth_bonus': 1.0, 'injury_mult': 0.80},
+    'pro': {'label': '프로', 'desc': '야구 커리어의 표준 난이도입니다.', 'start_ovr': 48, 'growth_bonus': 0.0, 'injury_mult': 1.00},
+    'legend': {'label': '레전드', 'desc': '성장 폭이 낮고 부상·부진 위험이 큽니다.', 'start_ovr': 45, 'growth_bonus': -1.0, 'injury_mult': 1.25},
 }
 
 PACE_INFO = {
@@ -77,6 +115,8 @@ class CareerState:
     status: str = 'active'          # active | retired
     pace: str = 'normal'            # focus | normal | fast
     pace_counter: int = 0
+    difficulty: str = 'pro'         # rookie | pro | legend
+    jersey_number: int = 1          # 고정 등번호
 
     overall: int = 48               # long-term skill level (grows/declines)
     stamina: int = 85               # short-term condition, drives injury risk
@@ -113,8 +153,28 @@ class CareerState:
             self.history = []
 
 
+def _normalize_state(raw):
+    data = dict(raw or {})
+    tid = canonical_team_id(data.get('team_id'), data.get('team'))
+    if tid:
+        data['team_id'] = tid
+        data['league_id'] = TEAM_REGISTRY[tid].get('league_id', data.get('league_id', ''))
+
+    history = []
+    for row in data.get('history') or []:
+        r = dict(row)
+        rid = canonical_team_id(r.get('team_id'), r.get('team'))
+        if rid:
+            r['team_id'] = rid
+            r['league_id'] = TEAM_REGISTRY[rid].get('league_id', r.get('league_id', ''))
+            r['team'] = TEAM_REGISTRY[rid].get('name', r.get('team', rid))
+        history.append(r)
+    data['history'] = history
+    return data
+
+
 def save_state(state):
-    session['career_state'] = asdict(state)
+    session['career_state'] = _normalize_state(asdict(state))
     session.modified = True
 
 
@@ -122,7 +182,7 @@ def get_state():
     raw = session.get('career_state')
     if not raw:
         return None
-    return CareerState(**raw)
+    return CareerState(**_normalize_state(raw))
 
 
 POSITION_LABELS = {
@@ -148,11 +208,19 @@ def rating_tier(value):
     return 'low'
 
 
-def team_badge(team_id, name):
-    key = team_id or name or '?'
+def team_badge(team_id, name=None):
+    tid = canonical_team_id(team_id, name)
+    display_name = TEAM_REGISTRY.get(tid, {}).get('name', name or tid or '?')
+    key = tid or display_name
     idx = sum(ord(c) for c in key) % len(BADGE_PALETTE)
-    letters = (name or '?').strip()[:2] or '?'
-    return {'text': letters, 'color': BADGE_PALETTE[idx]}
+    badge = {
+        'text': display_name[:2] or '?',
+        'color': BADGE_PALETTE[idx],
+        'team_id': tid,
+        'team_name': display_name,
+        'logo': team_logo_filename(tid),
+    }
+    return badge
 
 
 AWARD_DEFS = [
@@ -245,7 +313,8 @@ def career_summary(state):
 
 
 def team(team_id):
-    return next((x for x in TEAMS if x.get('team_id') == team_id), None)
+    tid = canonical_team_id(team_id)
+    return TEAM_REGISTRY.get(tid) if tid else None
 
 def league(league_id):
     return next((x for x in LEAGUES if x.get('league_id') == league_id), None)
@@ -279,11 +348,21 @@ def flavor(category):
 # (mirrors Copero: pick your player, then choose among 3 starting clubs).
 # ---------------------------------------------------------------------------
 
-def new_state(name, nationality, position, bats, pace):
+def new_state(name, nationality, position, bats, pace, difficulty='pro', jersey_number=1):
     clean_name = (name or '').strip() or '신인'
     pace = pace if pace in PACE_INFO else 'normal'
-    return CareerState(player_name=clean_name, nationality=nationality, position=position,
-                        bats=bats if bats in BATS_LABELS else 'R', pace=pace)
+    difficulty = difficulty if difficulty in DIFFICULTY_INFO else 'pro'
+    try:
+        jersey_number = int(jersey_number)
+    except (TypeError, ValueError):
+        jersey_number = 1
+    jersey_number = max(1, min(99, jersey_number))
+    start_ovr = DIFFICULTY_INFO[difficulty]['start_ovr']
+    return CareerState(
+        player_name=clean_name, nationality=nationality, position=position,
+        bats=bats if bats in BATS_LABELS else 'R', pace=pace,
+        difficulty=difficulty, jersey_number=jersey_number, overall=start_ovr
+    )
 
 def generate_academy_offers(nationality):
     """Return 3 real-club academy offers from the player's home entry league."""
@@ -509,45 +588,63 @@ def resolve_event(state, option_id):
 
 
 def simulate_season(state):
+    """야구식 시즌 시뮬레이션. 난이도에 따라 성장/부상/성적 변동폭을 조절한다."""
     role_mult = ROLE_INFO.get(state.role, ROLE_INFO['rotation'])
-    growth_noise = random.randint(-6, 10)
-    growth = growth_noise * role_mult['growth_mult'] + (2 if state.age <= 24 else 0) - (2 if state.age >= 33 else 0)
+    diff = DIFFICULTY_INFO.get(state.difficulty, DIFFICULTY_INFO['pro'])
+
+    growth_noise = random.randint(-7, 8)
+    growth = growth_noise * role_mult['growth_mult'] + diff['growth_bonus']
+    growth += (2 if state.age <= 24 else 0) - (2 if state.age >= 33 else 0)
     state.overall = max(30, min(99, round(state.overall + growth / 3)))
     strength = state.overall
 
-    games_base = random.randint(95, 144)
-    games = max(5, round(games_base * role_mult['games_mult']))
-
     if state.position in ('SP', 'RP'):
-        wins = max(0, round(games * (0.02 + strength / 3200) + random.randint(-2, 5)))
-        saves = max(0, round((strength - 48) / 8) + random.randint(0, 8)) if state.position == 'RP' else 0
-        era = round(max(1.80, 6.0 - strength / 14 + random.uniform(-0.45, 0.45)), 2)
+        # 선발은 시즌 20~34경기, 불펜은 35~75경기 정도가 현실적인 범위
+        if state.position == 'SP':
+            games = max(8, round(random.randint(20, 34) * role_mult['games_mult']))
+            innings = max(35, round(games * random.uniform(4.2, 6.4)))
+            wins = max(0, round(games * (0.15 + strength / 900) + random.randint(-3, 3)))
+            saves = 0
+        else:
+            games = max(15, round(random.randint(38, 72) * role_mult['games_mult']))
+            innings = max(25, round(games * random.uniform(0.8, 1.8)))
+            wins = max(0, round(games * (0.07 + strength / 1700) + random.randint(-2, 3)))
+            saves = max(0, round((strength - 55) / 4 + random.randint(-3, 8))) if strength >= 65 else random.randint(0, 4)
+
+        era = round(max(1.80, min(6.80, 6.25 - strength / 13.0 + random.uniform(-0.55, 0.55))), 2)
+        so = max(15, round(innings * (5.0 + strength / 22) + random.randint(-12, 15)))
         state.career_wins += wins
         state.career_saves += saves
         state.career_era = round(((state.career_era * max(1, state.season - 1)) + era) / state.season, 2)
-        line = f'{games}경기 · {wins}승 · {saves}세이브 · 평균자책 {era}'
+        line = f'{games}경기 · {wins}승 · {saves}세이브 · ERA {era} · {so}탈삼진'
         primary, secondary = wins, saves
+        extra = {'era': era, 'so': so, 'innings': innings}
     else:
+        games = max(35, round(random.randint(100, 144) * role_mult['games_mult']))
+        pa = max(80, round(games * random.uniform(3.2, 4.5)))
         avg = max(.210, min(.390, .220 + strength / 900 + random.uniform(-.018, .018)))
-        hits = round(games * 3.4 * avg)
-        hr = max(0, round(games * (strength - 40) / 250 + random.randint(-3, 7)))
-        rbi = max(0, round(hr * 2.8 + hits * .18 + random.randint(-8, 12)))
+        hits = max(1, round(pa * avg))
+        hr = max(0, round(games * (strength - 42) / 260 + random.randint(-4, 6)))
+        rbi = max(0, round(hr * 2.5 + hits * .16 + random.randint(-8, 12)))
         state.career_hits += hits
         state.career_hr += hr
         state.career_rbi += rbi
-        line = f'{games}경기 · 타율 {avg:.3f} · {hr}홈런 · {rbi}타점'
+        ops = max(.480, min(1.200, .520 + strength / 210 + random.uniform(-.045, .045)))
+        line = f'{games}경기 · 타율 {avg:.3f} · {hr}홈런 · {rbi}타점 · OPS {ops:.3f}'
         primary, secondary = hr, rbi
+        extra = {'avg': avg, 'ops': ops, 'pa': pa}
 
     state.career_games += games
     team_obj = team(state.team_id) or {}
-    title_chance = (strength + state.fame + (10 if state.role == 'starter' else 0)) / 190
-    champion = random.random() < max(.06, min(.6, title_chance))
+
+    title_chance = (strength + state.fame + (10 if state.role == 'starter' else 0)) / 230
+    champion = random.random() < max(.04, min(.45, title_chance))
     if champion:
         state.titles += 1
         state.fame = min(100, state.fame + 8)
         line += ' · 팀 우승'
 
-    injury_risk = max(.03, .16 - state.stamina / 700 - state.overall / 2000)
+    injury_risk = max(.025, (.17 - state.stamina / 700 - state.overall / 2100) * diff['injury_mult'])
     injury = random.random() < injury_risk
     if injury:
         state.injuries += 1
@@ -561,10 +658,10 @@ def simulate_season(state):
 
     state.history.append({
         'season': state.season, 'year': state.year, 'age': state.age,
-        'team_id': state.team_id, 'team': team_obj.get('name', state.team_id), 'result': line,
+        'team_id': state.team_id, 'league_id': state.league_id, 'team': canonical_team_name(state.team_id, state.team_id), 'result': line,
         'decision': state.last_decision, 'rating': strength, 'games': games,
         'primary': primary, 'secondary': secondary, 'champion': champion,
-        'injury': injury, 'market_value': market_value(state),
+        'injury': injury, 'market_value': market_value(state), **extra,
     })
     return line
 

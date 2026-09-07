@@ -4,7 +4,7 @@ from career import (
     start_career, generate_event, resolve_event, simulate_season, advance_after_season,
     eligible_competitions, team, league, position_label, bats_label, country,
     POSITION_LABELS, BATS_LABELS, PACE_INFO, career_summary, market_value,
-    rating_tier, ROLE_INFO, team_badge, RETIREMENT_AGE, START_AGE,
+    rating_tier, ROLE_INFO, DIFFICULTY_INFO, team_badge, canonical_team_name, RETIREMENT_AGE, START_AGE,
 )
 
 career_bp = Blueprint('career', __name__, url_prefix='/career')
@@ -29,6 +29,8 @@ def career_new():
         position = request.form.get('position')
         bats = request.form.get('bats')
         pace = request.form.get('pace')
+        difficulty = request.form.get('difficulty', 'pro')
+        jersey_number = request.form.get('jersey_number', '1')
         valid_country = any(c.get('country_id') == nationality for c in COUNTRIES)
         if not (name or '').strip():
             return redirect(url_for('career.career_new', error='name'))
@@ -40,12 +42,18 @@ def career_new():
             return redirect(url_for('career.career_new', error='bats'))
         if pace not in PACE_INFO:
             return redirect(url_for('career.career_new', error='pace'))
-        state = new_state(name, nationality, position, bats, pace)
+        if difficulty not in DIFFICULTY_INFO:
+            return redirect(url_for('career.career_new', error='difficulty'))
+        try:
+            jersey_number = max(1, min(99, int(jersey_number)))
+        except (TypeError, ValueError):
+            return redirect(url_for('career.career_new', error='jersey'))
+        state = new_state(name, nationality, position, bats, pace, difficulty, jersey_number)
         save_state(state)
         session.pop('career_offers', None)
         return redirect(url_for('career.offers'))
     return render_template('career_new.html', countries=COUNTRIES, positions=POSITION_LABELS,
-                            bats_options=BATS_LABELS, pace_options=PACE_INFO, error=error)
+                            bats_options=BATS_LABELS, pace_options=PACE_INFO, difficulty_options=DIFFICULTY_INFO, error=error)
 
 
 @career_bp.get('/offers')
@@ -90,8 +98,9 @@ def offers_choose():
 def _timeline_rows(state):
     rows = [dict(r) for r in state.history]
     for i, r in enumerate(rows):
+        r['team'] = canonical_team_name(r.get('team_id'), r.get('team', '무소속'))
         r['badge'] = team_badge(r.get('team_id'), r.get('team'))
-        r['transferred_out'] = i + 1 < len(rows) and rows[i + 1].get('team') != r.get('team')
+        r['transferred_out'] = i + 1 < len(rows) and rows[i + 1].get('team_id') != r.get('team_id')
         r['tier'] = rating_tier(r.get('rating', 50))
     return rows
 
@@ -119,6 +128,7 @@ def dashboard():
         'career_dashboard.html',
         state=state,
         team=team(state.team_id),
+        team_badge=team_badge,
         league=league(state.league_id),
         country=country(state.nationality),
         position_label=position_label(state.position),
@@ -126,6 +136,7 @@ def dashboard():
         role_label=ROLE_INFO.get(state.role, {}).get('label', state.role),
         pace_label=PACE_INFO.get(state.pace, {}).get('label', state.pace),
         rating_tier=rating_tier(state.overall),
+        difficulty_label=DIFFICULTY_INFO.get(state.difficulty, DIFFICULTY_INFO['pro'])['label'],
         market_value=market_value(state),
         rows=rows,
         pending_age=pending_age,
