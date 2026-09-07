@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CAREER MODE</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='career.css', v='20260907-logo-fix') }}">
 </head>
 <body class="career-shell">
   <div class="career-bg"></div>
@@ -52,6 +52,7 @@
           {% endif %}
         </div>
         {% if state.titles %}<div class="trophy-row">{% for i in range(state.titles) %}🏆{% endfor %}</div>{% endif %}
+        {% if state.international_trophies %}<div class="trophy-row" title="국가대표 국제대회 우승">🌍 {{ state.international_trophies|length }}개 국제대회 우승</div>{% endif %}
         <div class="pcard-sub">{{ bats_label }} · {{ role_label }} · 난이도 {{ difficulty_label }}{% if state.captain %} · 주장{% endif %} · 국가대표 {{ state.international_caps }}회</div>
       </div>
 
@@ -127,6 +128,7 @@
       <div class="tl-national">
         <span>{{ country.name if country else state.nationality }} 국가대표</span>
         <b>{{ state.international_caps }}경기 · {{ state.international_titles }}회 우승</b>
+        {% if state.international_trophies %}<small>{% for t in state.international_trophies|groupby('competition_name') %}{{ t.grouper }} {{ t.list|length }}회{% if not loop.last %} · {% endif %}{% endfor %}</small>{% endif %}
       </div>
     </section>
   </main>

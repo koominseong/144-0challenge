@@ -74,7 +74,7 @@
       <label>DIFFICULTY
         <select name="difficulty" required>
           {% for key, info in difficulty_options.items() %}
-          <option value="{{ key }}" {% if key == 'pro' %}selected{% endif %}>{{ info.label }} — {{ info.desc }}</option>
+          <option value="{{ key }}" {% if key == 'rookie' %}selected{% endif %}>{{ info.label }} — {{ info.desc }}</option>
           {% endfor %}
         </select>
       </label>

@@ -8,6 +8,19 @@
     <h2>통산 기록</h2>
     <p>대표팀 참가 <b>{{ state.international_caps }}</b>회 · 국제대회 우승 <b>{{ state.international_titles }}</b>회</p>
   </div>
+  <div class="panel">
+    <h2>🏆 국제대회별 우승컵</h2>
+    {% if trophy_groups %}
+      {% for group in trophy_groups %}
+        <div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)">
+          <div style="display:flex;justify-content:space-between;gap:12px"><b>🌍 {{ group.name }}</b><strong>{{ group.count }}회</strong></div>
+          <div class="muted-line">{% for item in group.items %}🏆 {{ item.year }}{% if not loop.last %} · {% endif %}{% endfor %}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted-line">아직 국제대회 우승 기록이 없습니다.</p>
+    {% endif %}
+  </div>
   {% if competitions %}
   <div class="panel">
     <h2>참가 자격이 있는 대회</h2>

@@ -43,6 +43,9 @@
         <div><small>CLUB TITLES</small><b>{{ state.titles }}</b></div>
       </div>
       {% if state.international_titles > 0 %}<div class="trophy-row">{% for i in range(state.international_titles) %}🏆{% endfor %}</div>{% endif %}
+      {% if international_trophy_groups %}
+      <div class="muted-line" style="margin-top:10px">{% for group in international_trophy_groups %}{{ group.name }} {{ group.count }}회{% if not loop.last %} · {% endif %}{% endfor %}</div>
+      {% endif %}
     </div>
     <div class="panel awards-panel">
       <p class="eyebrow">INDIVIDUAL AWARDS</p>
