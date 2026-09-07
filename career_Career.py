@@ -516,13 +516,22 @@ class CareerPlayer:
     # 트로피
     # ==================================================
 
-    def add_trophy(self, trophy):
+    def add_trophy(self, trophy, league_id=None, league_name=None, team_name=None):
 
+        # 우승컵은 어느 리그에서 획득했는지 반드시 보존한다.
         self.trophies.append({
 
             "season": self.season,
 
-            "name": trophy
+            "name": trophy,
+
+            "league_id": league_id or self.league_id,
+
+            "league_name": league_name or (league_id or self.league_id),
+
+            "team_id": self.team_id,
+
+            "team_name": team_name or self.team_id
 
         })
 

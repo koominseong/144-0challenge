@@ -341,14 +341,26 @@ def simulate_season(
 
     if team_result == "champion":
 
+        # 현재 소속 리그를 기준으로 우승컵을 기록한다.
+        league_name = player.league_id
+        try:
+            from career import league as get_league
+            league_info = get_league(player.league_id) or {}
+            league_name = league_info.get("name", player.league_id)
+        except Exception:
+            pass
+
         player.add_trophy(
-            "League Championship"
+            "League Championship",
+            league_id=player.league_id,
+            league_name=league_name,
+            team_name=player.team_id
         )
 
         season_data[
             "awards"
         ].append(
-            "League Championship"
+            f"{league_name} 우승"
         )
 
     # --------------------------------

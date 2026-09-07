@@ -4,7 +4,7 @@ from career import (
     start_career, generate_event, resolve_event, simulate_season, advance_after_season,
     eligible_competitions, team, league, position_label, bats_label, country,
     POSITION_LABELS, BATS_LABELS, PACE_INFO, career_summary, market_value,
-    rating_tier, ROLE_INFO, DIFFICULTY_INFO, team_badge, canonical_team_name, RETIREMENT_AGE, START_AGE,
+    rating_tier, ROLE_INFO, DIFFICULTY_INFO, team_badge, canonical_team_name, RETIREMENT_AGE, START_AGE, international_trophy_groups,
 )
 
 career_bp = Blueprint('career', __name__, url_prefix='/career')
@@ -29,7 +29,7 @@ def career_new():
         position = request.form.get('position')
         bats = request.form.get('bats')
         pace = request.form.get('pace')
-        difficulty = request.form.get('difficulty', 'pro')
+        difficulty = request.form.get('difficulty', 'rookie')
         jersey_number = request.form.get('jersey_number', '1')
         valid_country = any(c.get('country_id') == nationality for c in COUNTRIES)
         if not (name or '').strip():
@@ -166,7 +166,7 @@ def international():
         return redirect(url_for('career.career_new'))
     eligible = eligible_competitions(state.nationality, state.age)
     return render_template('career_international.html', state=state, competitions=eligible,
-                            country=country(state.nationality))
+                            country=country(state.nationality), trophy_groups=international_trophy_groups(state))
 
 
 @career_bp.get('/history')
@@ -189,7 +189,7 @@ def retire():
     return render_template(
         'career_retire.html', state=state, summary=career_summary(state),
         country=country(state.nationality), position_label=position_label(state.position),
-        bats_label=bats_label(state.bats), team=team(state.team_id),
+        bats_label=bats_label(state.bats), team=team(state.team_id), international_trophy_groups=international_trophy_groups(state),
     )
 
 

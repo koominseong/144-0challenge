@@ -80,9 +80,9 @@ PROMOTION_PATH = {
 }
 
 DIFFICULTY_INFO = {
-    'rookie': {'label': '루키', 'desc': '성장과 출전이 비교적 쉽습니다.', 'start_ovr': 52, 'growth_bonus': 1.0, 'injury_mult': 0.80},
-    'pro': {'label': '프로', 'desc': '야구 커리어의 표준 난이도입니다.', 'start_ovr': 48, 'growth_bonus': 0.0, 'injury_mult': 1.00},
-    'legend': {'label': '레전드', 'desc': '성장 폭이 낮고 부상·부진 위험이 큽니다.', 'start_ovr': 45, 'growth_bonus': -1.0, 'injury_mult': 1.25},
+    'rookie': {'label': '루키', 'desc': '성장과 출전이 매우 쉽습니다.', 'start_ovr': 60, 'growth_bonus': 2.5, 'injury_mult': 0.55},
+    'pro': {'label': '프로', 'desc': '부담은 있지만 성장 기회가 충분합니다.', 'start_ovr': 56, 'growth_bonus': 1.0, 'injury_mult': 0.75},
+    'legend': {'label': '레전드', 'desc': '도전적인 난이도지만 이전보다 완화되었습니다.', 'start_ovr': 52, 'growth_bonus': 0.25, 'injury_mult': 1.00},
 }
 
 PACE_INFO = {
@@ -119,11 +119,11 @@ class CareerState:
     jersey_number: int = 1          # 고정 등번호
 
     overall: int = 48               # long-term skill level (grows/declines)
-    stamina: int = 85               # short-term condition, drives injury risk
+    stamina: int = 95               # short-term condition, drives injury risk
     fame: int = 0
     loyalty: int = 60
     money: int = 0
-    role: str = 'bench'             # starter | rotation | bench
+    role: str = 'rotation'          # starter | rotation | bench
     transfers_count: int = 0
     captain: bool = False
     injury_active: bool = False
@@ -133,6 +133,7 @@ class CareerState:
     titles: int = 0
     international_caps: int = 0
     international_titles: int = 0
+    international_trophies: list = None  # tournament-specific national-team titles
     career_games: int = 0
     career_hits: int = 0
     career_hr: int = 0
@@ -151,6 +152,8 @@ class CareerState:
     def __post_init__(self):
         if self.history is None:
             self.history = []
+        if self.international_trophies is None:
+            self.international_trophies = []
 
 
 def _normalize_state(raw):
@@ -170,6 +173,8 @@ def _normalize_state(raw):
             r['team'] = TEAM_REGISTRY[rid].get('name', r.get('team', rid))
         history.append(r)
     data['history'] = history
+    # Older saves only have the total count; keep them compatible.
+    data.setdefault('international_trophies', [])
     return data
 
 
@@ -280,6 +285,24 @@ def market_value(state):
     value = base * max(0.25, age_factor) * (1 + state.fame / 220)
     return max(50000, round(value))
 
+def international_trophy_groups(state):
+    """Group national-team trophies by the actual international tournament."""
+    order = []
+    groups = {}
+    for t in (state.international_trophies or []):
+        if isinstance(t, str):
+            cid, cname, year = 'LEGACY', t, '-'
+        else:
+            cid = t.get('competition_id', 'INTL')
+            cname = t.get('competition_name', t.get('name', '국제대회'))
+            year = t.get('year', '-')
+        if cid not in groups:
+            groups[cid] = {'competition_id': cid, 'name': cname, 'count': 0, 'items': []}
+            order.append(cid)
+        groups[cid]['count'] += 1
+        groups[cid]['items'].append({'name': cname, 'year': year})
+    return [groups[cid] for cid in order]
+
 def career_score(state):
     return round(
         state.career_games * 2 + state.career_hr * 8 + state.career_rbi * 3 +
@@ -325,14 +348,96 @@ def country(country_id):
 def teams_in_league(league_id):
     return [t for t in TEAMS if t.get('league_id') == league_id]
 
-def eligible_competitions(nationality, age):
+def eligible_competitions(nationality, age, year=None):
+    """Return national-team competitions that make sense for this season.
+
+    National-team duty is intentionally sparse: senior competitions only appear
+    in their rough real-world cycles, while U18/U23 are limited by age.
+    """
+    year = year or 2026
     out = []
     for c in COMPETITIONS:
+        name = str(c.get('name', '')).lower()
         min_age = c.get('min_age', 0)
         max_age = c.get('max_age', 99)
-        if min_age <= age <= max_age:
-            out.append(c)
+        if not (min_age <= age <= max_age):
+            if 'u-23' in name or 'u23' in name:
+                if age > 23:
+                    continue
+            elif 'u-18' in name or 'u18' in name:
+                if age > 18:
+                    continue
+            else:
+                continue
+
+        # Keep national duty from becoming an annual event.
+        if 'world baseball classic' in name:
+            if (year - 2026) % 3 != 0:
+                continue
+        elif 'premier12' in name:
+            if (year - 2027) % 4 != 0:
+                continue
+        elif 'olympic' in name:
+            if (year - 2028) % 4 != 0:
+                continue
+        elif 'asian games' in name:
+            if (year - 2026) % 4 != 0:
+                continue
+        elif 'u-23' in name or 'u23' in name:
+            if age > 23 or year % 2 == 0:
+                continue
+        elif 'u-18' in name or 'u18' in name:
+            if age > 18:
+                continue
+
+        out.append(c)
     return out
+
+
+def _national_selection_probability(state):
+    """Small automatic selection chance driven mainly by OVR."""
+    if state.age < 18 or state.overall < 65:
+        return 0.0
+    # OVR is the main selector; fame is only a light tie-breaker.
+    chance = 0.025 + max(0, state.overall - 65) * 0.007
+    chance += min(0.035, state.fame * 0.00035)
+    if state.overall >= 85:
+        chance += 0.025
+    return min(0.24, chance)
+
+
+def _maybe_national_team_selection(state):
+    """Rare, mostly automatic national-team call-up.
+
+    This runs once per simulated season and selects at most one competition.
+    The player does not choose in the normal case; the game simply decides
+    whether the player made the roster based on ability.
+    """
+    if state.retired:
+        return False
+    competitions = eligible_competitions(state.nationality, state.age, state.year)
+    if not competitions:
+        return False
+    chance = _national_selection_probability(state)
+    if random.random() >= chance:
+        return False
+
+    competition = random.choice(competitions)
+    state.international_caps += 1
+    if random.random() < (0.08 + max(0, state.overall - 70) * 0.004):
+        state.international_titles += 1
+        state.international_trophies.append({
+            'competition_id': competition.get('competition_id', 'INTL'),
+            'competition_name': competition.get('name', '국제대회'),
+            'year': state.year,
+            'age': state.age,
+        })
+        state.last_event = f'{competition.get("name", "국제대회")}에서 대표팀 우승을 경험했다!'
+    else:
+        state.last_event = f'{competition.get("name", "국제대회")} 대표팀에 자동 차출됐다.'
+    state.fame = min(100, state.fame + 4)
+    state.stamina = max(20, state.stamina - 4)
+    return True
 
 def flavor(category):
     bank = None
@@ -384,7 +489,7 @@ def generate_academy_offers(nationality):
 def start_career(state, team_id, league_id):
     state.team_id = team_id
     state.league_id = league_id
-    state.role = 'bench'
+    state.role = 'rotation'
     t = team(team_id)
     state.last_event = f"{t.get('name', team_id) if t else team_id}과(와) 유스 계약을 맺었다."
     return state
@@ -395,20 +500,101 @@ def start_career(state, team_id, league_id):
 # ---------------------------------------------------------------------------
 
 def _offer_candidates(state, count=2):
+    """Generate believable transfer destinations across the whole baseball world.
+
+    The old version mostly followed a domestic ladder, which made KBO/NPB/MLB
+    and other leagues feel disconnected.  Transfers now consider same-level
+    moves, a one-tier step up/down, domestic farm ladders, and realistic
+    overseas jumps based on OVR.
+    """
     cur_tier = LEAGUE_TIER.get(state.league_id, 1)
-    ladder = PROMOTION_PATH.get(state.nationality)
+    ladder = PROMOTION_PATH.get(state.nationality, [])
     pool = []
-    if ladder and state.league_id in ladder:
+
+    # 1) Same league: the most common move.
+    pool.extend(teams_in_league(state.league_id))
+
+    # 2) Domestic promotion/relegation path.
+    if state.league_id in ladder:
         idx = ladder.index(state.league_id)
-        if idx + 1 < len(ladder):
-            pool += teams_in_league(ladder[idx + 1])
-        pool += teams_in_league(state.league_id)
-    else:
-        pool += [t for t in TEAMS if abs(LEAGUE_TIER.get(t.get('league_id'), cur_tier) - cur_tier) <= 1]
-    pool = [t for t in pool if t.get('team_id') != state.team_id]
+        for j in (idx - 1, idx + 1):
+            if 0 <= j < len(ladder):
+                pool.extend(teams_in_league(ladder[j]))
+
+    # 3) Nearby leagues anywhere in the world.
+    for t in TEAMS:
+        tid = t.get('team_id')
+        if tid == state.team_id:
+            continue
+        tier = LEAGUE_TIER.get(t.get('league_id'), cur_tier)
+        if abs(tier - cur_tier) <= 1:
+            pool.append(t)
+
+    # 4) Strong players can jump directly to elite overseas leagues.
+    #    This is intentionally permissive so KBO <-> NPB <-> MLB does not feel
+    #    like three isolated games.
+    ovr = state.overall
+    elite_targets = {'MLB': 78, 'NPB': 68, 'KBO': 68}
+    for t in TEAMS:
+        lid = t.get('league_id')
+        if lid in elite_targets and ovr >= elite_targets[lid]:
+            pool.append(t)
+
+    # Remove duplicates while preserving the useful candidate order.
+    unique = {}
+    for t in pool:
+        tid = t.get('team_id')
+        if tid and tid != state.team_id:
+            unique[tid] = t
+    pool = list(unique.values())
+
     if not pool:
         pool = [t for t in TEAMS if t.get('team_id') != state.team_id]
-    return random.sample(pool, min(count, len(pool)))
+
+    # Score destinations so the offer set normally contains a mix of
+    # same-level, upward and safe/downward options rather than three random
+    # teams from one country.
+    def _score(t):
+        tier = LEAGUE_TIER.get(t.get('league_id'), cur_tier)
+        score = random.random() * 5
+        if tier == cur_tier:
+            score += 16
+        elif tier == cur_tier + 1:
+            score += 14 if ovr >= 72 else 5
+        elif tier == cur_tier - 1:
+            score += 10
+        else:
+            score -= abs(tier - cur_tier) * 3
+        if t.get('league_id') in ('MLB', 'NPB', 'KBO') and ovr >= 68:
+            score += 8
+        return score
+
+    pool.sort(key=_score, reverse=True)
+    top = pool[:min(12, len(pool))]
+
+    # Prefer variety when possible: one same-level/safe option, one challenge,
+    # then a third overseas option.
+    buckets = {
+        'same': [t for t in top if LEAGUE_TIER.get(t.get('league_id'), cur_tier) == cur_tier],
+        'up': [t for t in top if LEAGUE_TIER.get(t.get('league_id'), cur_tier) > cur_tier],
+        'down': [t for t in top if LEAGUE_TIER.get(t.get('league_id'), cur_tier) < cur_tier],
+        'overseas': [t for t in top if (league(t.get('league_id')) or {}).get('country') != state.nationality],
+    }
+
+    chosen, used = [], set()
+    for key in ('same', 'up', 'overseas', 'down'):
+        candidates = [x for x in buckets[key] if x.get('team_id') not in used]
+        if candidates and len(chosen) < count:
+            pick = random.choice(candidates)
+            chosen.append(pick)
+            used.add(pick.get('team_id'))
+
+    if len(chosen) < count:
+        rest = [x for x in top if x.get('team_id') not in used]
+        random.shuffle(rest)
+        chosen.extend(rest[:count-len(chosen)])
+
+    return chosen[:count]
 
 
 def _club_option(t, tier_now):
@@ -440,7 +626,7 @@ def generate_event(state):
             ],
         }
 
-    if not state.high_school_done and 17 <= state.age <= 19 and random.random() < 0.35:
+    if not state.high_school_done and 17 <= state.age <= 19 and random.random() < 0.22:
         state.high_school_done = True
         return {
             'type': 'high_school', 'title': '학업과 커리어 사이', 'desc': flavor('focus') if False else
@@ -453,7 +639,7 @@ def generate_event(state):
             ],
         }
 
-    if not state.captain and state.loyalty >= 65 and state.season >= 3 and random.random() < 0.25:
+    if not state.captain and state.loyalty >= 65 and state.season >= 3 and random.random() < 0.18:
         return {
             'type': 'captain', 'title': '주장 완장 제안', 'desc': flavor('captain'),
             'options': [
@@ -464,18 +650,26 @@ def generate_event(state):
             ],
         }
 
-    if eligible_competitions(state.nationality, state.age) and state.season >= 2 and random.random() < 0.3:
+    # National-team duty is normally automatic.  A user-choice call-up is
+    # intentionally rare and only appears when the player is genuinely good
+    # enough to be in the conversation.
+    if (state.overall >= 72 and state.age >= 19 and
+            eligible_competitions(state.nationality, state.age, state.year) and
+            random.random() < 0.035):
+        competition = random.choice(eligible_competitions(state.nationality, state.age, state.year))
         return {
-            'type': 'national_call', 'title': '국가대표 소집', 'desc': flavor('national_call'),
+            'type': 'national_call', 'title': '국가대표 합류 여부', 'desc':
+                f'{competition.get("name", "국제대회")} 대표팀 선발 경쟁에 이름을 올렸다. 이번에는 직접 결정할 수 있다.',
+            'competition': competition,
             'options': [
                 {'id': 'accept', 'kind': 'plain', 'icon': '🌍', 'label': '국가대표 합류',
-                 'detail': '대표팀 경력/명성 상승 · 체력 소모, 클럽 내 입지에는 부담'},
+                 'detail': '대표팀 경력/명성 상승 · 체력 소모'},
                 {'id': 'decline', 'kind': 'plain', 'icon': '🏟️', 'label': '클럽에 집중',
-                 'detail': '클럽 우승 기회와 충성도를 지키지만 대표 경력은 미룹니다.'},
+                 'detail': '이번 소집을 고사하고 클럽 시즌에 집중합니다.'},
             ],
         }
 
-    if state.fame >= 40 and state.age >= 23 and random.random() < 0.2:
+    if state.fame >= 40 and state.age >= 23 and random.random() < 0.12:
         alt = _offer_candidates(state, 1)
         alt_t = alt[0] if alt else None
         cur = team(state.team_id) or {}
@@ -548,7 +742,14 @@ def resolve_event(state, option_id):
             state.loyalty = max(10, state.loyalty - 3)
             if random.random() < 0.18:
                 state.international_titles += 1
-                state.last_event = '국가대표팀 우승을 경험했다!'
+                competition = ev.get('competition') or {}
+                state.international_trophies.append({
+                    'competition_id': competition.get('competition_id', 'INTL'),
+                    'competition_name': competition.get('name', '국제대회'),
+                    'year': state.year,
+                    'age': state.age,
+                })
+                state.last_event = f'{competition.get("name", "국제대회")} 우승을 경험했다!'
         else:
             state.loyalty = min(100, state.loyalty + 5)
 
@@ -592,10 +793,25 @@ def simulate_season(state):
     role_mult = ROLE_INFO.get(state.role, ROLE_INFO['rotation'])
     diff = DIFFICULTY_INFO.get(state.difficulty, DIFFICULTY_INFO['pro'])
 
-    growth_noise = random.randint(-7, 8)
-    growth = growth_noise * role_mult['growth_mult'] + diff['growth_bonus']
-    growth += (2 if state.age <= 24 else 0) - (2 if state.age >= 33 else 0)
-    state.overall = max(30, min(99, round(state.overall + growth / 3)))
+    # Copero-style early development: young players should visibly improve
+    # every season.  On the default Pro difficulty the early-career average is
+    # about +5 OVR per season, instead of the old +0~2 that made growth feel
+    # almost frozen.  Difficulty itself is unchanged; it only modifies this
+    # baseline through the existing growth_bonus values.
+    if state.age <= 22:
+        base_growth = random.randint(3, 6)       # avg 4.5
+    elif state.age <= 27:
+        base_growth = random.randint(2, 5)       # avg 3.5
+    elif state.age <= 31:
+        base_growth = random.randint(0, 3)       # avg 1.5
+    elif state.age <= 35:
+        base_growth = random.randint(-1, 2)      # avg 0.5
+    else:
+        base_growth = random.randint(-4, 0)      # decline
+
+    growth = base_growth + diff['growth_bonus']
+    growth *= role_mult['growth_mult']
+    state.overall = max(30, min(99, round(state.overall + growth)))
     strength = state.overall
 
     if state.position in ('SP', 'RP'):
@@ -637,14 +853,14 @@ def simulate_season(state):
     state.career_games += games
     team_obj = team(state.team_id) or {}
 
-    title_chance = (strength + state.fame + (10 if state.role == 'starter' else 0)) / 230
-    champion = random.random() < max(.04, min(.45, title_chance))
+    title_chance = (strength + state.fame + (10 if state.role == 'starter' else 5 if state.role == 'rotation' else 0)) / 220
+    champion = random.random() < max(.08, min(.60, title_chance))
     if champion:
         state.titles += 1
         state.fame = min(100, state.fame + 8)
         line += ' · 팀 우승'
 
-    injury_risk = max(.025, (.17 - state.stamina / 700 - state.overall / 2100) * diff['injury_mult'])
+    injury_risk = max(.012, (.11 - state.stamina / 850 - state.overall / 2600) * diff['injury_mult'])
     injury = random.random() < injury_risk
     if injury:
         state.injuries += 1
@@ -652,8 +868,14 @@ def simulate_season(state):
         state.stamina = max(15, state.stamina - 15)
         line += ' · 시즌 중 부상'
 
-    state.stamina = max(15, min(100, state.stamina - random.randint(3, 10)))
+    state.stamina = max(25, min(100, state.stamina - random.randint(2, 7)))
     state.money += max(1000, 1500 + state.fame * 120)
+
+    # National-team selection is primarily automatic and rare.  It happens
+    # independently of the regular decision event, so quiet seasons can still
+    # produce an occasional call-up without turning every season into a choice.
+    _maybe_national_team_selection(state)
+
     state.last_result = line
 
     state.history.append({
