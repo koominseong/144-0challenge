@@ -15,154 +15,154 @@
   },
   {
     "league_id": "KR_IND",
-    "name": "경기권 독립야구 9팀",
+    "name": "한국 독립야구",
     "country": "KR",
     "level": "IND",
     "team_count": 9
   },
   {
     "league_id": "NPB",
-    "name": "NPB",
+    "name": "NPB 일본프로야구",
     "country": "JP",
     "level": "1",
     "team_count": 12
   },
   {
     "league_id": "NPB_FARM",
-    "name": "NPB 2군",
+    "name": "NPB 팜리그(2군)",
     "country": "JP",
     "level": "2",
     "team_count": 12
   },
   {
     "league_id": "MLB",
-    "name": "MLB",
+    "name": "MLB 메이저리그",
     "country": "US",
     "level": "1",
     "team_count": 30
   },
   {
     "league_id": "AAA",
-    "name": "MLB AAA Affiliate",
+    "name": "MiLB 트리플A",
     "country": "US",
     "level": "AAA",
     "team_count": 30
   },
   {
     "league_id": "AA",
-    "name": "MLB AA Affiliate",
+    "name": "MiLB 더블A",
     "country": "US",
     "level": "AA",
     "team_count": 30
   },
   {
     "league_id": "A",
-    "name": "MLB A Affiliate",
+    "name": "MiLB 싱글A",
     "country": "US",
     "level": "A",
     "team_count": 30
   },
   {
     "league_id": "RK",
-    "name": "MLB Rk Affiliate",
+    "name": "MiLB 하이A",
     "country": "US",
     "level": "Rk",
     "team_count": 30
   },
   {
     "league_id": "CBL",
-    "name": "China Professional Baseball (Game League)",
+    "name": "중국 프로야구",
     "country": "CN",
     "level": "1",
     "team_count": 10
   },
   {
     "league_id": "LMB",
-    "name": "Liga Mexicana de Béisbol",
+    "name": "멕시코 리그",
     "country": "MX",
     "level": "1",
     "team_count": 20
   },
   {
     "league_id": "CPBL",
-    "name": "CPBL",
+    "name": "CPBL 대만프로야구",
     "country": "TW",
     "level": "1",
     "team_count": 6
   },
   {
     "league_id": "LIDOM",
-    "name": "Dominican Winter League",
+    "name": "도미니카 윈터리그",
     "country": "DO",
     "level": "1",
     "team_count": 6
   },
   {
     "league_id": "LVBP",
-    "name": "Venezuelan Professional Baseball League",
+    "name": "베네수엘라 프로야구",
     "country": "VE",
     "level": "1",
     "team_count": 8
   },
   {
     "league_id": "LBPRC",
-    "name": "Puerto Rico Winter League",
+    "name": "푸에르토리코 윈터리그",
     "country": "PR",
     "level": "1",
     "team_count": 5
   },
   {
     "league_id": "ABL",
-    "name": "Australian Baseball League",
+    "name": "호주 프로야구",
     "country": "AU",
     "level": "1",
     "team_count": 6
   },
   {
     "league_id": "HFD",
-    "name": "Netherlands Hoofdklasse",
+    "name": "네덜란드 호프드클라세",
     "country": "NL",
     "level": "1",
     "team_count": 8
   },
   {
     "league_id": "NIC",
-    "name": "Nicaragua Professional Baseball",
+    "name": "니카라과 프로야구",
     "country": "NI",
     "level": "1",
     "team_count": 5
   },
   {
     "league_id": "COL",
-    "name": "Colombia Professional Baseball",
+    "name": "콜롬비아 프로야구",
     "country": "CO",
     "level": "1",
     "team_count": 4
   },
   {
     "league_id": "PAN",
-    "name": "Panama Professional Baseball",
+    "name": "파나마 프로야구",
     "country": "PA",
     "level": "1",
     "team_count": 4
   },
   {
     "league_id": "ITA",
-    "name": "Italy Baseball Serie A",
+    "name": "이탈리아 베이스볼 세리에A",
     "country": "IT",
     "level": "1",
     "team_count": 8
   },
   {
     "league_id": "CZE",
-    "name": "Czech Baseball Extraliga",
+    "name": "체코 엑스트라리가",
     "country": "CZ",
     "level": "1",
     "team_count": 8
   },
   {
     "league_id": "CUB",
-    "name": "Cuba Serie Nacional",
+    "name": "쿠바 세리에 나시오날",
     "country": "CU",
     "level": "1",
     "team_count": 16

@@ -9,5 +9,12 @@
   ],
   "ovr_system_included": false,
   "total_teams": 319,
-  "league_count": 24
+  "league_count": 24,
+  "difficulty_system": {
+    "rookie": "성장 보정 +1, 부상 위험 20% 감소, 시작 OVR 52",
+    "pro": "표준 밸런스, 시작 OVR 48",
+    "legend": "성장 보정 -1, 부상 위험 25% 증가, 시작 OVR 45"
+  },
+  "fixed_jersey_number": true,
+  "kbo_logo_format": "JPG"
 }
