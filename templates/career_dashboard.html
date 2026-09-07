@@ -29,7 +29,8 @@
           <div class="pcard-id">
             <div class="pcard-tags">
               <span class="flag-chip">{{ country.name if country else state.nationality }}</span>
-              <span class="num-chip">#{{ state.season }}</span>
+              {% if team and team_badge(team.team_id, team.name).logo %}<span class="logo-chip"><img src="{{ url_for('static', filename='team_logos/' ~ team_badge(team.team_id, team.name).logo) }}" alt="{{ team.name }}"></span>{% endif %}
+              <span class="num-chip">#{{ state.jersey_number }}</span>
               <span class="pos-chip">{{ position_label }}</span>
             </div>
             <h1>{{ team.name if team else '무소속' }}</h1>
@@ -40,12 +41,18 @@
           </div>
         </div>
         <div class="pcard-stats">
-          <div><small>{{ 'GAMES' if state.position in ('SP','RP') else 'APPS' }}</small><b>{{ state.career_games }}</b></div>
-          <div><small>{{ 'WINS' if state.position in ('SP','RP') else 'GOALS' }}</small><b>{{ state.career_wins if state.position in ('SP','RP') else state.career_hr }}</b></div>
-          <div><small>{{ 'SAVES' if state.position in ('SP','RP') else 'AST' }}</small><b>{{ state.career_saves if state.position in ('SP','RP') else state.career_rbi }}</b></div>
+          {% if state.position in ('SP','RP') %}
+          <div><small>GAMES</small><b>{{ state.career_games }}</b></div>
+          <div><small>WINS</small><b>{{ state.career_wins }}</b></div>
+          <div><small>SAVES</small><b>{{ state.career_saves }}</b></div>
+          {% else %}
+          <div><small>GAMES</small><b>{{ state.career_games }}</b></div>
+          <div><small>HR</small><b>{{ state.career_hr }}</b></div>
+          <div><small>RBI</small><b>{{ state.career_rbi }}</b></div>
+          {% endif %}
         </div>
         {% if state.titles %}<div class="trophy-row">{% for i in range(state.titles) %}🏆{% endfor %}</div>{% endif %}
-        <div class="pcard-sub">{{ bats_label }} · {{ role_label }}{% if state.captain %} · 주장{% endif %} · 국가대표 {{ state.international_caps }}회</div>
+        <div class="pcard-sub">{{ bats_label }} · {{ role_label }} · 난이도 {{ difficulty_label }}{% if state.captain %} · 주장{% endif %} · 국가대표 {{ state.international_caps }}회</div>
       </div>
 
       <div class="decision-panel glass" id="season-decision">
@@ -59,7 +66,7 @@
               <button class="option-card club-option {{ 'is-stay' if opt.get('stay') else '' }}" type="submit" name="option_id" value="{{ opt.id }}">
                 <span class="oc-label">{{ '잔류' if opt.get('stay') else '이적 제안' }}</span>
                 <b>{{ opt.name }}</b>
-                <span class="team-badge" style="background:{{ opt.badge.color }}">{{ opt.badge.text }}</span>
+                <span class="team-badge" style="background:{{ opt.badge.color }}">{% if opt.badge.logo %}<img src="{{ url_for('static', filename='team_logos/' ~ opt.badge.logo) }}" alt="">{% else %}{{ opt.badge.text }}{% endif %}</span>
                 <small>{{ opt.league_name }}</small>
                 <em>{{ opt.detail }}</em>
               </button>
@@ -83,15 +90,15 @@
     <section class="dboard-right glass">
       <div class="tl-head">
         <span>AGE</span><span>CLUB</span><span>OVR</span>
-        <span>{{ 'W-SV' if state.position in ('SP','RP') else 'GOALS' }}</span>
-        <span>{{ 'GAMES' if state.position in ('SP','RP') else 'AST' }}</span>
+        <span>{{ 'W-SV' if state.position in ('SP','RP') else 'HR' }}</span>
+        <span>{{ 'ERA' if state.position in ('SP','RP') else 'RBI' }}</span>
       </div>
       <div class="tl-body">
         {% for r in rows %}
         <div class="tl-row">
           <span class="tl-age">{{ r.age }}</span>
           <span class="tl-club">
-            <span class="team-badge sm" style="background:{{ r.badge.color }}">{{ r.badge.text }}</span>
+            <span class="team-badge sm" style="background:{{ r.badge.color }}">{% if r.badge.logo %}<img src="{{ url_for('static', filename='team_logos/' ~ r.badge.logo) }}" alt="">{% else %}{{ r.badge.text }}{% endif %}</span>
             {{ r.team }}
             {% if r.champion %}<span class="tl-icon" title="우승">🏆</span>{% endif %}
             {% if r.transferred_out %}<span class="tl-icon tl-out" title="이적">↓</span>{% endif %}

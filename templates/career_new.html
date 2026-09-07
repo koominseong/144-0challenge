@@ -26,6 +26,8 @@
       {% elif error == 'position' %}포지션을 선택해 주세요.
       {% elif error == 'bats' %}타석을 선택해 주세요.
       {% elif error == 'pace' %}진행 속도를 선택해 주세요.
+      {% elif error == 'difficulty' %}난이도를 선택해 주세요.
+      {% elif error == 'jersey' %}등번호를 1~99 사이로 입력해 주세요.
       {% else %}입력값을 다시 확인해 주세요.{% endif %}
     </div>
     {% endif %}
@@ -64,6 +66,20 @@
         </optgroup>
       </select>
     </label>
+    <div class="two">
+      <label>JERSEY NUMBER
+        <input name="jersey_number" type="number" min="1" max="99" value="1" required>
+        <small>커리어 내내 고정되는 등번호입니다.</small>
+      </label>
+      <label>DIFFICULTY
+        <select name="difficulty" required>
+          {% for key, info in difficulty_options.items() %}
+          <option value="{{ key }}" {% if key == 'pro' %}selected{% endif %}>{{ info.label }} — {{ info.desc }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
     <label>진행 속도
       <div class="pace-grid">
         {% for key, info in pace_options.items() %}

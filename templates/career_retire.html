@@ -16,7 +16,7 @@
   <div class="summary-top glass">
     <div class="summary-id">
       <p class="eyebrow">CAREER COMPLETE</p>
-      <h1>{{ state.player_name }}</h1>
+      <h1>{{ state.player_name }} <span class="badge">#{{ state.jersey_number }}</span></h1>
       <div class="chips"><span>{{ position_label }}</span><span>{{ country.name if country else state.nationality }}</span><span>{{ bats_label }}</span></div>
       <div class="summary-stats">
         {% for label, value in summary.stat_labels %}
