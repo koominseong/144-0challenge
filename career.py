@@ -413,7 +413,8 @@ def _maybe_national_team_selection(state):
     The player does not choose in the normal case; the game simply decides
     whether the player made the roster based on ability.
     """
-    if state.retired:
+    # CareerState uses `status` rather than the legacy `retired` attribute.
+    if getattr(state, 'status', 'active') == 'retired':
         return False
     competitions = eligible_competitions(state.nationality, state.age, state.year)
     if not competitions:
