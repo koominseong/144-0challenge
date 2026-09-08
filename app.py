@@ -3,7 +3,6 @@ import os
 import json
 import random
 from datetime import datetime
-from supabase import create_client
 from dynasty import dynasty_bp
 from dynasty_trade_routes import trade_bp
 import os, glob
@@ -25,16 +24,13 @@ from auction_routes import auction
 from career_routes import career_bp
 from global_account import account_bp
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-supabase = create_client(
-    SUPABASE_URL,
-    SUPABASE_KEY
-)
+# Supabase is initialized lazily by dynasty_utils.get_supabase().
+# Do not connect to Supabase while importing app.py: a temporary/missing
+# environment variable must not make the entire site render as a blank page.
+supabase = None
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = os.getenv("SECRET_KEY") or "1440challenge-dev-secret-change-in-production"
 app.register_blueprint(dynasty_bp)
 app.register_blueprint(trade_bp)
 app.register_blueprint(fa_bp)
@@ -52,9 +48,6 @@ app.register_blueprint(draft_bp)
 app.register_blueprint(auction)
 app.register_blueprint(career_bp)
 app.register_blueprint(account_bp)
-
-if not app.secret_key:
-    raise Exception("SECRET_KEY missing")
 
 @app.before_request
 def _global_account_gate():
