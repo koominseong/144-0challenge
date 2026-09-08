@@ -43,16 +43,7 @@ body{
     font-size:18px;
 }
 
-.ranking-box{
-
-    max-width:1400px;
-    margin:auto;
-
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:25px;
-
-}
+.ranking-box{max-width:1400px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:25px}
 
 .panel{
 
@@ -438,6 +429,14 @@ KBO 144-0 Challenge 역대 랭킹
 
 </div>
 
+
+<div class="panel career-hall-panel">
+<h2>⚾ Career 명예의 전당</h2>
+{% if career_records %}
+<table><tr><th>순위</th><th>선수</th><th>PEAK</th><th>SCORE</th></tr>
+{% for r in career_records %}<tr class="{% if loop.index==1 %}rank1{% endif %}{% if loop.index==2 %} rank2{% endif %}{% if loop.index==3 %} rank3{% endif %}"><td>{% if loop.index==1 %}🥇{% elif loop.index==2 %}🥈{% elif loop.index==3 %}🥉{% else %}#{{ loop.index }}{% endif %}</td><td><b>{{ r.player_name }}</b><br><small>{{ r.position }}</small></td><td>{{ r.peak_ovr }}</td><td><b>{{ r.career_score }}</b></td></tr>{% endfor %}</table>
+{% else %}<div class="empty">아직 Career 명예의 전당 기록이 없습니다.</div>{% endif %}
+</div>
 </div>
 
 <div class="btn-wrap">

@@ -269,6 +269,8 @@ h1{
 
 <div class="container">
 
+{% if session.get("account_id") %}<div style="text-align:right;margin-bottom:20px"><a href="/account/mypage" style="color:#93c5fd;font-weight:800">👤 {{ session.get("account_username") }} · 마이페이지</a></div>{% endif %}
+
 
 <h1>
     144-0 Challenge
