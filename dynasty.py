@@ -741,6 +741,21 @@ def dynasty_season_end(save_id):
         i + 1 for i, t in enumerate(standings) if t["id"] == user_team["id"]
     )
 
+    # 통합 계정 업적: Dynasty도 Career 계정에 기록
+    try:
+        from unified_achievements import unlock_mode_achievements
+        from career_storage import save_game_record
+        aid = session.get("account_id")
+        is_champion = bool(ks_id and ks_id == user_team["id"])
+        unlock_mode_achievements(aid, "dynasty", {
+            "season": save.get("season", 0),
+            "rank": user_rank,
+            "champion": is_champion,
+        })
+        save_game_record(aid, "dynasty", f'{save.get("season", 0)}시즌 · {user_rank}위' + (" · 우승" if is_champion else ""), 1 if is_champion else 0, user_team.get("team_name"))
+    except Exception as ex:
+        print(f"[dynasty] 계정 업적 저장 skip: {ex}")
+
     return render_template(
         "dynasty_end.html",
         save=save,

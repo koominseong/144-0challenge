@@ -23,6 +23,7 @@ from gauntlet_routes import gauntlet_bp
 from draft_routes import draft_bp
 from auction_routes import auction
 from career_routes import career_bp
+from global_account import account_bp
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -50,9 +51,22 @@ app.register_blueprint(gauntlet_bp)
 app.register_blueprint(draft_bp)
 app.register_blueprint(auction)
 app.register_blueprint(career_bp)
+app.register_blueprint(account_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
+
+@app.before_request
+def _global_account_gate():
+    # One account identity is shared by Career and the other game modes.
+    # Static files and authentication pages remain public.
+    if request.path.startswith('/static/') or request.path.startswith('/account/'):
+        return None
+    if request.path in ('/favicon.ico',):
+        return None
+    if not session.get('account_id'):
+        return redirect('/account/login?next=' + request.path)
+    return None
 
 BEIJING_2008 = {
     "오승환",
@@ -320,7 +334,14 @@ def start():
     if era not in ALLOWED_ERAS:
         return redirect("/")
 
+    _account_id = session.get("account_id")
+    _account_username = session.get("account_username")
     session.clear()
+    if _account_id:
+        session["account_id"] = _account_id
+        session["account_username"] = _account_username
+        session["career_account_id"] = _account_id
+        session["career_username"] = _account_username
 
     session["allow_next"] = True
 
@@ -381,7 +402,14 @@ def classic_start():
 
     era = "all_time"
 
+    _account_id = session.get("account_id")
+    _account_username = session.get("account_username")
     session.clear()
+    if _account_id:
+        session["account_id"] = _account_id
+        session["account_username"] = _account_username
+        session["career_account_id"] = _account_id
+        session["career_username"] = _account_username
 
     session["allow_next"] = True
     
@@ -2050,13 +2078,26 @@ def result_loading():
     )
 
 def save_record(name, wins, losses, grade):
-    supabase.table("records").insert({
-        "name": name,
-        "wins": wins,
-        "losses": losses,
-        "grade": grade,
-        "mode": session.get("mode", "trait")
-    }).execute()
+    payload = {
+        "name": name, "wins": wins, "losses": losses,
+        "grade": grade, "mode": session.get("mode", "trait")
+    }
+    if session.get("account_id"):
+        payload["account_id"] = session.get("account_id")
+    try:
+        supabase.table("records").insert(payload).execute()
+    except Exception:
+        payload.pop("account_id", None)
+        supabase.table("records").insert(payload).execute()
+    try:
+        from career_storage import save_game_record, unlock_custom
+        save_game_record(session.get("account_id"), "144-0", f"{wins}승 {losses}패 · {grade}", wins, None)
+        unlock_custom(session.get("account_id"), [
+            {'id':'main_first_record','name':'첫 번째 도전','desc':'144-0 Challenge 기록을 처음 저장하세요.','icon':'⚾'},
+            {'id':'main_100wins','name':'강팀의 탄생','desc':'144-0 Challenge에서 100승 이상을 기록하세요.','icon':'🔥'},
+            {'id':'main_ss','name':'최고 등급','desc':'144-0 Challenge에서 SS 등급을 기록하세요.','icon':'👑'},
+        ])
+    except Exception: pass
 
 @app.route("/save_record", methods=["POST"])
 def save_record_route():
@@ -2111,16 +2152,30 @@ def ranking():
         trait_records = []
         classic_records = []
 
+    try:
+        from career_storage import leaderboard
+        career_records = leaderboard(100)
+    except Exception:
+        career_records = []
+
     return render_template(
         "ranking.html",
         trait_records=trait_records,
-        classic_records=classic_records
+        classic_records=classic_records,
+        career_records=career_records
     )
     
 @app.route("/pvp_start")
 def pvp_start():
 
+    _account_id = session.get("account_id")
+    _account_username = session.get("account_username")
     session.clear()
+    if _account_id:
+        session["account_id"] = _account_id
+        session["account_username"] = _account_username
+        session["career_account_id"] = _account_id
+        session["career_username"] = _account_username
 
     session["mode"] = "pvp"
 
@@ -2167,6 +2222,7 @@ def pvp_start():
     session["pvp_round"] = 0
     session["turn_count"] = 0
     session["pvp_pick_count"] = 0
+    session["pvp_record_saved"] = False
 
     return redirect("/pvp_next")
 
@@ -2759,10 +2815,17 @@ def pvp_result():
 
     else:
 
-        winner = random.choice(
-            ["A", "B"]
-        )
+        winner = random.choice(["A", "B"])
 
+    if not session.get("pvp_record_saved"):
+        try:
+            from career_storage import save_game_record, unlock_custom
+            save_game_record(session.get("account_id"), "pvp", f"TEAM {winner} 승리", max(final_a, final_b), "TEAM A vs TEAM B")
+            unlock_custom(session.get("account_id"), [
+                {'id':'pvp_first','name':'첫 PVP','desc':'PVP를 처음 완료하세요.','icon':'⚔️'},
+            ])
+            session["pvp_record_saved"] = True
+        except Exception: pass
 
     return render_template(
         

@@ -6,10 +6,12 @@
 #   app.register_blueprint(scout_bp)
 # =========================================
 
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 
 from dynasty_utils import get_supabase
 from scout import create_round, advance, score_round, ROUNDS
+from unified_achievements import unlock_mode_achievements
+from career_storage import save_game_record
 
 scout_bp = Blueprint("scout", __name__)
 
@@ -125,6 +127,12 @@ def scout_reveal(game_id):
             }).execute()
         except Exception as ex:
             print(f"[scout] 기록 저장 skip: {ex}")
+        try:
+            aid = session.get("account_id")
+            save_game_record(aid, "scout", f'{result["place"]}위 · {result["grade"]}', result["results"]["user"]["total"], str(state["year"]))
+            unlock_mode_achievements(aid, "scout", {"grade": result["grade"], "place": result["place"], "total": result["results"]["user"]["total"]})
+        except Exception as ex:
+            print(f"[scout] 계정 업적 저장 skip: {ex}")
         sb.table("scout_game").update({"finished": True}).eq("id", game_id).execute()
 
     # 전체 선수 WAR 순위표 (지명자 표시 포함)

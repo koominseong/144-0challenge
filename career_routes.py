@@ -89,9 +89,7 @@ def register():
 
 @career_bp.get('/logout')
 def logout():
-    for key in ('career_account_id','career_username','career_id','career_state','career_offers','career_ovr_toast','career_trophy_toast','career_achievement_toasts'):
-        session.pop(key, None)
-    return redirect(url_for('career.career_home'))
+    return redirect(url_for('account.logout'))
 
 
 @career_bp.route('/new', methods=['GET', 'POST'])
@@ -292,7 +290,9 @@ def achievements():
     except Exception:
         unlocked = set()
     items = [dict(a, unlocked=a['id'] in unlocked) for a in ACHIEVEMENT_DEFS]
-    return render_template('career_achievements.html', items=items, unlocked_count=len(unlocked), total=len(items))
+    known={a['id'] for a in ACHIEVEMENT_DEFS}
+    account_extra=[r for r in list_achievements(session['career_account_id']) if r.get('achievement_id') not in known]
+    return render_template('career_achievements.html', items=items, account_extra=account_extra, unlocked_count=len(unlocked), total=len(items))
 
 
 @career_bp.get('/records')
@@ -326,19 +326,30 @@ def reset():
 
 
 def _trophy_groups(state):
-    buckets = [
-        ('league', '🏆', '리그 우승', state.league_titles),
-        ('cup', '🥇', '국내 컵', state.cup_titles),
-        ('continental', '🌍', '대륙 클럽 대회', state.continental_titles),
-        ('international', '🌐', '국가대표 대회', state.international_titles),
-    ]
-    groups = []
-    for typ, icon, name, count in buckets:
-        items = [t for t in (state.club_trophies or []) if t.get('type') == typ]
-        if typ == 'international':
-            items = [
-                {'name': t.get('competition_name', '국제대회'), 'year': t.get('year','-'), 'category':'국가대표'}
-                for t in (state.international_trophies or [])
-            ]
-        groups.append({'type': typ, 'icon': icon, 'name': name, 'count': count, 'items': items})
+    groups=[]
+    # Every actual league gets its own cabinet section.
+    league_order=[]
+    for trophy in (state.club_trophies or []):
+        if trophy.get('type') != 'league': continue
+        lid=trophy.get('league_id') or state.league_id
+        if lid not in league_order: league_order.append(lid)
+    for lid in league_order:
+        items=[t for t in (state.club_trophies or []) if t.get('type')=='league' and (t.get('league_id') or state.league_id)==lid]
+        lname=(league(lid) or {}).get('name',lid)
+        groups.append({'type':'league_'+str(lid),'icon':'🏆','name':lname,'count':len(items),'items':items})
+    cup_order=[]
+    for trophy in (state.club_trophies or []):
+        if trophy.get('type') != 'cup': continue
+        lid=trophy.get('league_id') or state.league_id
+        if lid not in cup_order: cup_order.append(lid)
+    for lid in cup_order:
+        items=[t for t in (state.club_trophies or []) if t.get('type')=='cup' and (t.get('league_id') or state.league_id)==lid]
+        groups.append({'type':'cup_'+str(lid),'icon':'🥇','name':f"{(league(lid) or {}).get('name',lid)} 국내 컵",'count':len(items),'items':items})
+    cont=[t for t in (state.club_trophies or []) if t.get('type')=='continental']
+    if cont: groups.append({'type':'continental','icon':'🌍','name':'대륙 클럽 대회','count':len(cont),'items':cont})
+    intl=international_trophy_groups(state)
+    for g in intl: groups.append({'type':'international_'+g['competition_id'],'icon':'🌐','name':g['name'],'count':g['count'],'items':g['items']})
+    if not groups:
+        groups=[{'type':'empty','icon':'🏆','name':'아직 획득한 트로피가 없습니다','count':0,'items':[]}]
     return groups
+

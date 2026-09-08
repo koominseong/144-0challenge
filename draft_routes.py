@@ -2408,6 +2408,24 @@ def result(
 
         }
 
+    # 통합 계정 업적/기록 저장 (결과 페이지를 새로고침해도 중복 저장되지 않음)
+    if not state.get("account_record_saved"):
+        try:
+            from flask import session
+            from career_storage import save_game_record
+            from unified_achievements import unlock_mode_achievements
+            aid = session.get("account_id")
+            user_score = state["score"].get("a", 0)
+            if state.get("players", {}).get("a") != "PLAYER 1":
+                user_score = state["score"].get("b", 0)
+            rank = 1 if state.get("winner") == "a" else (2 if state.get("winner") == "b" else 1)
+            save_game_record(aid, "draft", f'{rank}위 · {user_score:.1f}점', user_score, "PLAYER 2")
+            unlock_mode_achievements(aid, "draft", {"rank": rank, "score": user_score})
+            state["account_record_saved"] = True
+            save_state(game_id, state)
+        except Exception as ex:
+            print(f"[draft] 계정 업적 저장 skip: {ex}")
+
     return render_template(
 
         "draft_result.html",

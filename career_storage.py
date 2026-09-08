@@ -154,3 +154,32 @@ def leaderboard(limit=50):
     return sb.table('career_records').select(
         'player_name,nationality,position,peak_ovr,career_score,club_titles,international_titles'
     ).order('career_score', desc=True).limit(limit).execute().data or []
+
+
+def unlock_custom(account_id, achievements):
+    """Unlock account-wide achievements shared by all game modes."""
+    if not account_id or not achievements:
+        return []
+    existing = unlocked_ids(account_id)
+    new_items = [a for a in achievements if a.get('id') not in existing]
+    if not new_items:
+        return []
+    sb = _sb()
+    rows=[{'id':str(uuid.uuid4()),'account_id':account_id,'achievement_id':a['id'],'achievement_name':a['name']} for a in new_items]
+    sb.table('career_achievements').insert(rows).execute()
+    return new_items
+
+
+def save_game_record(account_id, mode, result, score=0, opponent=None):
+    if not account_id:
+        return
+    sb=_sb()
+    row={'id':str(uuid.uuid4()),'account_id':account_id,'mode':mode,'result':result,'score':score,'opponent':opponent}
+    try: sb.table('game_records').insert(row).execute()
+    except Exception: pass
+
+def list_game_records(account_id, limit=100):
+    if not account_id: return []
+    try:
+        return _sb().table('game_records').select('*').eq('account_id',account_id).order('created_at',desc=True).limit(limit).execute().data or []
+    except Exception: return []

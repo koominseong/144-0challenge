@@ -320,7 +320,18 @@ def auction_result(game_id):
 
     result = game.get(
         "result"
-    )
+    ) or {}
+
+    if not game.get("account_record_saved"):
+        try:
+            from career_storage import save_game_record
+            from unified_achievements import unlock_mode_achievements
+            aid = session.get("account_id")
+            save_game_record(aid, "auction", f'{result.get("rank", 0)}위 · {result.get("grade", "")}', result.get("score", 0), None)
+            unlock_mode_achievements(aid, "auction", result)
+            game["account_record_saved"] = True
+        except Exception as ex:
+            print(f"[auction] 계정 업적 저장 skip: {ex}")
 
     return render_template(
         "auction_result.html",

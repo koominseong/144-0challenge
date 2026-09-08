@@ -80,9 +80,21 @@ PROMOTION_PATH = {
 }
 
 DIFFICULTY_INFO = {
-    'rookie': {'label': '루키', 'desc': '성장이 빠르고 부상 부담이 낮습니다.', 'start_ovr': 56, 'growth_bonus': 1.0, 'injury_mult': 0.55},
-    'pro': {'label': '프로', 'desc': '성장과 하락이 가장 균형 잡힌 기본 난이도입니다.', 'start_ovr': 53, 'growth_bonus': 0.0, 'injury_mult': 0.75},
-    'legend': {'label': '레전드', 'desc': '성장 폭이 작고 전성기 이후 하락이 빠릅니다.', 'start_ovr': 50, 'growth_bonus': -0.5, 'injury_mult': 1.0},
+    'rookie': {
+        'label': '초보자',
+        'desc': '성장이 비교적 빠르고 부상·성적 변동이 적습니다.',
+        'start_ovr': 56, 'growth_bonus': 0.9, 'injury_mult': 0.60, 'performance_mult': 1.08,
+    },
+    'pro': {
+        'label': '프로',
+        'desc': '성장과 경쟁이 빡빡합니다. 전성기 이후 OVR 유지가 중요합니다.',
+        'start_ovr': 51, 'growth_bonus': -0.15, 'injury_mult': 0.95, 'performance_mult': 1.00,
+    },
+    'hell': {
+        'label': '파멸',
+        'desc': '성장 폭이 매우 작고 부상·부진·경쟁이 가혹합니다.',
+        'start_ovr': 47, 'growth_bonus': -0.85, 'injury_mult': 1.45, 'performance_mult': 0.88,
+    },
 }
 
 PACE_INFO = {
@@ -148,7 +160,7 @@ class CareerState:
     status: str = 'active'          # active | retired
     pace: str = 'normal'            # focus | normal | fast
     pace_counter: int = 0
-    difficulty: str = 'pro'         # rookie | pro | legend
+    difficulty: str = 'pro'         # rookie | pro | hell
     jersey_number: int = 1          # 고정 등번호
 
     overall: int = 48               # long-term skill level (grows/declines)
@@ -243,6 +255,7 @@ def _normalize_state(raw):
     data.setdefault('cup_titles', 0)
     data.setdefault('continental_titles', 0)
     data.setdefault('potential', max(70, data.get('overall', 50) + 12))
+    if data.get('difficulty') == 'legend': data['difficulty'] = 'hell'
     data.setdefault('peak_overall', data.get('overall', 50))
     data.setdefault('last_ovr', data.get('overall', 50))
     data.setdefault('ovr_change', 0)
@@ -343,57 +356,30 @@ AWARD_DEFS = [
     ('fame', 80, '⭐', '슈퍼스타', '명성 80 이상을 기록했습니다.'),
 ]
 
-ACHIEVEMENT_DEFS = [
-    {'id':'first_pro','name':'프로의 첫걸음','desc':'첫 프로 시즌을 완료하세요.','icon':'⚾'},
-    {'id':'ovr70','name':'주목받는 유망주','desc':'OVR 70에 도달하세요.','icon':'🌟'},
-    {'id':'ovr80','name':'리그의 스타','desc':'OVR 80에 도달하세요.','icon':'⭐'},
-    {'id':'ovr90','name':'괴물의 탄생','desc':'OVR 90에 도달하세요.','icon':'👑'},
-    {'id':'peak95','name':'95의 벽을 넘다','desc':'커리어 최고 OVR 95를 기록하세요.','icon':'💎'},
-    {'id':'league1','name':'첫 우승','desc':'리그 우승을 차지하세요.','icon':'🏆'},
-    {'id':'league5','name':'왕조의 시작','desc':'리그 우승 5회를 기록하세요.','icon':'🏰'},
-    {'id':'cup1','name':'컵을 들어 올리다','desc':'국내 컵 우승을 차지하세요.','icon':'🥇'},
-    {'id':'continental1','name':'대륙의 정상','desc':'대륙 대회 우승을 차지하세요.','icon':'🌍'},
-    {'id':'intl1','name':'국가의 영웅','desc':'국가대표 대회 우승을 경험하세요.','icon':'🌐'},
-    {'id':'award5','name':'수상 수집가','desc':'개인 수상 5개를 모으세요.','icon':'🎖️'},
-    {'id':'mvp1','name':'리그 MVP','desc':'MVP를 수상하세요.','icon':'👑'},
-    {'id':'hr100','name':'거포','desc':'통산 100홈런을 기록하세요.','icon':'💥'},
-    {'id':'hit1000','name':'안타 제조기','desc':'통산 1,000안타를 기록하세요.','icon':'🧢'},
-    {'id':'win100','name':'100승 클럽','desc':'통산 100승을 기록하세요.','icon':'🔥'},
-    {'id':'save100','name':'마무리의 자격','desc':'통산 100세이브를 기록하세요.','icon':'🚪'},
-    {'id':'games1000','name':'철인','desc':'통산 1,000경기에 출전하세요.','icon':'🦾'},
-    {'id':'transfer5','name':'세계일주','desc':'5회 이상 이적하세요.','icon':'✈️'},
-    {'id':'oneclub','name':'원클럽맨','desc':'5시즌 이상 한 팀에서 뛰세요.','icon':'❤️'},
-    {'id':'captain','name':'주장 완장','desc':'주장이 되세요.','icon':'🎽'},
-    {'id':'allstar5','name':'단골 올스타','desc':'올스타 5회 이상을 기록하세요.','icon':'✨'},
-    {'id':'retire','name':'마지막 타석','desc':'40세까지 커리어를 완주하세요.','icon':'🏁'},
-]
+ACHIEVEMENT_DEFS = [{'id': 'easy02', 'tier': 'easy', 'name': '첫 프로 시즌', 'desc': '프로 첫 시즌 기록을 남기세요.', 'icon': '⚾'}, {'id': 'easy03', 'tier': 'easy', 'name': 'OVR 70', 'desc': '최고 OVR 70을 기록하세요.', 'icon': '🌟'}, {'id': 'easy04', 'tier': 'easy', 'name': '첫 올스타', 'desc': '올스타에 1회 선정되세요.', 'icon': '✨'}, {'id': 'easy05', 'tier': 'easy', 'name': '첫 이적', 'desc': '첫 이적을 경험하세요.', 'icon': '✈️'}, {'id': 'easy06', 'tier': 'easy', 'name': '통산 200경기', 'desc': '통산 200경기를 기록하세요.', 'icon': '🧢'}, {'id': 'easy07', 'tier': 'easy', 'name': '첫 국가대표', 'desc': '국가대표 경기에 출전하세요.', 'icon': '🌏'}, {'id': 'easy08', 'tier': 'easy', 'name': '첫 개인상', 'desc': '개인 수상을 획득하세요.', 'icon': '🎖️'}, {'id': 'easy09', 'tier': 'easy', 'name': '첫 트로피', 'desc': '첫 우승을 경험하세요.', 'icon': '🏆'}, {'id': 'easy10', 'tier': 'easy', 'name': '20세의 벽', 'desc': '20세 이전에 OVR 75를 기록하세요.', 'icon': '🔥'}, {'id': 'easy11', 'tier': 'easy', 'name': '유망주 탈출', 'desc': 'OVR 78에 도달하세요.', 'icon': '🚀'}, {'id': 'easy12', 'tier': 'easy', 'name': '100안타', 'desc': '한 시즌 100안타를 기록하세요.', 'icon': '🧢'}, {'id': 'easy13', 'tier': 'easy', 'name': '20홈런', 'desc': '한 시즌 20홈런을 기록하세요.', 'icon': '💥'}, {'id': 'easy14', 'tier': 'easy', 'name': '10승', 'desc': '한 시즌 10승을 기록하세요.', 'icon': '🎯'}, {'id': 'easy15', 'tier': 'easy', 'name': '20세이브', 'desc': '한 시즌 20세이브를 기록하세요.', 'icon': '🚪'}, {'id': 'easy16', 'tier': 'easy', 'name': '원클럽 3년', 'desc': '한 팀에서 3시즌을 보내세요.', 'icon': '❤️'}, {'id': 'easy17', 'tier': 'easy', 'name': '주장', 'desc': '주장이 되세요.', 'icon': '🎽'}, {'id': 'easy18', 'tier': 'easy', 'name': '최고가치 10억', 'desc': '시장가치 10억원을 넘기세요.', 'icon': '💰'}, {'id': 'easy19', 'tier': 'easy', 'name': '3개 대회 우승', 'desc': '클럽 대회 3종을 우승하세요.', 'icon': '🌍'}, {'id': 'easy20', 'tier': 'easy', 'name': 'MVP 후보', 'desc': 'MVP 레이스 TOP3에 드세요.', 'icon': '👑'}, {'id': 'easy21', 'tier': 'easy', 'name': '25세 최고점', 'desc': '25세까지 OVR 82를 기록하세요.', 'icon': '📈'}, {'id': 'easy22', 'tier': 'easy', 'name': '통산 500안타', 'desc': '통산 500안타를 기록하세요.', 'icon': '🧱'}, {'id': 'easy23', 'tier': 'easy', 'name': '통산 50홈런', 'desc': '통산 50홈런을 기록하세요.', 'icon': '💣'}, {'id': 'easy24', 'tier': 'easy', 'name': '통산 50승', 'desc': '통산 50승을 기록하세요.', 'icon': '🔥'}, {'id': 'easy25', 'tier': 'easy', 'name': '통산 50세이브', 'desc': '통산 50세이브를 기록하세요.', 'icon': '🚨'}, {'id': 'easy26', 'tier': 'easy', 'name': '첫 은퇴', 'desc': '커리어를 은퇴까지 완주하세요.', 'icon': '🏁'}, {'id': 'normal02', 'tier': 'normal', 'name': 'OVR 85', 'desc': '최고 OVR 85를 기록하세요.', 'icon': '⭐'}, {'id': 'normal03', 'tier': 'normal', 'name': '올스타 3회', 'desc': '올스타 3회 이상을 기록하세요.', 'icon': '✨'}, {'id': 'normal04', 'tier': 'normal', 'name': '리그 우승 3회', 'desc': '리그 우승 3회를 기록하세요.', 'icon': '🏆'}, {'id': 'normal05', 'tier': 'normal', 'name': '국내 컵 2회', 'desc': '국내 컵 우승 2회를 기록하세요.', 'icon': '🥇'}, {'id': 'normal06', 'tier': 'normal', 'name': '대륙 우승', 'desc': '대륙 클럽 대회 우승을 기록하세요.', 'icon': '🌍'}, {'id': 'normal07', 'tier': 'normal', 'name': '국가대표 10경기', 'desc': '국가대표 10경기를 기록하세요.', 'icon': '🌏'}, {'id': 'normal08', 'tier': 'normal', 'name': 'MVP 경쟁 TOP2', 'desc': 'MVP 레이스 2위 이상을 기록하세요.', 'icon': '👑'}, {'id': 'normal09', 'tier': 'normal', 'name': '20홈런 시즌 3회', 'desc': '20홈런 시즌을 3회 기록하세요.', 'icon': '💥'}, {'id': 'normal10', 'tier': 'normal', 'name': '3할 시즌 3회', 'desc': '3할 이상 시즌을 3회 기록하세요.', 'icon': '🏏'}, {'id': 'normal11', 'tier': 'normal', 'name': '10승 시즌 3회', 'desc': '10승 이상 시즌을 3회 기록하세요.', 'icon': '🎯'}, {'id': 'normal12', 'tier': 'normal', 'name': '30세이브 시즌 2회', 'desc': '30세이브 시즌을 2회 기록하세요.', 'icon': '🚨'}, {'id': 'normal13', 'tier': 'normal', 'name': '통산 1000안타', 'desc': '통산 1,000안타를 기록하세요.', 'icon': '🧢'}, {'id': 'normal14', 'tier': 'normal', 'name': '통산 100홈런', 'desc': '통산 100홈런을 기록하세요.', 'icon': '💥'}, {'id': 'normal15', 'tier': 'normal', 'name': '통산 100승', 'desc': '통산 100승을 기록하세요.', 'icon': '🔥'}, {'id': 'normal16', 'tier': 'normal', 'name': '통산 100세이브', 'desc': '통산 100세이브를 기록하세요.', 'icon': '🚪'}, {'id': 'normal17', 'tier': 'normal', 'name': '5회 이적', 'desc': '5회 이상 이적하세요.', 'icon': '✈️'}, {'id': 'normal18', 'tier': 'normal', 'name': '한 팀 5시즌', 'desc': '한 팀에서 5시즌 이상 뛰세요.', 'icon': '❤️'}, {'id': 'normal19', 'tier': 'normal', 'name': '최고가치 30억', 'desc': '시장가치 30억원을 넘기세요.', 'icon': '💰'}, {'id': 'normal20', 'tier': 'normal', 'name': '개인상 10개', 'desc': '개인 수상 10개를 모으세요.', 'icon': '🎖️'}, {'id': 'normal21', 'tier': 'normal', 'name': '국제대회 2회', 'desc': '국가대표 대회 우승 2회를 기록하세요.', 'icon': '🌐'}, {'id': 'normal22', 'tier': 'normal', 'name': 'OVR 90', 'desc': '최고 OVR 90을 기록하세요.', 'icon': '💎'}, {'id': 'normal23', 'tier': 'normal', 'name': '25세 이전 85', 'desc': '25세 이전 OVR 85를 기록하세요.', 'icon': '📈'}, {'id': 'normal24', 'tier': 'normal', 'name': '1000경기', 'desc': '통산 1,000경기를 기록하세요.', 'icon': '🦾'}, {'id': 'normal25', 'tier': 'normal', 'name': '왕조의 핵심', 'desc': '리그 우승 5회 또는 그 이상을 기록하세요.', 'icon': '🏰'}, {'id': 'normal26', 'tier': 'normal', 'name': '올스타 5회', 'desc': '올스타 5회를 기록하세요.', 'icon': '🌟'}, {'id': 'hard02', 'tier': 'hard', 'name': 'OVR 92', 'desc': '최고 OVR 92를 기록하세요.', 'icon': '💎'}, {'id': 'hard03', 'tier': 'hard', 'name': 'MVP 1회', 'desc': '리그 MVP를 1회 수상하세요.', 'icon': '👑'}, {'id': 'hard04', 'tier': 'hard', 'name': 'MVP 3회', 'desc': '리그 MVP를 3회 수상하세요.', 'icon': '👑'}, {'id': 'hard05', 'tier': 'hard', 'name': '사이영상 2회', 'desc': '사이영상을 2회 수상하세요.', 'icon': '🏅'}, {'id': 'hard06', 'tier': 'hard', 'name': '골드글러브 3회', 'desc': '골드글러브를 3회 수상하세요.', 'icon': '🧤'}, {'id': 'hard07', 'tier': 'hard', 'name': '홈런왕 3회', 'desc': '홈런왕을 3회 수상하세요.', 'icon': '💥'}, {'id': 'hard08', 'tier': 'hard', 'name': '타격왕 3회', 'desc': '타격왕을 3회 수상하세요.', 'icon': '🏏'}, {'id': 'hard09', 'tier': 'hard', 'name': '타점왕 3회', 'desc': '타점왕을 3회 수상하세요.', 'icon': '🔥'}, {'id': 'hard10', 'tier': 'hard', 'name': '올해의 마무리 3회', 'desc': '올해의 마무리를 3회 수상하세요.', 'icon': '🚨'}, {'id': 'hard11', 'tier': 'hard', 'name': '리그 우승 8회', 'desc': '리그 우승 8회를 기록하세요.', 'icon': '🏆'}, {'id': 'hard12', 'tier': 'hard', 'name': '국내 컵 5회', 'desc': '국내 컵 5회를 기록하세요.', 'icon': '🥇'}, {'id': 'hard13', 'tier': 'hard', 'name': '대륙 우승 3회', 'desc': '대륙 클럽 우승 3회를 기록하세요.', 'icon': '🌍'}, {'id': 'hard14', 'tier': 'hard', 'name': '국제대회 3종 우승', 'desc': 'WBC/프리미어12/올림픽·아시안게임 중 3종을 우승하세요.', 'icon': '🌐'}, {'id': 'hard15', 'tier': 'hard', 'name': '국가대표 30경기', 'desc': '국가대표 30경기를 기록하세요.', 'icon': '🛡️'}, {'id': 'hard16', 'tier': 'hard', 'name': '통산 2000안타', 'desc': '통산 2,000안타를 기록하세요.', 'icon': '🧱'}, {'id': 'hard17', 'tier': 'hard', 'name': '통산 300홈런', 'desc': '통산 300홈런을 기록하세요.', 'icon': '💣'}, {'id': 'hard18', 'tier': 'hard', 'name': '통산 200승', 'desc': '통산 200승을 기록하세요.', 'icon': '🔥'}, {'id': 'hard19', 'tier': 'hard', 'name': '통산 200세이브', 'desc': '통산 200세이브를 기록하세요.', 'icon': '🚪'}, {'id': 'hard20', 'tier': 'hard', 'name': '통산 1500경기', 'desc': '통산 1,500경기를 기록하세요.', 'icon': '🦾'}, {'id': 'hard21', 'tier': 'hard', 'name': '5개 개인상 종류', 'desc': '서로 다른 개인상 5종을 획득하세요.', 'icon': '🎖️'}, {'id': 'hard22', 'tier': 'hard', 'name': '최고가치 50억', 'desc': '시장가치 50억원을 넘기세요.', 'icon': '💰'}, {'id': 'hard23', 'tier': 'hard', 'name': '30세까지 OVR 90', 'desc': '30세 이하에서 OVR 90을 기록하세요.', 'icon': '⏱️'}, {'id': 'hard24', 'tier': 'hard', 'name': '10시즌 올스타', 'desc': '올스타 10회를 기록하세요.', 'icon': '⭐'}, {'id': 'hard25', 'tier': 'hard', 'name': '통산 우승 10회', 'desc': '클럽+국가대표 우승 10회를 기록하세요.', 'icon': '🏆'}, {'id': 'hard26', 'tier': 'hard', 'name': '커리어 점수 5000', 'desc': '커리어 점수 5,000점을 넘기세요.', 'icon': '📊'}, {'id': 'hell02', 'tier': 'hell', 'name': 'OVR 95', 'desc': '최고 OVR 95를 기록하세요.', 'icon': '☠️'}, {'id': 'hell03', 'tier': 'hell', 'name': 'OVR 97', 'desc': '최고 OVR 97을 기록하세요.', 'icon': '💀'}, {'id': 'hell04', 'tier': 'hell', 'name': 'MVP 5회', 'desc': 'MVP를 5회 수상하세요.', 'icon': '👑'}, {'id': 'hell05', 'tier': 'hell', 'name': 'MVP 8회', 'desc': 'MVP를 8회 수상하세요.', 'icon': '👑'}, {'id': 'hell06', 'tier': 'hell', 'name': '사이영상 5회', 'desc': '사이영상을 5회 수상하세요.', 'icon': '🏅'}, {'id': 'hell07', 'tier': 'hell', 'name': '골드글러브 8회', 'desc': '골드글러브를 8회 수상하세요.', 'icon': '🧤'}, {'id': 'hell08', 'tier': 'hell', 'name': '홈런왕 7회', 'desc': '홈런왕을 7회 수상하세요.', 'icon': '💥'}, {'id': 'hell09', 'tier': 'hell', 'name': '타격왕 7회', 'desc': '타격왕을 7회 수상하세요.', 'icon': '🏏'}, {'id': 'hell10', 'tier': 'hell', 'name': '올해의 마무리 7회', 'desc': '올해의 마무리를 7회 수상하세요.', 'icon': '🚨'}, {'id': 'hell11', 'tier': 'hell', 'name': '리그 우승 12회', 'desc': '리그 우승 12회를 기록하세요.', 'icon': '🏆'}, {'id': 'hell12', 'tier': 'hell', 'name': '국내 컵 8회', 'desc': '국내 컵 8회를 기록하세요.', 'icon': '🥇'}, {'id': 'hell13', 'tier': 'hell', 'name': '대륙 우승 6회', 'desc': '대륙 우승 6회를 기록하세요.', 'icon': '🌍'}, {'id': 'hell14', 'tier': 'hell', 'name': '국제대회 5종', 'desc': '국제대회 5종류를 모두 우승하세요.', 'icon': '🌐'}, {'id': 'hell15', 'tier': 'hell', 'name': '국가대표 50경기', 'desc': '국가대표 50경기를 기록하세요.', 'icon': '🛡️'}, {'id': 'hell16', 'tier': 'hell', 'name': '통산 3000안타', 'desc': '통산 3,000안타를 기록하세요.', 'icon': '🧱'}, {'id': 'hell17', 'tier': 'hell', 'name': '통산 500홈런', 'desc': '통산 500홈런을 기록하세요.', 'icon': '💣'}, {'id': 'hell18', 'tier': 'hell', 'name': '통산 250승', 'desc': '통산 250승을 기록하세요.', 'icon': '🔥'}, {'id': 'hell19', 'tier': 'hell', 'name': '통산 300세이브', 'desc': '통산 300세이브를 기록하세요.', 'icon': '🚪'}, {'id': 'hell20', 'tier': 'hell', 'name': '통산 2000경기', 'desc': '통산 2,000경기를 기록하세요.', 'icon': '🦾'}, {'id': 'hell21', 'tier': 'hell', 'name': '개인상 25개', 'desc': '개인 수상 25개를 모으세요.', 'icon': '🎖️'}, {'id': 'hell22', 'tier': 'hell', 'name': '서로 다른 개인상 8종', 'desc': '서로 다른 개인상 8종을 획득하세요.', 'icon': '🏅'}, {'id': 'hell23', 'tier': 'hell', 'name': '커리어 점수 10000', 'desc': '커리어 점수 10,000점을 넘기세요.', 'icon': '📊'}, {'id': 'hell24', 'tier': 'hell', 'name': '커리어 점수 20000', 'desc': '커리어 점수 20,000점을 넘기세요.', 'icon': '📈'}, {'id': 'hell25', 'tier': 'hell', 'name': '원클럽 10년', 'desc': '한 팀에서 10시즌 이상 뛰세요.', 'icon': '❤️'}, {'id': 'hell26', 'tier': 'hell', 'name': '철인 완주', 'desc': '40세 은퇴 + 통산 2,000경기를 동시에 달성하세요.', 'icon': '☠️'}]
 
 def check_achievements(state):
-    vals = {a['id']: False for a in ACHIEVEMENT_DEFS}
-    vals['first_pro'] = bool(state.history)
-    vals['ovr70'] = state.peak_overall >= 70
-    vals['ovr80'] = state.peak_overall >= 80
-    vals['ovr90'] = state.peak_overall >= 90
-    vals['peak95'] = state.peak_overall >= 95
-    vals['league1'] = state.league_titles >= 1
-    vals['league5'] = state.league_titles >= 5
-    vals['cup1'] = state.cup_titles >= 1
-    vals['continental1'] = state.continental_titles >= 1
-    vals['intl1'] = state.international_titles >= 1
-    vals['award5'] = len(state.individual_awards) >= 5
-    vals['mvp1'] = any(a.get('award_id') == 'MVP' for a in state.individual_awards)
-    vals['hr100'] = state.career_hr >= 100
-    vals['hit1000'] = state.career_hits >= 1000
-    vals['win100'] = state.career_wins >= 100
-    vals['save100'] = state.career_saves >= 100
-    vals['games1000'] = state.career_games >= 1000
-    vals['transfer5'] = state.transfers_count >= 5
-    vals['oneclub'] = any(c.get('seasons',0) >= 5 for c in club_history(state))
-    vals['captain'] = state.captain
-    vals['allstar5'] = sum(1 for a in state.individual_awards if a.get('award_id') == 'ALL_STAR') >= 5
-    vals['retire'] = state.status == 'retired'
-    return [dict(a, unlocked=True) for a in ACHIEVEMENT_DEFS if vals.get(a['id'])]
+    # Derived achievement counters are intentionally based on full career history.
+    awards=state.individual_awards or []
+    aid=[a.get('award_id') for a in awards]
+    seasons=state.history or []
+    def count_aw(x): return aid.count(x)
+    def season_count(fn): return sum(1 for r in seasons if fn(r))
+    unique_awards=len(set(x for x in aid if x))
+    intl_types=len(set((x.get('competition_id') if isinstance(x,dict) else str(x)) for x in (state.international_trophies or [])))
+    club_types=len(set(x.get('type') for x in (state.club_trophies or []) if isinstance(x,dict)))
+    score=career_score(state)
+    value=market_value(state)
+    oneclub=max([c.get('seasons',0) for c in club_history(state)] or [0])
+    def ok(c):
+        return {
+            'first':bool(seasons),'ovr70':state.peak_overall>=70,'allstar1':count_aw('ALL_STAR')>=1,'transfer1':state.transfers_count>=1,'games200':state.career_games>=200,'caps1':state.international_caps>=1,'award1':len(awards)>=1,'title1':state.titles+state.international_titles>=1,'young75':any(r.get('age',99)<=20 and r.get('rating',0)>=75 for r in seasons),'ovr78':state.peak_overall>=78,'season_hit100':season_count(lambda r:r.get('hits',0)>=100)>=1,'season_hr20':season_count(lambda r:r.get('hr',0)>=20)>=1,'season_w10':season_count(lambda r:r.get('wins',0)>=10)>=1,'season_sv20':season_count(lambda r:r.get('saves',0)>=20)>=1,'oneclub3':oneclub>=3,'captain':state.captain,'value10':value>=1_000_000_000,'three_types':club_types>=3,'mvp_top3':any(r.get('mvp_race',{}).get('rank',99)<=3 for r in seasons if isinstance(r.get('mvp_race'),dict)),'age25_82':any(r.get('age',99)<=25 and r.get('rating',0)>=82 for r in seasons),'hit500':state.career_hits>=500,'hr50':state.career_hr>=50,'win50':state.career_wins>=50,'save50':state.career_saves>=50,'retire':state.status=='retired',
+            'ovr85':state.peak_overall>=85,'allstar3':count_aw('ALL_STAR')>=3,'league3':state.league_titles>=3,'cup2':state.cup_titles>=2,'continental1':state.continental_titles>=1,'caps10':state.international_caps>=10,'mvp_top2':any(r.get('mvp_race',{}).get('rank',99)<=2 for r in seasons if isinstance(r.get('mvp_race'),dict)),'hr20_3':season_count(lambda r:r.get('hr',0)>=20)>=3,'avg300_3':season_count(lambda r:float(r.get('avg',0) or 0)>=.300)>=3,'w10_3':season_count(lambda r:r.get('wins',0)>=10)>=3,'sv30_2':season_count(lambda r:r.get('saves',0)>=30)>=2,'hit1000':state.career_hits>=1000,'hr100':state.career_hr>=100,'win100':state.career_wins>=100,'save100':state.career_saves>=100,'transfer5':state.transfers_count>=5,'oneclub5':oneclub>=5,'value30':value>=3_000_000_000,'award10':len(awards)>=10,'intl2':state.international_titles>=2,'ovr90':state.peak_overall>=90,'age25_85':any(r.get('age',99)<=25 and r.get('rating',0)>=85 for r in seasons),'games1000':state.career_games>=1000,'league5':state.league_titles>=5,'allstar5':count_aw('ALL_STAR')>=5,
+            'ovr92':state.peak_overall>=92,'mvp1':count_aw('MVP')>=1,'mvp3':count_aw('MVP')>=3,'cy2':count_aw('CY_YOUNG')>=2,'gg3':count_aw('GOLD_GLOVE')>=3,'hrking3':count_aw('HR_KING')>=3,'batting3':count_aw('BATTING_TITLE')>=3,'rbi3':count_aw('RBI_KING')>=3,'reliever3':count_aw('RELIEVER')>=3,'league8':state.league_titles>=8,'cup5':state.cup_titles>=5,'continental3':state.continental_titles>=3,'intl3types':intl_types>=3,'caps30':state.international_caps>=30,'hit2000':state.career_hits>=2000,'hr300':state.career_hr>=300,'win200':state.career_wins>=200,'save200':state.career_saves>=200,'games1500':state.career_games>=1500,'awardtypes5':unique_awards>=5,'value50':value>=5_000_000_000,'age30_90':any(r.get('age',99)<=30 and r.get('rating',0)>=90 for r in seasons),'allstar10':count_aw('ALL_STAR')>=10,'titles10':state.titles+state.international_titles>=10,'score5000':score>=5000,
+            'ovr95':state.peak_overall>=95,'ovr97':state.peak_overall>=97,'mvp5':count_aw('MVP')>=5,'mvp8':count_aw('MVP')>=8,'cy5':count_aw('CY_YOUNG')>=5,'gg8':count_aw('GOLD_GLOVE')>=8,'hrking7':count_aw('HR_KING')>=7,'batting7':count_aw('BATTING_TITLE')>=7,'reliever7':count_aw('RELIEVER')>=7,'league12':state.league_titles>=12,'cup8':state.cup_titles>=8,'continental6':state.continental_titles>=6,'intl5types':intl_types>=5,'caps50':state.international_caps>=50,'hit3000':state.career_hits>=3000,'hr500':state.career_hr>=500,'win250':state.career_wins>=250,'save300':state.career_saves>=300,'games2000':state.career_games>=2000,'award25':len(awards)>=25,'awardtypes8':unique_awards>=8,'score10000':score>=10000,'score20000':score>=20000,'oneclub10':oneclub>=10,'ironfinish':state.status=='retired' and state.career_games>=2000}.get(c, False)
 
+    cond_map={'easy02': 'first', 'easy03': 'ovr70', 'easy04': 'allstar1', 'easy05': 'transfer1', 'easy06': 'games200', 'easy07': 'caps1', 'easy08': 'award1', 'easy09': 'title1', 'easy10': 'young75', 'easy11': 'ovr78', 'easy12': 'season_hit100', 'easy13': 'season_hr20', 'easy14': 'season_w10', 'easy15': 'season_sv20', 'easy16': 'oneclub3', 'easy17': 'captain', 'easy18': 'value10', 'easy19': 'three_types', 'easy20': 'mvp_top3', 'easy21': 'age25_82', 'easy22': 'hit500', 'easy23': 'hr50', 'easy24': 'win50', 'easy25': 'save50', 'easy26': 'retire', 'normal02': 'ovr85', 'normal03': 'allstar3', 'normal04': 'league3', 'normal05': 'cup2', 'normal06': 'continental1', 'normal07': 'caps10', 'normal08': 'mvp_top2', 'normal09': 'hr20_3', 'normal10': 'avg300_3', 'normal11': 'w10_3', 'normal12': 'sv30_2', 'normal13': 'hit1000', 'normal14': 'hr100', 'normal15': 'win100', 'normal16': 'save100', 'normal17': 'transfer5', 'normal18': 'oneclub5', 'normal19': 'value30', 'normal20': 'award10', 'normal21': 'intl2', 'normal22': 'ovr90', 'normal23': 'age25_85', 'normal24': 'games1000', 'normal25': 'league5', 'normal26': 'allstar5', 'hard02': 'ovr92', 'hard03': 'mvp1', 'hard04': 'mvp3', 'hard05': 'cy2', 'hard06': 'gg3', 'hard07': 'hrking3', 'hard08': 'batting3', 'hard09': 'rbi3', 'hard10': 'reliever3', 'hard11': 'league8', 'hard12': 'cup5', 'hard13': 'continental3', 'hard14': 'intl3types', 'hard15': 'caps30', 'hard16': 'hit2000', 'hard17': 'hr300', 'hard18': 'win200', 'hard19': 'save200', 'hard20': 'games1500', 'hard21': 'awardtypes5', 'hard22': 'value50', 'hard23': 'age30_90', 'hard24': 'allstar10', 'hard25': 'titles10', 'hard26': 'score5000', 'hell02': 'ovr95', 'hell03': 'ovr97', 'hell04': 'mvp5', 'hell05': 'mvp8', 'hell06': 'cy5', 'hell07': 'gg8', 'hell08': 'hrking7', 'hell09': 'batting7', 'hell10': 'reliever7', 'hell11': 'league12', 'hell12': 'cup8', 'hell13': 'continental6', 'hell14': 'intl5types', 'hell15': 'caps50', 'hell16': 'hit3000', 'hell17': 'hr500', 'hell18': 'win250', 'hell19': 'save300', 'hell20': 'games2000', 'hell21': 'award25', 'hell22': 'awardtypes8', 'hell23': 'score10000', 'hell24': 'score20000', 'hell25': 'oneclub10', 'hell26': 'ironfinish'}
+    return [dict(a, unlocked=True) for a in ACHIEVEMENT_DEFS if ok(cond_map.get(a['id'], ''))]
 
 def career_awards(state):
     out = []
@@ -444,21 +430,19 @@ def market_value(state):
     return max(50000, round(value))
 
 def international_trophy_groups(state):
-    """Group national-team trophies by the actual international tournament."""
-    order = []
-    groups = {}
-    for t in (state.international_trophies or []):
-        if isinstance(t, str):
-            cid, cname, year = 'LEGACY', t, '-'
+    order=[]; groups={}
+    for trophy in (state.international_trophies or []):
+        if isinstance(trophy, str):
+            cid, cname, year = 'LEGACY', trophy, '-'
         else:
-            cid = t.get('competition_id', 'INTL')
-            cname = t.get('competition_name', t.get('name', '국제대회'))
-            year = t.get('year', '-')
+            cid=trophy.get('competition_id','INTL')
+            raw=trophy.get('competition_name',trophy.get('name','국제대회'))
+            cname={'World Baseball Classic':'월드베이스볼클래식(WBC)','WBSC Premier12':'프리미어12','Olympic Baseball':'올림픽 야구','Asian Games Baseball':'아시안게임 야구','WBSC U-23':'WBSC U-23 야구월드컵','WBSC U-18':'WBSC U-18 야구월드컵'}.get(raw,raw)
+            year=trophy.get('year','-')
         if cid not in groups:
-            groups[cid] = {'competition_id': cid, 'name': cname, 'count': 0, 'items': []}
+            groups[cid]={'competition_id':cid,'name':cname,'count':0,'items':[]}
             order.append(cid)
-        groups[cid]['count'] += 1
-        groups[cid]['items'].append({'name': cname, 'year': year})
+        groups[cid]['count']+=1; groups[cid]['items'].append({'name':cname,'year':year})
     return [groups[cid] for cid in order]
 
 def career_score(state):
@@ -517,6 +501,7 @@ def eligible_competitions(nationality, age, year=None):
     out = []
     for c in COMPETITIONS:
         name = str(c.get('name', '')).lower()
+        cid = str(c.get('competition_id', '')).upper()
         min_age = c.get('min_age', 0)
         max_age = c.get('max_age', 99)
         if not (min_age <= age <= max_age):
@@ -530,24 +515,18 @@ def eligible_competitions(nationality, age, year=None):
                 continue
 
         # Keep national duty from becoming an annual event.
-        if 'world baseball classic' in name:
-            if (year - 2026) % 3 != 0:
-                continue
-        elif 'premier12' in name:
-            if (year - 2027) % 4 != 0:
-                continue
-        elif 'olympic' in name:
-            if (year - 2028) % 4 != 0:
-                continue
-        elif 'asian games' in name:
-            if (year - 2026) % 4 != 0:
-                continue
-        elif 'u-23' in name or 'u23' in name:
-            if age > 23 or year % 2 == 0:
-                continue
-        elif 'u-18' in name or 'u18' in name:
-            if age > 18:
-                continue
+        if cid == 'WBC':
+            if (year - 2026) % 3 != 0: continue
+        elif cid == 'PREMIER12':
+            if (year - 2027) % 4 != 0: continue
+        elif cid == 'OLY':
+            if (year - 2028) % 4 != 0: continue
+        elif cid == 'ASIAN_GAMES':
+            if (year - 2026) % 4 != 0: continue
+        elif cid == 'U23':
+            if age > 23 or year % 2 == 0: continue
+        elif cid == 'U18':
+            if age > 18: continue
 
         out.append(c)
     return out
@@ -566,36 +545,31 @@ def _national_selection_probability(state):
 
 
 def _maybe_national_team_selection(state):
-    """Rare, mostly automatic national-team call-up.
-
-    This runs once per simulated season and selects at most one competition.
-    The player does not choose in the normal case; the game simply decides
-    whether the player made the roster based on ability.
-    """
+    """Rare automatic national-team call-up with tournament-specific trophies."""
     if getattr(state, 'status', 'active') == 'retired':
         return False
     competitions = eligible_competitions(state.nationality, state.age, state.year)
-    if not competitions:
+    if not competitions or random.random() >= _national_selection_probability(state):
         return False
-    chance = _national_selection_probability(state)
-    if random.random() >= chance:
-        return False
-
     competition = random.choice(competitions)
     state.international_caps += 1
-    if random.random() < (0.08 + max(0, state.overall - 70) * 0.004):
+    names = {
+        'World Baseball Classic': '월드베이스볼클래식(WBC)',
+        'WBSC Premier12': '프리미어12',
+        'Olympic Baseball': '올림픽 야구',
+        'Asian Games Baseball': '아시안게임 야구',
+        'WBSC U-23': 'WBSC U-23 야구월드컵',
+        'WBSC U-18': 'WBSC U-18 야구월드컵',
+    }
+    cname = names.get(competition.get('name'), competition.get('name', '국제대회'))
+    if random.random() < (0.06 + max(0, state.overall - 72) * 0.0035):
         state.international_titles += 1
-        trophy = {
-            'competition_id': competition.get('competition_id', 'INTL'),
-            'competition_name': competition.get('name', '국제대회'),
-            'year': state.year,
-            'age': state.age,
-        }
+        trophy = {'competition_id': competition.get('competition_id','INTL'), 'competition_name': cname, 'year': state.year, 'age': state.age}
         state.international_trophies.append(trophy)
-        state.last_trophy = {'type':'international', 'category':'국가대표', 'name':competition.get('name', '국제대회') + ' 우승', 'year':state.year}
-        state.last_event = f'{competition.get("name", "국제대회")}에서 대표팀 우승을 경험했다!'
+        state.last_trophy = {'type':'international', 'category':'국가대표', 'name':cname + ' 우승', 'year':state.year}
+        state.last_event = f'{cname}에서 대표팀 우승을 경험했다!'
     else:
-        state.last_event = f'{competition.get("name", "국제대회")} 대표팀에 자동 차출됐다.'
+        state.last_event = f'{cname} 대표팀에 차출됐다.'
     state.fame = min(100, state.fame + 4)
     state.stamina = max(20, state.stamina - 4)
     return True
@@ -624,7 +598,7 @@ def new_state(name, nationality, position, bats, pace, difficulty='pro', jersey_
         jersey_number = 1
     jersey_number = max(1, min(99, jersey_number))
     start_ovr = DIFFICULTY_INFO[difficulty]['start_ovr']
-    potential = random.randint(86, 96) if difficulty == 'rookie' else random.randint(82, 94) if difficulty == 'pro' else random.randint(78, 91)
+    potential = random.randint(87, 96) if difficulty == 'rookie' else random.randint(80, 91) if difficulty == 'pro' else random.randint(74, 87)
     return CareerState(
         player_name=clean_name, nationality=nationality, position=position,
         bats=bats if bats in BATS_LABELS else 'R', pace=pace,
@@ -764,387 +738,222 @@ def _club_option(t, tier_now):
 
 
 def generate_event(state):
-    """Priority-based picker for the next season's narrative decision point."""
+    """Copero-inspired random career event engine.
+
+    Decision points are not always transfer windows anymore. A season can
+    produce a short card-style event such as an extra training camp, media
+    attention, equipment opportunity, role battle, slump, sponsor offer, or
+    clubhouse incident. The outcome can be good, neutral, or costly.
+    """
     if state.injury_active:
         return {
-            'type': 'injury', 'title': '부상에서의 갈림길', 'desc': flavor('injury'),
+            'type': 'injury', 'title': '부상에서의 갈림길', 'desc': flavor('injury'), 'icon': '🩹',
             'options': [
                 {'id': 'early_return', 'kind': 'plain', 'icon': '⚡', 'label': '조기 복귀',
-                 'detail': '출전은 빨리 재개하지만 재부상 위험이 남습니다.'},
+                 'detail': '출전은 빨라지지만 재부상 위험이 남습니다.'},
                 {'id': 'full_rehab', 'kind': 'plain', 'icon': '🩹', 'label': '충분한 재활',
-                 'detail': '한동안 출전은 줄지만 몸 상태를 확실히 회복합니다.'},
+                 'detail': '출전은 줄지만 몸 상태를 회복합니다.'},
             ],
         }
 
-    if not state.high_school_done and 17 <= state.age <= 19 and random.random() < 0.22:
-        state.high_school_done = True
-        return {
-            'type': 'high_school', 'title': '학업과 커리어 사이', 'desc': flavor('focus') if False else
-            '학업을 마저 끝낼지, 야구에만 전념할지 결정할 시간이다.',
-            'options': [
-                {'id': 'accept', 'kind': 'plain', 'icon': '🎓', 'label': '학업 병행',
-                 'detail': '일시적으로 OVR -1, 대신 정신적으로 안정되어 충성도가 오릅니다.'},
-                {'id': 'reject', 'kind': 'plain', 'icon': '⚾', 'label': '야구에 전념',
-                 'detail': '변화 없이 훈련에 집중합니다.'},
-            ],
-        }
-
-    if not state.captain and state.loyalty >= 65 and state.season >= 3 and random.random() < 0.18:
-        return {
-            'type': 'captain', 'title': '주장 완장 제안', 'desc': flavor('captain'),
-            'options': [
-                {'id': 'accept', 'kind': 'plain', 'icon': '🎖️', 'label': '주장 수락',
-                 'detail': '명성/충성도 상승 · 부담감으로 폼 기복 가능'},
-                {'id': 'decline', 'kind': 'plain', 'icon': '🙅', 'label': '정중히 거절',
-                 'detail': '부담 없이 선수 본연에 집중합니다.'},
-            ],
-        }
-
-    # National-team duty is normally automatic.  A user-choice call-up is
-    # intentionally rare and only appears when the player is genuinely good
-    # enough to be in the conversation.
-    if (state.overall >= 72 and state.age >= 19 and
-            eligible_competitions(state.nationality, state.age, state.year) and
-            random.random() < 0.035):
-        competition = random.choice(eligible_competitions(state.nationality, state.age, state.year))
-        return {
-            'type': 'national_call', 'title': '국가대표 합류 여부', 'desc':
-                f'{competition.get("name", "국제대회")} 대표팀 선발 경쟁에 이름을 올렸다. 이번에는 직접 결정할 수 있다.',
-            'competition': competition,
-            'options': [
-                {'id': 'accept', 'kind': 'plain', 'icon': '🌍', 'label': '국가대표 합류',
-                 'detail': '대표팀 경력/명성 상승 · 체력 소모'},
-                {'id': 'decline', 'kind': 'plain', 'icon': '🏟️', 'label': '클럽에 집중',
-                 'detail': '이번 소집을 고사하고 클럽 시즌에 집중합니다.'},
-            ],
-        }
-
-    if state.fame >= 40 and state.age >= 23 and random.random() < 0.12:
-        alt = _offer_candidates(state, 1)
-        alt_t = alt[0] if alt else None
-        cur = team(state.team_id) or {}
-        options = [
-            {'id': 'fight', 'kind': 'plain', 'icon': '💢', 'label': f"{cur.get('name','현 구단')}에서 버티기",
-             'detail': '일시적으로 OVR -2 (심리적 압박), 버텨내면 팬 신뢰 회복'},
+    # Copero-like short random event cards. Difficulty controls how often
+    # the player sees truly useful positive outcomes.
+    event_chance = {'rookie': .78, 'pro': .64, 'hell': .50}.get(state.difficulty, .64)
+    if random.random() < event_chance:
+        events = [
+            ('extra_camp', '추가 훈련 캠프', '코칭스태프가 특별 캠프 참가를 제안했다.', '⛺', [
+                ('camp_attend', '참가한다', '훈련 강도가 높아지지만 성장 기회를 얻는다.', {'ovr': 2, 'stamina': -12, 'fame': 1}),
+                ('camp_rest', '휴식을 택한다', '몸을 보호하고 다음 시즌을 준비한다.', {'stamina': 10, 'loyalty': 3}),
+            ]),
+            ('equipment', '새 장비 테스트', '구단이 새로운 장비의 테스트 선수를 찾고 있다.', '🧤', [
+                ('equipment_yes', '테스트에 참가', '장비가 잘 맞으면 기량이 올라갈 수 있다.', {'ovr': 1, 'fame': 2}),
+                ('equipment_no', '기존 장비 유지', '익숙한 장비를 계속 사용한다.', {'loyalty': 2}),
+            ]),
+            ('coach', '타격/투구 코치의 제안', '전담 코치가 당신에게 새로운 훈련법을 제안했다.', '🎯', [
+                ('coach_change', '새 방법을 시도', '성공하면 능력치가 크게 오른다.', {'ovr': 2, 'potential': 1}),
+                ('coach_keep', '기존 루틴 유지', '검증된 루틴을 지킨다.', {'stamina': 5, 'loyalty': 2}),
+            ]),
+            ('media', '언론의 집중 조명', '최근 활약으로 인터뷰 요청이 쏟아지고 있다.', '📺', [
+                ('media_yes', '인터뷰에 응한다', '인지도가 크게 올라간다.', {'fame': 6, 'stamina': -3}),
+                ('media_no', '야구에만 집중', '조용히 다음 경기를 준비한다.', {'ovr': 1, 'fame': 1}),
+            ]),
+            ('role_battle', '주전 경쟁', '새로운 경쟁자가 들어와 주전 자리가 흔들리고 있다.', '⚔️', [
+                ('role_fight', '정면 승부', '출전 경쟁에서 밀어붙인다.', {'ovr': 1, 'stamina': -8, 'fame': 2}),
+                ('role_team', '팀을 우선한다', '팀플레이를 택해 코칭스태프의 신뢰를 얻는다.', {'loyalty': 8, 'fame': 1}),
+            ]),
+            ('sponsor', '뜻밖의 후원 제안', '지역 기업이 당신을 공식 후원 선수로 만들고 싶어 한다.', '💰', [
+                ('sponsor_accept', '후원 계약', '수입과 인지도가 오른다.', {'money': 6000000, 'fame': 4}),
+                ('sponsor_decline', '정중히 거절', '훈련과 경기에만 집중한다.', {'loyalty': 3, 'ovr': 1}),
+            ]),
+            ('slump', '갑작스러운 슬럼프', '한 달째 타격/투구 밸런스가 흔들리고 있다.', '📉', [
+                ('slump_fix', '훈련량을 늘린다', '회복을 노리지만 체력 부담이 생긴다.', {'ovr': 2, 'stamina': -15}),
+                ('slump_reset', '과감히 쉰다', '일시적으로 출전은 줄지만 컨디션을 회복한다.', {'stamina': 18, 'ovr': -1}),
+            ]),
+            ('veteran_mentor', '베테랑의 조언', '팀의 베테랑이 당신에게 자신의 노하우를 전수하겠다고 했다.', '🧠', [
+                ('mentor_accept', '배운다', '경험을 흡수해 꾸준함이 좋아진다.', {'ovr': 1, 'loyalty': 6, 'fame': 1}),
+                ('mentor_independent', '스스로 해결한다', '자신만의 방법을 고집한다.', {'ovr': 2, 'loyalty': -2}),
+            ]),
+            ('fan_vote', '팬 투표 이벤트', '팬들이 뽑는 시즌 인기 선수 후보에 올랐다.', '📣', [
+                ('fan_engage', '팬들과 소통', '팬들의 지지가 크게 올라간다.', {'fame': 8, 'loyalty': 4}),
+                ('fan_focus', '경기에 집중', '팬보다 성적을 선택한다.', {'ovr': 1}),
+            ]),
+            ('defense_special', '수비 특훈', '수비 코치가 당신의 약점을 정확히 짚었다.', '🛡️', [
+                ('defense_yes', '특훈 참가', '수비 능력 향상을 노린다.', {'ovr': 1, 'ability_fielding': 3, 'stamina': -6}),
+                ('defense_no', '타격/투구 집중', '주무기를 더 날카롭게 만든다.', {'ovr': 1, 'stamina': -3}),
+            ]),
+            ('contract_risk', '계약 연장 협상', '구단이 장기 계약을 제안했지만 금액은 기대보다 낮다.', '📝', [
+                ('contract_safe', '안정적으로 서명', '안정적인 커리어를 선택한다.', {'money': 10000000, 'loyalty': 8}),
+                ('contract_bet', '더 기다린다', '성적이 더 좋아지면 큰 계약을 노릴 수 있다.', {'fame': 3, 'loyalty': -4}),
+            ]),
         ]
-        if alt_t:
-            options.append(_club_option(alt_t, LEAGUE_TIER.get(state.league_id, 1)) | {
-                'id': 'leave', 'label': f"{alt_t.get('name')}(으)로 떠나기", 'detail': '새 출발 · 이적 기록 +1',
-            })
-        return {'type': 'fan_backlash', 'title': '팬들의 반발', 'desc': flavor('injury') if False else
-                '최근 부진으로 팬들이 당신의 입지에 의문을 제기하기 시작했다.', 'options': options}
+        key, title, desc, icon, choices = random.choice(events)
+        return {'type': 'random_card', 'event_id': key, 'title': title, 'desc': desc, 'icon': icon,
+                'options': [{'id': i, 'kind': 'plain', 'icon': '✓' if i == 0 else '→', 'label': label,
+                             'detail': detail, 'effect': effect} for i, (label, detail, effect) in enumerate(choices)]}
 
-    # default: transfer window (stay + 2 real-club offers), every decision point
+    # Existing milestone events are kept as rarer special events.
+    if not state.high_school_done and 17 <= state.age <= 19 and random.random() < .30:
+        state.high_school_done = True
+        return {'type':'high_school','title':'학업과 커리어 사이','desc':'학업을 마저 끝낼지, 야구에만 전념할지 결정할 시간이다.','icon':'🎓',
+                'options':[{'id':'accept','kind':'plain','icon':'🎓','label':'학업 병행','detail':'일시적으로 OVR -1, 대신 충성도가 오릅니다.'},
+                           {'id':'reject','kind':'plain','icon':'⚾','label':'야구에 전념','detail':'훈련에 집중합니다.'}]}
+
+    if not state.captain and state.loyalty >= 70 and state.season >= 4 and random.random() < .22:
+        return {'type':'captain','title':'주장 완장 제안','desc':flavor('captain'),'icon':'🎖️',
+                'options':[{'id':'accept','kind':'plain','icon':'🎖️','label':'주장 수락','detail':'명성과 충성도가 상승합니다.'},
+                           {'id':'decline','kind':'plain','icon':'🙅','label':'정중히 거절','detail':'선수 본연에 집중합니다.'}]}
+
+    if (state.overall >= 74 and state.age >= 19 and eligible_competitions(state.nationality, state.age, state.year) and random.random() < .05):
+        competition = random.choice(eligible_competitions(state.nationality, state.age, state.year))
+        return {'type':'national_call','title':'국가대표 합류 여부','desc':f'{competition.get("name", "국제대회")} 대표팀 선발 경쟁에 이름을 올렸다.','icon':'🌍','competition':competition,
+                'options':[{'id':'accept','kind':'plain','icon':'🌍','label':'국가대표 합류','detail':'대표팀 경력과 명성이 상승합니다.'},
+                           {'id':'decline','kind':'plain','icon':'🏟️','label':'클럽에 집중','detail':'이번 소집을 고사합니다.'}]}
+
     tier_now = LEAGUE_TIER.get(state.league_id, 1)
     offers = _offer_candidates(state, 2)
     cur = team(state.team_id) or {}
-    options = [{
-        'id': 'stay', 'kind': 'club', 'label': f"{cur.get('name','현재 구단')}에 잔류",
-        'detail': '안정적인 역할 유지', 'team_id': state.team_id, 'league_id': state.league_id,
-        'name': cur.get('name', '현재 구단'), 'league_name': (league(state.league_id) or {}).get('name', ''),
-        'badge': team_badge(state.team_id, cur.get('name')), 'stay': True,
-    }]
-    for t in offers:
-        options.append(_club_option(t, tier_now))
+    options = [{'id':'stay','kind':'club','label':f"{cur.get('name','현재 구단')}에 잔류",'detail':'안정적인 역할 유지','team_id':state.team_id,'league_id':state.league_id,
+                'name':cur.get('name','현재 구단'),'league_name':(league(state.league_id) or {}).get('name',''),'badge':team_badge(state.team_id,cur.get('name')),'stay':True}]
+    for t in offers: options.append(_club_option(t,tier_now))
     if state.age >= 34:
-        options.append({'id': 'retire_now', 'kind': 'plain', 'icon': '🏁', 'label': '은퇴 결심',
-                         'detail': '지금까지의 커리어를 마무리합니다.'})
-    return {
-        'type': 'transfer_window', 'title': '이적 시장이 열렸다', 'desc': flavor('contract'),
-        'options': options,
-    }
-
+        options.append({'id':'retire_now','kind':'plain','icon':'🏁','label':'은퇴 결심','detail':'지금까지의 커리어를 마무리합니다.'})
+    return {'type':'transfer_window','title':'이적 시장이 열렸다','desc':flavor('contract'),'icon':'🔄','options':options}
 
 def resolve_event(state, option_id):
-    ev = state.pending_event or {}
-    options = ev.get('options', [])
-    chosen = next((o for o in options if o['id'] == option_id), options[0] if options else None)
+    ev=state.pending_event or {}
+    options=ev.get('options',[])
+    chosen=next((o for o in options if str(o.get('id'))==str(option_id)), options[0] if options else None)
     if not chosen:
-        state.decision_used = True
-        return state
-    etype = ev.get('type')
-    label = chosen['label']
-
-    if etype == 'injury':
-        if chosen['id'] == 'early_return':
-            state.stamina = max(20, state.stamina - 10)
-            state.overall = max(30, state.overall - 2)
+        state.decision_used=True; return state
+    etype=ev.get('type'); label=chosen.get('label','선택')
+    if etype=='random_card':
+        effect=chosen.get('effect',{})
+        state.overall=max(30,min(99,state.overall+int(effect.get('ovr',0))))
+        state.potential=max(state.overall,min(99,state.potential+int(effect.get('potential',0))))
+        state.stamina=max(10,min(100,state.stamina+int(effect.get('stamina',0))))
+        state.fame=max(0,min(100,state.fame+int(effect.get('fame',0))))
+        state.loyalty=max(0,min(100,state.loyalty+int(effect.get('loyalty',0))))
+        state.money=max(0,state.money+int(effect.get('money',0)))
+        for key in ('fielding','contact','power','eye','speed','arm','velocity','command','breaking','stamina_skill'):
+            if state.abilities and effect.get('ability_'+key):
+                state.abilities[key]=max(25,min(99,state.abilities.get(key,50)+int(effect['ability_'+key])))
+    elif etype=='injury':
+        if chosen['id']=='early_return': state.stamina=max(20,state.stamina-10); state.overall=max(30,state.overall-2)
+        else: state.stamina=min(100,state.stamina+20)
+        state.injury_active=False
+    elif etype=='high_school':
+        if chosen['id']=='accept': state.overall=max(30,state.overall-1); state.loyalty=min(100,state.loyalty+8)
+    elif etype=='captain':
+        if chosen['id']=='accept': state.captain=True; state.fame=min(100,state.fame+10); state.loyalty=min(100,state.loyalty+10)
+    elif etype=='national_call':
+        if chosen['id']=='accept':
+            state.international_caps+=1; state.fame=min(100,state.fame+8); state.stamina=max(20,state.stamina-8); state.loyalty=max(10,state.loyalty-3)
+            if random.random() < (0.08 + max(0,state.overall-75)*0.003):
+                state.international_titles+=1; comp=ev.get('competition') or {}
+                names={'World Baseball Classic':'월드베이스볼클래식(WBC)','WBSC Premier12':'프리미어12','Olympic Baseball':'올림픽 야구','Asian Games Baseball':'아시안게임 야구','WBSC U-23':'WBSC U-23 야구월드컵','WBSC U-18':'WBSC U-18 야구월드컵'}
+                cname=names.get(comp.get('name'),comp.get('name','국제대회'))
+                trophy={'competition_id':comp.get('competition_id','INTL'),'competition_name':cname,'year':state.year,'age':state.age}
+                state.international_trophies.append(trophy); state.last_trophy={'type':'international','category':'국가대표','name':cname+' 우승','year':state.year}
+                state.last_event=cname+' 우승을 경험했다!'
+        else: state.loyalty=min(100,state.loyalty+5)
+    elif etype=='fan_backlash':
+        if chosen['id']=='fight': state.overall=max(30,state.overall-2); state.loyalty=min(100,state.loyalty+15)
         else:
-            state.stamina = min(100, state.stamina + 20)
-        state.injury_active = False
-
-    elif etype == 'high_school':
-        if chosen['id'] == 'accept':
-            state.overall = max(30, state.overall - 1)
-            state.loyalty = min(100, state.loyalty + 8)
-
-    elif etype == 'captain':
-        if chosen['id'] == 'accept':
-            state.captain = True
-            state.fame = min(100, state.fame + 10)
-            state.loyalty = min(100, state.loyalty + 10)
-
-    elif etype == 'national_call':
-        if chosen['id'] == 'accept':
-            state.international_caps += 1
-            state.fame = min(100, state.fame + 8)
-            state.stamina = max(20, state.stamina - 8)
-            state.loyalty = max(10, state.loyalty - 3)
-            if random.random() < 0.18:
-                state.international_titles += 1
-                competition = ev.get('competition') or {}
-                trophy = {
-                    'competition_id': competition.get('competition_id', 'INTL'),
-                    'competition_name': competition.get('name', '국제대회'),
-                    'year': state.year,
-                    'age': state.age,
-                }
-                state.international_trophies.append(trophy)
-                state.last_trophy = {'type':'international', 'category':'국가대표', 'name':competition.get('name', '국제대회') + ' 우승', 'year':state.year}
-                state.last_event = f'{competition.get("name", "국제대회")} 우승을 경험했다!'
+            state.team_id=chosen.get('team_id') or state.team_id; state.league_id=chosen.get('league_id') or state.league_id; state.transfers_count+=1; state.loyalty=max(10,state.loyalty-15); state.fame=min(100,state.fame+2)
+    elif etype=='transfer_window':
+        if chosen['id']=='retire_now': state.status='retired'
+        elif chosen.get('stay'): state.loyalty=min(100,state.loyalty+6); state.fame=min(100,state.fame+1)
         else:
-            state.loyalty = min(100, state.loyalty + 5)
-
-    elif etype == 'fan_backlash':
-        if chosen['id'] == 'fight':
-            state.overall = max(30, state.overall - 2)
-            state.loyalty = min(100, state.loyalty + 15)
-        else:
-            state.team_id = chosen.get('team_id') or state.team_id
-            state.league_id = chosen.get('league_id') or state.league_id
-            state.transfers_count += 1
-            state.loyalty = max(10, state.loyalty - 15)
-            state.fame = min(100, state.fame + 2)
-
-    elif etype == 'transfer_window':
-        if chosen['id'] == 'retire_now':
-            state.status = 'retired'
-        elif chosen.get('stay'):
-            state.loyalty = min(100, state.loyalty + 6)
-            state.fame = min(100, state.fame + 1)
-        else:
-            new_team, new_league = chosen.get('team_id'), chosen.get('league_id')
-            tier_now = LEAGUE_TIER.get(state.league_id, 1)
-            tier_new = LEAGUE_TIER.get(new_league, tier_now)
-            state.team_id, state.league_id = new_team, new_league
-            state.transfers_count += 1
-            state.loyalty = max(10, state.loyalty - 20)
-            state.role = 'starter' if tier_new < tier_now else ('bench' if tier_new > tier_now else 'rotation')
-            state.fame = min(100, state.fame + (6 if tier_new > tier_now else 2))
-
-    state.last_decision = label
-    state.decision_used = True
-    if not state.last_event or etype in ('transfer_window', 'fan_backlash'):
-        state.last_event = f'{label}을(를) 선택했다.'
-    state.pending_event = None
+            new_team,new_league=chosen.get('team_id'),chosen.get('league_id'); tier_now=LEAGUE_TIER.get(state.league_id,1); tier_new=LEAGUE_TIER.get(new_league,tier_now)
+            state.team_id,state.league_id=new_team,new_league; state.transfers_count+=1; state.loyalty=max(10,state.loyalty-20); state.role='starter' if tier_new<tier_now else ('bench' if tier_new>tier_now else 'rotation'); state.fame=min(100,state.fame+(6 if tier_new>tier_now else 2))
+    state.last_decision=label; state.decision_used=True
+    if not state.last_event or etype in ('transfer_window','fan_backlash','random_card'): state.last_event=f'{label}을(를) 선택했다.'
+    state.pending_event=None
     return state
 
-
-def _mvp_score(state, games, extra, champion=False):
-    """Convert one season's actual production into an MVP ballot score.
-
-    MVP is no longer a random award.  The player's season is compared with
-    four generated league competitors.  The formula rewards production first,
-    then quality/availability and finally team success.
-    """
-    ovr = state.overall
-    if state.position in ('SP', 'RP'):
-        era = extra.get('era', 6.0)
-        wins = extra.get('wins', 0)
-        saves = extra.get('saves', 0)
-        so = extra.get('so', 0)
-        innings = extra.get('innings', 0)
-        if state.position == 'SP':
-            score = (
-                wins * 4.0 + max(0, 4.60 - era) * 17.0 + so * 0.055
-                + innings * 0.025 + ovr * 0.38
-            )
-        else:
-            score = (
-                saves * 2.0 + max(0, 4.20 - era) * 15.0 + so * 0.035
-                + games * 0.10 + ovr * 0.34
-            )
+def _mvp_score(state,games,extra,champion=False):
+    ovr=state.overall
+    if state.position=='SP':
+        era=extra.get('era',6.0); wins=extra.get('wins',0); so=extra.get('so',0); innings=extra.get('innings',0)
+        score=wins*4.6+max(0,4.40-era)*18.5+so*.06+innings*.03+ovr*.30
+        if games<24 or innings<145: score-=max(0,24-games)*5+max(0,145-innings)*.05
+    elif state.position=='RP':
+        era=extra.get('era',6.0); saves=extra.get('saves',0); so=extra.get('so',0)
+        score=saves*2.15+max(0,4.00-era)*17+so*.04+games*.10+ovr*.25
+        if games<55 or saves<30: score-=max(0,55-games)*1.8+max(0,30-saves)*2
     else:
-        avg = extra.get('avg', .250)
-        hr = extra.get('hr', 0)
-        rbi = extra.get('rbi', 0)
-        ops = extra.get('ops', .700)
-        pa = extra.get('pa', 0)
-        score = (
-            max(0, avg - .240) * 620
-            + hr * 1.45 + rbi * 0.72
-            + max(0, ops - .650) * 72
-            + pa * 0.018 + ovr * 0.34
-        )
-    if champion:
-        score += 5.0
-    if state.role == 'starter':
-        score += 2.0
-    elif state.role == 'bench':
-        score -= 3.0
-    return round(score, 1)
+        avg=extra.get('avg',.250); hr=extra.get('hr',0); rbi=extra.get('rbi',0); ops=extra.get('ops',.700); pa=extra.get('pa',0)
+        score=max(0,avg-.240)*760+hr*1.65+rbi*.82+max(0,ops-.650)*105+pa*.025+ovr*.30
+        if games<110 or pa<450: score-=max(0,110-games)*1.5+max(0,450-pa)*.035
+    if champion: score+=7
+    if state.role=='starter': score+=2
+    elif state.role=='bench': score-=5
+    if ovr<82: score-=(82-ovr)*1.8
+    return round(score,1)
 
-
-def _mvp_candidate(state, score, idx):
-    """Create a believable AI MVP candidate for the same league."""
-    rng = random.Random(f"mvp:{state.year}:{state.team_id}:{state.player_name}:{idx}")
-    tier = LEAGUE_TIER.get(state.league_id, 1)
-    base_ovr = max(55, min(96, state.overall + rng.randint(-7, 7) + (tier - 3) * 1))
-    games = rng.randint(105, 144) if state.position not in ('SP','RP') else rng.randint(20, 34)
-    if state.position == 'SP':
-        wins = max(7, round(games * (0.22 + base_ovr / 720) + rng.randint(-3, 3)))
-        era = round(max(1.85, min(5.2, 6.05 - base_ovr / 15 + rng.uniform(-.35, .35))), 2)
-        so = max(70, round(games * rng.uniform(5.0, 7.0) + base_ovr * 1.2))
-        extra = {'wins': wins, 'era': era, 'so': so, 'innings': games * rng.uniform(4.5, 6.4), 'saves': 0}
-        statline = f'{wins}승 · ERA {era} · {so}K'
-    elif state.position == 'RP':
-        games = rng.randint(45, 72)
-        saves = max(8, round((base_ovr - 55) * .75 + rng.randint(-5, 8)))
-        era = round(max(1.75, min(5.0, 5.6 - base_ovr / 16 + rng.uniform(-.35, .35))), 2)
-        so = max(45, round(games * rng.uniform(1.0, 1.7) + base_ovr * .55))
-        extra = {'wins': max(1, rng.randint(2, 9)), 'saves': saves, 'era': era, 'so': so, 'innings': games * rng.uniform(.8, 1.7)}
-        statline = f'{games}경기 · {saves}SV · ERA {era}'
+def _mvp_candidate(state,idx):
+    rng=random.Random(f"mvp:{state.year}:{state.team_id}:{state.player_name}:{idx}:{state.difficulty}")
+    base=max(72,min(98,state.overall+rng.randint(-4,8)))
+    if state.position=='SP':
+        games=rng.randint(25,34); wins=max(12,round(games*(.42+base/1000)+rng.randint(-2,2))); era=round(max(1.75,min(4.8,5.9-base/18+rng.uniform(-.3,.3))),2); innings=games*rng.uniform(5,6.4); so=max(100,round(innings*(6+base/35))); extra={'wins':wins,'saves':0,'era':era,'so':so,'innings':innings}; line=f'{games}경기 · {wins}승 · ERA {era} · {so}K'
+    elif state.position=='RP':
+        games=rng.randint(55,76); saves=max(30,round((base-48)*.75+rng.randint(-3,7))); era=round(max(1.5,min(4.5,5.3-base/17+rng.uniform(-.3,.3))),2); so=max(55,round(games*(1.1+base/100))); extra={'wins':rng.randint(3,10),'saves':saves,'era':era,'so':so,'innings':games*rng.uniform(.9,1.5)}; line=f'{games}경기 · {saves}SV · ERA {era}'
     else:
-        games = rng.randint(110, 144)
-        avg = round(min(.370, max(.255, .275 + (base_ovr - 60) / 1000 + rng.uniform(-.018, .018))), 3)
-        hr = max(8, round(games * max(.05, (base_ovr - 45) / 350) + rng.randint(-5, 6)))
-        rbi = max(25, round(hr * 2.4 + games * (base_ovr - 50) / 420 + rng.randint(-10, 11)))
-        ops = round(min(1.180, max(.620, .560 + base_ovr / 210 + rng.uniform(-.045, .045))), 3)
-        extra = {'avg': avg, 'hr': hr, 'rbi': rbi, 'ops': ops, 'pa': games * rng.uniform(3.5, 4.4)}
-        statline = f'{games}경기 · {avg:.3f} · {hr}HR · {rbi}RBI · OPS {ops:.3f}'
-    fake = type('MVPProxy', (), {
-        'position': state.position, 'overall': base_ovr, 'role': 'starter'
-    })()
-    fake_score = _mvp_score(fake, games, extra, champion=rng.random() < .28)
-    return {
-        'name': f'리그 MVP 후보 {idx}',
-        'overall': base_ovr,
-        'score': fake_score,
-        'statline': statline,
-    }
+        games=rng.randint(112,144); avg=round(min(.370,max(.260,.278+(base-65)/1200+rng.uniform(-.012,.012))),3); hr=max(15,round(games*max(.07,(base-45)/310)+rng.randint(-3,5))); rbi=max(45,round(hr*2.35+games*(base-50)/400+rng.randint(-8,8))); ops=round(min(1.180,max(.700,.590+base/230+rng.uniform(-.035,.035))),3); pa=games*rng.uniform(3.8,4.5); extra={'avg':avg,'hr':hr,'rbi':rbi,'ops':ops,'pa':pa}; line=f'{games}경기 · {avg:.3f} · {hr}HR · {rbi}RBI · OPS {ops:.3f}'
+    fake=type('MVPProxy',(),{'position':state.position,'overall':base,'role':'starter'})()
+    return {'name':f'리그 MVP 후보 {idx}','overall':base,'score':_mvp_score(fake,games,extra,champion=rng.random()<.35),'statline':line}
 
+def _resolve_mvp(state,games,extra,champion=False):
+    if state.position=='SP': eligible=games>=24 and extra.get('innings',0)>=145 and state.overall>=82
+    elif state.position=='RP': eligible=games>=55 and extra.get('saves',0)>=30 and state.overall>=82
+    else: eligible=games>=110 and extra.get('pa',0)>=450 and state.overall>=82
+    player_score=_mvp_score(state,games,extra,champion); candidates=[_mvp_candidate(state,i) for i in range(1,5)]
+    candidates.append({'name':state.player_name,'overall':state.overall,'score':player_score,'statline':(f"{games}경기 · {extra.get('avg',0):.3f} · {extra.get('hr',0)}HR · {extra.get('rbi',0)}RBI" if state.position not in ('SP','RP') else f"{games}경기 · {extra.get('wins',0)}승 · {extra.get('saves',0)}SV · ERA {extra.get('era',0):.2f}")})
+    candidates.sort(key=lambda x:x['score'],reverse=True)
+    for rank,item in enumerate(candidates,1): item['rank']=rank
+    winner=candidates[0]; won=eligible and winner['name']==state.player_name
+    state.last_mvp_race={'year':state.year,'winner':winner['name'],'won':won,'eligible':eligible,'player_score':player_score,'candidates':candidates}
+    return won
 
-def _resolve_mvp(state, games, extra, champion=False):
-    """Run an actual MVP race and return True only when the player wins."""
-    player_score = _mvp_score(state, games, extra, champion)
-    candidates = [_mvp_candidate(state, player_score, i) for i in range(1, 5)]
-    candidates.append({
-        'name': state.player_name,
-        'overall': state.overall,
-        'score': player_score,
-        'statline': (
-            f"{games}경기 · {extra.get('avg', 0):.3f} · {extra.get('hr', 0)}HR · {extra.get('rbi', 0)}RBI"
-            if state.position not in ('SP','RP') else
-            f"{games}경기 · {extra.get('wins', 0)}승 · {extra.get('saves', 0)}SV · ERA {extra.get('era', 0):.2f}"
-        )
-    })
-    candidates.sort(key=lambda x: x['score'], reverse=True)
-    for rank, item in enumerate(candidates, 1):
-        item['rank'] = rank
-    winner = candidates[0]
-    state.last_mvp_race = {
-        'year': state.year,
-        'winner': winner['name'],
-        'won': winner['name'] == state.player_name,
-        'player_score': player_score,
-        'candidates': candidates,
-    }
-    return winner['name'] == state.player_name
-
-
-def _mvp_score(state, games, extra, champion=False):
-    """Turn one season into an MVP ballot score."""
-    ovr = state.overall
-    if state.position in ('SP', 'RP'):
-        era = extra.get('era', 6.0); wins = extra.get('wins', 0); saves = extra.get('saves', 0)
-        so = extra.get('so', 0); innings = extra.get('innings', 0)
-        if state.position == 'SP':
-            score = wins * 4.0 + max(0, 4.60 - era) * 17.0 + so * 0.055 + innings * 0.025 + ovr * 0.38
-        else:
-            score = saves * 2.0 + max(0, 4.20 - era) * 15.0 + so * 0.035 + games * 0.10 + ovr * 0.34
+def _add_individual_awards(state,strength,games,extra,champion=False):
+    awards=[]; allstar_min=20 if state.position=='SP' else 55 if state.position=='RP' else 110
+    if strength>=76 and games>=allstar_min and random.random()<.28: awards.append(('ALL_STAR','올스타','충분한 출전과 성적을 바탕으로 올스타에 선정됐다.','✨'))
+    if state.position=='SP':
+        era=extra.get('era',9.99); wins=extra.get('wins',0); innings=extra.get('innings',0)
+        if era<=2.45 and wins>=15 and innings>=160 and strength>=84 and random.random()<.55: awards.append(('CY_YOUNG','사이영상','리그 최고의 선발투수에게 주어지는 상을 수상했다.','🏅'))
+        if state.age<=22 and strength>=72 and games>=24 and not any(a.get('award_id')=='ROY' for a in state.individual_awards): awards.append(('ROY','신인왕','신인왕을 차지했다.','🌟'))
+    elif state.position=='RP':
+        era=extra.get('era',9.99); saves=extra.get('saves',0)
+        if saves>=35 and era<=2.50 and games>=55 and strength>=84 and random.random()<.55: awards.append(('RELIEVER','올해의 마무리','최고의 마무리투수로 선정됐다.','🚨'))
     else:
-        avg = extra.get('avg', .250); hr = extra.get('hr', 0); rbi = extra.get('rbi', 0)
-        ops = extra.get('ops', .700); pa = extra.get('pa', 0)
-        score = (max(0, avg - .240) * 620 + hr * 1.45 + rbi * 0.72
-                 + max(0, ops - .650) * 72 + pa * 0.018 + ovr * 0.34)
-    if champion: score += 5.0
-    if state.role == 'starter': score += 2.0
-    elif state.role == 'bench': score -= 3.0
-    return round(score, 1)
-
-def _mvp_candidate(state, idx):
-    """Generate a same-league AI MVP candidate with comparable production."""
-    rng = random.Random(f"mvp:{state.year}:{state.team_id}:{state.player_name}:{idx}")
-    tier = LEAGUE_TIER.get(state.league_id, 1)
-    base_ovr = max(55, min(96, state.overall + rng.randint(-7, 7) + (tier - 3)))
-    if state.position == 'SP':
-        games = rng.randint(20, 34)
-        wins = max(7, round(games * (0.22 + base_ovr / 720) + rng.randint(-3, 3)))
-        era = round(max(1.85, min(5.2, 6.05 - base_ovr / 15 + rng.uniform(-.35, .35))), 2)
-        so = max(70, round(games * rng.uniform(5.0, 7.0) + base_ovr * 1.2))
-        extra = {'wins': wins, 'saves': 0, 'era': era, 'so': so, 'innings': games * rng.uniform(4.5, 6.4)}
-        statline = f'{games}경기 · {wins}승 · ERA {era} · {so}K'
-    elif state.position == 'RP':
-        games = rng.randint(45, 72)
-        saves = max(8, round((base_ovr - 55) * .75 + rng.randint(-5, 8)))
-        era = round(max(1.75, min(5.0, 5.6 - base_ovr / 16 + rng.uniform(-.35, .35))), 2)
-        so = max(45, round(games * rng.uniform(1.0, 1.7) + base_ovr * .55))
-        extra = {'wins': rng.randint(2, 9), 'saves': saves, 'era': era, 'so': so, 'innings': games * rng.uniform(.8, 1.7)}
-        statline = f'{games}경기 · {saves}SV · ERA {era}'
-    else:
-        games = rng.randint(110, 144)
-        avg = round(min(.370, max(.255, .275 + (base_ovr - 60) / 1000 + rng.uniform(-.018, .018))), 3)
-        hr = max(8, round(games * max(.05, (base_ovr - 45) / 350) + rng.randint(-5, 6)))
-        rbi = max(25, round(hr * 2.4 + games * (base_ovr - 50) / 420 + rng.randint(-10, 11)))
-        ops = round(min(1.180, max(.620, .560 + base_ovr / 210 + rng.uniform(-.045, .045))), 3)
-        extra = {'avg': avg, 'hr': hr, 'rbi': rbi, 'ops': ops, 'pa': games * rng.uniform(3.5, 4.4)}
-        statline = f'{games}경기 · {avg:.3f} · {hr}HR · {rbi}RBI · OPS {ops:.3f}'
-    fake = type('MVPProxy', (), {'position': state.position, 'overall': base_ovr, 'role': 'starter'})()
-    champion = rng.random() < .28
-    return {'name': f'리그 MVP 후보 {idx}', 'overall': base_ovr,
-            'score': _mvp_score(fake, games, extra, champion), 'statline': statline}
-
-def _resolve_mvp(state, games, extra, champion=False):
-    """Compare the player's season against four league-wide candidates."""
-    player_score = _mvp_score(state, games, extra, champion)
-    candidates = [_mvp_candidate(state, i) for i in range(1, 5)]
-    candidates.append({'name': state.player_name, 'overall': state.overall, 'score': player_score,
-                       'statline': (f"{games}경기 · {extra.get('avg', 0):.3f} · {extra.get('hr', 0)}HR · {extra.get('rbi', 0)}RBI"
-                                    if state.position not in ('SP','RP') else
-                                    f"{games}경기 · {extra.get('wins', 0)}승 · {extra.get('saves', 0)}SV · ERA {extra.get('era', 0):.2f}")})
-    candidates.sort(key=lambda x: x['score'], reverse=True)
-    for rank, item in enumerate(candidates, 1): item['rank'] = rank
-    winner = candidates[0]
-    state.last_mvp_race = {'year': state.year, 'winner': winner['name'],
-                           'won': winner['name'] == state.player_name, 'player_score': player_score,
-                           'candidates': candidates}
-    return winner['name'] == state.player_name
-
-def _add_individual_awards(state, strength, games, extra, champion=False):
-    awards = []
-    if strength >= 72 and games >= (80 if state.position in ('SP','RP') else 100) and random.random() < 0.48:
-        awards.append(('ALL_STAR', '올스타', '시즌 올스타에 선정됐다.', '✨'))
-    if state.position in ('SP','RP'):
-        era = extra.get('era', 9.99); wins = extra.get('wins', 0); saves = extra.get('saves', 0)
-        if state.position == 'SP' and (era <= 2.65 and wins >= 13 and strength >= 78):
-            awards.append(('CY_YOUNG', '사이영상', '리그 최고의 선발투수에게 주어지는 상을 수상했다.', '🏅'))
-        if state.position == 'RP' and saves >= 30 and strength >= 78:
-            awards.append(('RELIEVER', '올해의 마무리', '최고의 마무리투수로 선정됐다.', '🚨'))
-        if state.age <= 22 and strength >= 68 and games >= 20 and not any(a.get('award_id') == 'ROY' for a in state.individual_awards):
-            awards.append(('ROY', '신인왕', '신인왕을 차지했다.', '🌟'))
-    else:
-        avg = extra.get('avg', 0); hr = extra.get('hr', 0); rbi = extra.get('rbi', 0)
-        field = state.abilities.get('fielding', 50) if state.abilities else 50
-        if avg >= .330 and games >= 100: awards.append(('BATTING_TITLE', '타격왕', '시즌 타율 1위를 기록했다.', '🏏'))
-        if hr >= 35 and games >= 100: awards.append(('HR_KING', '홈런왕', '시즌 홈런 1위를 기록했다.', '💥'))
-        if rbi >= 105 and games >= 100: awards.append(('RBI_KING', '타점왕', '시즌 타점 1위를 기록했다.', '🔥'))
-        if field >= 82 and games >= 105: awards.append(('GOLD_GLOVE', '골드글러브', '수비력을 인정받아 골드글러브를 수상했다.', '🧤'))
-        if state.age <= 22 and strength >= 68 and games >= 70 and not any(a.get('award_id') == 'ROY' for a in state.individual_awards):
-            awards.append(('ROY', '신인왕', '신인왕을 차지했다.', '🌟'))
-    if _resolve_mvp(state, games, extra, champion):
-        awards.append(('MVP', 'MVP', '리그 MVP 경쟁에서 가장 높은 평가를 받아 시즌 MVP에 선정됐다.', '👑'))
-    for aid, name, desc, icon in awards:
-        state.individual_awards.append({'award_id': aid, 'name': name, 'desc': desc, 'icon': icon, 'year': state.year, 'age': state.age})
+        avg=extra.get('avg',0); hr=extra.get('hr',0); rbi=extra.get('rbi',0); pa=extra.get('pa',0); field=state.abilities.get('fielding',50) if state.abilities else 50
+        if avg>=.335 and games>=120 and pa>=480: awards.append(('BATTING_TITLE','타격왕','충분한 타석을 소화하고 시즌 타율 1위를 기록했다.','🏏'))
+        if hr>=40 and games>=120: awards.append(('HR_KING','홈런왕','40홈런 이상과 충분한 출장으로 홈런왕을 차지했다.','💥'))
+        if rbi>=110 and games>=120: awards.append(('RBI_KING','타점왕','110타점 이상을 기록하며 타점왕을 차지했다.','🔥'))
+        if field>=90 and games>=120 and strength>=78 and random.random()<.50: awards.append(('GOLD_GLOVE','골드글러브','수비력과 충분한 출장량을 인정받았다.','🧤'))
+        if state.age<=22 and strength>=72 and games>=100 and pa>=400 and not any(a.get('award_id')=='ROY' for a in state.individual_awards): awards.append(('ROY','신인왕','신인왕을 차지했다.','🌟'))
+    if _resolve_mvp(state,games,extra,champion): awards.append(('MVP','MVP','리그 전체 경쟁에서 가장 높은 평가를 받아 MVP에 선정됐다.','👑'))
+    for aid,name,desc,icon in awards: state.individual_awards.append({'award_id':aid,'name':name,'desc':desc,'icon':icon,'year':state.year,'age':state.age})
     return awards
 
 def _add_club_trophies(state, strength):
@@ -1153,15 +962,15 @@ def _add_club_trophies(state, strength):
     # League title. Higher OVR + starter role + league tier = stronger chance.
     league_chance = max(.05, min(.48, .05 + strength / 300 + tier * .012 + (0.05 if state.role == 'starter' else 0)))
     if random.random() < league_chance:
-        trophy = {'type':'league', 'category':'리그', 'name':f"{(league(state.league_id) or {}).get('name','리그')} 우승", 'year':state.year, 'team':canonical_team_name(state.team_id, state.team_id)}
+        trophy = {'type':'league', 'category':'리그', 'name': {'KBO':'KBO 한국시리즈','NPB':'NPB 일본시리즈','MLB':'MLB 월드시리즈','CPBL':'CPBL 대만시리즈'}.get(state.league_id, f"{(league(state.league_id) or {}).get('name','리그')} 챔피언"), 'year':state.year, 'team':canonical_team_name(state.team_id, state.team_id), 'league_id':state.league_id, 'league_name':(league(state.league_id) or {}).get('name', state.league_id)}
         state.club_trophies.append(trophy); state.league_titles += 1; state.titles += 1; state.last_trophy = trophy
     # Domestic cup is rarer and separate from the league title.
     if random.random() < min(.18, .02 + strength / 480 + tier * .006):
-        trophy = {'type':'cup', 'category':'국내 컵', 'name':'국내 컵 우승', 'year':state.year, 'team':canonical_team_name(state.team_id, state.team_id)}
+        trophy = {'type':'cup', 'category':'국내 컵', 'name': {'KBO':'KBO 국내 컵','NPB':'NPB 국내 컵','MLB':'MLB 컵','CPBL':'CPBL 컵'}.get(state.league_id, '국내 컵') + ' 우승', 'year':state.year, 'team':canonical_team_name(state.team_id, state.team_id), 'league_id':state.league_id, 'league_name':(league(state.league_id) or {}).get('name', state.league_id)}
         state.club_trophies.append(trophy); state.cup_titles += 1; state.titles += 1; state.last_trophy = trophy
     # Continental titles are reserved for upper-level leagues.
     if tier >= 4 and random.random() < min(.12, .008 + strength / 900 + (tier-3)*.014):
-        trophy = {'type':'continental', 'category':'대륙 대회', 'name':'대륙 클럽 대회 우승', 'year':state.year, 'team':canonical_team_name(state.team_id, state.team_id)}
+        trophy = {'type':'continental', 'category':'대륙 대회', 'name':'대륙 클럽 대회 우승', 'year':state.year, 'team':canonical_team_name(state.team_id, state.team_id), 'league_id':state.league_id, 'league_name':(league(state.league_id) or {}).get('name', state.league_id)}
         state.club_trophies.append(trophy); state.continental_titles += 1; state.titles += 1; state.last_trophy = trophy
     return state.last_trophy
 
@@ -1171,38 +980,42 @@ def simulate_season(state):
     role_mult = ROLE_INFO.get(state.role, ROLE_INFO['rotation'])
     diff = DIFFICULTY_INFO.get(state.difficulty, DIFFICULTY_INFO['pro'])
 
-    # Age + potential based curve: fast teenage growth, stable prime, gradual decline.
-    # Growth now eases toward each player's individual potential instead of
-    # repeatedly adding the same random amount.
+    # Copero-like OVR curve: explosive development before the mid-20s,
+    # then a long plateau. From 26 onward a season usually ends with no OVR
+    # movement; decline becomes the main force in the mid/late 30s.
     if state.age <= 18:
-        age_base = random.uniform(3.5, 5.5)
+        age_base = random.uniform(3.0, 5.0)
     elif state.age <= 21:
-        age_base = random.uniform(2.7, 4.5)
+        age_base = random.uniform(2.0, 3.8)
     elif state.age <= 24:
-        age_base = random.uniform(1.8, 3.5)
-    elif state.age <= 27:
         age_base = random.uniform(0.8, 2.4)
+    elif state.age <= 25:
+        age_base = random.uniform(0.0, 1.0)
+    elif state.age <= 27:
+        age_base = 0.0 if random.random() < 0.72 else random.uniform(-0.5, 0.6)
     elif state.age <= 30:
-        age_base = random.uniform(0.0, 1.5)
+        age_base = 0.0 if random.random() < 0.78 else random.uniform(-0.6, 0.4)
     elif state.age <= 33:
-        age_base = random.uniform(-0.5, 0.8)
+        age_base = 0.0 if random.random() < 0.55 else random.uniform(-0.9, 0.2)
     elif state.age <= 36:
-        age_base = random.uniform(-1.5, 0.2)
+        age_base = random.uniform(-1.6, 0.0)
     else:
-        age_base = random.uniform(-3.2, -1.0)
+        age_base = random.uniform(-3.2, -1.2)
 
     potential_gap = state.potential - state.overall
     if potential_gap <= 0:
-        age_base = min(age_base, -0.25 if state.age >= 28 else 0.0)
-    elif potential_gap < 5:
-        age_base *= 0.35
-    elif potential_gap < 10:
-        age_base *= 0.65
+        age_base = min(age_base, -0.2 if state.age >= 28 else 0.0)
+    elif potential_gap < 4:
+        age_base *= 0.25
+    elif potential_gap < 8:
+        age_base *= 0.55
 
-    role_bonus = {'starter': 0.45, 'rotation': 0.0, 'bench': -0.45}.get(state.role, 0)
-    growth = age_base + diff['growth_bonus'] + role_bonus
-    # Small random noise keeps OVR from looking scripted while avoiding wild jumps.
-    growth += random.uniform(-0.35, 0.35)
+    role_bonus = {'starter': 0.35, 'rotation': 0.0, 'bench': -0.55}.get(state.role, 0)
+    growth = age_base + diff['growth_bonus'] + role_bonus + random.uniform(-0.25, 0.25)
+    if state.age >= 26 and random.random() < 0.18:
+        growth = 0.0
+    if state.age >= 29 and state.difficulty == 'hell':
+        growth -= random.uniform(0.1, 0.5)
     old_ovr = state.overall
     state.overall = max(30, min(99, round(state.overall + growth)))
     actual_growth = state.overall - old_ovr
@@ -1211,17 +1024,17 @@ def simulate_season(state):
     state.peak_overall = max(state.peak_overall, state.overall)
     _update_abilities(state, actual_growth)
 
-    strength = state.overall
+    strength = state.overall * diff.get('performance_mult', 1.0)
 
     if state.position in ('SP', 'RP'):
         # 선발은 시즌 20~34경기, 불펜은 35~75경기 정도가 현실적인 범위
         if state.position == 'SP':
-            games = max(8, round(random.randint(20, 34) * role_mult['games_mult']))
+            games = max(8, round(random.randint(20, 34) * role_mult['games_mult'] * (0.94 if state.difficulty == 'hell' else 1.0)))
             innings = max(35, round(games * random.uniform(4.2, 6.4)))
             wins = max(0, round(games * (0.15 + strength / 900) + random.randint(-3, 3)))
             saves = 0
         else:
-            games = max(15, round(random.randint(38, 72) * role_mult['games_mult']))
+            games = max(15, round(random.randint(38, 72) * role_mult['games_mult'] * (0.94 if state.difficulty == 'hell' else 1.0)))
             innings = max(25, round(games * random.uniform(0.8, 1.8)))
             wins = max(0, round(games * (0.07 + strength / 1700) + random.randint(-2, 3)))
             saves = max(0, round((strength - 55) / 4 + random.randint(-3, 8))) if strength >= 65 else random.randint(0, 4)
@@ -1235,7 +1048,7 @@ def simulate_season(state):
         primary, secondary = wins, saves
         extra = {'era': era, 'so': so, 'innings': innings}
     else:
-        games = max(35, round(random.randint(100, 144) * role_mult['games_mult']))
+        games = max(35, round(random.randint(100, 144) * role_mult['games_mult'] * (0.94 if state.difficulty == 'hell' else 1.0)))
         pa = max(80, round(games * random.uniform(3.2, 4.5)))
         avg = max(.210, min(.390, .220 + strength / 900 + random.uniform(-.018, .018)))
         hits = max(1, round(pa * avg))
