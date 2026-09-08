@@ -1,87 +1,78 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, url_for
 import os
 import json
 import random
 from datetime import datetime
-from supabase import create_client
-from dynasty import dynasty_bp
-from dynasty_trade_routes import trade_bp
-import os, glob
-from dynasty_import import DATA_DIR
-from dynasty_utils import get_supabase
-from dynasty_fa_routes import fa_bp
-from dynasty_lineup_routes import lineup_bp
-from dynasty_history_routes import history_bp
-from dynasty_player_routes import player_bp
-from dynasty_training_routes import training_bp
-from dynasty_staff_routes import staff_bp
-from dynasty_postseason_routes import ps_bp
-from dynasty_records_routes import records_bp
-from dynasty_live_routes import live_bp
-from scout_routes import scout_bp
-from gauntlet_routes import gauntlet_bp
-from draft_routes import draft_bp
-from auction_routes import auction
-from career_routes import career_bp
-from global_account import account_bp
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-# Do not connect to Supabase while the module is importing.  Render must be
-# able to boot Flask even when the database environment variables are missing
-# or temporarily unavailable.  DB-backed features use dynasty_utils.get_supabase()
-# lazily when they are actually opened.
-supabase = None
-if SUPABASE_URL and SUPABASE_KEY:
-    try:
-        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    except Exception as exc:
-        print(f"[startup] Supabase init skipped: {exc}")
-        supabase = None
-
+# ------------------------------------------------------------
+# BOOT-SAFE APP INITIALIZATION
+# ------------------------------------------------------------
+# IMPORTANT: the login page must be able to render even if one of the
+# optional game modules or Supabase configuration is broken.  The old version
+# imported every game blueprint before Flask was created, so a single import
+# error could make the entire site appear to load forever.
 app = Flask(__name__)
-# A missing SECRET_KEY must never prevent the web process from starting.
-# Render should still set SECRET_KEY in production; this fallback is only a
-# boot-safety net so the login page can be reached and the real error can be
-# diagnosed from the app instead of getting an endless browser spinner.
-app.secret_key = os.getenv("SECRET_KEY") or "144-0-challenge-boot-fallback-change-this"
-app.register_blueprint(dynasty_bp)
-app.register_blueprint(trade_bp)
-app.register_blueprint(fa_bp)
-app.register_blueprint(lineup_bp)
-app.register_blueprint(history_bp)
-app.register_blueprint(player_bp)
-app.register_blueprint(training_bp)
-app.register_blueprint(staff_bp)
-app.register_blueprint(ps_bp)
-app.register_blueprint(records_bp)
-app.register_blueprint(live_bp)
-app.register_blueprint(scout_bp)
-app.register_blueprint(gauntlet_bp)
-app.register_blueprint(draft_bp)
-app.register_blueprint(auction)
-app.register_blueprint(career_bp)
-app.register_blueprint(account_bp)
+app.secret_key = os.getenv("SECRET_KEY") or "1440challenge-dev-secret-change-this"
+
+# Kept for legacy modules that do `from app import supabase`.  Real DB access
+# should use dynasty_utils.get_supabase(), which is lazy.
+supabase = None
+
+# Account/login is the only dependency required for the first screen.
+# Import it before the optional game modules.
+try:
+    from global_account import account_bp
+    app.register_blueprint(account_bp)
+except Exception as exc:
+    print(f"[BOOT] account blueprint import failed: {exc}")
+
+# Public health endpoint: useful for Render and for diagnosing a blank page.
+@app.get("/healthz")
+def healthz():
+    return "ok", 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+# Register game blueprints independently.  A failure in one mode must NOT
+# prevent the login page and the other modes from starting.
+def _register_optional_blueprints():
+    modules = [
+        ("dynasty", "dynasty_bp"),
+        ("dynasty_trade_routes", "trade_bp"),
+        ("dynasty_fa_routes", "fa_bp"),
+        ("dynasty_lineup_routes", "lineup_bp"),
+        ("dynasty_history_routes", "history_bp"),
+        ("dynasty_player_routes", "player_bp"),
+        ("dynasty_training_routes", "training_bp"),
+        ("dynasty_staff_routes", "staff_bp"),
+        ("dynasty_postseason_routes", "ps_bp"),
+        ("dynasty_records_routes", "records_bp"),
+        ("dynasty_live_routes", "live_bp"),
+        ("scout_routes", "scout_bp"),
+        ("gauntlet_routes", "gauntlet_bp"),
+        ("draft_routes", "draft_bp"),
+        ("auction_routes", "auction"),
+        ("career_routes", "career_bp"),
+    ]
+    for module_name, blueprint_name in modules:
+        try:
+            module = __import__(module_name, fromlist=[blueprint_name])
+            bp = getattr(module, blueprint_name)
+            app.register_blueprint(bp)
+            print(f"[BOOT] registered {module_name}")
+        except Exception as exc:
+            print(f"[BOOT] skipped {module_name}: {exc}")
+
+_register_optional_blueprints()
 
 @app.before_request
 def _global_account_gate():
-    # Keep the health endpoint, static files, authentication pages and the
-    # landing page reachable without a session.  In particular, do not force
-    # the very first request through a redirect chain.
-    if request.path in ('/healthz', '/favicon.ico'):
-        return None
+    # Login/register, health check and static assets are public.
     if request.path.startswith('/static/') or request.path.startswith('/account/'):
         return None
-    if request.path == '/':
+    if request.path in ('/favicon.ico', '/healthz'):
         return None
     if not session.get('account_id'):
-        return redirect('/account/login?next=' + request.path)
+        return redirect(url_for('account.login', next=request.path))
     return None
-
-@app.get('/healthz')
-def healthz():
-    return 'ok', 200
 
 BEIJING_2008 = {
     "오승환",
@@ -337,10 +328,6 @@ def load_team(team):
 
 @app.route("/")
 def home():
-    # First visit: render the login screen directly instead of depending on a
-    # redirect/session round-trip.  This is intentionally DB-free.
-    if not session.get("account_id"):
-        return render_template("account_login.html", mode="login", error=None, next="/")
     return render_template("index.html")
 
 ALLOWED_ERAS = ["all_time"]
