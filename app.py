@@ -3,6 +3,7 @@ import os
 import json
 import random
 from datetime import datetime
+from supabase import create_client
 from dynasty import dynasty_bp
 from dynasty_trade_routes import trade_bp
 import os, glob
@@ -24,13 +25,27 @@ from auction_routes import auction
 from career_routes import career_bp
 from global_account import account_bp
 
-# Supabase is initialized lazily by dynasty_utils.get_supabase().
-# Do not connect to Supabase while importing app.py: a temporary/missing
-# environment variable must not make the entire site render as a blank page.
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Do not connect to Supabase while the module is importing.  Render must be
+# able to boot Flask even when the database environment variables are missing
+# or temporarily unavailable.  DB-backed features use dynasty_utils.get_supabase()
+# lazily when they are actually opened.
 supabase = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception as exc:
+        print(f"[startup] Supabase init skipped: {exc}")
+        supabase = None
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY") or "1440challenge-dev-secret-change-in-production"
+# A missing SECRET_KEY must never prevent the web process from starting.
+# Render should still set SECRET_KEY in production; this fallback is only a
+# boot-safety net so the login page can be reached and the real error can be
+# diagnosed from the app instead of getting an endless browser spinner.
+app.secret_key = os.getenv("SECRET_KEY") or "144-0-challenge-boot-fallback-change-this"
 app.register_blueprint(dynasty_bp)
 app.register_blueprint(trade_bp)
 app.register_blueprint(fa_bp)
@@ -51,15 +66,22 @@ app.register_blueprint(account_bp)
 
 @app.before_request
 def _global_account_gate():
-    # One account identity is shared by Career and the other game modes.
-    # Static files and authentication pages remain public.
+    # Keep the health endpoint, static files, authentication pages and the
+    # landing page reachable without a session.  In particular, do not force
+    # the very first request through a redirect chain.
+    if request.path in ('/healthz', '/favicon.ico'):
+        return None
     if request.path.startswith('/static/') or request.path.startswith('/account/'):
         return None
-    if request.path in ('/favicon.ico',):
+    if request.path == '/':
         return None
     if not session.get('account_id'):
         return redirect('/account/login?next=' + request.path)
     return None
+
+@app.get('/healthz')
+def healthz():
+    return 'ok', 200
 
 BEIJING_2008 = {
     "오승환",
@@ -315,6 +337,10 @@ def load_team(team):
 
 @app.route("/")
 def home():
+    # First visit: render the login screen directly instead of depending on a
+    # redirect/session round-trip.  This is intentionally DB-free.
+    if not session.get("account_id"):
+        return render_template("account_login.html", mode="login", error=None, next="/")
     return render_template("index.html")
 
 ALLOWED_ERAS = ["all_time"]
