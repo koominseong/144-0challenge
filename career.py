@@ -808,8 +808,8 @@ def generate_event(state):
         ]
         key, title, desc, icon, choices = random.choice(events)
         return {'type': 'random_card', 'event_id': key, 'title': title, 'desc': desc, 'icon': icon,
-                'options': [{'id': i, 'kind': 'plain', 'icon': '✓' if i == 0 else '→', 'label': label,
-                             'detail': detail, 'effect': effect} for i, (label, detail, effect) in enumerate(choices)]}
+                'options': [{'id': choice_id, 'kind': 'plain', 'icon': '✓' if i == 0 else '→', 'label': label,
+                             'detail': detail, 'effect': effect} for i, (choice_id, label, detail, effect) in enumerate(choices)]}
 
     # Existing milestone events are kept as rarer special events.
     if not state.high_school_done and 17 <= state.age <= 19 and random.random() < .30:
