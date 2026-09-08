@@ -7,14 +7,53 @@
   "special_modes": [
     "하이 클래스 모드"
   ],
-  "ovr_system_included": false,
+  "ovr_system_included": true,
   "total_teams": 319,
   "league_count": 24,
   "difficulty_system": {
-    "rookie": "성장 보정 +1, 부상 위험 20% 감소, 시작 OVR 52",
-    "pro": "표준 밸런스, 시작 OVR 48",
-    "legend": "성장 보정 -1, 부상 위험 25% 증가, 시작 OVR 45"
+    "rookie": "초보자: 시작 OVR 56, 성장 보정 +0.9, 부상 부담 낮음",
+    "pro": "프로: 시작 OVR 51, 성장 보정 -0.15, 26세 이후 정체가 기본",
+    "hell": "파멸: 시작 OVR 47, 성장 보정 -0.85, 높은 부상·성적 변동"
   },
   "fixed_jersey_number": true,
-  "kbo_logo_format": "JPG"
+  "kbo_logo_format": "JPG",
+  "career_v2_features": {
+    "supabase_account_sync": true,
+    "multiple_career_slots": true,
+    "visible_player_attributes": true,
+    "potential_growth_curve": true,
+    "ovr_count_up_animation": true,
+    "trophy_categories": [
+      "리그",
+      "국내 컵",
+      "대륙 클럽 대회",
+      "국가대표 대회"
+    ],
+    "individual_awards": [
+      "올스타",
+      "MVP",
+      "신인왕",
+      "타격왕",
+      "홈런왕",
+      "타점왕",
+      "골드글러브",
+      "사이영상",
+      "올해의 마무리"
+    ],
+    "achievements": 22,
+    "hall_of_fame": true
+  },
+  "career_v3_features": {
+    "copero_style_random_events": true,
+    "strict_individual_awards": true,
+    "achievement_tiers": {
+      "하": 25,
+      "중": 25,
+      "상": 25,
+      "불지옥": 25
+    },
+    "unified_account": true,
+    "unified_mypage": true,
+    "online_pvp_draft": "미구현"
+  }
 }
