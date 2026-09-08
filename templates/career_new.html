@@ -28,7 +28,7 @@
       {% elif error == 'pace' %}진행 속도를 선택해 주세요.
       {% elif error == 'difficulty' %}난이도를 선택해 주세요.
       {% elif error == 'jersey' %}등번호를 1~99 사이로 입력해 주세요.
-      {% else %}입력값을 다시 확인해 주세요.{% endif %}
+      {% elif error == 'db' %}Supabase 저장 테이블을 먼저 생성해 주세요. Data/Career/career_supabase.sql을 실행하면 됩니다.{% else %}입력값을 다시 확인해 주세요.{% endif %}
     </div>
     {% endif %}
     <label>PLAYER NAME<input name="player_name" required maxlength="30" placeholder="선수 이름"></label>
@@ -74,7 +74,7 @@
       <label>DIFFICULTY
         <select name="difficulty" required>
           {% for key, info in difficulty_options.items() %}
-          <option value="{{ key }}" {% if key == 'rookie' %}selected{% endif %}>{{ info.label }} — {{ info.desc }}</option>
+          <option value="{{ key }}" {% if key == 'pro' %}selected{% endif %}>{{ info.label }} — {{ info.desc }}</option>
           {% endfor %}
         </select>
       </label>

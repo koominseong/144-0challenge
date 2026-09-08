@@ -1,137 +1,36 @@
 <!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CAREER MODE</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='career.css', v='20260907-logo-fix') }}">
-</head>
-<body class="career-shell">
-  <div class="career-bg"></div>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ state.player_name }} · CAREER</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='career.css', v='20260908-career-v2') }}"></head>
+<body class="career-shell"><div class="career-bg"></div>
+<header class="career-topbar"><a class="career-brand" href="{{ url_for('career.career_home') }}"><span class="brand-mark">144</span><span><b>CAREER</b><small>BASEBALL LIFE</small></span></a>
+<div class="top-status"><span class="season-pill">AGE <b>{{ state.age }}</b></span><span class="save-dot"></span><span>{{ pace_label }} 진행</span><a href="{{ url_for('career.player') }}" class="back-link">능력치</a><a href="{{ url_for('career.trophies') }}" class="back-link">트로피</a><a href="{{ url_for('career.achievements') }}" class="back-link">업적</a><a href="{{ url_for('career.career_home') }}" class="back-link">내 커리어</a><a href="{{ url_for('career.career_new') }}" class="back-link">＋ 새 게임</a></div></header>
 
-  <header class="career-topbar">
-    <a class="career-brand" href="/">
-      <span class="brand-mark">144</span>
-      <span><b>CAREER</b><small>BASEBALL LIFE</small></span>
-    </a>
-    <div class="top-status">
-      <span class="season-pill">AGE <b>{{ state.age }}</b></span>
-      <span class="save-dot"></span><span>{{ pace_label }} 진행</span>
-      <a href="{{ url_for('career.history') }}" class="back-link" style="margin-left:14px">전체 기록 →</a>
-    </div>
-  </header>
+{% if ovr_toast or trophy_toast or achievement_toasts %}<div class="career-toast-stack">
+{% if ovr_toast %}<div class="ovr-toast" id="ovr-toast"><div class="toast-label">OVR UPDATE</div><div class="toast-ovr"><span id="ovr-old">{{ ovr_toast.from }}</span><b>→</b><strong id="ovr-number">{{ ovr_toast.from }}</strong></div><div class="toast-delta">{{ '+' if ovr_toast.delta > 0 else '' }}{{ ovr_toast.delta }} OVR</div></div>{% endif %}
+{% if trophy_toast %}<div class="trophy-toast"><div class="trophy-toast-icon">🏆</div><div><small>NEW TROPHY</small><strong>{{ trophy_toast.name }}</strong><span>{{ trophy_toast.year }}{% if trophy_toast.team %} · {{ trophy_toast.team }}{% endif %}</span></div></div>{% endif %}
+{% for a in achievement_toasts %}<div class="achievement-toast"><span>{{ a.icon }}</span><div><small>ACHIEVEMENT UNLOCKED</small><strong>{{ a.name }}</strong><em>{{ a.desc }}</em></div></div>{% endfor %}</div>{% endif %}
 
-  <main class="dboard-wrap">
-    <section class="dboard-left">
-      <div class="pcard glass">
-        <div class="pcard-top">
-          <div class="pcard-rating tier-{{ rating_tier }}"><small>OVR</small><b>{{ state.overall }}</b></div>
-          <div class="pcard-id">
-            <div class="pcard-tags">
-              <span class="flag-chip">{{ country.name if country else state.nationality }}</span>
-              {% if team and team_badge(team.team_id, team.name).logo %}<span class="logo-chip"><img src="{{ url_for('static', filename='team_logos/' ~ team_badge(team.team_id, team.name).logo) }}" alt="{{ team.name }}"></span>{% endif %}
-              <span class="num-chip">#{{ state.jersey_number }}</span>
-              <span class="pos-chip">{{ position_label }}</span>
-            </div>
-            <h1>{{ team.name if team else '무소속' }}</h1>
-          </div>
-          <div class="pcard-meta">
-            <span class="age-big">AGE {{ state.age }}</span>
-            <span class="value-line">VALUE ₩{{ '{:,}'.format(market_value) }}</span>
-          </div>
-        </div>
-        <div class="pcard-stats">
-          {% if state.position in ('SP','RP') %}
-          <div><small>GAMES</small><b>{{ state.career_games }}</b></div>
-          <div><small>WINS</small><b>{{ state.career_wins }}</b></div>
-          <div><small>SAVES</small><b>{{ state.career_saves }}</b></div>
-          {% else %}
-          <div><small>GAMES</small><b>{{ state.career_games }}</b></div>
-          <div><small>HR</small><b>{{ state.career_hr }}</b></div>
-          <div><small>RBI</small><b>{{ state.career_rbi }}</b></div>
-          {% endif %}
-        </div>
-        {% if state.titles %}<div class="trophy-row">{% for i in range(state.titles) %}🏆{% endfor %}</div>{% endif %}
-        {% if state.international_trophies %}<div class="trophy-row" title="국가대표 국제대회 우승">🌍 {{ state.international_trophies|length }}개 국제대회 우승</div>{% endif %}
-        <div class="pcard-sub">{{ bats_label }} · {{ role_label }} · 난이도 {{ difficulty_label }}{% if state.captain %} · 주장{% endif %} · 국가대표 {{ state.international_caps }}회</div>
-      </div>
+<main class="dboard-wrap">
+<section class="dboard-left">
+<div class="pcard glass"><div class="pcard-top"><div class="pcard-rating tier-{{ rating_tier }}" id="dashboard-ovr"><small>OVR</small><b>{{ state.overall }}</b></div><div class="pcard-id"><div class="pcard-tags"><span class="flag-chip">{{ country.name if country else state.nationality }}</span>{% if team and team_badge(team.team_id, team.name).logo %}<span class="logo-chip"><img src="{{ url_for('static', filename='team_logos/' ~ team_badge(team.team_id, team.name).logo) }}" alt=""></span>{% endif %}<span class="num-chip">#{{ state.jersey_number }}</span><span class="pos-chip">{{ position_label }}</span></div><h1>{{ state.player_name }}</h1><div class="player-team-line">{{ team.name if team else '무소속' }} · {{ league.name if league else state.league_id }}</div></div><div class="pcard-meta"><span class="age-big">AGE {{ state.age }}</span><span class="value-line">VALUE ₩{{ '{:,}'.format(market_value) }}</span></div></div>
+<div class="pcard-stats">{% if state.position in ('SP','RP') %}<div><small>GAMES</small><b>{{ state.career_games }}</b></div><div><small>WINS</small><b>{{ state.career_wins }}</b></div><div><small>SAVES</small><b>{{ state.career_saves }}</b></div>{% else %}<div><small>GAMES</small><b>{{ state.career_games }}</b></div><div><small>HR</small><b>{{ state.career_hr }}</b></div><div><small>RBI</small><b>{{ state.career_rbi }}</b></div>{% endif %}</div>
+<div class="quick-links"><a href="{{ url_for('career.player') }}">능력치 <b>{{ state.potential }}</b></a><a href="{{ url_for('career.trophies') }}">트로피 <b>{{ state.titles + state.international_titles }}</b></a><a href="{{ url_for('career.achievements') }}">업적 <b>{{ achievements|length }}</b></a></div>
+<div class="pcard-sub">{{ bats_label }} · {{ role_label }} · 난이도 {{ difficulty_label }} · 잠재력 {{ state.potential }}{% if state.captain %} · 주장{% endif %} · 국가대표 {{ state.international_caps }}회</div></div>
 
-      <div class="decision-panel glass" id="season-decision">
-        {% if state.pending_event %}
-          <p class="eyebrow">{{ state.pending_event.type|upper }}</p>
-          <h2>{{ state.pending_event.title }}</h2>
-          <p class="ev-desc">{{ state.pending_event.desc }}</p>
-          <form method="post" action="{{ url_for('career.decision') }}" class="option-grid">
-            {% for opt in state.pending_event.options %}
-              {% if opt.kind == 'club' %}
-              <button class="option-card club-option {{ 'is-stay' if opt.get('stay') else '' }}" type="submit" name="option_id" value="{{ opt.id }}">
-                <span class="oc-label">{{ '잔류' if opt.get('stay') else '이적 제안' }}</span>
-                <b>{{ opt.name }}</b>
-                <span class="team-badge" style="background:{{ opt.badge.color }}">{% if opt.badge.logo %}<img src="{{ url_for('static', filename='team_logos/' ~ opt.badge.logo) }}" alt="">{% else %}{{ opt.badge.text }}{% endif %}</span>
-                <small>{{ opt.league_name }}</small>
-                <em>{{ opt.detail }}</em>
-              </button>
-              {% else %}
-              <button class="option-card plain-option" type="submit" name="option_id" value="{{ opt.id }}">
-                <span class="oc-icon">{{ opt.icon or '➤' }}</span>
-                <b>{{ opt.label }}</b>
-                <em>{{ opt.detail }}</em>
-              </button>
-              {% endif %}
-            {% endfor %}
-          </form>
-        {% else %}
-          <p class="eyebrow">STANDBY</p>
-          <h2>다음 시즌을 준비 중입니다</h2>
-          <p class="ev-desc">잠시 후 새로운 결정이 찾아옵니다.</p>
-        {% endif %}
-      </div>
-    </section>
-
-    <section class="dboard-right glass">
-      <div class="tl-head">
-        <span>AGE</span><span>CLUB</span><span>OVR</span>
-        <span>{{ 'W-SV' if state.position in ('SP','RP') else 'HR' }}</span>
-        <span>{{ 'ERA' if state.position in ('SP','RP') else 'RBI' }}</span>
-      </div>
-      <div class="tl-body">
-        {% for r in rows %}
-        <div class="tl-row">
-          <span class="tl-age">{{ r.age }}</span>
-          <span class="tl-club">
-            <span class="team-badge sm" style="background:{{ r.badge.color }}">{% if r.badge.logo %}<img src="{{ url_for('static', filename='team_logos/' ~ r.badge.logo) }}" alt="">{% else %}{{ r.badge.text }}{% endif %}</span>
-            {{ r.team }}
-            {% if r.champion %}<span class="tl-icon" title="우승">🏆</span>{% endif %}
-            {% if r.transferred_out %}<span class="tl-icon tl-out" title="이적">↓</span>{% endif %}
-            {% if r.injury %}<span class="tl-icon" title="부상">🩹</span>{% endif %}
-          </span>
-          <span><span class="rating-chip tier-{{ r.tier }}">{{ r.rating }}</span></span>
-          <span>{{ r.primary }}{{ '-' ~ r.secondary if state.position in ('SP','RP') else '' }}</span>
-          <span>{{ r.secondary if state.position not in ('SP','RP') else r.games }}</span>
-        </div>
-        {% endfor %}
-        {% if pending_age %}
-        <div class="tl-row tl-pending">
-          <span class="tl-age">{{ pending_age }}</span>
-          <span class="tl-club">? Choosing club…</span>
-          <span><span class="rating-chip tier-{{ rating_tier }}">{{ state.overall }}</span></span>
-          <span>-</span><span>-</span>
-        </div>
-        {% endif %}
-        {% for a in future_ages %}
-        <div class="tl-row tl-future">
-          <span class="tl-age">{{ a }}</span>
-          <span class="tl-club">-</span><span>-</span><span>-</span><span>-</span>
-        </div>
-        {% endfor %}
-      </div>
-      <div class="tl-national">
-        <span>{{ country.name if country else state.nationality }} 국가대표</span>
-        <b>{{ state.international_caps }}경기 · {{ state.international_titles }}회 우승</b>
-        {% if state.international_trophies %}<small>{% for t in state.international_trophies|groupby('competition_name') %}{{ t.grouper }} {{ t.list|length }}회{% if not loop.last %} · {% endif %}{% endfor %}</small>{% endif %}
-      </div>
-    </section>
-  </main>
-  <script src="{{ url_for('static', filename='career.js') }}"></script>
-</body>
-</html>
+<div class="decision-panel glass" id="season-decision">{% if state.pending_event %}<p class="eyebrow">{{ state.pending_event.type|upper }}</p><h2>{{ state.pending_event.title }}</h2><p class="ev-desc">{{ state.pending_event.desc }}</p><form method="post" action="{{ url_for('career.decision') }}" class="option-grid">{% for opt in state.pending_event.options %}{% if opt.kind == 'club' %}<button class="option-card club-option {{ 'is-stay' if opt.get('stay') else '' }}" type="submit" name="option_id" value="{{ opt.id }}"><span class="oc-label">{{ '잔류' if opt.get('stay') else '이적 제안' }}</span><b>{{ opt.name }}</b><span class="team-badge" style="background:{{ opt.badge.color }}">{% if opt.badge.logo %}<img src="{{ url_for('static', filename='team_logos/' ~ opt.badge.logo) }}" alt="">{% else %}{{ opt.badge.text }}{% endif %}</span><small>{{ opt.league_name }}</small><em>{{ opt.detail }}</em></button>{% else %}<button class="option-card plain-option" type="submit" name="option_id" value="{{ opt.id }}"><span class="oc-icon">{{ opt.icon or '➤' }}</span><b>{{ opt.label }}</b><em>{{ opt.detail }}</em></button>{% endif %}{% endfor %}</form>{% else %}<p class="eyebrow">STANDBY</p><h2>다음 시즌을 준비 중입니다</h2><p class="ev-desc">잠시 후 새로운 결정이 찾아옵니다.</p>{% endif %}</div>
+{% if state.last_mvp_race %}
+<div class="mvp-race-panel glass">
+<div class="section-head"><div><p class="eyebrow">{{ state.last_mvp_race.year }} MVP RACE</p><h2>{{ '🏆 MVP 수상' if state.last_mvp_race.won else 'MVP 경쟁 결과' }}</h2></div><strong class="mvp-result">{{ state.last_mvp_race.candidates[0].name }}</strong></div>
+<div class="mvp-candidates">
+{% for c in state.last_mvp_race.candidates %}
+<div class="mvp-candidate {{ 'is-me' if c.name == state.player_name else '' }} {{ 'is-winner' if c.rank == 1 else '' }}"><span>{{ c.rank }}</span><div><b>{{ c.name }}</b><small>OVR {{ c.overall }} · {{ c.statline }}</small></div><strong>{{ c.score }}</strong></div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+</section>
+<section class="dboard-right glass"><div class="tl-head"><span>AGE</span><span>CLUB</span><span>OVR</span><span>{{ 'W-SV' if state.position in ('SP','RP') else 'HR' }}</span><span>{{ 'ERA' if state.position in ('SP','RP') else 'RBI' }}</span></div><div class="tl-body">{% for r in rows %}<div class="tl-row"><span class="tl-age">{{ r.age }}</span><span class="tl-club"><span class="team-badge sm" style="background:{{ r.badge.color }}">{% if r.badge.logo %}<img src="{{ url_for('static', filename='team_logos/' ~ r.badge.logo) }}" alt="">{% else %}{{ r.badge.text }}{% endif %}</span>{{ r.team }}{% if r.champion %}<span class="tl-icon" title="우승">🏆</span>{% endif %}{% if r.trophy %}<span class="tl-icon" title="트로피">🥇</span>{% endif %}{% if r.awards %}<span class="tl-icon" title="개인 수상">✨</span>{% endif %}{% if r.transferred_out %}<span class="tl-icon tl-out" title="이적">↓</span>{% endif %}{% if r.injury %}<span class="tl-icon" title="부상">🩹</span>{% endif %}</span><span><span class="rating-chip tier-{{ r.tier }}">{{ r.rating }}</span>{% if r.ovr_change %}<small class="mini-delta {{ 'up' if r.ovr_change > 0 else 'down' }}">{{ '+' if r.ovr_change > 0 else '' }}{{ r.ovr_change }}</small>{% endif %}</span><span>{{ r.primary }}{{ '-' ~ r.secondary if state.position in ('SP','RP') else '' }}</span><span>{{ r.secondary if state.position not in ('SP','RP') else r.era }}</span></div>{% endfor %}{% if pending_age %}<div class="tl-row tl-pending"><span class="tl-age">{{ pending_age }}</span><span class="tl-club">? 다음 선택 대기</span><span><span class="rating-chip tier-{{ rating_tier }}">{{ state.overall }}</span></span><span>-</span><span>-</span></div>{% endif %}{% for a in future_ages %}<div class="tl-row tl-future"><span class="tl-age">{{ a }}</span><span class="tl-club">-</span><span>-</span><span>-</span><span>-</span></div>{% endfor %}</div>
+<div class="trophy-mini-row"><div><small>CLUB</small><b>{{ state.league_titles }} 리그 · {{ state.cup_titles }} 컵 · {{ state.continental_titles }} 대륙</b></div><div><small>NATIONAL</small><b>{{ state.international_titles }} 우승</b></div><div><small>AWARDS</small><b>{{ state.individual_awards|length }}개</b></div></div>
+<div class="tl-national"><span>{{ country.name if country else state.nationality }} 국가대표</span><b>{{ state.international_caps }}경기 · {{ state.international_titles }}회 우승</b></div></section>
+</main>
+<script>window.CAREER_OVR_TOAST={{ ovr_toast|tojson if ovr_toast else 'null' }};</script><script src="{{ url_for('static', filename='career.js', v='20260908-career-v2') }}"></script></body></html>

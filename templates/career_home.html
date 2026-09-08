@@ -1,36 +1,4 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CAREER MODE</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
-</head>
-<body class="career-shell">
-  <div class="career-bg"></div>
-  <header class="career-topbar">
-    <a class="career-brand" href="/">
-      <span class="brand-mark">144</span>
-      <span><b>CAREER</b><small>BASEBALL LIFE</small></span>
-    </a>
-    <span class="season-pill">NO SAVE YET</span>
-  </header>
-
-  <main class="creator career-intro">
-    <div class="creator-copy">
-      <p class="eyebrow">PLAYER JOURNEY</p>
-      <h1>LIVE A<br><em>BASEBALL LIFE.</em></h1>
-      <p>선수를 만들면 국적에 맞는 3개 구단의 유스 제안 중 하나를 선택해 프로 커리어를 시작합니다. 시즌마다
-      이적·재계약·부상·국가대표 소집 같은 갈림길에서 내리는 선택이 은퇴까지 완전히 다른 이야기를 만듭니다.</p>
-      <a class="primary-cta full" href="{{ url_for('career.career_new') }}"><span>START NEW CAREER</span><b>→</b></a>
-      <a class="back-link intro-back" href="/">← MAIN MENU</a>
-    </div>
-    <div class="intro-panel glass">
-      <div class="intro-row"><span>01</span><div><b>선수 생성</b><p>국적 · 포지션 · 타석 · 진행 속도를 정합니다.</p></div></div>
-      <div class="intro-row"><span>02</span><div><b>첫 구단 선택</b><p>국적 기반 3개 구단의 유스 제안 중 하나와 계약합니다.</p></div></div>
-      <div class="intro-row"><span>03</span><div><b>시즌 갈림길</b><p>이적, 재계약, 부상 복귀, 국가대표 소집, 주장 완장 같은 선택이 커리어를 바꿉니다.</p></div></div>
-      <div class="intro-row"><span>04</span><div><b>은퇴</b><p>만 40세가 되면 통산 기록이 담긴 공유용 결과 카드를 완성합니다.</p></div></div>
-    </div>
-  </main>
-</body>
-</html>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CAREER MODE</title><link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}"></head>
+<body class="career-shell"><div class="career-bg"></div><header class="career-topbar"><a class="career-brand" href="/"><span class="brand-mark">144</span><span><b>CAREER</b><small>BASEBALL LIFE</small></span></a><span class="season-pill">ACCOUNT REQUIRED</span></header>
+<main class="creator career-intro"><div class="creator-copy"><p class="eyebrow">PLAYER JOURNEY</p><h1>BUILD A<br><em>BASEBALL LEGACY.</em></h1><p>한 명의 선수를 16세부터 은퇴까지 키우세요. OVR 성장, 개인 능력치, 이적, 리그·컵 우승, 국가대표, 개인 수상, 업적이 모두 하나의 커리어 기록으로 남습니다.</p><div class="btnrow" style="margin-top:28px"><a class="primary-cta" href="{{ url_for('career.login') }}">LOGIN <b>→</b></a><a class="secondary-cta compact" href="{{ url_for('career.register') }}">CREATE ACCOUNT</a></div><a class="back-link intro-back" href="/">← MAIN MENU</a></div>
+<div class="intro-panel glass"><div class="intro-row"><span>01</span><div><b>성장</b><p>나이와 잠재력에 따라 성장·전성기·하락이 자연스럽게 이어집니다.</p></div></div><div class="intro-row"><span>02</span><div><b>수상</b><p>리그 MVP, 타격왕, 홈런왕, 골드글러브, 사이영상, 올스타 등을 획득합니다.</p></div></div><div class="intro-row"><span>03</span><div><b>트로피</b><p>리그 / 국내 컵 / 대륙 대회 / 국가대표 대회를 별도 카테고리로 수집합니다.</p></div></div><div class="intro-row"><span>04</span><div><b>업적</b><p>계정 단위로 업적을 영구 저장합니다. 기기를 바꿔도 업적과 커리어가 남습니다.</p></div></div></div></main></body></html>
