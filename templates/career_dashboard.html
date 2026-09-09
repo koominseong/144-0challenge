@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ state.player_name }} · CAREER</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='career.css', v='20260908-career-v2') }}"></head>
+<link rel="stylesheet" href="{{ url_for('static', filename='career.css', v='20260908-career-v2') }}"><link rel="stylesheet" href="{{ url_for('static', filename='overlay-fix.css', v='20260909-overlayfix') }}">
+</head>
 <body class="career-shell"><div class="career-bg"></div>
 <header class="career-topbar"><a class="career-brand" href="{{ url_for('career.career_home') }}"><span class="brand-mark">144</span><span><b>CAREER</b><small>BASEBALL LIFE</small></span></a>
 <div class="top-status"><span class="season-pill">AGE <b>{{ state.age }}</b></span><span class="save-dot"></span><span>{{ pace_label }} 진행</span><a href="{{ url_for('career.player') }}" class="back-link">능력치</a><a href="{{ url_for('career.trophies') }}" class="back-link">트로피</a><a href="{{ url_for('career.achievements') }}" class="back-link">업적</a><a href="{{ url_for('career.career_home') }}" class="back-link">내 커리어</a><a href="{{ url_for('career.career_new') }}" class="back-link">＋ 새 게임</a></div></header>
