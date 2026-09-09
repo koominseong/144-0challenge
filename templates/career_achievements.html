@@ -1,1 +1,62 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>업적 · CAREER</title><link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}"></head><body class="career-shell"><div class="career-bg"></div><header class="career-topbar"><a class="career-brand" href="{{ url_for('career.career_home') }}"><span class="brand-mark">144</span><span><b>ACHIEVEMENTS</b><small>CAREER ACCOUNT</small></span></a><div class="top-status"><span class="season-pill">{{ unlocked_count }} / {{ total }}</span><a class="back-link" href="{{ url_for('career.career_home') }}">← 커리어</a></div></header><main class="wrap"><section class="hero"><p class="eyebrow">CAREER ACHIEVEMENTS</p><h1>나의 업적</h1><p class="muted-line">Career 100개 + 144-0 / PVP / Draft / Auction / Scout / Dynasty의 통합 업적. 한 번 달성한 업적은 계정에 영구 저장됩니다.</p></section>{% for key,label,icon in [('easy','하','🟢'),('normal','중','🔵'),('hard','상','🟠'),('hell','불지옥','☠️')] %}<section class="achievement-tier tier-{{ key }}"><div class="achievement-tier-head"><div><span class="tier-icon">{{ icon }}</span><h2>{{ label }}</h2></div><span>{{ items|selectattr('tier','equalto',key)|selectattr('unlocked')|list|length }} / 25</span></div><div class="achievement-grid">{% for a in items if a.tier == key %}<div class="achievement-card {{ 'unlocked' if a.unlocked else 'locked' }}"><div class="achievement-icon">{{ a.icon if a.unlocked else '🔒' }}</div><div><h3>{{ a.name }}</h3><p>{{ a.desc }}</p></div><span class="achievement-status">{{ 'UNLOCKED' if a.unlocked else 'LOCKED' }}</span></div>{% endfor %}</div></section>{% endfor %}<section class="card account-extra-achievements"><div class="section-head"><div><h2>🎮 다른 모드에서 얻은 업적</h2><p>Career / 144-0 Challenge / PVP / Draft / Auction / Scout / Dynasty 공통 계정 업적</p></div></div>{% if account_extra %}<div class="achievement-mini-list">{% for a in account_extra %}<div><span>🏅</span><b>{{ a.achievement_name }}</b><small>{{ a.unlocked_at[:10] if a.unlocked_at else '' }}</small></div>{% endfor %}</div>{% else %}<div class="empty">아직 다른 모드 업적이 없습니다.</div>{% endif %}</section></main></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>업적 · 144-0 CHALLENGE</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='career.css') }}">
+<style>
+.mode-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 28px}
+.mode-tab{border:1px solid #334155;background:#0f172a;color:#cbd5e1;border-radius:10px;padding:10px 15px;cursor:pointer;font-weight:800}
+.mode-tab.active{background:#2563eb;color:white;border-color:#60a5fa}
+.mode-panel{display:none}.mode-panel.active{display:block}
+.mode-title{display:flex;justify-content:space-between;align-items:end;margin:10px 0 18px}
+</style>
+</head>
+<body class="career-shell">
+<div class="career-bg"></div>
+<header class="career-topbar">
+<a class="career-brand" href="{{ url_for('career.career_home') }}"><span class="brand-mark">144</span><span><b>ACHIEVEMENTS</b><small>GAME ACCOUNT</small></span></a>
+<div class="top-status"><span class="season-pill">{{ unlocked_count }} / {{ total + 600 }}</span><a class="back-link" href="/">← 메인</a></div>
+</header>
+<main class="wrap">
+<section class="hero"><p class="eyebrow">ACHIEVEMENTS</p><h1>나의 업적</h1>
+<p class="muted-line">기존 Career 업적 형식을 그대로 유지하면서 각 모드별 100개의 업적을 추가했습니다.</p></section>
+
+<div class="mode-tabs">
+<button class="mode-tab active" data-mode="career">⚾ Career</button>
+{% for mode,label,icon in [('scout','Scout','🔎'),('dynasty','Dynasty','👑'),('trait','Trait','🧬'),('classic','Classic','⚾'),('gauntlet','Gauntlet','🔥'),('auction','Auction','💰')] %}
+<button class="mode-tab" data-mode="{{ mode }}">{{ icon }} {{ label }}</button>
+{% endfor %}
+</div>
+
+<section class="mode-panel active" id="mode-career">
+{% for key,label,icon in [('easy','하','🟢'),('normal','중','🔵'),('hard','상','🟠'),('hell','불지옥','☠️')] %}
+<section class="achievement-tier tier-{{ key }}"><div class="achievement-tier-head"><div><span class="tier-icon">{{ icon }}</span><h2>{{ label }}</h2></div><span>{{ items|selectattr('tier','equalto',key)|selectattr('unlocked')|list|length }} / 25</span></div>
+<div class="achievement-grid">{% for a in items if a.tier == key %}<div class="achievement-card {{ 'unlocked' if a.unlocked else 'locked' }}"><div class="achievement-icon">{{ a.icon if a.unlocked else '🔒' }}</div><div><h3>{{ a.name }}</h3><p>{{ a.desc }}</p></div><span class="achievement-status">{{ 'UNLOCKED' if a.unlocked else 'LOCKED' }}</span></div>{% endfor %}</div></section>
+{% endfor %}
+</section>
+
+{% for mode,label,icon in [('scout','Scout','🔎'),('dynasty','Dynasty','👑'),('trait','Trait','🧬'),('classic','Classic','⚾'),('gauntlet','Gauntlet','🔥'),('auction','Auction','💰')] %}
+<section class="mode-panel" id="mode-{{ mode }}">
+<div class="mode-title"><div><p class="eyebrow">{{ label|upper }} ACHIEVEMENTS</p><h2>{{ icon }} {{ label }} 업적</h2></div><strong>{{ mode_items[mode]|selectattr('unlocked')|list|length }} / 100</strong></div>
+{% for key,tier_label,tier_icon in [('easy','하','🟢'),('normal','중','🔵'),('hard','상','🟠'),('hell','불지옥','☠️')] %}
+<section class="achievement-tier tier-{{ key }}"><div class="achievement-tier-head"><div><span class="tier-icon">{{ tier_icon }}</span><h2>{{ tier_label }}</h2></div><span>{{ mode_items[mode]|selectattr('tier','equalto',key)|selectattr('unlocked')|list|length }} / 25</span></div>
+<div class="achievement-grid">{% for a in mode_items[mode] if a.tier == key %}<div class="achievement-card {{ 'unlocked' if a.unlocked else 'locked' }}"><div class="achievement-icon">{{ a.icon if a.unlocked else '🔒' }}</div><div><h3>{{ a.name }}</h3><p>{{ a.desc }}</p></div><span class="achievement-status">{{ 'UNLOCKED' if a.unlocked else 'LOCKED' }}</span></div>{% endfor %}</div></section>
+{% endfor %}
+</section>
+{% endfor %}
+
+<section class="card account-extra-achievements"><div class="section-head"><div><h2>🎮 기존 계정 업적 기록</h2><p>다른 모드에서 이미 달성한 업적도 계정에 영구 저장됩니다.</p></div></div>
+{% if account_extra %}<div class="achievement-mini-list">{% for a in account_extra %}<div><span>🏅</span><b>{{ a.achievement_name }}</b><small>{{ a.unlocked_at[:10] if a.unlocked_at else '' }}</small></div>{% endfor %}</div>{% else %}<div class="empty">아직 추가 계정 업적이 없습니다.</div>{% endif %}</section>
+</main>
+<script>
+document.querySelectorAll('.mode-tab').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  document.querySelectorAll('.mode-tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.mode-panel').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mode-'+btn.dataset.mode).classList.add('active');
+ });
+});
+</script>
+</body></html>
