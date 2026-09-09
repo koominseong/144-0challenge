@@ -1,0 +1,7 @@
+/* Global overlay safety patch: decorative backgrounds must never cover UI. */
+.career-bg{z-index:0 !important;pointer-events:none !important;}
+.career-shell{position:relative;isolation:isolate;}
+.career-shell > header,
+.career-shell > main,
+.career-shell > footer{position:relative;z-index:1;}
+.career-shell > .career-toast-stack{z-index:50;}
