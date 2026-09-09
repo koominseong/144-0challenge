@@ -673,6 +673,22 @@ def record_run(state):
     except Exception as ex:
         print(f"[gauntlet] 기록 저장 skip: {ex}")
 
+    # 통합 계정 기록 + GAUNTLET 100개 업적
+    try:
+        from flask import session
+        from career_storage import save_game_record
+        from unified_achievements import unlock_mode_achievements
+        aid = session.get("account_id")
+        if aid:
+            save_game_record(aid, "gauntlet", f"{state.get('result','')} · {total_w}승 {total_l}패", total_w, state.get("my_label"))
+            unlock_mode_achievements(aid, "gauntlet", {
+                "wins": total_w, "losses": total_l, "score": total_w,
+                "stage": len(state.get("history", [])), "finished": True,
+                "result": state.get("result", "")
+            })
+    except Exception as ex:
+        print(f"[gauntlet] 계정 업적 저장 skip: {ex}")
+
     # 숨김 save 정리 (선수/로스터/스케줄/라이브 삭제)
     sid = state.get("save_id")
     if sid:

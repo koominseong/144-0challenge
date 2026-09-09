@@ -1,77 +1,75 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect
 import os
 import json
 import random
 from datetime import datetime
+from supabase import create_client
+from dynasty import dynasty_bp
+from dynasty_trade_routes import trade_bp
+import os, glob
+from dynasty_import import DATA_DIR
+from dynasty_utils import get_supabase
+from dynasty_fa_routes import fa_bp
+from dynasty_lineup_routes import lineup_bp
+from dynasty_history_routes import history_bp
+from dynasty_player_routes import player_bp
+from dynasty_training_routes import training_bp
+from dynasty_staff_routes import staff_bp
+from dynasty_postseason_routes import ps_bp
+from dynasty_records_routes import records_bp
+from dynasty_live_routes import live_bp
+from scout_routes import scout_bp
+from gauntlet_routes import gauntlet_bp
+from draft_routes import draft_bp
+from auction_routes import auction
+from career_routes import career_bp
+from global_account import account_bp
+from mode_help import mode_help_bp
+from all_achievements import all_achievements_bp
 
-# ------------------------------------------------------------
-# BOOT-SAFE APP INITIALIZATION
-# ------------------------------------------------------------
-# IMPORTANT: the login page must be able to render even if one of the
-# optional game modules or Supabase configuration is broken.  The old version
-# imported every game blueprint before Flask was created, so a single import
-# error could make the entire site appear to load forever.
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase = create_client(
+    SUPABASE_URL,
+    SUPABASE_KEY
+)
+
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY") or "1440challenge-dev-secret-change-this"
+app.secret_key = os.getenv("SECRET_KEY")
+app.register_blueprint(dynasty_bp)
+app.register_blueprint(trade_bp)
+app.register_blueprint(fa_bp)
+app.register_blueprint(lineup_bp)
+app.register_blueprint(history_bp)
+app.register_blueprint(player_bp)
+app.register_blueprint(training_bp)
+app.register_blueprint(staff_bp)
+app.register_blueprint(ps_bp)
+app.register_blueprint(records_bp)
+app.register_blueprint(live_bp)
+app.register_blueprint(scout_bp)
+app.register_blueprint(gauntlet_bp)
+app.register_blueprint(draft_bp)
+app.register_blueprint(auction)
+app.register_blueprint(career_bp)
+app.register_blueprint(account_bp)
+app.register_blueprint(mode_help_bp)
+app.register_blueprint(all_achievements_bp)
 
-# Kept for legacy modules that do `from app import supabase`.  Real DB access
-# should use dynasty_utils.get_supabase(), which is lazy.
-supabase = None
-
-# Account/login is the only dependency required for the first screen.
-# Import it before the optional game modules.
-try:
-    from global_account import account_bp
-    app.register_blueprint(account_bp)
-except Exception as exc:
-    print(f"[BOOT] account blueprint import failed: {exc}")
-
-# Public health endpoint: useful for Render and for diagnosing a blank page.
-@app.get("/healthz")
-def healthz():
-    return "ok", 200, {"Content-Type": "text/plain; charset=utf-8"}
-
-# Register game blueprints independently.  A failure in one mode must NOT
-# prevent the login page and the other modes from starting.
-def _register_optional_blueprints():
-    modules = [
-        ("dynasty", "dynasty_bp"),
-        ("dynasty_trade_routes", "trade_bp"),
-        ("dynasty_fa_routes", "fa_bp"),
-        ("dynasty_lineup_routes", "lineup_bp"),
-        ("dynasty_history_routes", "history_bp"),
-        ("dynasty_player_routes", "player_bp"),
-        ("dynasty_training_routes", "training_bp"),
-        ("dynasty_staff_routes", "staff_bp"),
-        ("dynasty_postseason_routes", "ps_bp"),
-        ("dynasty_records_routes", "records_bp"),
-        ("dynasty_live_routes", "live_bp"),
-        ("scout_routes", "scout_bp"),
-        ("gauntlet_routes", "gauntlet_bp"),
-        ("draft_routes", "draft_bp"),
-        ("auction_routes", "auction"),
-        ("career_routes", "career_bp"),
-    ]
-    for module_name, blueprint_name in modules:
-        try:
-            module = __import__(module_name, fromlist=[blueprint_name])
-            bp = getattr(module, blueprint_name)
-            app.register_blueprint(bp)
-            print(f"[BOOT] registered {module_name}")
-        except Exception as exc:
-            print(f"[BOOT] skipped {module_name}: {exc}")
-
-_register_optional_blueprints()
+if not app.secret_key:
+    raise Exception("SECRET_KEY missing")
 
 @app.before_request
 def _global_account_gate():
-    # Login/register, health check and static assets are public.
+    # One account identity is shared by Career and the other game modes.
+    # Static files and authentication pages remain public.
     if request.path.startswith('/static/') or request.path.startswith('/account/'):
         return None
-    if request.path in ('/favicon.ico', '/healthz'):
+    if request.path in ('/favicon.ico',):
         return None
     if not session.get('account_id'):
-        return redirect(url_for('account.login', next=request.path))
+        return redirect('/account/login?next=' + request.path)
     return None
 
 BEIJING_2008 = {
@@ -2097,8 +2095,18 @@ def save_record(name, wins, losses, grade):
         supabase.table("records").insert(payload).execute()
     try:
         from career_storage import save_game_record, unlock_custom
-        save_game_record(session.get("account_id"), "144-0", f"{wins}승 {losses}패 · {grade}", wins, None)
-        unlock_custom(session.get("account_id"), [
+        from unified_achievements import unlock_mode_achievements
+        aid = session.get("account_id")
+        mode_name = session.get("mode", "classic")
+        save_game_record(aid, "144-0", f"{wins}승 {losses}패 · {grade}", wins, None)
+        # Trait / Classic each keep a separate account record and 100-achievement track.
+        if mode_name in ("trait", "classic"):
+            save_game_record(aid, mode_name, f"{wins}승 {losses}패 · {grade}", wins, None)
+            unlock_mode_achievements(aid, mode_name, {
+                "wins": wins, "losses": losses, "grade": grade,
+                "score": wins, "result": f"{wins}승 {losses}패 · {grade}"
+            })
+        unlock_custom(aid, [
             {'id':'main_first_record','name':'첫 번째 도전','desc':'144-0 Challenge 기록을 처음 저장하세요.','icon':'⚾'},
             {'id':'main_100wins','name':'강팀의 탄생','desc':'144-0 Challenge에서 100승 이상을 기록하세요.','icon':'🔥'},
             {'id':'main_ss','name':'최고 등급','desc':'144-0 Challenge에서 SS 등급을 기록하세요.','icon':'👑'},
