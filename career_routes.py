@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from unified_achievements import MODE_ACHIEVEMENTS
+
 from career import (
     TEAMS, COUNTRIES, get_state, save_state, new_state, generate_academy_offers,
     start_career, generate_event, resolve_event, simulate_season, advance_after_season,
@@ -291,8 +293,14 @@ def achievements():
         unlocked = set()
     items = [dict(a, unlocked=a['id'] in unlocked) for a in ACHIEVEMENT_DEFS]
     known={a['id'] for a in ACHIEVEMENT_DEFS}
+    for defs in MODE_ACHIEVEMENTS.values():
+        known.update(a['id'] for a in defs)
     account_extra=[r for r in list_achievements(session['career_account_id']) if r.get('achievement_id') not in known]
-    return render_template('career_achievements.html', items=items, account_extra=account_extra, unlocked_count=len(unlocked), total=len(items))
+    mode_items = {}
+    for mode, defs in MODE_ACHIEVEMENTS.items():
+        mode_items[mode] = [dict(a, unlocked=a['id'] in unlocked) for a in defs]
+    return render_template('career_achievements.html', items=items, account_extra=account_extra,
+                           unlocked_count=len(unlocked), total=len(items), mode_items=mode_items)
 
 
 @career_bp.get('/records')

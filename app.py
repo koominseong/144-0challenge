@@ -24,8 +24,6 @@ from draft_routes import draft_bp
 from auction_routes import auction
 from career_routes import career_bp
 from global_account import account_bp
-from mode_help import mode_help_bp
-from all_achievements import all_achievements_bp
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -54,8 +52,6 @@ app.register_blueprint(draft_bp)
 app.register_blueprint(auction)
 app.register_blueprint(career_bp)
 app.register_blueprint(account_bp)
-app.register_blueprint(mode_help_bp)
-app.register_blueprint(all_achievements_bp)
 
 if not app.secret_key:
     raise Exception("SECRET_KEY missing")
@@ -2095,18 +2091,8 @@ def save_record(name, wins, losses, grade):
         supabase.table("records").insert(payload).execute()
     try:
         from career_storage import save_game_record, unlock_custom
-        from unified_achievements import unlock_mode_achievements
-        aid = session.get("account_id")
-        mode_name = session.get("mode", "classic")
-        save_game_record(aid, "144-0", f"{wins}승 {losses}패 · {grade}", wins, None)
-        # Trait / Classic each keep a separate account record and 100-achievement track.
-        if mode_name in ("trait", "classic"):
-            save_game_record(aid, mode_name, f"{wins}승 {losses}패 · {grade}", wins, None)
-            unlock_mode_achievements(aid, mode_name, {
-                "wins": wins, "losses": losses, "grade": grade,
-                "score": wins, "result": f"{wins}승 {losses}패 · {grade}"
-            })
-        unlock_custom(aid, [
+        save_game_record(session.get("account_id"), "144-0", f"{wins}승 {losses}패 · {grade}", wins, None)
+        unlock_custom(session.get("account_id"), [
             {'id':'main_first_record','name':'첫 번째 도전','desc':'144-0 Challenge 기록을 처음 저장하세요.','icon':'⚾'},
             {'id':'main_100wins','name':'강팀의 탄생','desc':'144-0 Challenge에서 100승 이상을 기록하세요.','icon':'🔥'},
             {'id':'main_ss','name':'최고 등급','desc':'144-0 Challenge에서 SS 등급을 기록하세요.','icon':'👑'},
@@ -2127,6 +2113,28 @@ def save_record_route():
         session["final_losses"],
         session["final_grade"]
     )
+
+    # Keep Trait / Classic achievements in the same account-wide system.
+    try:
+        from career_storage import save_game_record
+        from unified_achievements import unlock_mode_achievements
+        aid = session.get("account_id")
+        mode = session.get("mode", "trait")
+        wins = session.get("final_wins", 0)
+        save_game_record(
+            aid,
+            mode,
+            f'{session.get("final_grade", "")} · {wins}승',
+            wins,
+            None,
+        )
+        if mode in {"trait", "classic"}:
+            unlock_mode_achievements(
+                aid, mode,
+                {"score": wins, "rank": 1 if session.get("final_grade") == "SS" else 99}
+            )
+    except Exception as ex:
+        print(f"[achievement] save skip: {ex}")
 
     return redirect("/ranking")
     
