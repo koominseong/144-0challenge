@@ -33,9 +33,9 @@ def new():
     g=_guard()
     if g:return g
     if request.method=='POST':
-        s=KBOState(player_name=request.form.get('name','신인').strip()[:20] or '신인',position=request.form.get('position','SS'),bats=request.form.get('bats','R'),school=request.form.get('school','high'),agent=request.form.get('agent','development'),jersey=max(1,min(99,int(request.form.get('jersey','1') or 1))),ovr=random.randint(52,59))
+        s=KBOState(player_name=request.form.get('name','신인').strip()[:20] or '신인',position=request.form.get('position','SS'),bats=request.form.get('bats','R'),school=request.form.get('school','high'),agent='',jersey=max(1,min(99,int(request.form.get('jersey','1') or 1))),ovr=random.randint(52,59))
         s.potential=random.randint(78,92); session['kbo_state']=asdict(s); session['kbo_draft']=draft_offers(s); return redirect(url_for('kbo.draft'))
-    return render_template('kbo_new.html',positions=POSITIONS,agents=AGENTS)
+    return render_template('kbo_new.html',positions=POSITIONS)
 
 @kbo_bp.get('/draft')
 def draft():
@@ -60,7 +60,7 @@ def dashboard():
     s=_load()
     if not s:return _redirect_home()
     if s.retired:return redirect(url_for('kbo.retire'))
-    return render_template('kbo_dashboard.html',state=s,agent=AGENTS[s.agent],team_name=s.team_name,can_fa=s.fa_eligible,can_post=s.posting_eligible)
+    return render_template('kbo_dashboard.html',state=s,agent=AGENTS.get(s.agent) if s.agent else None,team_name=s.team_name,can_fa=s.fa_eligible,can_post=s.posting_eligible)
 
 @kbo_bp.route('/training',methods=['GET','POST'])
 def training():
@@ -104,7 +104,7 @@ def office():
             apply_office(s,choice)
         _save(s); return redirect(url_for('kbo.dashboard'))
     # Trade is generated only as a visible GM event; opening the page no longer mutates state repeatedly.
-    return render_template('kbo_office.html',state=s,agent=AGENTS[s.agent],trade=s.pending_team_move,fa=s.fa_eligible,posting=s.posting_eligible)
+    return render_template('kbo_office.html',state=s,agent=AGENTS.get(s.agent) if s.agent else None,trade=s.pending_team_move,fa=s.fa_eligible,posting=s.posting_eligible)
 
 
 @kbo_bp.post('/trade/refresh')
@@ -154,6 +154,25 @@ def posting():
             s.overseas=False; s.overseas_years=0; s.posting_stage='KBO 복귀'; s.team_id=random.choice(KBO_TEAMS)[0]; s.team_name=team_name(s.team_id); s.salary=max(3000,int(s.salary*.65)); s.contract_years_left=1; s.notes.append(f'{s.year} 해외 도전 후 KBO 복귀'); _save(s); return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_posting.html',state=s,offers=s.posting_offers)
 
+
+@kbo_bp.route('/agent',methods=['GET','POST'])
+def agent():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        key=request.form.get('agent','')
+        if key in AGENTS:
+            old=s.agent
+            s.agent=key
+            s.agent_trust=60
+            s.notes.append(f"{s.year} 에이전트 변경: {AGENTS[key][0]}")
+            if old and old != key:
+                s.reputation=min(100,s.reputation+1)
+            _save(s)
+        return redirect(url_for('kbo.agent'))
+    return render_template('kbo_agent.html',state=s,agents=AGENTS,current=s.agent)
 
 @kbo_bp.route('/manager',methods=['GET','POST'])
 def manager():
