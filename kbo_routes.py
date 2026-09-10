@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-import uuid, json, zlib, base64
+import uuid
 from kbo_career import *
 from dynasty_utils import get_supabase
 
@@ -9,48 +9,64 @@ def _aid(): return session.get('account_id') or session.get('career_account_id')
 def _guard():
     if not _aid(): return redirect(url_for('account.login',next=request.path))
 
-def _pack_state(s):
-    raw=json.dumps(asdict(s),ensure_ascii=False,separators=(',',':')).encode('utf-8')
-    return base64.b64encode(zlib.compress(raw,9)).decode('ascii')
-
-def _unpack_state(blob):
-    try:
-        return from_dict(json.loads(zlib.decompress(base64.b64decode(blob)).decode('utf-8')))
-    except Exception:
-        return None
+# KBO 상태는 Flask signed-cookie에 절대 넣지 않는다.
+# Render/Gunicorn 한 프로세스에서 Supabase가 잠시 실패하더라도
+# 신규 게임 직후 draft 화면까지는 이어지도록 메모리 fallback을 둔다.
+_KBO_RUNTIME = {}
 
 def _save(s):
-    # Keep only a save id in normal operation; the compressed snapshot is a
-    # small emergency fallback so a missing Supabase table never kicks the user
-    # back to /kbo during rookie creation.
-    session['kbo_state_id']=s.id
-    session['kbo_state_z']=_pack_state(s)
-    session.pop('kbo_state',None)
-    session.modified=True
+    _KBO_RUNTIME[s.id] = asdict(s)
+    # 쿠키에는 UUID 하나만 남긴다.
+    session['kbo_state_id'] = s.id
+    session.pop('kbo_state', None)
+    session.pop('kbo_state_z', None)
+    session.modified = True
     try:
         sb=get_supabase()
-        sb.table('kbo_career_saves').upsert({'id':s.id,'account_id':_aid(),'player_name':s.player_name,'age':s.age,'team_id':s.team_id,'status':'retired' if s.retired else 'active','state':asdict(s)},on_conflict='id').execute()
+        sb.table('kbo_career_saves').upsert({
+            'id':s.id,
+            'account_id':_aid(),
+            'player_name':s.player_name,
+            'age':s.age,
+            'team_id':s.team_id,
+            'status':'retired' if s.retired else 'active',
+            'state':asdict(s)
+        },on_conflict='id').execute()
         return True
-    except Exception:
+    except Exception as e:
+        print('KBO SAVE FALLBACK:', e)
         return False
 
 def _load():
     sid=session.get('kbo_state_id')
-    if sid:
-        try:
-            sb=get_supabase()
-            rows=sb.table('kbo_career_saves').select('state').eq('id',sid).eq('account_id',_aid()).limit(1).execute().data or []
-            if rows and rows[0].get('state'):
-                return from_dict(rows[0]['state'])
-        except Exception:
-            pass
-    packed=session.get('kbo_state_z')
-    if packed:
-        state=_unpack_state(packed)
-        if state: return state
-    raw=session.get('kbo_state')
-    if raw: return from_dict(raw)
-    return None
+    if not sid:
+        return None
+    try:
+        sb=get_supabase()
+        rows=(sb.table('kbo_career_saves')
+                .select('state')
+                .eq('id',sid)
+                .eq('account_id',_aid())
+                .limit(1).execute().data or [])
+        if rows and rows[0].get('state'):
+            return from_dict(rows[0]['state'])
+    except Exception as e:
+        print('KBO LOAD FALLBACK:', e)
+    raw=_KBO_RUNTIME.get(sid)
+    return from_dict(raw) if raw else None
+
+
+def _clear_large_legacy_session():
+    # 기존 Career/144-0/PVP에서 남은 대형 signed-cookie 데이터를 제거한다.
+    # 계정 인증 정보는 건드리지 않는다.
+    keep = {
+        'account_id','account_username','career_account_id','career_username',
+        'kbo_state_id'
+    }
+    for key in list(session.keys()):
+        if key not in keep:
+            session.pop(key, None)
+    session.modified = True
 
 def _redirect_home(): return redirect(url_for('kbo.home'))
 
@@ -83,7 +99,8 @@ def new():
         # session key. This avoids losing the draft when the session is
         # refreshed/serialized and fixes /kbo/new -> /kbo fallback.
         s.draft_offers=draft_offers(s)
-        session.pop('kbo_state',None)
+        # 다른 모드가 남긴 대형 session 데이터를 먼저 비운다.
+        _clear_large_legacy_session()
         session['kbo_state_id']=s.id
         _save(s)
         session.pop('kbo_draft',None)
