@@ -1,0 +1,363 @@
+from flask import Blueprint, render_template, request, redirect, url_for, session
+import uuid
+from kbo_career import *
+from dynasty_utils import get_supabase
+
+kbo_bp=Blueprint('kbo',__name__,url_prefix='/kbo')
+
+def _aid(): return session.get('account_id') or session.get('career_account_id')
+def _guard():
+    if not _aid(): return redirect(url_for('account.login',next=request.path))
+
+def _save(s):
+    session['kbo_state']=asdict(s); session.modified=True
+    try:
+        sb=get_supabase(); sb.table('kbo_career_saves').upsert({'id':s.id,'account_id':_aid(),'player_name':s.player_name,'age':s.age,'team_id':s.team_id,'status':'retired' if s.retired else 'active','state':asdict(s)},on_conflict='id').execute()
+    except Exception: pass
+
+def _load():
+    raw=session.get('kbo_state')
+    if raw: return from_dict(raw)
+    return None
+
+def _redirect_home(): return redirect(url_for('kbo.home'))
+
+@kbo_bp.get('')
+def home():
+    g=_guard()
+    if g:return g
+    s=_load(); return render_template('kbo_home.html',state=s)
+
+@kbo_bp.route('/new',methods=['GET','POST'])
+def new():
+    g=_guard()
+    if g:return g
+    if request.method=='POST':
+        s=KBOState(player_name=request.form.get('name','신인').strip()[:20] or '신인',position=request.form.get('position','SS'),bats=request.form.get('bats','R'),school=request.form.get('school','high'),agent=request.form.get('agent','development'),jersey=max(1,min(99,int(request.form.get('jersey','1') or 1))),ovr=random.randint(52,59))
+        s.potential=random.randint(78,92); session['kbo_state']=asdict(s); session['kbo_draft']=draft_offers(s); return redirect(url_for('kbo.draft'))
+    return render_template('kbo_new.html',positions=POSITIONS,agents=AGENTS)
+
+@kbo_bp.get('/draft')
+def draft():
+    g=_guard()
+    if g:return g
+    s=_load(); offers=session.get('kbo_draft')
+    if not s or not offers:return _redirect_home()
+    return render_template('kbo_draft.html',state=s,offers=offers)
+
+@kbo_bp.post('/draft')
+def draft_choose():
+    g=_guard()
+    if g:return g
+    s=_load(); offers=session.get('kbo_draft') or []; tid=request.form.get('team_id'); chosen=next((x for x in offers if x['team_id']==tid),None)
+    if not chosen:return redirect(url_for('kbo.draft'))
+    s.team_id=chosen['team_id']; s.team_name=chosen['name']; s.money+=chosen['signing_bonus']; s.salary=3000 if s.year>=2027 else 2700; s.notes.append(f"{s.year} 신인드래프트 {chosen['round']}라운드 {s.team_name}"); session.pop('kbo_draft',None); _save(s); return redirect(url_for('kbo.dashboard'))
+
+@kbo_bp.get('/dashboard')
+def dashboard():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if s.retired:return redirect(url_for('kbo.retire'))
+    return render_template('kbo_dashboard.html',state=s,agent=AGENTS[s.agent],team_name=s.team_name,can_fa=s.fa_eligible,can_post=s.posting_eligible)
+
+@kbo_bp.route('/training',methods=['GET','POST'])
+def training():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if request.method=='POST': apply_training(s,request.form.get('choice','recovery')); _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_training.html',state=s)
+
+@kbo_bp.route('/life',methods=['GET','POST'])
+def life():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if request.method=='POST': apply_life(s,request.form.get('choice','rest')); _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_life.html',state=s)
+
+@kbo_bp.route('/office',methods=['GET','POST'])
+def office():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if request.method=='POST':
+        choice=request.form.get('choice','ask_market')
+        if choice=='accept_trade' and s.pending_team_move:
+            old=s.team_name; s.team_id=s.pending_team_move['team_id']; s.team_name=s.pending_team_move['name']; s.loyalty=max(0,s.loyalty-8)
+            s.team_history.append({'year':s.year,'from':old,'to':s.team_name,'type':'트레이드'}); s.notes.append(f"{s.year} 단장 트레이드 수용: {s.team_name}"); s.pending_team_move=None
+        elif choice=='decline_trade':
+            s.loyalty=min(100,s.loyalty+5); s.notes.append(f'{s.year} 트레이드 제안 거절'); s.pending_team_move=None
+        elif choice in ('fa_open','fa_generate') and s.fa_eligible:
+            generate_fa_offer(s)
+            return redirect(url_for('kbo.fa'))
+        elif choice=='posting_start' and s.posting_eligible:
+            s.posting_stage='구단 동의'; s.office_done=True; s.notes.append(f'{s.year} 포스팅 도전 의사 전달')
+            return redirect(url_for('kbo.posting'))
+        elif choice=='military_sangmu' and s.military=='미필':
+            s.military='상무 복무'; s.military_choice='상무'; s.army_years=1; s.stamina=90; s.office_done=True
+        elif choice=='military_active' and s.military=='미필':
+            s.military='현역 복무'; s.military_choice='현역'; s.army_years=1; s.ovr=max(40,s.ovr-2); s.office_done=True
+        else:
+            apply_office(s,choice)
+        _save(s); return redirect(url_for('kbo.dashboard'))
+    # Trade is generated only as a visible GM event; opening the page no longer mutates state repeatedly.
+    return render_template('kbo_office.html',state=s,agent=AGENTS[s.agent],trade=s.pending_team_move,fa=s.fa_eligible,posting=s.posting_eligible)
+
+
+@kbo_bp.post('/trade/refresh')
+def trade_refresh():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if s.age<22 or s.pending_team_move: return redirect(url_for('kbo.office'))
+    teams=[x for x in KBO_TEAMS if x[0]!=s.team_id]; tid,name=random.choice(teams)
+    s.pending_team_move={'team_id':tid,'name':name,'reason':random.choice(['감독의 전력 구상','단장의 리빌딩 계획','우승을 위한 전력 보강','선수단 균형 조정'])}
+    _save(s); return redirect(url_for('kbo.office'))
+
+
+@kbo_bp.route('/fa',methods=['GET','POST'])
+def fa():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if not s.fa_offer and s.fa_eligible: generate_fa_offer(s)
+    if request.method=='POST':
+        action=request.form.get('action'); tid=request.form.get('team_id')
+        if action=='counter':
+            negotiate_fa(s,tid,True); _save(s); return redirect(url_for('kbo.fa'))
+        if action=='sign':
+            ok,offer=negotiate_fa(s,tid,False); _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_fa.html',state=s,offers=(s.fa_offer or {}).get('offers',[]),grade=s.fa_grade,comp=s.fa_compensation)
+
+
+@kbo_bp.route('/posting',methods=['GET','POST'])
+def posting():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        action=request.form.get('action')
+        if action=='consent':
+            s.posting_stage='포스팅 완료'; s.posting_offers=generate_posting_offers(s); _save(s); return redirect(url_for('kbo.posting'))
+        if action=='reject':
+            s.posting_stage='포스팅 철회'; s.posting_offers=[]; s.posting_eligible=False; s.notes.append(f'{s.year} 포스팅 철회'); _save(s); return redirect(url_for('kbo.dashboard'))
+        if action=='accept':
+            idx=int(request.form.get('idx','0')); offer=s.posting_offers[idx]
+            s.overseas=True; s.office_done=True; s.overseas_years=offer['years']; s.posting_stage='해외 도전 중'; s.team_history.append({'year':s.year,'from':s.team_name,'to':offer['team'],'type':'포스팅 해외 진출'}); s.team_id='OVERSEAS'; s.team_name=offer['team']; s.salary=offer['salary']; s.posting_eligible=False; s.notes.append(f"{s.year} 포스팅 성공: {offer['team']}")
+            _save(s); return redirect(url_for('kbo.dashboard'))
+        if action=='return':
+            s.overseas=False; s.overseas_years=0; s.posting_stage='KBO 복귀'; s.team_id=random.choice(KBO_TEAMS)[0]; s.team_name=team_name(s.team_id); s.salary=max(3000,int(s.salary*.65)); s.contract_years_left=1; s.notes.append(f'{s.year} 해외 도전 후 KBO 복귀'); _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_posting.html',state=s,offers=s.posting_offers)
+
+
+@kbo_bp.route('/manager',methods=['GET','POST'])
+def manager():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    roles=[('starter','주전 고정','출장 기회↑ · 체력 소모↑'),('core','핵심 전력','성적 기대↑ · 부담↑'),('rotation','로테이션','컨디션 균형'),('development','육성/관리','출장↓ · 성장/회복↑')]
+    if request.method=='POST':
+        role=request.form.get('role','rotation'); s.manager_role=dict((k,v) for k,v,_ in roles).get(role,'로테이션')
+        if role=='starter': s.stamina=max(25,s.stamina-4); s.reputation=min(100,s.reputation+2)
+        elif role=='core': s.fame=min(100,s.fame+4); s.stamina=max(25,s.stamina-3)
+        elif role=='rotation': s.stamina=min(100,s.stamina+3)
+        else: s.ovr=min(99,s.ovr+random.choice([0,0,1])); s.stamina=min(100,s.stamina+5)
+        s.office_done=True; s.notes.append(f'{s.year} 감독과 역할 협의: {s.manager_role}'); _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_manager.html',state=s,roles=roles)
+
+
+@kbo_bp.get('/achievements')
+def achievements():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    cards=[
+      ('데뷔','18세 시즌을 완주'),('첫 안타','통산 1호 안타 기록'),('첫 홈런','통산 첫 홈런'),('첫 승','투수로 통산 첫 승'),('첫 세이브','통산 첫 세이브'),
+      ('올스타','올스타 선정'),('골든글러브','골든글러브 수상'),('MVP','MVP 수상'),('우승','한국시리즈 우승'),('국가대표','대표팀 첫 발탁'),
+      ('FA','첫 FA 계약'),('FA 2회','두 번째 FA 계약'),('FA 3회','세 번째 FA 계약'),('해외도전','포스팅 해외 진출'),('KBO 복귀','해외 도전 후 복귀'),
+      ('베테랑','35세 시즌 완주'),('40대','40세 시즌 완주'),('장수선수','통산 15시즌 이상'),('100 WAR','통산 WAR 100 달성'),('레전드','통산 WAR 70 달성')]
+    unlocked=[]
+    for title,desc in cards:
+        u=False
+        if title=='데뷔': u=len(s.history)>=1
+        elif title=='첫 안타': u=s.career_games>0 and any((h.get('avg') or 0)>0 for h in s.history if h.get('avg') is not None)
+        elif title=='첫 홈런': u=s.career_hr>=1
+        elif title=='첫 승': u=s.career_wins>=1
+        elif title=='첫 세이브': u=s.career_saves>=1
+        elif title=='올스타': u=s.allstar>=1
+        elif title=='골든글러브': u=s.gg>=1
+        elif title=='MVP': u=s.mvp>=1
+        elif title=='우승': u=s.championships>=1
+        elif title=='국가대표': u=s.national_caps>=1
+        elif title=='FA': u=s.fa_count>=1
+        elif title=='FA 2회': u=s.fa_count>=2
+        elif title=='FA 3회': u=s.fa_count>=3
+        elif title=='해외도전': u=any(h.get('type')=='포스팅 해외 진출' for h in s.team_history)
+        elif title=='KBO 복귀': u=any(h.get('type')=='포스팅 해외 진출' for h in s.team_history) and not s.overseas
+        elif title=='베테랑': u=s.age>=35
+        elif title=='40대': u=s.age>=40 or s.retired
+        elif title=='장수선수': u=len(s.history)>=15
+        elif title=='100 WAR': u=s.career_war>=100
+        elif title=='레전드': u=s.career_war>=70
+        unlocked.append({'title':title,'desc':desc,'unlocked':u})
+    return render_template('kbo_achievements.html',state=s,cards=unlocked)
+
+
+@kbo_bp.route('/number',methods=['GET','POST'])
+def number():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if request.method=='POST':
+        try: n=max(1,min(99,int(request.form.get('jersey','1'))))
+        except: n=s.jersey
+        s.jersey=n; s.notes.append(f'{s.year} 시즌 등번호 {n}번 선택'); s.number_history.append({'year':s.year,'number':n}); _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_number.html',state=s)
+
+@kbo_bp.get('/profile')
+def profile():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    return render_template('kbo_profile.html',state=s)
+
+@kbo_bp.get('/contract')
+def contract():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    return render_template('kbo_contract.html',state=s,can_fa=s.fa_eligible,can_post=s.posting_eligible)
+
+@kbo_bp.get('/family')
+def family():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    return render_template('kbo_family.html',state=s)
+
+@kbo_bp.get('/military')
+def military():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    return render_template('kbo_military.html',state=s)
+
+@kbo_bp.get('/history')
+def history():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    return render_template('kbo_history.html',state=s)
+
+@kbo_bp.route('/event',methods=['GET','POST'])
+def event():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        apply_event(s,request.form.get('choice','rest')); _save(s); return redirect(url_for('kbo.result'))
+    if not s.pending_event:
+        s.pending_event=random_event(s); _save(s)
+    return render_template('kbo_event.html',state=s,event=s.pending_event)
+
+@kbo_bp.route('/national',methods=['GET','POST'])
+def national_action():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        action=request.form.get('action')
+        if action=='accept' and s.national_offer:
+            ev=s.national_offer; s.national_caps+=1
+            result=random.choice(['선발 출전','교체 출전','대회 엔트리 포함'])
+            s.national_history.append({'year':s.year,'event':ev['event'],'result':result})
+            if ev['benefit']:
+                success=random.random()<(.60 if s.ovr>=85 else .42)
+                if success:
+                    s.national_titles+=1; s.military='병역 혜택 획득'; s.notes.append(f"{s.year} {ev['event']} 우승·병역 혜택")
+                else: s.notes.append(f"{s.year} {ev['event']} 참가")
+            else:
+                if random.random()<.18: s.national_titles+=1
+                s.notes.append(f"{s.year} {ev['event']} 참가")
+            s.last_intl=ev['event']; s.national_offer=None
+        elif action=='decline':
+            s.reputation=max(0,s.reputation-2); s.national_offer=None; s.notes.append(f'{s.year} 국가대표 차출 고사')
+        _save(s); return redirect(url_for('kbo.national'))
+    return render_template('kbo_national.html',state=s,offer=s.national_offer)
+
+
+@kbo_bp.get('/season')
+def season():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if not (s.training_done and s.life_done and s.office_done): return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_season.html',state=s)
+
+@kbo_bp.post('/season')
+def season_play():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if s.overseas:
+        s.overseas_years-=1
+        if s.overseas_years<=0:
+            s.overseas=False;s.posting_stage='KBO 복귀 대기';s.team_name='KBO 복귀 대기';s.team_id=random.choice(KBO_TEAMS)[0];s.team_name=team_name(s.team_id);s.fame=min(100,s.fame+5)
+    if s.military_choice:
+        s.army_years-=1
+        if s.army_years<=0: s.military='병역 완료';s.military_choice=''
+    stats=simulate_season(s)
+    # International call-up is an ability/competition based decision, shown to the player before acceptance.
+    intl=None
+    if not s.national_offer and s.age in (20,21,22,23,24,25,26,27,28,29,30,31,32,33,34) and s.ovr>=72:
+        p=.06 + max(0,s.ovr-72)*.018 + (0.08 if s.fame>=50 else 0)
+        if random.random()<min(.72,p):
+            event=random.choice(['WBC','프리미어12','아시안게임','올림픽','APBC'])
+            if event=='올림픽' and s.age not in (21,25,29,33): event='WBC'
+            s.national_offer={'event':event,'benefit':event in ('아시안게임','올림픽'),'reason':random.choice(['최근 성적과 OVR이 대표팀 기준을 충족했습니다.','포지션 경쟁에서 우위를 확보했습니다.','국가대표 코칭스태프의 호출을 받았습니다.'])}
+            intl=event
+    # annual family events
+    if s.age>=25 and not s.spouse and random.random()<.10: s.spouse=True;s.family=min(100,s.family+8)
+    if s.spouse and s.age>=27 and s.children<2 and random.random()<.14: s.children+=1;s.family=min(100,s.family+6)
+    s.last_intl=intl
+    _save(s)
+    return redirect(url_for('kbo.result'))
+
+@kbo_bp.get('/result')
+def result():
+    g=_guard()
+    if g:return g
+    s=_load(); stats=s.season_stats[-1] if s and s.season_stats else None
+    return render_template('kbo_result.html',state=s,stats=stats,needs_event=bool(s and ((s.pending_event and not s.event_done) or s.national_offer)))
+
+@kbo_bp.post('/next')
+def next_age():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if s.pending_event and not s.event_done: return redirect(url_for('kbo.event'))
+    if s.national_offer: return redirect(url_for('kbo.national'))
+    if s.age>=40:
+        s.retired=True;_save(s);return redirect(url_for('kbo.retire'))
+    age_up(s);_save(s);return redirect(url_for('kbo.dashboard'))
+
+@kbo_bp.get('/retire')
+def retire():
+    g=_guard()
+    if g:return g
+    s=_load(); return render_template('kbo_retire.html',state=s)

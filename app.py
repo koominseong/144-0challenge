@@ -23,6 +23,7 @@ from gauntlet_routes import gauntlet_bp
 from draft_routes import draft_bp
 from auction_routes import auction
 from career_routes import career_bp
+from kbo_routes import kbo_bp
 from global_account import account_bp
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -51,6 +52,7 @@ app.register_blueprint(gauntlet_bp)
 app.register_blueprint(draft_bp)
 app.register_blueprint(auction)
 app.register_blueprint(career_bp)
+app.register_blueprint(kbo_bp)
 app.register_blueprint(account_bp)
 
 if not app.secret_key:
