@@ -24,6 +24,8 @@ class KBOState:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     player_name: str = '신인'
     position: str = 'SS'
+    position_skills: dict = field(default_factory=dict)
+    position_offer: dict = None
     bats: str = 'R'
     school: str = 'high'
     age: int = 18
@@ -95,6 +97,13 @@ class KBOState:
     posting_stage: str = ''
     posting_offers: list = field(default_factory=list)
     manager_role: str = '2군 경쟁'
+    captain_role: str = ''
+    personal_goal: str = ''
+    personal_goal_progress: int = 0
+    fan_popularity: int = 0
+    sponsors: list = field(default_factory=list)
+    sponsor_income: int = 0
+    pending_special_event: dict = None
     national_offer: dict = None
     national_history: list = field(default_factory=list)
     draft_offers: list = field(default_factory=list)
@@ -102,6 +111,7 @@ class KBOState:
 
 def from_dict(raw):
     s=KBOState(**{k:v for k,v in (raw or {}).items() if k in KBOState.__dataclass_fields__})
+    if not s.position_skills: s.position_skills={s.position: 100}
     return s
 
 def team_name(team_id):
@@ -175,7 +185,7 @@ def simulate_season(s):
     elif s.age <= 34: delta=random.choice([-1,0,0])
     elif s.age <= 37: delta=random.randint(-2,0)
     else: delta=random.randint(-4,-1)
-    if s.agent=='development' and s.age<=27: delta += random.choice([0,0,1])
+    if s.agent=='park' and s.age<=27: delta += random.choice([0,0,1])
     if s.age>=32 and s.position in ('SP','RP'): delta -= 1
     if s.injuries and random.random()<.3: delta -= 1
     s.ovr=max(40,min(99,s.ovr+delta))
@@ -188,6 +198,8 @@ def simulate_season(s):
     target=7 if s.school=='college' else 8
     s.fa_eligible=s.service_seasons>=target and not s.overseas
     s.posting_eligible=(s.age>=25 and s.ovr>=78 and s.service_seasons>=4 and not s.overseas)
+    update_life_systems(s, st)
+    generate_special_event(s, st)
     # salary growth
     if s.contract_years_left>0: s.contract_years_left-=1
     if s.contract_years_left<=0 and not s.fa_eligible:
@@ -195,8 +207,78 @@ def simulate_season(s):
         s.contract_years_left=1
     return st
 
+POSITION_LINKS = {
+    'C':['1B'], '1B':['3B','DH'], '2B':['SS','3B'], '3B':['SS','1B'],
+    'SS':['2B','3B'], 'OF':['CF','LF','RF'], 'SP':['RP'], 'RP':['SP']
+}
+
+PERSONAL_GOALS = [
+    ('주전 자리 확보', '주전 경쟁에서 살아남는다'),
+    ('올스타 선정', '올스타에 선정된다'),
+    ('골든글러브', '골든글러브를 수상한다'),
+    ('커리어 WAR 30', '커리어 WAR 30을 달성한다'),
+    ('홈런 20개 시즌', '한 시즌 20홈런을 기록한다'),
+    ('두 자릿수 승리', '한 시즌 10승을 달성한다'),
+    ('FA 대박', 'FA 계약을 체결한다'),
+    ('국가대표', '국가대표에 선발된다'),
+]
+
+SPONSOR_POOL = ['야구용품 브랜드','스포츠웨어 브랜드','음료 브랜드','금융 브랜드','지역 대표 기업']
+
+def prepare_early_position_offer(s):
+    if s.age > 23 or s.position_offer or len(s.position_skills) >= 3: return
+    if random.random() > (0.48 if s.age <= 21 else 0.25): return
+    choices=POSITION_LINKS.get(s.position, [])
+    choices=[x for x in choices if x not in s.position_skills and x != s.position]
+    if not choices: return
+    target=random.choice(choices)
+    s.position_offer={'target':target,'from':s.position,'type':'확장','expires_age':s.age}
+
+def generate_personal_goal(s):
+    if not s.personal_goal:
+        goal,desc=random.choice(PERSONAL_GOALS)
+        s.personal_goal=goal
+        s.personal_goal_progress=0
+
+def update_life_systems(s, st):
+    s.fan_popularity=max(0,min(100,int(s.fame*0.72 + s.reputation*0.28)))
+    if s.age>=27 and s.reputation>=68 and not s.captain_role and random.random()<0.10:
+        s.captain_role='부주장'
+        s.notes.append(f'{s.year} 시즌 부주장 선임')
+    if s.captain_role=='부주장' and s.age>=29 and s.reputation>=78 and random.random()<0.18:
+        s.captain_role='주장'
+        s.notes.append(f'{s.year} 시즌 주장 선임')
+    if s.fan_popularity>=65 and len(s.sponsors)<2 and random.random()<0.18:
+        brand=random.choice([x for x in SPONSOR_POOL if x not in s.sponsors])
+        s.sponsors.append(brand); s.sponsor_income += random.randint(500,1800)
+        s.notes.append(f'{s.year} {brand} 광고 계약')
+    if s.sponsors:
+        s.money += s.sponsor_income
+    if s.personal_goal=='올스타 선정' and st.get('war',0)>=5.5: s.personal_goal_progress=1
+    elif s.personal_goal=='골든글러브' and s.gg>0: s.personal_goal_progress=1
+    elif s.personal_goal=='커리어 WAR 30': s.personal_goal_progress=min(30,int(s.career_war))
+    elif s.personal_goal=='홈런 20개 시즌' and st.get('hr',0)>=20: s.personal_goal_progress=1
+    elif s.personal_goal=='두 자릿수 승리' and st.get('wins',0)>=10: s.personal_goal_progress=1
+    elif s.personal_goal=='FA 대박' and s.fa_count>=1: s.personal_goal_progress=1
+    elif s.personal_goal=='국가대표' and s.national_caps>=1: s.personal_goal_progress=1
+    elif s.personal_goal=='주전 자리 확보' and st.get('games',0)>=120: s.personal_goal_progress=1
+
+
+def generate_special_event(s, st):
+    if s.pending_special_event: return
+    pool=[]
+    if st.get('war',0)>=5: pool.append({'title':'끝내기 승리','text':'경기 막판 결정적인 활약으로 팀의 승리를 이끌었습니다.','choices':[('celebrate','팬들과 함께한다','팬 인기 +6'),('focus','조용히 다음 경기를 준비한다','평판 +3')]})
+    if st.get('hr',0)>=2: pool.append({'title':'멀티 홈런 경기','text':'한 경기에서 두 개 이상의 홈런을 기록했습니다.','choices':[('media','인터뷰에 응한다','팬 인기 +5 / 인지도 +4'),('rest','휴식을 택한다','컨디션 +5')]})
+    if st.get('games',0)>=120 and s.age<=23: pool.append({'title':'첫 주전 기회','text':'감독이 다음 시즌 주전 경쟁의 중심으로 보겠다고 밝혔습니다.','choices':[('accept','도전한다','평판 +4 / OVR +1'),('manage','몸 관리 우선','컨디션 +6')]})
+    if s.captain_role: pool.append({'title':'선수단 리더십','text':'후배들이 중요한 순간에 당신의 조언을 구했습니다.','choices':[('lead','앞장선다','평판 +5 / 팬 인기 +3'),('quiet','조용히 돕는다','가족 +2 / 평판 +2')]})
+    if pool: s.pending_special_event=random.choice(pool)
+
+
 def age_up(s):
     s.year+=1; s.age+=1; s.training_done=s.life_done=s.office_done=False; s.stage='dashboard'
+    if s.age<=23:
+        prepare_early_position_offer(s)
+    generate_personal_goal(s)
     if s.age>=41: s.retired=True
 
 def draft_offers(s):
@@ -247,7 +329,7 @@ def negotiate_fa(s, team_id=None, counter=False):
     offers=s.fa_offer['offers']
     offer=next((o for o in offers if o['team_id']==team_id), offers[0])
     if counter and s.fa_negotiation_round<3:
-        bump=1.08 if s.agent=='negotiator' else 1.04
+        bump=1.09 if s.agent=='kang' else 1.07 if s.agent=='han' else 1.04
         offer['salary']=int(offer['salary']*bump); s.fa_negotiation_round+=1
         return False, offer
     s.fa_signed_this_cycle=True
@@ -340,7 +422,7 @@ def agent_options(s):
 
 def apply_office(s, choice):
     if choice=='ask_market': s.agent_trust=min(100,s.agent_trust+3); s.reputation=min(100,s.reputation+2)
-    elif choice=='negotiate': s.salary=int(s.salary*(1+(.08 if s.agent=='negotiator' else .03))); s.agent_trust=min(100,s.agent_trust+5)
+    elif choice=='negotiate': s.salary=int(s.salary*(1+(.08 if s.agent=='kang' else .06 if s.agent=='han' else .03))); s.agent_trust=min(100,s.agent_trust+5)
     elif choice=='overseas': s.posting_eligible=s.posting_eligible or (s.age>=25 and s.ovr>=78); s.agent_trust=min(100,s.agent_trust+2)
     elif choice=='relationship': s.loyalty=min(100,s.loyalty+7)
     s.office_done=True

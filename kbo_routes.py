@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-import uuid
+import uuid, json, zlib, base64
 from kbo_career import *
 from dynasty_utils import get_supabase
 
@@ -9,13 +9,45 @@ def _aid(): return session.get('account_id') or session.get('career_account_id')
 def _guard():
     if not _aid(): return redirect(url_for('account.login',next=request.path))
 
-def _save(s):
-    session['kbo_state']=asdict(s); session.modified=True
+def _pack_state(s):
+    raw=json.dumps(asdict(s),ensure_ascii=False,separators=(',',':')).encode('utf-8')
+    return base64.b64encode(zlib.compress(raw,9)).decode('ascii')
+
+def _unpack_state(blob):
     try:
-        sb=get_supabase(); sb.table('kbo_career_saves').upsert({'id':s.id,'account_id':_aid(),'player_name':s.player_name,'age':s.age,'team_id':s.team_id,'status':'retired' if s.retired else 'active','state':asdict(s)},on_conflict='id').execute()
-    except Exception: pass
+        return from_dict(json.loads(zlib.decompress(base64.b64decode(blob)).decode('utf-8')))
+    except Exception:
+        return None
+
+def _save(s):
+    # Keep only a save id in normal operation; the compressed snapshot is a
+    # small emergency fallback so a missing Supabase table never kicks the user
+    # back to /kbo during rookie creation.
+    session['kbo_state_id']=s.id
+    session['kbo_state_z']=_pack_state(s)
+    session.pop('kbo_state',None)
+    session.modified=True
+    try:
+        sb=get_supabase()
+        sb.table('kbo_career_saves').upsert({'id':s.id,'account_id':_aid(),'player_name':s.player_name,'age':s.age,'team_id':s.team_id,'status':'retired' if s.retired else 'active','state':asdict(s)},on_conflict='id').execute()
+        return True
+    except Exception:
+        return False
 
 def _load():
+    sid=session.get('kbo_state_id')
+    if sid:
+        try:
+            sb=get_supabase()
+            rows=sb.table('kbo_career_saves').select('state').eq('id',sid).eq('account_id',_aid()).limit(1).execute().data or []
+            if rows and rows[0].get('state'):
+                return from_dict(rows[0]['state'])
+        except Exception:
+            pass
+    packed=session.get('kbo_state_z')
+    if packed:
+        state=_unpack_state(packed)
+        if state: return state
     raw=session.get('kbo_state')
     if raw: return from_dict(raw)
     return None
@@ -51,9 +83,10 @@ def new():
         # session key. This avoids losing the draft when the session is
         # refreshed/serialized and fixes /kbo/new -> /kbo fallback.
         s.draft_offers=draft_offers(s)
-        session['kbo_state']=asdict(s)
+        session.pop('kbo_state',None)
+        session['kbo_state_id']=s.id
+        _save(s)
         session.pop('kbo_draft',None)
-        session.modified=True
         return redirect(url_for('kbo.draft'))
     return render_template('kbo_new.html',positions=POSITIONS)
 
@@ -62,7 +95,7 @@ def draft():
     g=_guard()
     if g:return g
     s=_load()
-    offers=(s.draft_offers if s else None) or session.get('kbo_draft')
+    offers=(s.draft_offers if s else None)
     if not s or not offers:
         return _redirect_home()
     return render_template('kbo_draft.html',state=s,offers=offers)
@@ -71,7 +104,7 @@ def draft():
 def draft_choose():
     g=_guard()
     if g:return g
-    s=_load(); offers=(s.draft_offers if s else None) or session.get('kbo_draft') or []; tid=request.form.get('team_id'); chosen=next((x for x in offers if x['team_id']==tid),None)
+    s=_load(); offers=(s.draft_offers if s else None) or []; tid=request.form.get('team_id'); chosen=next((x for x in offers if x['team_id']==tid),None)
     if not s or not chosen:
         return redirect(url_for('kbo.draft'))
     s.team_id=chosen['team_id']; s.team_name=chosen['name']; s.money+=chosen['signing_bonus']; s.salary=3000 if s.year>=2027 else 2700; s.notes.append(f"{s.year} 신인드래프트 {chosen['round']}라운드 {s.team_name}"); s.draft_offers=[]; session.pop('kbo_draft',None); _save(s); return redirect(url_for('kbo.dashboard'))
@@ -90,6 +123,7 @@ def training():
     g=_guard()
     if g:return g
     s=_load()
+    if not s: return _redirect_home()
     if request.method=='POST': apply_training(s,request.form.get('choice','recovery')); _save(s); return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_training.html',state=s)
 
@@ -98,6 +132,7 @@ def life():
     g=_guard()
     if g:return g
     s=_load()
+    if not s: return _redirect_home()
     if request.method=='POST': apply_life(s,request.form.get('choice','rest')); _save(s); return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_life.html',state=s)
 
@@ -196,6 +231,53 @@ def agent():
             _save(s)
         return redirect(url_for('kbo.agent'))
     return render_template('kbo_agent.html',state=s,agents=AGENTS,current=s.agent)
+
+
+@kbo_bp.route('/position',methods=['GET','POST'])
+def position():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        action=request.form.get('action')
+        target=(s.position_offer or {}).get('target')
+        if target:
+            if action=='expand':
+                s.position_skills[target]=25
+                s.notes.append(f'{s.year} {target} 수비 포지션 추가 습득')
+            elif action=='switch':
+                old=s.position
+                s.position_skills[target]=60
+                s.position_skills[old]=max(10,s.position_skills.get(old,100)-25)
+                s.position=target
+                s.notes.append(f'{s.year} 주 포지션 변경: {old} → {target}')
+            s.position_offer=None
+            _save(s)
+        return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_position.html',state=s,offer=s.position_offer)
+
+@kbo_bp.route('/special',methods=['GET','POST'])
+def special():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        a=request.form.get('choice'); eff={
+            'celebrate':lambda:(setattr(s,'fan_popularity',min(100,s.fan_popularity+6))),
+            'focus':lambda:(setattr(s,'reputation',min(100,s.reputation+3))),
+            'media':lambda:(setattr(s,'fan_popularity',min(100,s.fan_popularity+5)),setattr(s,'fame',min(100,s.fame+4))),
+            'rest':lambda:setattr(s,'stamina',min(100,s.stamina+5)),
+            'accept':lambda:(setattr(s,'reputation',min(100,s.reputation+4)),setattr(s,'ovr',min(99,s.ovr+1))),
+            'manage':lambda:setattr(s,'stamina',min(100,s.stamina+6)),
+            'lead':lambda:(setattr(s,'reputation',min(100,s.reputation+5)),setattr(s,'fan_popularity',min(100,s.fan_popularity+3))),
+            'quiet':lambda:(setattr(s,'family',min(100,s.family+2)),setattr(s,'reputation',min(100,s.reputation+2))),
+        }
+        if a in eff: eff[a]()
+        s.pending_special_event=None; _save(s)
+        return redirect(url_for('kbo.result'))
+    return render_template('kbo_special.html',state=s,event=s.pending_special_event)
 
 @kbo_bp.route('/manager',methods=['GET','POST'])
 def manager():
@@ -385,7 +467,7 @@ def result():
     g=_guard()
     if g:return g
     s=_load(); stats=s.season_stats[-1] if s and s.season_stats else None
-    return render_template('kbo_result.html',state=s,stats=stats,needs_event=bool(s and ((s.pending_event and not s.event_done) or s.national_offer)))
+    return render_template('kbo_result.html',state=s,stats=stats,needs_event=bool(s and ((s.pending_event and not s.event_done) or s.national_offer or s.pending_special_event)))
 
 @kbo_bp.post('/next')
 def next_age():
@@ -394,6 +476,7 @@ def next_age():
     s=_load()
     if s.pending_event and not s.event_done: return redirect(url_for('kbo.event'))
     if s.national_offer: return redirect(url_for('kbo.national'))
+    if s.pending_special_event: return redirect(url_for('kbo.special'))
     if s.age>=40:
         s.retired=True;_save(s);return redirect(url_for('kbo.retire'))
     age_up(s);_save(s);return redirect(url_for('kbo.dashboard'))
