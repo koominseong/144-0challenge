@@ -155,6 +155,10 @@ def _roll_stats(s):
     return {'year':s.year,'age':s.age,'team':s.team_name,'games':games,'primary':primary,'secondary':secondary,'war':round(war,1),'avg':round(avg,3) if s.position not in ('SP','RP') else None,'hr':hr,'rbi':rbi,'wins':wins,'saves':saves,'era':round(era,2) if s.position in ('SP','RP') else None,'registered_days':days}
 
 def simulate_season(s):
+    # 시즌이 새로 시작될 때마다 일반 이벤트 선택 상태를 초기화한다.
+    # 이전 시즌의 event_done 값이 남아 있으면 다음 시즌 이벤트를 눌러도
+    # /next가 이벤트를 건너뛰는 문제가 생길 수 있다.
+    s.event_done = False
     if s.military_choice:
         st={'year':s.year,'age':s.age,'team':s.team_name,'games':0,'primary':'군 복무','secondary':'야구 경기 없음','war':0.0,'avg':None,'hr':0,'rbi':0,'wins':0,'saves':0,'era':None,'registered_days':0,'military':s.military_choice}
         s.season_stats.append(st); s.history.append(st)

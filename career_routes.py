@@ -229,8 +229,12 @@ def decision():
     guard = _require_login()
     if guard: return guard
     state = get_state()
-    if not state or not state.pending_event: return redirect(url_for('career.dashboard'))
-    resolve_event(state, request.form.get('option_id', ''))
+    # 이벤트 버튼 더블클릭/재전송으로 같은 결정을 두 번 처리하지 않는다.
+    if not state or not state.pending_event or state.decision_used:
+        return redirect(url_for('career.dashboard'))
+
+    option_id = request.form.get('option_id', '')
+    resolve_event(state, option_id)
     if state.status != 'retired':
         simulate_season(state)
         advance_after_season(state)

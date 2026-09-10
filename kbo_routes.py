@@ -409,9 +409,16 @@ def event():
     s=_load()
     if not s:return _redirect_home()
     if request.method=='POST':
-        apply_event(s,request.form.get('choice','rest')); _save(s); return redirect(url_for('kbo.result'))
+        # 이미 처리한 일반 이벤트의 재전송/더블클릭은 안전하게 무시한다.
+        if s.event_done or not s.pending_event:
+            return redirect(url_for('kbo.result'))
+        apply_event(s,request.form.get('choice','rest'))
+        _save(s)
+        return redirect(url_for('kbo.result'))
     if not s.pending_event:
-        s.pending_event=random_event(s); _save(s)
+        s.pending_event=random_event(s)
+        s.event_done=False
+        _save(s)
     return render_template('kbo_event.html',state=s,event=s.pending_event)
 
 @kbo_bp.route('/national',methods=['GET','POST'])
@@ -484,13 +491,18 @@ def result():
     g=_guard()
     if g:return g
     s=_load(); stats=s.season_stats[-1] if s and s.season_stats else None
-    return render_template('kbo_result.html',state=s,stats=stats,needs_event=bool(s and ((s.pending_event and not s.event_done) or s.national_offer or s.pending_special_event)))
+    needs_event=bool(s and ((s.pending_event and not s.event_done) or s.national_offer or s.pending_special_event))
+    # 특별 이벤트가 떠도 일반 이벤트를 별도로 선택할 수 있게 한다.
+    # 둘 중 하나를 먼저 처리해도 나머지는 계속 남아 있다.
+    general_available=bool(s and not s.event_done)
+    return render_template('kbo_result.html',state=s,stats=stats,needs_event=needs_event,general_available=general_available)
 
 @kbo_bp.post('/next')
 def next_age():
     g=_guard()
     if g:return g
     s=_load()
+    # 일반/국가대표/특별 이벤트는 서로 독립적으로 처리한다.
     if s.pending_event and not s.event_done: return redirect(url_for('kbo.event'))
     if s.national_offer: return redirect(url_for('kbo.national'))
     if s.pending_special_event: return redirect(url_for('kbo.special'))
