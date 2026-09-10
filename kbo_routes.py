@@ -415,7 +415,7 @@ def event():
     return render_template('kbo_event.html',state=s,event=s.pending_event)
 
 @kbo_bp.route('/national',methods=['GET','POST'])
-def national_action():
+def national():
     g=_guard()
     if g:return g
     s=_load()
