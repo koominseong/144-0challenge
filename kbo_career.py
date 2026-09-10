@@ -97,6 +97,7 @@ class KBOState:
     manager_role: str = '2군 경쟁'
     national_offer: dict = None
     national_history: list = field(default_factory=list)
+    draft_offers: list = field(default_factory=list)
 
 
 def from_dict(raw):

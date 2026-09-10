@@ -33,25 +33,48 @@ def new():
     g=_guard()
     if g:return g
     if request.method=='POST':
-        s=KBOState(player_name=request.form.get('name','신인').strip()[:20] or '신인',position=request.form.get('position','SS'),bats=request.form.get('bats','R'),school=request.form.get('school','high'),agent='',jersey=max(1,min(99,int(request.form.get('jersey','1') or 1))),ovr=random.randint(52,59))
-        s.potential=random.randint(78,92); session['kbo_state']=asdict(s); session['kbo_draft']=draft_offers(s); return redirect(url_for('kbo.draft'))
+        try:
+            jersey=max(1,min(99,int(request.form.get('jersey','1') or 1)))
+        except (TypeError, ValueError):
+            jersey=1
+        s=KBOState(
+            player_name=request.form.get('name','신인').strip()[:20] or '신인',
+            position=request.form.get('position','SS'),
+            bats=request.form.get('bats','R'),
+            school=request.form.get('school','high'),
+            agent='',
+            jersey=jersey,
+            ovr=random.randint(52,59)
+        )
+        s.potential=random.randint(78,92)
+        # Keep the rookie draft inside the player state instead of a second
+        # session key. This avoids losing the draft when the session is
+        # refreshed/serialized and fixes /kbo/new -> /kbo fallback.
+        s.draft_offers=draft_offers(s)
+        session['kbo_state']=asdict(s)
+        session.pop('kbo_draft',None)
+        session.modified=True
+        return redirect(url_for('kbo.draft'))
     return render_template('kbo_new.html',positions=POSITIONS)
 
 @kbo_bp.get('/draft')
 def draft():
     g=_guard()
     if g:return g
-    s=_load(); offers=session.get('kbo_draft')
-    if not s or not offers:return _redirect_home()
+    s=_load()
+    offers=(s.draft_offers if s else None) or session.get('kbo_draft')
+    if not s or not offers:
+        return _redirect_home()
     return render_template('kbo_draft.html',state=s,offers=offers)
 
 @kbo_bp.post('/draft')
 def draft_choose():
     g=_guard()
     if g:return g
-    s=_load(); offers=session.get('kbo_draft') or []; tid=request.form.get('team_id'); chosen=next((x for x in offers if x['team_id']==tid),None)
-    if not chosen:return redirect(url_for('kbo.draft'))
-    s.team_id=chosen['team_id']; s.team_name=chosen['name']; s.money+=chosen['signing_bonus']; s.salary=3000 if s.year>=2027 else 2700; s.notes.append(f"{s.year} 신인드래프트 {chosen['round']}라운드 {s.team_name}"); session.pop('kbo_draft',None); _save(s); return redirect(url_for('kbo.dashboard'))
+    s=_load(); offers=(s.draft_offers if s else None) or session.get('kbo_draft') or []; tid=request.form.get('team_id'); chosen=next((x for x in offers if x['team_id']==tid),None)
+    if not s or not chosen:
+        return redirect(url_for('kbo.draft'))
+    s.team_id=chosen['team_id']; s.team_name=chosen['name']; s.money+=chosen['signing_bonus']; s.salary=3000 if s.year>=2027 else 2700; s.notes.append(f"{s.year} 신인드래프트 {chosen['round']}라운드 {s.team_name}"); s.draft_offers=[]; session.pop('kbo_draft',None); _save(s); return redirect(url_for('kbo.dashboard'))
 
 @kbo_bp.get('/dashboard')
 def dashboard():
