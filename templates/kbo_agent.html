@@ -1,0 +1,9 @@
+{% extends 'kbo_base.html' %}{% block body %}
+<section class="card hero"><p class="eyebrow">PLAYER MANAGEMENT · AGENT</p><h1>에이전시 선택</h1>
+<p class="muted">드래프트가 끝난 뒤 원하는 시점에 에이전트를 고용할 수 있습니다. <b>커리어 중 언제든지 변경 가능</b>합니다.</p>
+{% if current %}<p class="tag">현재 에이전시 · {{agents[current][0]}}</p>{% else %}<p class="tag">현재 에이전트 · 미선택</p>{% endif %}</section>
+<form method="post" class="grid">
+{% for key,a in agents.items() %}<button class="btn choice {% if key==current %}primary{% endif %}" name="agent" value="{{key}}"><h2>{{a[1]}} {{a[0]}}</h2><p>{{a[2]}}</p><small class="muted">계약·FA·트레이드·해외 진출을 담당하는 가상의 스포츠 매니지먼트 회사</small>{% if key==current %}<strong>현재 담당 에이전트</strong>{% endif %}</button>{% endfor %}
+</form>
+<br><a class="btn" href="{{url_for('kbo.dashboard')}}">← 선수 화면으로</a>
+{% endblock %}
