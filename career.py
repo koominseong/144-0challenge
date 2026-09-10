@@ -1048,7 +1048,7 @@ def simulate_season(state):
         primary, secondary = wins, saves
         extra = {'era': era, 'so': so, 'innings': innings}
     else:
-        games = max(35, round(random.randint(100, 144) * role_mult['games_mult'] * (0.94 if state.difficulty == 'hell' else 1.0)))
+        games = max(35, min(144, round(random.randint(100, 144) * role_mult['games_mult'] * (0.94 if state.difficulty == 'hell' else 1.0))))
         pa = max(80, round(games * random.uniform(3.2, 4.5)))
         avg = max(.210, min(.390, .220 + strength / 900 + random.uniform(-.018, .018)))
         hits = max(1, round(pa * avg))

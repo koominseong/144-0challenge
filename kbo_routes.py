@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 import uuid
+import threading
 from kbo_career import *
 from dynasty_utils import get_supabase
 
@@ -13,6 +14,10 @@ def _guard():
 # Render/Gunicorn 한 프로세스에서 Supabase가 잠시 실패하더라도
 # 신규 게임 직후 draft 화면까지는 이어지도록 메모리 fallback을 둔다.
 _KBO_RUNTIME = {}
+_KBO_ACTION_LOCKS = {}
+
+def _action_lock(key):
+    return _KBO_ACTION_LOCKS.setdefault(str(key), threading.Lock())
 
 def _save(s):
     _KBO_RUNTIME[s.id] = asdict(s)
@@ -141,7 +146,12 @@ def training():
     if g:return g
     s=_load()
     if not s: return _redirect_home()
-    if request.method=='POST': apply_training(s,request.form.get('choice','recovery')); _save(s); return redirect(url_for('kbo.dashboard'))
+    if request.method=='POST':
+        with _action_lock(f'training:{s.id}'):
+            if s.training_done:
+                return redirect(url_for('kbo.dashboard'))
+            apply_training(s,request.form.get('choice','recovery')); _save(s)
+        return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_training.html',state=s)
 
 @kbo_bp.route('/life',methods=['GET','POST'])
@@ -150,8 +160,14 @@ def life():
     if g:return g
     s=_load()
     if not s: return _redirect_home()
-    if request.method=='POST': apply_life(s,request.form.get('choice','rest')); _save(s); return redirect(url_for('kbo.dashboard'))
-    return render_template('kbo_life.html',state=s)
+    if request.method=='POST':
+        with _action_lock(f'life:{s.id}'):
+            # 이미 이번 나이의 생활 행동을 완료했으면 재전송을 무시한다.
+            if s.life_done:
+                return redirect(url_for('kbo.dashboard'))
+            apply_life(s,request.form.get('choice','rest')); _save(s)
+        return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_life.html',state=s,choices=family_choices(s))
 
 @kbo_bp.route('/office',methods=['GET','POST'])
 def office():
@@ -201,13 +217,13 @@ def fa():
     if not s:return _redirect_home()
     if not s.fa_offer and s.fa_eligible: generate_fa_offer(s)
     if request.method=='POST':
-        action=request.form.get('action'); tid=request.form.get('team_id')
-        if action=='counter':
-            negotiate_fa(s,tid,True); _save(s); return redirect(url_for('kbo.fa'))
-        if action=='sign':
-            ok,offer=negotiate_fa(s,tid,False); _save(s); return redirect(url_for('kbo.dashboard'))
+        with _action_lock(f'fa:{s.id}'):
+            action=request.form.get('action'); tid=request.form.get('team_id')
+            if action=='counter':
+                negotiate_fa(s,tid,True); _save(s); return redirect(url_for('kbo.fa'))
+            if action=='sign':
+                negotiate_fa(s,tid,False); _save(s); return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_fa.html',state=s,offers=(s.fa_offer or {}).get('offers',[]),grade=s.fa_grade,comp=s.fa_compensation)
-
 
 @kbo_bp.route('/posting',methods=['GET','POST'])
 def posting():
@@ -216,19 +232,27 @@ def posting():
     s=_load()
     if not s:return _redirect_home()
     if request.method=='POST':
-        action=request.form.get('action')
-        if action=='consent':
-            s.posting_stage='포스팅 완료'; s.posting_offers=generate_posting_offers(s); _save(s); return redirect(url_for('kbo.posting'))
-        if action=='reject':
-            s.posting_stage='포스팅 철회'; s.posting_offers=[]; s.posting_eligible=False; s.notes.append(f'{s.year} 포스팅 철회'); _save(s); return redirect(url_for('kbo.dashboard'))
-        if action=='accept':
-            idx=int(request.form.get('idx','0')); offer=s.posting_offers[idx]
-            s.overseas=True; s.office_done=True; s.overseas_years=offer['years']; s.posting_stage='해외 도전 중'; s.team_history.append({'year':s.year,'from':s.team_name,'to':offer['team'],'type':'포스팅 해외 진출'}); s.team_id='OVERSEAS'; s.team_name=offer['team']; s.salary=offer['salary']; s.posting_eligible=False; s.notes.append(f"{s.year} 포스팅 성공: {offer['team']}")
-            _save(s); return redirect(url_for('kbo.dashboard'))
-        if action=='return':
-            s.overseas=False; s.overseas_years=0; s.posting_stage='KBO 복귀'; s.team_id=random.choice(KBO_TEAMS)[0]; s.team_name=team_name(s.team_id); s.salary=max(3000,int(s.salary*.65)); s.contract_years_left=1; s.notes.append(f'{s.year} 해외 도전 후 KBO 복귀'); _save(s); return redirect(url_for('kbo.dashboard'))
-    return render_template('kbo_posting.html',state=s,offers=s.posting_offers)
-
+        with _action_lock(f'posting:{s.id}'):
+            action=request.form.get('action')
+            if action=='consent':
+                s.posting_stage='포스팅 완료'; s.posting_offers=generate_posting_offers(s); _save(s); return redirect(url_for('kbo.posting'))
+            if action=='reject':
+                s.posting_stage='포스팅 철회'; s.posting_offers=[]; s.posting_eligible=False; s.notes.append(f'{s.year} 포스팅 철회'); _save(s); return redirect(url_for('kbo.dashboard'))
+            if action=='accept':
+                idx=int(request.form.get('idx','0'));
+                if not (0 <= idx < len(s.posting_offers)): return redirect(url_for('kbo.posting'))
+                offer=s.posting_offers[idx]
+                s.overseas=True; s.office_done=True; s.overseas_years=offer['years']; s.posting_stage='해외 도전 중'; s.team_history.append({'year':s.year,'from':s.team_name,'to':offer['team'],'type':'포스팅 해외 진출'}); s.team_id='OVERSEAS'; s.team_name=offer['team']; s.salary=offer['salary']; s.posting_eligible=False; s.notes.append(f"{s.year} 포스팅 성공: {offer['team']}")
+                _save(s); return redirect(url_for('kbo.dashboard'))
+            if action=='return':
+                idx=int(request.form.get('idx','-1'))
+                offers=s.posting_return_offers or []
+                if not (0 <= idx < len(offers)): return redirect(url_for('kbo.posting'))
+                offer=offers[idx]
+                old=s.team_name
+                s.overseas=False; s.overseas_years=0; s.posting_stage='KBO 복귀 완료'; s.team_id=offer['team_id']; s.team_name=offer['name']; s.salary=offer['salary']; s.contract_years_left=offer['years']; s.posting_return_offers=[]; s.team_history.append({'year':s.year,'from':old,'to':s.team_name,'type':'포스팅 후 KBO 복귀'}); s.fame=min(100,s.fame+5); s.notes.append(f'{s.year} 해외 도전 후 {s.team_name} 복귀')
+                _save(s); return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_posting.html',state=s,offers=s.posting_offers,return_offers=s.posting_return_offers)
 
 @kbo_bp.route('/agent',methods=['GET','POST'])
 def agent():
@@ -281,18 +305,23 @@ def special():
     s=_load()
     if not s:return _redirect_home()
     if request.method=='POST':
-        a=request.form.get('choice'); eff={
-            'celebrate':lambda:(setattr(s,'fan_popularity',min(100,s.fan_popularity+6))),
-            'focus':lambda:(setattr(s,'reputation',min(100,s.reputation+3))),
-            'media':lambda:(setattr(s,'fan_popularity',min(100,s.fan_popularity+5)),setattr(s,'fame',min(100,s.fame+4))),
-            'rest':lambda:setattr(s,'stamina',min(100,s.stamina+5)),
-            'accept':lambda:(setattr(s,'reputation',min(100,s.reputation+4)),setattr(s,'ovr',min(99,s.ovr+1))),
-            'manage':lambda:setattr(s,'stamina',min(100,s.stamina+6)),
-            'lead':lambda:(setattr(s,'reputation',min(100,s.reputation+5)),setattr(s,'fan_popularity',min(100,s.fan_popularity+3))),
-            'quiet':lambda:(setattr(s,'family',min(100,s.family+2)),setattr(s,'reputation',min(100,s.reputation+2))),
-        }
-        if a in eff: eff[a]()
-        s.pending_special_event=None; _save(s)
+        with _action_lock(f'special:{s.id}'):
+            if not s.pending_special_event:
+                return redirect(url_for('kbo.result'))
+            a=request.form.get('choice')
+            eff={
+                'celebrate':lambda:(setattr(s,'fan_popularity',min(100,s.fan_popularity+6))),
+                'focus':lambda:(setattr(s,'reputation',min(100,s.reputation+3))),
+                'media':lambda:(setattr(s,'fan_popularity',min(100,s.fan_popularity+5)),setattr(s,'fame',min(100,s.fame+4))),
+                'rest':lambda:setattr(s,'stamina',min(100,s.stamina+5)),
+                'accept':lambda:(setattr(s,'reputation',min(100,s.reputation+4)),setattr(s,'ovr',min(99,s.ovr+1))),
+                'manage':lambda:setattr(s,'stamina',min(100,s.stamina+6)),
+                'lead':lambda:(setattr(s,'reputation',min(100,s.reputation+5)),setattr(s,'fan_popularity',min(100,s.fan_popularity+3))),
+                'quiet':lambda:(setattr(s,'family',min(100,s.family+2)),setattr(s,'reputation',min(100,s.reputation+2))),
+            }
+            if a in eff: eff[a]()
+            s.pending_special_event=None
+            _save(s)
         return redirect(url_for('kbo.result'))
     return render_template('kbo_special.html',state=s,event=s.pending_special_event)
 
@@ -409,11 +438,12 @@ def event():
     s=_load()
     if not s:return _redirect_home()
     if request.method=='POST':
-        # 이미 처리한 일반 이벤트의 재전송/더블클릭은 안전하게 무시한다.
-        if s.event_done or not s.pending_event:
-            return redirect(url_for('kbo.result'))
-        apply_event(s,request.form.get('choice','rest'))
-        _save(s)
+        with _action_lock(f'event:{s.id}'):
+            # 이미 처리한 일반 이벤트의 재전송/더블클릭은 안전하게 무시한다.
+            if s.event_done or not s.pending_event:
+                return redirect(url_for('kbo.result'))
+            apply_event(s,request.form.get('choice','rest'))
+            _save(s)
         return redirect(url_for('kbo.result'))
     if not s.pending_event:
         s.pending_event=random_event(s)
@@ -457,33 +487,50 @@ def season():
     if not (s.training_done and s.life_done and s.office_done): return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_season.html',state=s)
 
+@kbo_bp.get('/season')
+def season():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if not (s.training_done and s.life_done and s.office_done): return redirect(url_for('kbo.dashboard'))
+    return render_template('kbo_season.html',state=s)
+
 @kbo_bp.post('/season')
 def season_play():
     g=_guard()
     if g:return g
     s=_load()
-    if s.overseas:
-        s.overseas_years-=1
-        if s.overseas_years<=0:
-            s.overseas=False;s.posting_stage='KBO 복귀 대기';s.team_name='KBO 복귀 대기';s.team_id=random.choice(KBO_TEAMS)[0];s.team_name=team_name(s.team_id);s.fame=min(100,s.fame+5)
-    if s.military_choice:
-        s.army_years-=1
-        if s.army_years<=0: s.military='병역 완료';s.military_choice=''
-    stats=simulate_season(s)
-    # International call-up is an ability/competition based decision, shown to the player before acceptance.
-    intl=None
-    if not s.national_offer and s.age in (20,21,22,23,24,25,26,27,28,29,30,31,32,33,34) and s.ovr>=72:
-        p=.06 + max(0,s.ovr-72)*.018 + (0.08 if s.fame>=50 else 0)
-        if random.random()<min(.72,p):
-            event=random.choice(['WBC','프리미어12','아시안게임','올림픽','APBC'])
-            if event=='올림픽' and s.age not in (21,25,29,33): event='WBC'
-            s.national_offer={'event':event,'benefit':event in ('아시안게임','올림픽'),'reason':random.choice(['최근 성적과 OVR이 대표팀 기준을 충족했습니다.','포지션 경쟁에서 우위를 확보했습니다.','국가대표 코칭스태프의 호출을 받았습니다.'])}
-            intl=event
-    # annual family events
-    if s.age>=25 and not s.spouse and random.random()<.10: s.spouse=True;s.family=min(100,s.family+8)
-    if s.spouse and s.age>=27 and s.children<2 and random.random()<.14: s.children+=1;s.family=min(100,s.family+6)
-    s.last_intl=intl
-    _save(s)
+    if not s:return _redirect_home()
+    with _action_lock(f'season:{s.id}'):
+        # 시즌 버튼의 중복 클릭으로 같은 나이의 시즌이 두 번 진행되지 않도록 한다.
+        if s.season_stats and s.season_stats[-1].get('year') == s.year:
+            return redirect(url_for('kbo.result'))
+        returned=False
+        if s.overseas:
+            s.overseas_years-=1
+            if s.overseas_years<=0:
+                s.overseas=False; s.posting_stage='KBO 복귀 오퍼'; s.posting_return_offers=generate_kbo_return_offers(s); s.team_id='KBO_RETURN'; s.team_name='KBO 복귀 오퍼 대기'; s.fame=min(100,s.fame+5); returned=True
+        if s.military_choice:
+            s.army_years-=1
+            if s.army_years<=0: s.military='병역 완료';s.military_choice=''
+        stats=simulate_season(s)
+        intl=None
+        if not s.national_offer and s.age in tuple(range(20,35)) and s.ovr>=72:
+            p=.06 + max(0,s.ovr-72)*.018 + (0.08 if s.fame>=50 else 0)
+            if random.random()<min(.72,p):
+                event=random.choice(['WBC','프리미어12','아시안게임','올림픽','APBC'])
+                if event=='올림픽' and s.age not in (21,25,29,33): event='WBC'
+                s.national_offer={'event':event,'benefit':event in ('아시안게임','올림픽'),'reason':random.choice(['최근 성적과 OVR이 대표팀 기준을 충족했습니다.','포지션 경쟁에서 우위를 확보했습니다.','국가대표 코칭스태프의 호출을 받았습니다.'])}
+                intl=event
+        # 배우자/자녀는 별도의 인생 선택으로 만들고, 자녀는 결혼 후 확률적으로 자연스럽게 생긴다.
+        if s.spouse and s.age>=27 and s.children<3 and random.random()<.16:
+            s.children+=1; s.child_birth_years.append(s.year); s.family=min(100,s.family+7)
+            s.family_notes.append(f'{s.year} 아이가 태어났다. 이제 {s.children}명의 자녀가 생겼다.')
+        s.last_intl=intl
+        _save(s)
+    if returned:
+        return redirect(url_for('kbo.posting'))
     return redirect(url_for('kbo.result'))
 
 @kbo_bp.get('/result')
@@ -502,13 +549,14 @@ def next_age():
     g=_guard()
     if g:return g
     s=_load()
-    # 일반/국가대표/특별 이벤트는 서로 독립적으로 처리한다.
-    if s.pending_event and not s.event_done: return redirect(url_for('kbo.event'))
-    if s.national_offer: return redirect(url_for('kbo.national'))
-    if s.pending_special_event: return redirect(url_for('kbo.special'))
-    if s.age>=40:
-        s.retired=True;_save(s);return redirect(url_for('kbo.retire'))
-    age_up(s);_save(s);return redirect(url_for('kbo.dashboard'))
+    if not s:return _redirect_home()
+    with _action_lock(f'next:{s.id}'):
+        if s.pending_event and not s.event_done: return redirect(url_for('kbo.event'))
+        if s.national_offer: return redirect(url_for('kbo.national'))
+        if s.pending_special_event: return redirect(url_for('kbo.special'))
+        if s.age>=40:
+            s.retired=True;_save(s);return redirect(url_for('kbo.retire'))
+        age_up(s);_save(s);return redirect(url_for('kbo.dashboard'))
 
 @kbo_bp.get('/retire')
 def retire():

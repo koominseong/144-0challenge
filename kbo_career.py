@@ -44,7 +44,12 @@ class KBOState:
     agent: str = ''
     agent_trust: int = 60
     spouse: bool = False
+    relationship_status: str = 'none'  # none/meeting/dating/serious/engaged/married
+    partner_name: str = ''
+    relationship_years: int = 0
+    engagement_year: int = 0
     children: int = 0
+    child_birth_years: list = field(default_factory=list)
     military: str = '미필'
     military_choice: str = ''
     army_years: int = 0
@@ -92,10 +97,12 @@ class KBOState:
     fa_grade: str = ''
     fa_offer: dict = None
     fa_negotiation_round: int = 0
+    fa_service_target: int = 8
     fa_signed_this_cycle: bool = False
     fa_compensation: dict = None
     posting_stage: str = ''
     posting_offers: list = field(default_factory=list)
+    posting_return_offers: list = field(default_factory=list)
     manager_role: str = '2군 경쟁'
     captain_role: str = ''
     personal_goal: str = ''
@@ -122,10 +129,13 @@ def _roll_stats(s):
     role=max(0.35, min(1.18, (s.ovr-45)/35))
     health=max(.55, s.stamina/100)
     luck=random.uniform(.88,1.12)
-    games=int(55+105*role*health*luck)
+    # KBO is modeled around a 144-game regular season. A player's games
+    # cannot exceed the league schedule; role/health only reduce that total.
+    games=int(144*max(.30,min(1.18, role*health*luck)))
     if age < 21: games=int(games*.70)
     if age >= 35: games=int(games*.78)
     if s.overseas: games=int(games*.72)
+    games=max(1,min(144,games))
     if s.position in ('SP','RP'):
         if s.position=='SP':
             wins=max(0,int(games*.55*(s.ovr/85)*luck)-random.randint(0,5))
@@ -198,9 +208,10 @@ def simulate_season(s):
     elif st['games'] >= 70: s.manager_role=random.choice(['플래툰/로테이션','주전 경쟁','백업'])
     else: s.manager_role=random.choice(['2군 경쟁','백업','재활/회복'])
     s.stamina=max(45,min(100,s.stamina+random.randint(-4,7)))
-    # FA eligibility: current KBO framework uses 145-day qualifying seasons; high-school 8, college 7.
-    target=7 if s.school=='college' else 8
-    s.fa_eligible=s.service_seasons>=target and not s.overseas
+    # First FA: 8 qualifying seasons. After that, the next FA clock follows
+    # the length of the previous FA contract negotiated by the player.
+    target=max(1, int(s.fa_service_target or 8))
+    s.fa_eligible=(s.service_seasons>=target and s.contract_years_left<=0 and not s.overseas)
     s.posting_eligible=(s.age>=25 and s.ovr>=78 and s.service_seasons>=4 and not s.overseas)
     update_life_systems(s, st)
     generate_special_event(s, st)
@@ -271,12 +282,25 @@ def update_life_systems(s, st):
 def generate_special_event(s, st):
     if s.pending_special_event: return
     pool=[]
-    if st.get('war',0)>=5: pool.append({'title':'끝내기 승리','text':'경기 막판 결정적인 활약으로 팀의 승리를 이끌었습니다.','choices':[('celebrate','팬들과 함께한다','팬 인기 +6'),('focus','조용히 다음 경기를 준비한다','평판 +3')]})
-    if st.get('hr',0)>=2: pool.append({'title':'멀티 홈런 경기','text':'한 경기에서 두 개 이상의 홈런을 기록했습니다.','choices':[('media','인터뷰에 응한다','팬 인기 +5 / 인지도 +4'),('rest','휴식을 택한다','컨디션 +5')]})
-    if st.get('games',0)>=120 and s.age<=23: pool.append({'title':'첫 주전 기회','text':'감독이 다음 시즌 주전 경쟁의 중심으로 보겠다고 밝혔습니다.','choices':[('accept','도전한다','평판 +4 / OVR +1'),('manage','몸 관리 우선','컨디션 +6')]})
-    if s.captain_role: pool.append({'title':'선수단 리더십','text':'후배들이 중요한 순간에 당신의 조언을 구했습니다.','choices':[('lead','앞장선다','평판 +5 / 팬 인기 +3'),('quiet','조용히 돕는다','가족 +2 / 평판 +2')]})
+    if st.get('war',0)>=5:
+        pool.append({'title':'끝내기 승리','text':'경기 막판 결정적인 활약으로 팀의 승리를 이끌었습니다.','choices':[('celebrate','팬들과 함께한다','팬 인기 +6'),('focus','조용히 다음 경기를 준비한다','평판 +3')]})
+    if st.get('hr',0)>=2:
+        pool.append({'title':'멀티 홈런 경기','text':'한 경기에서 두 개 이상의 홈런을 기록했습니다.','choices':[('media','인터뷰에 응한다','팬 인기 +5 / 인지도 +4'),('rest','휴식을 택한다','컨디션 +5')]})
+    if st.get('games',0)>=110 and s.age<=24:
+        pool.append({'title':'첫 주전 기회','text':'감독이 다음 시즌 주전 경쟁의 중심으로 보겠다고 밝혔습니다.','choices':[('accept','도전한다','평판 +4 / OVR +1'),('manage','몸 관리 우선','컨디션 +6')]})
+    if st.get('war',0)>=6 and s.age>=25:
+        pool.append({'title':'MVP 후보 급부상','text':'리그 MVP 후보 명단에 당신의 이름이 올랐습니다.','choices':[('media','주목을 즐긴다','팬 인기 +7 / 인지도 +4'),('focus','끝까지 야구에 집중한다','OVR +1 / 평판 +3')]})
+    if st.get('games',0)>=130:
+        pool.append({'title':'철인 시즌','text':'시즌 대부분의 경기에 출전하며 팀의 중심이 됐습니다.','choices':[('rest','회복을 최우선으로 한다','컨디션 +8'),('lead','후배들을 이끈다','평판 +6 / 팬 인기 +3')]})
+    if s.captain_role:
+        pool.append({'title':'선수단 리더십','text':'후배들이 중요한 순간에 당신의 조언을 구했습니다.','choices':[('lead','앞장선다','평판 +5 / 팬 인기 +3'),('quiet','조용히 돕는다','가족 +2 / 평판 +2')]})
+    if s.spouse:
+        pool.append({'title':'가족의 깜짝 방문','text':'긴 원정길에 가족이 몰래 찾아와 응원했습니다.','choices':[('family','함께 시간을 보낸다','가족 +8 / 컨디션 +5'),('focus','경기에 집중한다','OVR +1 / 가족 -3')]})
+    if s.age>=30 and s.fame>=60:
+        pool.append({'title':'레전드의 평가','text':'구단의 전설적인 선수가 당신의 커리어를 공개적으로 칭찬했습니다.','choices':[('accept','조언을 듣는다','OVR +1 / 평판 +5'),('media','인터뷰로 화답한다','팬 인기 +6 / 인지도 +3')]})
+    if s.age>=35:
+        pool.append({'title':'후배에게 넘기는 자리','text':'구단은 당신에게 선수단의 중심 역할을 후배에게 넘길지 물었습니다.','choices':[('lead','베테랑 리더로 남는다','평판 +6 / 컨디션 -3'),('manage','출장을 줄인다','컨디션 +8 / OVR -1')]})
     if pool: s.pending_special_event=random.choice(pool)
-
 
 def age_up(s):
     s.year+=1; s.age+=1; s.training_done=s.life_done=s.office_done=False; s.stage='dashboard'
@@ -293,7 +317,8 @@ def draft_offers(s):
 
 def calculate_fa_grade(s):
     # Game approximation of the current KBO A/B/C salary-rank system.
-    # Re-FA rules: 2nd FA = B baseline, 3rd+ = C baseline; new FA age 35+ = C.
+    # Re-FA rules are retained for compensation grade, while the eligibility clock
+    # after the first FA follows the negotiated contract length.
     if s.fa_count >= 2 or s.age >= 35:
         return 'C'
     if s.fa_count == 1:
@@ -339,6 +364,9 @@ def negotiate_fa(s, team_id=None, counter=False):
     s.fa_signed_this_cycle=True
     s.office_done=True
     s.fa_count+=1; s.fa_eligible=False; s.service_seasons=0
+    # First FA uses the initial 8-season requirement. Every later FA uses the
+    # number of years just negotiated in the previous FA contract.
+    s.fa_service_target=max(1,int(offer.get('years',1)))
     old=s.team_name
     s.team_id=offer['team_id']; s.team_name=offer['name']; s.salary=offer['salary']; s.contract_years_left=offer['years']; s.contract_total=s.salary*offer['years']
     s.contract_history.append({'year':s.year,'team':s.team_name,'type':f"FA {s.fa_grade}등급",'years':offer['years'],'total':s.contract_total,'compensation':s.fa_compensation['summary']})
@@ -358,6 +386,21 @@ def generate_posting_offers(s):
         {'team':'AAA 구단 C','level':'AAA 주전','salary':int(base*random.uniform(.7,1.15)),'years':2},
     ]
 
+def generate_kbo_return_offers(s):
+    pool=[x for x in KBO_TEAMS if x[0] != s.team_id]
+    random.shuffle(pool)
+    count=min(4,len(pool))
+    offers=[]
+    base=max(3000,int(s.salary*.65))
+    for tid,name in pool[:count]:
+        mult=random.uniform(.85,1.35) + (0.10 if s.ovr>=85 else 0)
+        offers.append({'team_id':tid,'name':name,'salary':max(3000,int(base*mult)),
+                       'years':random.choice([1,2,3]),
+                       'role':random.choice(['주전 경쟁','주전','핵심 전력'])})
+    offers.append({'team_id':'RETURN_CURRENT','name':'기존 KBO 구단과 재협상','salary':max(3000,int(base*random.uniform(.9,1.2))),
+                   'years':2,'role':'안정적인 복귀'})
+    return offers
+
 def apply_training(s, choice):
     effects={
         'bat':'컨택/파워 집중: OVR 성장 가능성이 커집니다.',
@@ -371,14 +414,48 @@ def apply_training(s, choice):
     else: s.stamina=min(100,s.stamina+15)
     s.stamina=max(25,s.stamina); s.training_done=True; return effects.get(choice,'')
 
+def _partner_pool():
+    return ['서연','민지','지우','수빈','하린','예린','채원','다은','유나','소연']
+
 def apply_life(s, choice):
-    if choice=='family': s.family=min(100,s.family+10); s.stamina=min(100,s.stamina+5); s.fame=max(0,s.fame-1)
-    elif choice=='media': s.fame=min(100,s.fame+7); s.family=max(0,s.family-3)
-    elif choice=='rest': s.stamina=min(100,s.stamina+12)
-    elif choice=='invest': s.money=max(0,s.money+random.randint(500,2500)); s.family=max(0,s.family-2)
-    elif choice=='marry' and not s.spouse: s.spouse=True; s.family=min(100,s.family+15)
-    elif choice=='child' and s.spouse and s.children<3: s.children+=1; s.family=min(100,s.family+12)
+    if choice=='family':
+        s.family=min(100,s.family+10); s.stamina=min(100,s.stamina+5); s.fame=max(0,s.fame-1)
+    elif choice=='media':
+        s.fame=min(100,s.fame+7); s.family=max(0,s.family-3)
+    elif choice=='rest':
+        s.stamina=min(100,s.stamina+12)
+    elif choice=='invest':
+        s.money=max(0,s.money+random.randint(500,2500)); s.family=max(0,s.family-2)
+    elif choice=='meet' and s.relationship_status=='none' and s.age>=21:
+        s.partner_name=random.choice(_partner_pool()); s.relationship_status='meeting'; s.relationship_years=0
+        s.family=min(100,s.family+2); s.family_notes.append(f'{s.year} 새로운 인연을 만났다: {s.partner_name}')
+    elif choice=='date' and s.relationship_status in ('meeting','dating'):
+        s.relationship_status='dating'; s.relationship_years+=1; s.family=min(100,s.family+4)
+        s.family_notes.append(f'{s.year} {s.partner_name}와 교제를 이어갔다.')
+    elif choice=='serious' and s.relationship_status=='dating':
+        s.relationship_status='serious'; s.relationship_years+=1; s.family=min(100,s.family+6)
+        s.family_notes.append(f'{s.year} {s.partner_name}와 진지한 관계로 발전했다.')
+    elif choice=='propose' and s.relationship_status=='serious':
+        if random.random()<.86:
+            s.relationship_status='engaged'; s.engagement_year=s.year; s.family=min(100,s.family+8)
+            s.family_notes.append(f'{s.year} {s.partner_name}에게 프로포즈했고 약혼했다.')
+        else:
+            s.relationship_status='dating'; s.family=max(0,s.family-4)
+            s.family_notes.append(f'{s.year} 프로포즈가 받아들여지지 않았다. 관계를 다시 천천히 이어가기로 했다.')
+    elif choice=='marry' and s.relationship_status=='engaged':
+        s.spouse=True; s.relationship_status='married'; s.family=min(100,s.family+15)
+        s.family_notes.append(f'{s.year} {s.partner_name}와 결혼했다.')
     s.life_done=True
+
+def family_choices(s):
+    out=[('family','가족과 시간 보내기','가족관계↑ · 컨디션↑'),('media','미디어 활동','인지도↑ · 가족관계 소폭↓'),('rest','휴식','컨디션↑'),('invest','재정 관리','수입↑ · 가족관계 소폭↓')]
+    if s.age>=21 and s.relationship_status=='none': out.append(('meet','새로운 인연 만나기','소개·모임·우연한 만남으로 관계를 시작할 수 있습니다.'))
+    elif s.relationship_status=='meeting': out.append(('date','데이트를 이어간다','서로 알아가는 시간을 보냅니다.'))
+    elif s.relationship_status=='dating': out.append(('date','연애를 이어간다','관계를 더 깊게 만들어 갑니다.')); out.append(('serious','진지한 관계로 발전한다','결혼을 생각할 정도의 관계가 됩니다.'))
+    elif s.relationship_status=='serious': out.append(('propose','프로포즈한다','성공하면 약혼 단계로 넘어갑니다.'))
+    elif s.relationship_status=='engaged': out.append(('marry','결혼식을 올린다','연애 → 약혼 → 결혼의 마지막 단계입니다.'))
+    return out
+
 
 def career_stage(age):
     if age<=20: return '신인'
@@ -389,14 +466,30 @@ def career_stage(age):
 
 def random_event(s):
     pool=[]
-    if s.age<=24: pool += [
-        {'title':'감독의 기대','text':'감독이 다음 시즌 주전 경쟁을 예고했습니다.','choices':[('focus','주전 경쟁에 집중','OVR +1'),('rest','몸 관리 우선','컨디션 +8')]},
-        {'title':'선배의 조언','text':'베테랑 선수가 타격/투구 루틴을 알려줬습니다.','choices':[('learn','배운다','평판 +3 / OVR +1'),('decline','내 방식 유지','컨디션 +3')]}]
-    if s.age>=25: pool += [
-        {'title':'언론 집중','text':'최근 활약으로 인터뷰 요청이 몰렸습니다.','choices':[('media','응한다','인지도 +6 / 가족 -2'),('skip','훈련을 택한다','컨디션 +5 / OVR +1')]},
-        {'title':'구단의 장기계획','text':'단장이 장기계약 가능성을 타진했습니다.','choices':[('talk','협상한다','에이전트 신뢰 +4'),('wait','FA까지 기다린다','FA 기대값 +1')]}]
-    if s.spouse: pool.append({'title':'가족과 원정','text':'가족이 긴 원정 기간을 걱정합니다.','choices':[('family','가족을 우선한다','가족 +8 / 컨디션 +3'),('baseball','야구에 집중한다','OVR +1 / 가족 -5')]})
-    if not pool: pool=[{'title':'작은 선택','text':'이번 시즌의 루틴을 정해야 합니다.','choices':[('focus','훈련 강화','OVR +1'),('rest','휴식','컨디션 +6')]}]
+    if s.age<=24:
+        pool += [
+            {'title':'감독의 기대','text':'감독이 다음 시즌 주전 경쟁을 예고했습니다.','choices':[('focus','주전 경쟁에 집중','OVR +1'),('rest','몸 관리 우선','컨디션 +8')]},
+            {'title':'선배의 조언','text':'베테랑 선수가 타격/투구 루틴을 알려줬습니다.','choices':[('learn','배운다','평판 +3 / OVR +1'),('decline','내 방식 유지','컨디션 +3')]},
+            {'title':'첫 팬미팅','text':'팬들이 작은 팬미팅을 열어 달라고 요청했습니다.','choices':[('media','팬들과 만난다','인지도 +6 / 가족 -1'),('skip','훈련을 택한다','OVR +1 / 컨디션 +2')]}]
+    if s.age>=22:
+        pool += [
+            {'title':'룸메이트 갈등','text':'선수단 안에서 사소한 갈등이 생겼습니다.','choices':[('talk','먼저 대화한다','에이전트 신뢰 +4 / 평판 +2'),('wait','시간이 해결하게 둔다','컨디션 +3')]},
+            {'title':'장비 업체의 제안','text':'새 장비의 테스트 선수로 선정됐습니다.','choices':[('focus','테스트한다','OVR +1 / 인지도 +2'),('decline','익숙한 장비를 쓴다','평판 +2')]},
+            {'title':'구단 SNS 화제','text':'당신의 경기 영상이 갑자기 화제가 됐습니다.','choices':[('media','적극적으로 소통한다','인지도 +8 / 컨디션 -2'),('skip','관심을 끄고 훈련한다','OVR +1')]},
+            {'title':'새로운 경쟁자','text':'당신의 포지션에 유망주가 합류했습니다.','choices':[('focus','경쟁을 받아들인다','OVR +2 / 컨디션 -8'),('talk','후배를 돕는다','평판 +7 / 충성도 +3')]}]
+    if s.age>=25:
+        pool += [
+            {'title':'장기계약 제안','text':'구단이 장기계약 가능성을 타진했습니다.','choices':[('talk','협상 테이블에 앉는다','에이전트 신뢰 +5'),('wait','FA까지 기다린다','평판 +2')]},
+            {'title':'지역사회 봉사','text':'구단이 지역 유소년 야구 행사에 초대했습니다.','choices':[('family','참여한다','가족 +8 / 평판 +3'),('baseball','경기에 집중한다','OVR +1')]},
+            {'title':'부진 탈출법','text':'최근 한 달간 성적이 흔들리고 있습니다.','choices':[('focus','훈련량을 늘린다','OVR +2 / 컨디션 -12'),('rest','휴식과 재정비','컨디션 +15 / OVR -1')]},
+            {'title':'후배의 고민','text':'후배가 당신에게 야구와 인생에 대한 조언을 구했습니다.','choices':[('talk','시간을 내준다','평판 +6 / 가족 +2'),('skip','훈련을 우선한다','OVR +1')]},
+            {'title':'광고 촬영','text':'광고 모델 제안이 들어왔습니다.','choices':[('media','촬영에 참여한다','인지도 +7 / 가족 -2'),('decline','거절하고 야구에 집중한다','OVR +1 / 평판 +2')]}]
+    if s.spouse:
+        pool += [
+            {'title':'긴 원정과 가족','text':'가족이 긴 원정 기간을 걱정합니다.','choices':[('family','가족과 시간을 확보한다','가족 +8 / 컨디션 +3'),('baseball','야구에 집중한다','OVR +1 / 가족 -5')]},
+            {'title':'배우자의 응원','text':'배우자가 슬럼프를 겪는 당신에게 진심 어린 조언을 건넸습니다.','choices':[('family','함께 시간을 보낸다','가족 +10 / 컨디션 +4'),('focus','조언을 마음에 새긴다','OVR +1 / 평판 +2')]}]
+    if not pool:
+        pool=[{'title':'작은 선택','text':'이번 시즌의 루틴을 정해야 합니다.','choices':[('focus','훈련 강화','OVR +1'),('rest','휴식','컨디션 +6')]}]
     return random.choice(pool)
 
 def apply_event(s, choice):

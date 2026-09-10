@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+import threading
 from unified_achievements import MODE_ACHIEVEMENTS
 
 from career import (
@@ -16,6 +17,10 @@ from career_storage import (
 )
 
 career_bp = Blueprint('career', __name__, url_prefix='/career')
+_CAREER_ACTION_LOCKS = {}
+
+def _career_lock(key):
+    return _CAREER_ACTION_LOCKS.setdefault(str(key), threading.Lock())
 
 
 def _logged_in():
@@ -229,19 +234,20 @@ def decision():
     guard = _require_login()
     if guard: return guard
     state = get_state()
-    # 이벤트 버튼 더블클릭/재전송으로 같은 결정을 두 번 처리하지 않는다.
-    if not state or not state.pending_event or state.decision_used:
+    if not state:
+        return redirect(url_for('career.career_home'))
+    with _career_lock(f'decision:{session.get("career_id")}'):
+        # 더블클릭/브라우저 재전송/느린 DB 응답으로 같은 시즌이 두 번 진행되는 것을 막는다.
+        if not state.pending_event or state.decision_used:
+            return redirect(url_for('career.dashboard'))
+        option_id = request.form.get('option_id', '')
+        resolve_event(state, option_id)
+        if state.status != 'retired':
+            simulate_season(state)
+            advance_after_season(state)
+        save_state(state)
+        if state.status == 'retired': return redirect(url_for('career.retire'))
         return redirect(url_for('career.dashboard'))
-
-    option_id = request.form.get('option_id', '')
-    resolve_event(state, option_id)
-    if state.status != 'retired':
-        simulate_season(state)
-        advance_after_season(state)
-    save_state(state)
-    if state.status == 'retired': return redirect(url_for('career.retire'))
-    return redirect(url_for('career.dashboard'))
-
 
 @career_bp.get('/international')
 def international():
