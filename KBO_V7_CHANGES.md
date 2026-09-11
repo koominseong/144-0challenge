@@ -16,3 +16,8 @@
 - The UI shows 4 context-sensitive choices per category/year instead of the same fixed buttons every year.
 - Choices consider age, position, stamina, fame, family, relationship, contract timing, veteran status and overseas/national-team context.
 - Choices include positive, neutral, trade-off and negative outcomes.
+
+
+## 해외 포스팅 조건 변경
+- 포스팅 자격의 최소 KBO 등록 시즌을 **7시즌**으로 변경했습니다.
+- 기존의 나이 25세 이상, OVR 78 이상, 해외 진출 중이 아닐 것 조건은 유지합니다.

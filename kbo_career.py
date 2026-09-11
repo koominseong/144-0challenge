@@ -375,7 +375,7 @@ def simulate_season(s):
     # the length of the previous FA contract negotiated by the player.
     target=max(1, int(s.fa_service_target or 8))
     s.fa_eligible=(s.service_seasons>=target and s.contract_years_left<=0 and not s.overseas)
-    s.posting_eligible=(s.age>=25 and s.ovr>=78 and s.service_seasons>=4 and not s.overseas)
+    s.posting_eligible=(s.age>=25 and s.ovr>=78 and s.service_seasons>=7 and not s.overseas)
     generate_rival(s)
     if s.rival_name and st.get('games',0)>=80:
         s.rivalry_score=max(-10,min(10,s.rivalry_score+random.choice([-1,0,1])))
@@ -545,12 +545,28 @@ def negotiate_fa(s, team_id=None, counter=False):
     return True, offer
 
 
+def _mlb_salary_range(s):
+    # 연봉 단위는 게임 전체에서 '만원'으로 통일한다.
+    # KBO 연봉을 단순 배수로 환산하면 저연봉 선수의 MLB 연봉이 지나치게 낮아지고,
+    # 반대로 고연봉 KBO 선수는 과도하게 높아지는 문제가 있어 OVR/성과 기반으로 산정한다.
+    ovr=int(s.ovr)
+    war=max(0.0, float((s.season_stats[-1] if s.season_stats else {}).get('war', 0)))
+    if ovr >= 96: low, high = 140000, 280000   # $10M~20M
+    elif ovr >= 92: low, high = 85000, 180000  # $6M~13M
+    elif ovr >= 88: low, high = 50000, 110000  # $3.5M~8M
+    elif ovr >= 84: low, high = 28000, 65000   # $2M~4.6M
+    elif ovr >= 80: low, high = 16000, 38000   # $1.1M~2.7M
+    else: low, high = 10000, 22000             # $0.7M~1.6M
+    performance=max(0.0,min(1.0, war/8.0))
+    mid=low+(high-low)*(0.35+0.65*performance)
+    return int(max(low, min(high, mid*random.uniform(.88,1.12))))
+
 def generate_posting_offers(s):
-    base=max(4000,int(s.salary*2.2))
+    mlb_base=_mlb_salary_range(s)
     return [
-        {'team':'MLB 구단 A','level':'MLB 26인 경쟁','salary':int(base*random.uniform(1.3,2.1)),'years':3},
-        {'team':'MLB 구단 B','level':'MLB/AAA 경쟁','salary':int(base*random.uniform(1.0,1.7)),'years':2},
-        {'team':'AAA 구단 C','level':'AAA 주전','salary':int(base*random.uniform(.7,1.15)),'years':2},
+        {'team':'MLB 구단 A','level':'MLB 26인 경쟁','salary':int(mlb_base*random.uniform(1.00,1.18)),'years':random.choice([2,3,4])},
+        {'team':'MLB 구단 B','level':'MLB/AAA 경쟁','salary':int(mlb_base*random.uniform(.78,1.02)),'years':random.choice([2,3])},
+        {'team':'AAA 구단 C','level':'AAA 주전','salary':int(max(5500,mlb_base*random.uniform(.28,.48))),'years':1},
     ]
 
 def generate_kbo_return_offers(s):
@@ -850,6 +866,6 @@ def agent_options(s):
 def apply_office(s, choice):
     if choice=='ask_market': s.agent_trust=min(100,s.agent_trust+3); s.reputation=min(100,s.reputation+2)
     elif choice=='negotiate': s.salary=int(s.salary*(1+(.08 if s.agent=='kang' else .06 if s.agent=='han' else .03))); s.agent_trust=min(100,s.agent_trust+5)
-    elif choice=='overseas': s.posting_eligible=s.posting_eligible or (s.age>=25 and s.ovr>=78); s.agent_trust=min(100,s.agent_trust+2)
+    elif choice=='overseas': s.posting_eligible=s.posting_eligible or (s.age>=25 and s.ovr>=78 and s.service_seasons>=7); s.agent_trust=min(100,s.agent_trust+2)
     elif choice=='relationship': s.loyalty=min(100,s.loyalty+7)
     s.office_done=True
