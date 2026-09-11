@@ -1,0 +1,9 @@
+{% extends 'kbo_base.html' %}{% block body %}
+<section class="card hero"><p class="eyebrow">MEDICAL CENTER</p><h1>🩹 부상·재활</h1>
+<p class="muted">{{state.player_name}} · {{state.injury_name}} · 남은 재활 기간 약 {{state.injury_days}}일</p>
+<div class="grid3"><div class="stat"><small>상태</small><b>{{state.rehab_stage}}</b></div><div class="stat"><small>컨디션</small><b>{{state.stamina}}</b></div><div class="stat"><small>재활 횟수</small><b>{{state.rehab_count}}</b></div></div></section>
+<section class="card"><h2>복귀 방법을 선택하세요</h2><form method="post" class="grid">
+<button class="btn choice" name="choice" value="rehab"><h2>🏥 정석 재활</h2><p class="muted">안전하게 회복합니다. OVR 회복 가능성도 있습니다.</p></button>
+<button class="btn choice" name="choice" value="rest"><h2>🛌 휴식 중심</h2><p class="muted">몸을 충분히 쉬게 합니다. 재활 속도는 느립니다.</p></button>
+<button class="btn choice" name="choice" value="early"><h2>⚠️ 조기 복귀</h2><p class="muted">빠르게 복귀하지만 컨디션과 OVR에 부담이 생깁니다.</p></button>
+</form></section>{% endblock %}
