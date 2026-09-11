@@ -129,7 +129,7 @@ def draft_choose():
     s=_load(); offers=(s.draft_offers if s else None) or []; tid=request.form.get('team_id'); chosen=next((x for x in offers if x['team_id']==tid),None)
     if not s or not chosen:
         return redirect(url_for('kbo.draft'))
-    s.team_id=chosen['team_id']; s.team_name=chosen['name']; s.money+=chosen['signing_bonus']; s.salary=3000 if s.year>=2027 else 2700; s.notes.append(f"{s.year} 신인드래프트 {chosen['round']}라운드 {s.team_name}"); s.draft_offers=[]; session.pop('kbo_draft',None); _save(s); return redirect(url_for('kbo.dashboard'))
+    s.team_id=chosen['team_id']; s.team_name=chosen['name']; s.money+=chosen['signing_bonus']; s.salary=3000 if s.year>=2027 else 2700; s.fa_service_target=7 if s.school=='college' else 8; s.notes.append(f"{s.year} 신인드래프트 {chosen['round']}라운드 {s.team_name}"); s.draft_offers=[]; session.pop('kbo_draft',None); _save(s); return redirect(url_for('kbo.dashboard'))
 
 @kbo_bp.get('/dashboard')
 def dashboard():
@@ -524,6 +524,19 @@ def season_play():
         return redirect(url_for('kbo.posting'))
     return redirect(url_for('kbo.result'))
 
+@kbo_bp.route('/injury',methods=['GET','POST'])
+def injury():
+    g=_guard()
+    if g:return g
+    s=_load()
+    if not s:return _redirect_home()
+    if request.method=='POST':
+        with _action_lock(f'injury:{s.id}'):
+            apply_injury_rehab(s, request.form.get('choice','rehab'))
+            _save(s)
+        return redirect(url_for('kbo.result'))
+    return render_template('kbo_injury.html',state=s)
+
 @kbo_bp.get('/result')
 def result():
     g=_guard()
@@ -542,10 +555,12 @@ def next_age():
     s=_load()
     if not s:return _redirect_home()
     with _action_lock(f'next:{s.id}'):
+        if s.injury_status: return redirect(url_for('kbo.injury'))
         if s.pending_event and not s.event_done: return redirect(url_for('kbo.event'))
         if s.national_offer: return redirect(url_for('kbo.national'))
         if s.pending_special_event: return redirect(url_for('kbo.special'))
         if s.age>=40:
+            evaluate_permanent_number(s)
             s.retired=True;_save(s);return redirect(url_for('kbo.retire'))
         age_up(s);_save(s);return redirect(url_for('kbo.dashboard'))
 

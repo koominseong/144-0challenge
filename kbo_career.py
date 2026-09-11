@@ -114,6 +114,23 @@ class KBOState:
     national_offer: dict = None
     national_history: list = field(default_factory=list)
     draft_offers: list = field(default_factory=list)
+    # v6 career-life systems
+    injury_status: str = ''
+    injury_name: str = ''
+    injury_days: int = 0
+    rehab_stage: str = ''
+    rehab_count: int = 0
+    rival_name: str = ''
+    rival_team: str = ''
+    rivalry_score: int = 0
+    league_news: list = field(default_factory=list)
+    assets: list = field(default_factory=list)
+    asset_value: int = 0
+    spending: int = 0
+    permanent_number: bool = False
+    permanent_number_team: str = ''
+    permanent_number_reason: str = ''
+    retirement_honor: str = ''
 
 
 def from_dict(raw):
@@ -125,44 +142,161 @@ def team_name(team_id):
     return dict(KBO_TEAMS).get(team_id, team_id or '미정')
 
 def _roll_stats(s):
+    """KBO 현실 범위에 맞춘 단일 시즌 성적 생성.
+
+    핵심 원칙
+    - 야수 G <= 144, 타율은 일반적으로 .230~.330대, 최상위권만 .350 안팎.
+    - 선발은 22~30경기/110~190이닝, 승수는 5~20승 수준.
+    - 불펜은 35~75경기, 세이브/홀드는 역할에 따라 분리.
+    - 1군 등록일수는 경기수와 별개인 '로스터에 있었던 날짜'라서 항상 경기수보다 충분히 크거나 같다.
+    """
     age=s.age
-    role=max(0.35, min(1.18, (s.ovr-45)/35))
-    health=max(.55, s.stamina/100)
-    luck=random.uniform(.88,1.12)
-    # KBO is modeled around a 144-game regular season. A player's games
-    # cannot exceed the league schedule; role/health only reduce that total.
-    games=int(144*max(.30,min(1.18, role*health*luck)))
-    if age < 21: games=int(games*.70)
-    if age >= 35: games=int(games*.78)
-    if s.overseas: games=int(games*.72)
-    games=max(1,min(144,games))
-    if s.position in ('SP','RP'):
-        if s.position=='SP':
-            wins=max(0,int(games*.55*(s.ovr/85)*luck)-random.randint(0,5))
-            era=max(1.8, 5.2-(s.ovr-55)*.055+random.uniform(-.35,.35))
-            war=max(-0.3, (games/28)*(4.8-era)/1.5)
-            saves=0
-            primary=f'{wins}승'
-            secondary=f'{era:.2f} ERA'
+    ovr=float(s.ovr)
+    health=max(.45, min(1.05, s.stamina/100))
+    luck=random.uniform(.94,1.06)
+    injury_penalty=0.72 if s.injury_status else 1.0
+
+    if s.position=='SP':
+        # KBO 선발 로테이션: 건강한 풀시즌도 대체로 25~30경기.
+        starts=int(random.gauss(26,3) * (0.70 + 0.30*health) * injury_penalty)
+        if age < 21: starts=int(starts*.60)
+        if age >= 35: starts=int(starts*.72)
+        starts=max(8,min(32,starts))
+        games=starts
+        ip_per_start=random.uniform(4.6,6.4) * (0.90 + 0.10*health)
+        ip=round(min(200.0, starts*ip_per_start),1)
+        era=max(2.25, min(6.50, 5.05 - (ovr-55)*.050 + random.uniform(-.35,.35)))
+        # 10승은 좋은 선발, 15승 이상은 에이스 시즌. 20승은 매우 희귀.
+        win_rate=max(.18,min(.72,.30 + (ovr-55)*.007 + (3.8-era)*.035 + random.uniform(-.06,.06)))
+        wins=min(starts, max(0, int(round(starts*win_rate))))
+        losses=max(0, int(round(starts*random.uniform(.12,.34))))
+        so=max(20,int(ip*(5.8 + (ovr-60)*.065 + random.uniform(-.6,.6))/9))
+        walks=max(8,int(ip*(2.8 - (ovr-60)*.018 + random.uniform(-.25,.35))/9))
+        war=max(-0.3, min(9.0, ip*(5.2-era)/30 + random.uniform(-.45,.45)))
+        saves=0; holds=0
+        primary=f'{wins}승 {losses}패'
+        secondary=f'{era:.2f} ERA · {ip:.1f}이닝 · {so}K'
+        days=min(172,max(45,int(150*health + random.randint(-12,10))))
+        return {'year':s.year,'age':s.age,'team':s.team_name,'games':games,'primary':primary,'secondary':secondary,
+                'war':round(war,1),'avg':None,'hr':0,'rbi':0,'wins':wins,'losses':losses,'saves':saves,'holds':holds,
+                'era':round(era,2),'ip':ip,'strikeouts':so,'walks':walks,'registered_days':days}
+
+    if s.position=='RP':
+        games=int(random.gauss(58,9) * (0.72+0.28*health) * injury_penalty)
+        if age<21: games=int(games*.65)
+        if age>=35: games=int(games*.78)
+        games=max(20,min(78,games))
+        ip=round(games*random.uniform(0.75,1.25),1)
+        era=max(2.35,min(6.30,5.00-(ovr-55)*.048+random.uniform(-.4,.4)))
+        saves=0; holds=0
+        # 마무리 역할은 저장된 manager_role/OVR을 바탕으로 일부 시즌만 부여.
+        closer=(s.manager_role in ('핵심 주전','팀의 중심') and ovr>=78) or random.random()<.22
+        if closer:
+            saves=max(0,min(45,int(games*.40*(ovr/90)*random.uniform(.65,1.08))))
         else:
-            saves=max(0,int(games*.22*(s.ovr/85)*luck))
-            era=max(1.9,5.0-(s.ovr-55)*.05+random.uniform(-.35,.35))
-            war=max(-.2,(games/60)*(4.4-era)/1.1)
-            wins=0
-            primary=f'{saves} SV'; secondary=f'{era:.2f} ERA'
-        hr=rbi=hits=0
+            holds=max(0,min(30,int(games*.28*(ovr/82)*random.uniform(.55,1.05))))
+        wins=max(0,min(12,int(games*.10*(ovr/90)*random.uniform(.5,1.3))))
+        losses=max(0,min(10,int(games*.08*random.uniform(.5,1.5))))
+        so=max(10,int(ip*(6.0+(ovr-60)*.06+random.uniform(-.7,.7))/9))
+        walks=max(4,int(ip*(3.0-(ovr-60)*.015+random.uniform(-.3,.4))/9))
+        war=max(-0.2,min(5.0,ip*(4.8-era)/28+random.uniform(-.3,.3)))
+        days=min(172,max(35,int(135*health+random.randint(-15,18))))
+        primary=f'{wins}승 {losses}패'
+        if saves: primary=f'{saves}세이브'
+        elif holds: primary=f'{holds}홀드'
+        secondary=f'{era:.2f} ERA · {ip:.1f}이닝 · {so}K'
+        return {'year':s.year,'age':s.age,'team':s.team_name,'games':games,'primary':primary,'secondary':secondary,
+                'war':round(war,1),'avg':None,'hr':0,'rbi':0,'wins':wins,'losses':losses,'saves':saves,'holds':holds,
+                'era':round(era,2),'ip':ip,'strikeouts':so,'walks':walks,'registered_days':days}
+
+    # 야수: 출장기회와 타석을 먼저 만들고 타율/안타를 계산한다.
+    role_factor=0.52 + min(0.43,max(0.0,(ovr-55)/44))
+    games=int(random.gauss(118,17)*role_factor*health*injury_penalty)
+    if age<21: games=int(games*.58)
+    elif age<23: games=int(games*.82)
+    if age>=35: games=int(games*.78)
+    games=max(25,min(144,games))
+    pa=max(70,int(games*random.uniform(3.35,4.25)))
+    ab=max(60,int(pa*random.uniform(.87,.93)))
+
+    # OVR 99도 기본적으로 .330 전후가 상한에 가깝고, .350+는 희귀한 시즌으로 만든다.
+    avg=max(.190,min(.355,.235 + (ovr-55)*.00175 + random.uniform(-.018,.018)))
+    if ovr>=90 and random.random()<.045:
+        avg=min(.365,avg+random.uniform(.015,.028))
+    hits=min(ab,max(0,int(round(ab*avg))))
+    power_rate=max(.025,min(.205,.045+(ovr-55)*.00235+random.uniform(-.012,.012)))
+    hr=max(0,min(45,int(round(games*power_rate))))
+    doubles=max(4,int(round(hits*random.uniform(.13,.21))))
+    triples=max(0,int(round(hits*random.uniform(.012,.035))))
+    rbi=max(0,min(130,int(round(hr*2.15 + hits*.18 + games*.14 + random.uniform(-8,10)))))
+    runs=max(0,min(135,int(round(hits*.28+pa*.08+random.uniform(-6,7)))))
+    sb=max(0,min(45,int(round(games*max(0,.035+(ovr-65)*.0025)*random.uniform(.45,1.15)))))
+    war=max(-1.0,min(9.0,(ovr-58)*.105*(games/144)+random.uniform(-.55,.55)))
+    days=min(172,max(games,int(games*random.uniform(1.18,1.65))))
+    return {'year':s.year,'age':s.age,'team':s.team_name,'games':games,'primary':f'{avg:.3f} AVG',
+            'secondary':f'{hr} HR · {rbi} RBI · {hits} H','war':round(war,1),'avg':round(avg,3),'hr':hr,'rbi':rbi,
+            'hits':hits,'pa':pa,'ab':ab,'runs':runs,'sb':sb,'wins':0,'losses':0,'saves':0,'holds':0,'era':None,
+            'ip':0,'strikeouts':0,'walks':0,'registered_days':days}
+
+def generate_rival(s):
+    if s.rival_name or s.age < 20 or random.random() > .28:
+        return
+    rivals=[('김도윤','LG 트윈스'),('박준혁','KIA 타이거즈'),('이현우','삼성 라이온즈'),('최민재','롯데 자이언츠'),('정우진','한화 이글스'),('한승민','SSG 랜더스')]
+    pool=[x for x in rivals if x[1]!=s.team_name]
+    if pool:
+        s.rival_name,s.rival_team=random.choice(pool)
+        s.notes.append(f'{s.year} {s.rival_name}({s.rival_team})와 포지션 라이벌 관계가 형성됐다.')
+
+def generate_league_news(s, st):
+    news=[
+        f'📰 {s.year} KBO: {s.team_name}의 {s.player_name}이(가) 시즌 {st["games"]}경기에 출전했다.',
+        f'📰 {s.year} KBO 이슈: FA 시장에서 베테랑들의 계약 협상이 본격화됐다.',
+        random.choice([
+            f'📰 {s.year} KBO: 신인 선수들이 1군 경쟁에 뛰어들고 있다.',
+            f'📰 {s.year} KBO: 각 구단이 포스트시즌 전력 보강을 준비하고 있다.',
+            f'📰 {s.year} KBO: 국가대표 후보군을 둘러싼 경쟁이 치열해지고 있다.',
+            f'📰 {s.year} KBO: 외국인 선수 교체 여부가 여러 구단의 관심사로 떠올랐다.'
+        ])
+    ]
+    if st.get('war',0)>=5: news.insert(0,f'🔥 {s.year} KBO: {s.player_name}, 리그 정상급 시즌으로 주목받다.')
+    if s.rival_name and st.get('games',0)>=100:
+        news.append(f'⚔️ 라이벌 뉴스: {s.rival_name}과(와) 다음 시즌 주전 경쟁이 더욱 뜨거워질 전망이다.')
+    s.league_news=news[:4]
+
+def apply_injury_rehab(s, choice):
+    if not s.injury_status:
+        return
+    if choice=='rehab':
+        s.rehab_count += 1
+        s.injury_days=max(0,s.injury_days-random.randint(25,45))
+        s.stamina=min(100,s.stamina+8)
+        s.ovr=max(40,s.ovr + random.choice([0,0,1]))
+    elif choice=='rest':
+        s.injury_days=max(0,s.injury_days-random.randint(15,30))
+        s.stamina=min(100,s.stamina+15)
+    elif choice=='early':
+        s.injury_days=max(0,s.injury_days-random.randint(35,60))
+        s.stamina=max(35,s.stamina-8)
+        s.ovr=max(40,s.ovr-1)
+    if s.injury_days<=0:
+        s.injury_status=''; s.injury_name=''; s.rehab_stage='복귀 완료'; s.notes.append(f'{s.year} 재활을 마치고 정상적으로 복귀했다.')
     else:
-        avg=max(.180,min(.370,.235+(s.ovr-55)*.004+random.uniform(-.025,.025)))
-        hr=max(0,int((s.ovr-55)*.62+random.uniform(-5,7)))
-        rbi=max(0,int(hr*2.4+games*.17+random.uniform(-8,12)))
-        hits=max(0,int(games*3.0*avg))
-        war=max(-0.5,(s.ovr-52)/12*games/140+random.uniform(-.7,.8))
-        wins=saves=0
-        primary=f'{avg:.3f}'; secondary=f'{hr} HR'
-    if random.random() < max(.02,.11-(s.ovr/1200)):
-        s.injuries += 1; s.stamina=max(25,s.stamina-random.randint(8,25)); games=int(games*.7)
-    days=min(170,max(20,int(games*1.05+random.randint(-8,12))))
-    return {'year':s.year,'age':s.age,'team':s.team_name,'games':games,'primary':primary,'secondary':secondary,'war':round(war,1),'avg':round(avg,3) if s.position not in ('SP','RP') else None,'hr':hr,'rbi':rbi,'wins':wins,'saves':saves,'era':round(era,2) if s.position in ('SP','RP') else None,'registered_days':days}
+        s.rehab_stage='재활 중'
+
+def evaluate_permanent_number(s):
+    if s.permanent_number:
+        return
+    # 단순 은퇴가 아니라 '구단 역사에 남을 만한 선수'만 영구결번.
+    seasons=len(s.season_stats)
+    elite=(s.mvp>=1 or s.gg>=4 or s.championships>=3 or s.career_war>=45 or s.fame>=90)
+    if seasons>=10 and elite and s.team_name and s.jersey:
+        s.permanent_number=True
+        s.permanent_number_team=s.team_name
+        s.permanent_number_reason='장기간 활약과 우승·MVP·골든글러브·WAR 등 구단 역사급 업적'
+        s.retirement_honor='영구결번'
+        s.notes.append(f'{s.team_name}이(가) {s.jersey}번을 영구결번으로 지정했다.')
+    elif seasons>=8 and (s.mvp>=1 or s.career_war>=35 or s.fame>=85):
+        s.retirement_honor='구단 레전드'
 
 def simulate_season(s):
     # 시즌이 새로 시작될 때마다 일반 이벤트 선택 상태를 초기화한다.
@@ -179,6 +313,23 @@ def simulate_season(s):
         if s.contract_years_left>0: s.contract_years_left-=1
         return st
     st=_roll_stats(s)
+    # 시즌 중 부상 발생: 다음 나이로 넘어가기 전에 재활 선택을 요구한다.
+    if not s.injury_status and random.random() < max(.035, min(.16, .075 + (100-s.stamina)*.0012)):
+        s.injury_status='부상'
+        s.injury_name=random.choice(['햄스트링 염좌','어깨 염증','허리 통증','발목 염좌','손목 부상','팔꿈치 염증'])
+        s.injury_days=random.randint(20,120)
+        s.rehab_stage='진단 완료'
+        old_games=max(1,int(st['games']))
+        new_games=max(1,int(old_games*random.uniform(.65,.88)))
+        ratio=new_games/old_games
+        st['games']=new_games
+        for key in ('pa','ab','hits','hr','rbi','runs','sb'):
+            if key in st: st[key]=max(0,int(round(st[key]*ratio)))
+        st['registered_days']=max(st['games'],min(172,st['registered_days']+random.randint(0,15)))
+        if st.get('avg') is not None:
+            st['primary']='%.3f AVG' % st['avg']
+            st['secondary']='%d HR · %d RBI · %d H' % (st.get('hr',0), st.get('rbi',0), st.get('hits',0))
+        s.injuries += 1
     s.season_stats.append(st); s.history.append(st)
     s.career_games += st['games']; s.career_hr += st['hr']; s.career_rbi += st['rbi']; s.career_wins += st['wins']; s.career_saves += st['saves']; s.career_war += st['war']
     s.registered_days=st['registered_days']
@@ -204,15 +355,28 @@ def simulate_season(s):
     if s.injuries and random.random()<.3: delta -= 1
     s.ovr=max(40,min(99,s.ovr+delta))
     s.potential=max(s.ovr,min(99,s.potential))
-    if st['games'] >= 120 and st['war'] >= 3: s.manager_role=random.choice(['주전','핵심 주전','팀의 중심'])
-    elif st['games'] >= 70: s.manager_role=random.choice(['플래툰/로테이션','주전 경쟁','백업'])
-    else: s.manager_role=random.choice(['2군 경쟁','백업','재활/회복'])
+    if s.position=='SP':
+        if st['games']>=25 and st['war']>=3: s.manager_role=random.choice(['주전','핵심 주전','팀의 중심'])
+        elif st['games']>=18: s.manager_role=random.choice(['선발 경쟁','로테이션','백업'])
+        else: s.manager_role=random.choice(['2군 경쟁','로테이션','재활/회복'])
+    elif s.position=='RP':
+        if st['games']>=55 and st['war']>=2: s.manager_role=random.choice(['주전','핵심 주전','팀의 중심'])
+        elif st['games']>=35: s.manager_role=random.choice(['필승조 경쟁','불펜 로테이션','백업'])
+        else: s.manager_role=random.choice(['2군 경쟁','불펜 로테이션','재활/회복'])
+    else:
+        if st['games'] >= 120 and st['war'] >= 3: s.manager_role=random.choice(['주전','핵심 주전','팀의 중심'])
+        elif st['games'] >= 70: s.manager_role=random.choice(['플래툰/로테이션','주전 경쟁','백업'])
+        else: s.manager_role=random.choice(['2군 경쟁','백업','재활/회복'])
     s.stamina=max(45,min(100,s.stamina+random.randint(-4,7)))
     # First FA: 8 qualifying seasons. After that, the next FA clock follows
     # the length of the previous FA contract negotiated by the player.
     target=max(1, int(s.fa_service_target or 8))
     s.fa_eligible=(s.service_seasons>=target and s.contract_years_left<=0 and not s.overseas)
     s.posting_eligible=(s.age>=25 and s.ovr>=78 and s.service_seasons>=4 and not s.overseas)
+    generate_rival(s)
+    if s.rival_name and st.get('games',0)>=80:
+        s.rivalry_score=max(-10,min(10,s.rivalry_score+random.choice([-1,0,1])))
+    generate_league_news(s, st)
     update_life_systems(s, st)
     generate_special_event(s, st)
     # salary growth
@@ -425,7 +589,13 @@ def apply_life(s, choice):
     elif choice=='rest':
         s.stamina=min(100,s.stamina+12)
     elif choice=='invest':
-        s.money=max(0,s.money+random.randint(500,2500)); s.family=max(0,s.family-2)
+        gain=random.randint(500,2500); s.money+=gain; s.asset_value+=gain; s.family=max(0,s.family-2)
+    elif choice=='car' and s.money>=8000:
+        s.money-=8000; s.spending+=8000; s.assets.append(f'{s.year} 차량'); s.asset_value+=8000; s.fame=min(100,s.fame+2)
+    elif choice=='home' and s.money>=30000:
+        s.money-=30000; s.spending+=30000; s.assets.append(f'{s.year} 주거 자산'); s.asset_value+=30000; s.family=min(100,s.family+8)
+    elif choice=='sponsor_spend' and s.money>=3000:
+        s.money-=3000; s.spending+=3000; s.fame=min(100,s.fame+3); s.reputation=min(100,s.reputation+2)
     elif choice=='meet' and s.relationship_status=='none' and s.age>=21:
         s.partner_name=random.choice(_partner_pool()); s.relationship_status='meeting'; s.relationship_years=0
         s.family=min(100,s.family+2); s.family_notes.append(f'{s.year} 새로운 인연을 만났다: {s.partner_name}')
@@ -448,7 +618,7 @@ def apply_life(s, choice):
     s.life_done=True
 
 def family_choices(s):
-    out=[('family','가족과 시간 보내기','가족관계↑ · 컨디션↑'),('media','미디어 활동','인지도↑ · 가족관계 소폭↓'),('rest','휴식','컨디션↑'),('invest','재정 관리','수입↑ · 가족관계 소폭↓')]
+    out=[('family','가족과 시간 보내기','가족관계↑ · 컨디션↑'),('media','미디어 활동','인지도↑ · 가족관계 소폭↓'),('rest','휴식','컨디션↑'),('invest','재정 관리','자산 형성'),('car','차량 구매','₩8000만 · 인기 소폭↑'),('home','주거 마련','₩3억 · 가족관계↑'),('sponsor_spend','이미지 투자','₩3000만 · 평판/인기↑')]
     if s.age>=21 and s.relationship_status=='none': out.append(('meet','새로운 인연 만나기','소개·모임·우연한 만남으로 관계를 시작할 수 있습니다.'))
     elif s.relationship_status=='meeting': out.append(('date','데이트를 이어간다','서로 알아가는 시간을 보냅니다.'))
     elif s.relationship_status=='dating': out.append(('date','연애를 이어간다','관계를 더 깊게 만들어 갑니다.')); out.append(('serious','진지한 관계로 발전한다','결혼을 생각할 정도의 관계가 됩니다.'))
