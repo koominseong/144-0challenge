@@ -152,7 +152,7 @@ def training():
                 return redirect(url_for('kbo.dashboard'))
             apply_training(s,request.form.get('choice','recovery')); _save(s)
         return redirect(url_for('kbo.dashboard'))
-    return render_template('kbo_training.html',state=s)
+    return render_template('kbo_training.html',state=s,choices=dynamic_choices(s,'training'))
 
 @kbo_bp.route('/life',methods=['GET','POST'])
 def life():
@@ -187,15 +187,22 @@ def office():
         elif choice=='posting_start' and s.posting_eligible:
             s.posting_stage='구단 동의'; s.office_done=True; s.notes.append(f'{s.year} 포스팅 도전 의사 전달')
             return redirect(url_for('kbo.posting'))
-        elif choice=='military_sangmu' and s.military=='미필':
-            s.military='상무 복무'; s.military_choice='상무'; s.army_years=1; s.stamina=90; s.office_done=True
-        elif choice=='military_active' and s.military=='미필':
-            s.military='현역 복무'; s.military_choice='현역'; s.army_years=1; s.ovr=max(40,s.ovr-2); s.office_done=True
+        elif choice=='military_sangmu' and s.military=='미필' and s.age >= 21:
+            # 상무는 지원 후 합격 여부를 판정한다. 합격하면 선수 소속이 상무로 바뀌고 최소 2시즌 복무한다.
+            chance=min(.88,max(.35,.48+(s.ovr-65)*.018+(s.fame/100)*.08))
+            if random.random() < chance:
+                s.military='상무 복무'; s.military_choice='상무'; s.army_years=2; s.military_original_team_id=s.team_id; s.military_original_team_name=s.team_name
+                s.team_id='SANGMU'; s.team_name='상무 피닉스'; s.stamina=95; s.office_done=True; s.notes.append(f'{s.year} 상무 합격 · 2년간 상무 피닉스에서 복무')
+            else:
+                s.notes.append(f'{s.year} 상무 지원 탈락 · 다음 기회를 노리기로 했다.')
+        elif choice=='military_active' and s.military=='미필' and s.age >= 21:
+            s.military='현역 복무'; s.military_choice='현역'; s.army_years=2; s.military_original_team_id=s.team_id; s.military_original_team_name=s.team_name
+            s.team_id='MILITARY'; s.team_name='육군 복무'; s.ovr=max(40,s.ovr-2); s.office_done=True; s.notes.append(f'{s.year} 현역 입대 · 2년간 군 복무')
         else:
-            apply_office(s,choice)
+            apply_dynamic_office(s,choice)
         _save(s); return redirect(url_for('kbo.dashboard'))
     # Trade is generated only as a visible GM event; opening the page no longer mutates state repeatedly.
-    return render_template('kbo_office.html',state=s,agent=AGENTS.get(s.agent) if s.agent else None,trade=s.pending_team_move,fa=s.fa_eligible,posting=s.posting_eligible)
+    return render_template('kbo_office.html',state=s,agent=AGENTS.get(s.agent) if s.agent else None,trade=s.pending_team_move,fa=s.fa_eligible,posting=s.posting_eligible,choices=office_choices(s))
 
 
 @kbo_bp.post('/trade/refresh')
@@ -484,6 +491,8 @@ def season():
     if g:return g
     s=_load()
     if not s:return _redirect_home()
+    if s.military=='미필' and s.age>=30:
+        return redirect(url_for('kbo.military'))
     if not (s.training_done and s.life_done and s.office_done): return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_season.html',state=s)
 
@@ -494,6 +503,8 @@ def season_play():
     s=_load()
     if not s:return _redirect_home()
     with _action_lock(f'season:{s.id}'):
+        if s.military=='미필' and s.age>=30:
+            return redirect(url_for('kbo.military'))
         # 시즌 버튼의 중복 클릭으로 같은 나이의 시즌이 두 번 진행되지 않도록 한다.
         if s.season_stats and s.season_stats[-1].get('year') == s.year:
             return redirect(url_for('kbo.result'))
@@ -502,10 +513,17 @@ def season_play():
             s.overseas_years-=1
             if s.overseas_years<=0:
                 s.overseas=False; s.posting_stage='KBO 복귀 오퍼'; s.posting_return_offers=generate_kbo_return_offers(s); s.team_id='KBO_RETURN'; s.team_name='KBO 복귀 오퍼 대기'; s.fame=min(100,s.fame+5); returned=True
-        if s.military_choice:
-            s.army_years-=1
-            if s.army_years<=0: s.military='병역 완료';s.military_choice=''
+        was_military=bool(s.military_choice)
+        military_choice=s.military_choice
         stats=simulate_season(s)
+        if was_military:
+            s.army_years=max(0,s.army_years-1)
+            if s.army_years<=0:
+                s.military='병역 완료'; s.military_choice=''
+                if getattr(s,'military_original_team_id',''):
+                    s.team_id=s.military_original_team_id; s.team_name=s.military_original_team_name
+                    s.military_original_team_id=''; s.military_original_team_name=''
+                s.notes.append(f'{s.year} 2년 군 복무 완료 · 원소속팀 복귀')
         intl=None
         if not s.national_offer and s.age in tuple(range(20,35)) and s.ovr>=72:
             p=.06 + max(0,s.ovr-72)*.018 + (0.08 if s.fame>=50 else 0)

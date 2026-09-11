@@ -53,6 +53,8 @@ class KBOState:
     military: str = '미필'
     military_choice: str = ''
     army_years: int = 0
+    military_original_team_id: str = ''
+    military_original_team_name: str = ''
     service_seasons: int = 0
     registered_days: int = 0
     fa_eligible: bool = False
@@ -131,6 +133,7 @@ class KBOState:
     permanent_number_team: str = ''
     permanent_number_reason: str = ''
     retirement_honor: str = ''
+    dynamic_choices: dict = field(default_factory=dict)
 
 
 def from_dict(raw):
@@ -467,7 +470,7 @@ def generate_special_event(s, st):
     if pool: s.pending_special_event=random.choice(pool)
 
 def age_up(s):
-    s.year+=1; s.age+=1; s.training_done=s.life_done=s.office_done=False; s.stage='dashboard'
+    s.year+=1; s.age+=1; s.training_done=s.life_done=s.office_done=False; s.stage='dashboard'; s.dynamic_choices={}
     if s.age<=23:
         prepare_early_position_offer(s)
     generate_personal_goal(s)
@@ -565,29 +568,181 @@ def generate_kbo_return_offers(s):
                    'years':2,'role':'안정적인 복귀'})
     return offers
 
+# =========================================================
+# 연도별 환경형 선택지 시스템
+# 각 카테고리 100개(25개 상황 × 4개 대응)를 미리 보유하고,
+# 나이/컨디션/성적/가족/계약 상황에 맞는 후보 중 4개만 노출한다.
+# =========================================================
+TRAINING_BANK = []
+LIFE_BANK = []
+OFFICE_BANK = []
+
+def _build_choice_bank(bank, prefix, situations, styles):
+    n=1
+    for situation in situations:
+        for style in styles:
+            label, desc, effects, tags = style
+            bank.append({'id':f'{prefix}{n:03d}', 'label':f'{situation[0]} — {label}',
+                         'desc':f'{situation[1]} {desc}', 'effects':dict(effects), 'tags':list(situation[2])+list(tags)})
+            n+=1
+
+_training_situations=[
+ ('비시즌 개인훈련 제안','코치가 다음 시즌을 대비한 계획을 제시했다.',['young','normal']),
+ ('최근 타격폼 점검','영상 분석에서 작은 문제점이 발견됐다.',['hitter','normal']),
+ ('최근 구속 하락','불펜에서 평소보다 구속이 떨어졌다.',['pitcher','normal']),
+ ('체력 저하','시즌 막판 피로가 누적됐다.',['tired']),
+ ('베테랑의 루틴 공유','선배가 자신의 훈련 루틴을 알려줬다.',['veteran']),
+ ('데이터팀의 분석','구단 데이터팀이 약점을 분석해 왔다.',['normal']),
+ ('2군 훈련 제안','코치가 짧은 기간 집중훈련을 권했다.',['young','normal']),
+ ('웨이트 프로그램 변경','트레이너가 새로운 프로그램을 제안했다.',['normal']),
+ ('수비 실책 증가','최근 수비에서 실수가 조금 늘었다.',['fielder']),
+ ('주루 훈련 강화','주루코치가 스타트를 교정하자고 했다.',['fielder']),
+ ('투구폼 수정','투수코치가 팔 각도 수정을 제안했다.',['pitcher']),
+ ('변화구 연마','새 구종을 연습할 기회가 생겼다.',['pitcher']),
+ ('컨택 훈련','타격코치가 배트 컨트롤 훈련을 제안했다.',['hitter']),
+ ('장타력 강화','파워를 늘리는 특화훈련을 제안받았다.',['hitter']),
+ ('회복 프로그램','재활 트레이너가 회복 루틴을 추천했다.',['tired','normal']),
+ ('해외 캠프','스프링캠프에서 추가 훈련 기회가 생겼다.',['normal']),
+ ('새 장비 테스트','새 장비를 사용한 훈련이 가능해졌다.',['normal']),
+ ('개인 코치 영입','비시즌에 개인 코치를 둘 수 있다.',['normal']),
+ ('멘탈 코칭','스포츠 심리상담 프로그램을 권유받았다.',['normal']),
+ ('훈련량 논쟁','훈련량을 늘릴지 줄일지 의견이 갈렸다.',['tired','normal']),
+ ('포지션 전환 훈련','다른 포지션 적응 훈련 기회가 생겼다.',['fielder','young']),
+ ('구속 회복 루틴','트레이너가 어깨 관리 루틴을 제시했다.',['pitcher','tired']),
+ ('장거리 이동 후 훈련','원정 후 회복과 훈련 중 하나를 우선해야 한다.',['tired']),
+ ('신인 시절 복기','코치가 과거의 문제를 다시 점검하자고 했다.',['normal']),
+ ('전성기 유지 계획','전성기 선수에게 맞춘 유지 프로그램이 나왔다.',['veteran','normal']),
+]
+_training_styles=[
+ ('공격적으로 밀어붙인다','성장을 우선한다.',{'ovr':1,'stamina':-10},['aggressive']),
+ ('데이터대로 조정한다','효율과 안정성을 우선한다.',{'ovr':1,'stamina':-4},['balanced']),
+ ('몸부터 관리한다','회복과 부상 방지를 우선한다.',{'stamina':9},['recovery']),
+ ('새로운 방법을 시험한다','성공하면 큰 도움이 되지만 변수가 있다.',{'ovr':0,'stamina':-6,'reputation':1},['risk'])
+]
+_build_choice_bank(TRAINING_BANK,'T',_training_situations,_training_styles)
+
+_life_situations=[
+ ('구단 휴식일','하루의 시간을 어떻게 보낼지 정해야 한다.',['normal']),('가족의 연락','가족이 오랜만에 함께 시간을 보내자고 했다.',['family']),('친구의 초대','오랜 친구가 식사 자리를 제안했다.',['normal']),('팬들의 관심','팬들이 개인적인 만남을 요청하고 있다.',['fame']),('SNS 화제','최근 게시물이 예상보다 크게 퍼졌다.',['fame']),
+ ('광고 제안','짧은 광고 촬영 제안이 들어왔다.',['fame','money']),('지역 행사','지역 유소년 행사에 초청받았다.',['family','fame']),('비시즌 여행','짧은 여행을 떠날 기회가 생겼다.',['normal']),('집 정리','생활 환경을 바꿀 시기가 됐다.',['money','family']),('차량 교체','차량을 바꿀지 고민하고 있다.',['money']),
+ ('재정 상담','재무 전문가가 상담을 제안했다.',['money']),('투자 기회','새로운 투자 정보를 받았다.',['money','risk']),('저축 계획','에이전트가 장기 저축을 권했다.',['money']),('취미 생활','오프시즌에 새로운 취미를 시작할 수 있다.',['normal']),('팬미팅','소규모 팬미팅 일정이 잡혔다.',['fame']),
+ ('방송 출연','예능 프로그램 출연 요청이 왔다.',['fame']),('인터뷰 요청','긴 인터뷰를 할지 짧게 끝낼지 선택해야 한다.',['fame']),('선배의 식사 초대','선배가 후배들과 함께 식사하자고 했다.',['veteran']),('후배의 부탁','후배가 개인적인 조언을 구했다.',['veteran']),('연애 중 데이트','파트너와 시간을 보낼 기회가 생겼다.',['relationship']),
+ ('약혼 준비','결혼 준비와 시즌 준비가 겹쳤다.',['relationship']),('배우자의 걱정','배우자가 최근 생활 패턴을 걱정한다.',['relationship','family']),('자녀와의 약속','아이와 보내기로 한 시간이 경기 일정과 겹쳤다.',['relationship','family']),('원정 후 가족 시간','긴 원정 뒤 가족이 기다리고 있다.',['family','tired']),('은퇴 후 준비','장기적으로 어떤 삶을 준비할지 고민한다.',['veteran','money']),
+]
+_life_styles=[
+ ('가족에게 투자한다','관계와 휴식을 우선한다.',{'family':8,'stamina':4},['family']),
+ ('커리어를 선택한다','현재의 기회를 우선한다.',{'ovr':1,'fame':2,'family':-4},['career']),
+ ('재정적으로 움직인다','장기 자산을 늘리는 쪽을 택한다.',{'money':1800,'asset_value':900,'spending':300},['money']),
+ ('조용히 쉰다','사람들의 시선에서 벗어나 재충전한다.',{'stamina':10,'fame':-1},['rest'])
+]
+_build_choice_bank(LIFE_BANK,'L',_life_situations,_life_styles)
+
+_office_situations=[
+ ('연봉 협상','현재 성적을 바탕으로 구단과 협상할 수 있다.',['contract']),('주전 보장','감독이 다음 시즌 역할에 대한 의견을 묻는다.',['manager']),('구단 잔류','단장이 장기적으로 함께하자고 제안한다.',['gm']),('트레이드 소문','다른 구단의 관심이 있다는 소문이 돈다.',['gm']),('FA 시장 탐색','에이전트가 시장 상황을 정리했다.',['agent','contract']),
+ ('해외 관심','해외 구단 스카우트가 경기를 지켜보고 있다.',['agent','overseas']),('광고 계약','새 스폰서가 계약을 제안했다.',['agent','money']),('팬 인기 상승','최근 활약으로 인기가 크게 올랐다.',['manager','fame']),('부진 이후 면담','감독과 최근 성적을 이야기해야 한다.',['manager']),('후배 육성','감독이 후배에게 조언해 달라고 요청했다.',['manager']),
+ ('선수단 투표','선수단에서 리더 역할을 맡길지 의견을 묻는다.',['manager','veteran']),('주장 후보','구단이 차기 주장 후보를 검토하고 있다.',['manager','veteran']),('2군행 위기','최근 출전 감소로 보직이 흔들리고 있다.',['manager']),('포지션 경쟁','유망주가 같은 포지션에 합류했다.',['manager','young']),('장기계약 제안','구단이 다년계약 가능성을 타진했다.',['contract','gm']),
+ ('에이전트 변경 고민','현재 에이전트와 방향이 달라지고 있다.',['agent']),('계약 만료 임박','계약 만료가 가까워졌다.',['contract']),('팀 리빌딩','구단이 젊은 선수 중심으로 팀을 바꾸고 있다.',['gm']),('우승 도전','구단이 당장 우승을 노리고 있다.',['gm','manager']),('베테랑 역할','젊은 선수들을 이끌어 달라는 요청을 받았다.',['veteran','manager']),
+ ('국가대표 차출','대표팀과 구단 일정 조율이 필요하다.',['national','manager']),('포스팅 고민','해외 도전을 구체적으로 검토할 시점이다.',['overseas','agent']),('FA 잔류 고민','원소속팀과 다른 팀의 조건을 비교한다.',['contract','gm']),('은퇴 후 진로','구단이 지도자 역할을 제안할 수 있다.',['veteran','gm']),('구단 홍보대사','은퇴를 앞두고 구단과 관계가 깊어지고 있다.',['veteran','fame']),
+]
+_office_styles=[
+ ('강하게 요구한다','조건과 역할을 적극적으로 주장한다.',{'salary_pct':0.07,'agent_trust':2,'reputation':-1},['aggressive']),
+ ('관계를 우선한다','구단과 감독의 신뢰를 지킨다.',{'loyalty':7,'reputation':4,'agent_trust':2},['loyal']),
+ ('에이전트에게 맡긴다','시장 가치와 장기적인 선택을 맡긴다.',{'agent_trust':7,'salary_pct':0.04},['agent']),
+ ('새로운 도전을 택한다','이적·해외·새 역할의 가능성을 열어 둔다.',{'fame':3,'loyalty':-5,'reputation':1},['risk']),
+]
+_build_choice_bank(OFFICE_BANK,'O',_office_situations,_office_styles)
+
+# 100개씩 생성됐는지 보장
+assert len(TRAINING_BANK)==100 and len(LIFE_BANK)==100 and len(OFFICE_BANK)==100
+# 에이전트 / 단장 / 감독도 각각 100개 후보를 보유한다. 실제 화면에서는
+# 현재 상황에 맞는 세 역할의 후보를 합쳐 4개만 보여준다.
+AGENT_BANK=[dict(x, id=f'A{x["id"][1:]}', label='에이전트 · '+x['label']) for x in OFFICE_BANK]
+GM_BANK=[dict(x, id=f'G{x["id"][1:]}', label='단장 · '+x['label']) for x in OFFICE_BANK]
+MANAGER_BANK=[dict(x, id=f'M{x["id"][1:]}', label='감독 · '+x['label']) for x in OFFICE_BANK]
+assert len(AGENT_BANK)==100 and len(GM_BANK)==100 and len(MANAGER_BANK)==100
+
+def _eligible_dynamic(s, bank, category):
+    # 포지션/나이/상태에 따라 너무 어색한 선택을 제거하고, 환경 태그가 맞는 것을 우선한다.
+    out=[]
+    for x in bank:
+        tags=set(x.get('tags',[]))
+        if 'hitter' in tags and s.position in ('SP','RP'): continue
+        if 'pitcher' in tags and s.position not in ('SP','RP'): continue
+        if 'young' in tags and s.age>31 and random.random()<.75: continue
+        if 'veteran' in tags and s.age<27 and random.random()<.75: continue
+        if 'family' in tags and s.family<25 and random.random()<.35: continue
+        if 'relationship' in tags and s.relationship_status=='none': continue
+        if 'overseas' in tags and s.age<23: continue
+        if 'contract' in tags and s.contract_years_left>2 and random.random()<.70: continue
+        if 'national' in tags and s.age<20: continue
+        if 'money' in tags and s.money<1000 and random.random()<.30: continue
+        if 'recovery' in tags and s.stamina>88 and random.random()<.65: continue
+        if 'tired' in tags and s.stamina>80 and random.random()<.55: continue
+        if 'fame' in tags and s.fame<15 and random.random()<.25: continue
+        out.append(x)
+    random.shuffle(out)
+    # 카테고리마다 성격이 다른 4개가 나오도록 앞쪽에서 최대한 style 다양성 확보
+    chosen=[]; seen=[]
+    for x in out:
+        style=x['id'][-3:]
+        if style not in seen or len(chosen)<2:
+            chosen.append(x); seen.append(style)
+        if len(chosen)>=4: break
+    if len(chosen)<4:
+        for x in out:
+            if x not in chosen: chosen.append(x)
+            if len(chosen)>=4: break
+    return chosen[:4]
+
+def dynamic_choices(s, category, refresh=False):
+    key=str(category)
+    if not refresh and s.dynamic_choices.get(key):
+        return s.dynamic_choices[key]
+    bank={'training':TRAINING_BANK,'life':LIFE_BANK,'office':AGENT_BANK+GM_BANK+MANAGER_BANK}[key]
+    choices=_eligible_dynamic(s,bank,key)
+    s.dynamic_choices[key]=choices
+    return choices
+
+def _apply_dynamic_effects(s, choice):
+    e=choice.get('effects',{}) if choice else {}
+    if 'ovr' in e: s.ovr=max(40,min(99,s.ovr+int(e['ovr'])))
+    if 'stamina' in e: s.stamina=max(20,min(100,s.stamina+int(e['stamina'])))
+    if 'family' in e: s.family=max(0,min(100,s.family+int(e['family'])))
+    if 'fame' in e: s.fame=max(0,min(100,s.fame+int(e['fame'])))
+    if 'reputation' in e: s.reputation=max(0,min(100,s.reputation+int(e['reputation'])))
+    if 'loyalty' in e: s.loyalty=max(0,min(100,s.loyalty+int(e['loyalty'])))
+    if 'agent_trust' in e: s.agent_trust=max(0,min(100,s.agent_trust+int(e['agent_trust'])))
+    if 'money' in e: s.money=max(0,s.money+int(e['money']))
+    if 'asset_value' in e: s.asset_value=max(0,s.asset_value+int(e['asset_value']))
+    if 'spending' in e: s.spending=max(0,s.spending+int(e['spending']))
+    if 'salary_pct' in e: s.salary=max(3000,int(s.salary*(1+float(e['salary_pct']))))
+
 def apply_training(s, choice):
-    effects={
-        'bat':'컨택/파워 집중: OVR 성장 가능성이 커집니다.',
-        'def':'수비/주루 집중: 출장 안정성이 올라갑니다.',
-        'strength':'웨이트: 파워/구속 잠재력이 좋아지지만 피로가 쌓입니다.',
-        'recovery':'회복 훈련: 부상 위험을 낮추고 컨디션을 회복합니다.',
-    }
-    if choice=='bat': s.ovr=min(99,s.ovr+random.choice([0,1,1,2])); s.stamina-=7
-    elif choice=='def': s.ovr=min(99,s.ovr+random.choice([0,1,1])); s.stamina-=4
-    elif choice=='strength': s.ovr=min(99,s.ovr+random.choice([0,1,2])); s.stamina-=12
-    else: s.stamina=min(100,s.stamina+15)
-    s.stamina=max(25,s.stamina); s.training_done=True; return effects.get(choice,'')
+    selected=next((x for x in s.dynamic_choices.get('training',[]) if x['id']==choice),None)
+    if selected: _apply_dynamic_effects(s,selected)
+    else:
+        # legacy choices 호환
+        if choice=='bat': s.ovr=min(99,s.ovr+random.choice([0,1,1,2])); s.stamina-=7
+        elif choice=='def': s.ovr=min(99,s.ovr+random.choice([0,1,1])); s.stamina-=4
+        elif choice=='strength': s.ovr=min(99,s.ovr+random.choice([0,1,2])); s.stamina-=12
+        else: s.stamina=min(100,s.stamina+15)
+    s.stamina=max(25,s.stamina); s.training_done=True
+    s.notes.append(f'{s.year} 훈련 선택: {selected["label"] if selected else choice}')
 
 def _partner_pool():
     return ['서연','민지','지우','수빈','하린','예린','채원','다은','유나','소연']
 
 def apply_life(s, choice):
-    if choice=='family':
+    selected=next((x for x in s.dynamic_choices.get('life',[]) if x['id']==choice),None)
+    if selected:
+        _apply_dynamic_effects(s,selected)
+        if 'relationship' in selected.get('tags',[]) and s.relationship_status!='none':
+            s.relationship_years += 1
+        s.family_notes.append(f'{s.year} 생활 선택: {selected["label"]}')
+    elif choice=='family':
         s.family=min(100,s.family+10); s.stamina=min(100,s.stamina+5); s.fame=max(0,s.fame-1)
     elif choice=='media':
         s.fame=min(100,s.fame+7); s.family=max(0,s.family-3)
-    elif choice=='rest':
-        s.stamina=min(100,s.stamina+12)
+    elif choice=='rest': s.stamina=min(100,s.stamina+12)
     elif choice=='invest':
         gain=random.randint(500,2500); s.money+=gain; s.asset_value+=gain; s.family=max(0,s.family-2)
     elif choice=='car' and s.money>=8000:
@@ -597,34 +752,39 @@ def apply_life(s, choice):
     elif choice=='sponsor_spend' and s.money>=3000:
         s.money-=3000; s.spending+=3000; s.fame=min(100,s.fame+3); s.reputation=min(100,s.reputation+2)
     elif choice=='meet' and s.relationship_status=='none' and s.age>=21:
-        s.partner_name=random.choice(_partner_pool()); s.relationship_status='meeting'; s.relationship_years=0
-        s.family=min(100,s.family+2); s.family_notes.append(f'{s.year} 새로운 인연을 만났다: {s.partner_name}')
+        s.partner_name=random.choice(_partner_pool()); s.relationship_status='meeting'; s.relationship_years=0; s.family=min(100,s.family+2); s.family_notes.append(f'{s.year} 새로운 인연을 만났다: {s.partner_name}')
     elif choice=='date' and s.relationship_status in ('meeting','dating'):
-        s.relationship_status='dating'; s.relationship_years+=1; s.family=min(100,s.family+4)
-        s.family_notes.append(f'{s.year} {s.partner_name}와 교제를 이어갔다.')
+        s.relationship_status='dating'; s.relationship_years+=1; s.family=min(100,s.family+4); s.family_notes.append(f'{s.year} {s.partner_name}와 교제를 이어갔다.')
     elif choice=='serious' and s.relationship_status=='dating':
-        s.relationship_status='serious'; s.relationship_years+=1; s.family=min(100,s.family+6)
-        s.family_notes.append(f'{s.year} {s.partner_name}와 진지한 관계로 발전했다.')
+        s.relationship_status='serious'; s.relationship_years+=1; s.family=min(100,s.family+6); s.family_notes.append(f'{s.year} {s.partner_name}와 진지한 관계로 발전했다.')
     elif choice=='propose' and s.relationship_status=='serious':
-        if random.random()<.86:
-            s.relationship_status='engaged'; s.engagement_year=s.year; s.family=min(100,s.family+8)
-            s.family_notes.append(f'{s.year} {s.partner_name}에게 프로포즈했고 약혼했다.')
-        else:
-            s.relationship_status='dating'; s.family=max(0,s.family-4)
-            s.family_notes.append(f'{s.year} 프로포즈가 받아들여지지 않았다. 관계를 다시 천천히 이어가기로 했다.')
+        if random.random()<.86: s.relationship_status='engaged'; s.engagement_year=s.year; s.family=min(100,s.family+8); s.family_notes.append(f'{s.year} {s.partner_name}에게 프로포즈했고 약혼했다.')
+        else: s.relationship_status='dating'; s.family=max(0,s.family-4); s.family_notes.append(f'{s.year} 프로포즈가 받아들여지지 않았다.')
     elif choice=='marry' and s.relationship_status=='engaged':
-        s.spouse=True; s.relationship_status='married'; s.family=min(100,s.family+15)
-        s.family_notes.append(f'{s.year} {s.partner_name}와 결혼했다.')
+        s.spouse=True; s.relationship_status='married'; s.family=min(100,s.family+15); s.family_notes.append(f'{s.year} {s.partner_name}와 결혼했다.')
     s.life_done=True
 
 def family_choices(s):
-    out=[('family','가족과 시간 보내기','가족관계↑ · 컨디션↑'),('media','미디어 활동','인지도↑ · 가족관계 소폭↓'),('rest','휴식','컨디션↑'),('invest','재정 관리','자산 형성'),('car','차량 구매','₩8000만 · 인기 소폭↑'),('home','주거 마련','₩3억 · 가족관계↑'),('sponsor_spend','이미지 투자','₩3000만 · 평판/인기↑')]
-    if s.age>=21 and s.relationship_status=='none': out.append(('meet','새로운 인연 만나기','소개·모임·우연한 만남으로 관계를 시작할 수 있습니다.'))
-    elif s.relationship_status=='meeting': out.append(('date','데이트를 이어간다','서로 알아가는 시간을 보냅니다.'))
-    elif s.relationship_status=='dating': out.append(('date','연애를 이어간다','관계를 더 깊게 만들어 갑니다.')); out.append(('serious','진지한 관계로 발전한다','결혼을 생각할 정도의 관계가 됩니다.'))
-    elif s.relationship_status=='serious': out.append(('propose','프로포즈한다','성공하면 약혼 단계로 넘어갑니다.'))
-    elif s.relationship_status=='engaged': out.append(('marry','결혼식을 올린다','연애 → 약혼 → 결혼의 마지막 단계입니다.'))
-    return out
+    # 새 100개 선택지가 중심이고, 연애/결혼 단계가 진행 중이면 기존 관계 버튼도 추가한다.
+    out=dynamic_choices(s,'life')
+    if s.age>=21 and s.relationship_status=='none': out=out[:3]+[{'id':'meet','label':'새로운 인연 만나기','desc':'소개·모임·우연한 만남으로 관계를 시작한다.','effects':{},'tags':['relationship']}]
+    elif s.relationship_status=='meeting': out=out[:3]+[{'id':'date','label':'데이트를 이어간다','desc':'서로 알아가는 시간을 보낸다.','effects':{},'tags':['relationship']}]
+    elif s.relationship_status=='dating': out=out[:3]+[{'id':'serious','label':'진지한 관계로 발전한다','desc':'결혼을 생각할 정도로 관계를 깊게 만든다.','effects':{},'tags':['relationship']}]
+    elif s.relationship_status=='serious': out=out[:3]+[{'id':'propose','label':'프로포즈한다','desc':'약혼을 제안한다.','effects':{},'tags':['relationship']}]
+    elif s.relationship_status=='engaged': out=out[:3]+[{'id':'marry','label':'결혼식을 올린다','desc':'약혼을 마치고 결혼한다.','effects':{},'tags':['relationship']}]
+    return out[:4]
+
+def office_choices(s):
+    return dynamic_choices(s,'office')
+
+def apply_dynamic_office(s, choice):
+    selected=next((x for x in s.dynamic_choices.get('office',[]) if x['id']==choice),None)
+    if selected:
+        _apply_dynamic_effects(s,selected)
+        s.notes.append(f'{s.year} 구단/에이전트 선택: {selected["label"]}')
+    else:
+        apply_office(s,choice)
+    s.office_done=True
 
 
 def career_stage(age):
