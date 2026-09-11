@@ -100,6 +100,7 @@ class KBOState:
     fa_offer: dict = None
     fa_negotiation_round: int = 0
     fa_service_target: int = 8
+    fa_service_years: int = 0  # 첫 FA 이후에는 등록일수가 아닌 경과 시즌 수로 재FA 판정
     fa_signed_this_cycle: bool = False
     fa_compensation: dict = None
     posting_stage: str = ''
@@ -371,10 +372,17 @@ def simulate_season(s):
         elif st['games'] >= 70: s.manager_role=random.choice(['플래툰/로테이션','주전 경쟁','백업'])
         else: s.manager_role=random.choice(['2군 경쟁','백업','재활/회복'])
     s.stamina=max(45,min(100,s.stamina+random.randint(-4,7)))
-    # First FA: 8 qualifying seasons. After that, the next FA clock follows
-    # the length of the previous FA contract negotiated by the player.
-    target=max(1, int(s.fa_service_target or 8))
-    s.fa_eligible=(s.service_seasons>=target and s.contract_years_left<=0 and not s.overseas)
+    # 첫 FA 계약을 한 뒤에는 등록일수와 관계없이 시즌을 하나 완주할 때마다 1년을 센다.
+    if s.fa_count >= 1 and not s.overseas:
+        s.fa_service_years += 1
+    # 첫 FA까지만 등록일수(145일 이상)로 판정한다.
+    # 첫 FA 계약 이후에는 등록일수와 무관하게 '경과 시즌 수'만 센다.
+    if s.fa_count >= 1:
+        target=max(1, int(s.fa_service_target or 1))
+        s.fa_eligible=(s.fa_service_years>=target and s.contract_years_left<=0 and not s.overseas)
+    else:
+        target=8
+        s.fa_eligible=(s.service_seasons>=target and s.contract_years_left<=0 and not s.overseas)
     s.posting_eligible=(s.age>=25 and s.ovr>=78 and s.service_seasons>=7 and not s.overseas)
     generate_rival(s)
     if s.rival_name and st.get('games',0)>=80:
@@ -530,9 +538,9 @@ def negotiate_fa(s, team_id=None, counter=False):
         return False, offer
     s.fa_signed_this_cycle=True
     s.office_done=True
-    s.fa_count+=1; s.fa_eligible=False; s.service_seasons=0
-    # First FA uses the initial 8-season requirement. Every later FA uses the
-    # number of years just negotiated in the previous FA contract.
+    s.fa_count+=1; s.fa_eligible=False; s.service_seasons=0; s.fa_service_years=0
+    # 첫 FA 이후에는 직전 FA 계약기간만큼 시즌이 지나면 다음 FA 자격을 얻는다.
+    # 등록일수는 더 이상 사용하지 않는다.
     s.fa_service_target=max(1,int(offer.get('years',1)))
     old=s.team_name
     s.team_id=offer['team_id']; s.team_name=offer['name']; s.salary=offer['salary']; s.contract_years_left=offer['years']; s.contract_total=s.salary*offer['years']
@@ -728,7 +736,11 @@ def _apply_dynamic_effects(s, choice):
     if 'loyalty' in e: s.loyalty=max(0,min(100,s.loyalty+int(e['loyalty'])))
     if 'agent_trust' in e: s.agent_trust=max(0,min(100,s.agent_trust+int(e['agent_trust'])))
     if 'money' in e: s.money=max(0,s.money+int(e['money']))
-    if 'asset_value' in e: s.asset_value=max(0,s.asset_value+int(e['asset_value']))
+    if 'asset_value' in e:
+        gain=int(e['asset_value'])
+        s.asset_value=max(0,s.asset_value+gain)
+        if gain>0:
+            s.assets.append(f'{s.year} 투자 자산')
     if 'spending' in e: s.spending=max(0,s.spending+int(e['spending']))
     if 'salary_pct' in e: s.salary=max(3000,int(s.salary*(1+float(e['salary_pct']))))
 
@@ -760,7 +772,7 @@ def apply_life(s, choice):
         s.fame=min(100,s.fame+7); s.family=max(0,s.family-3)
     elif choice=='rest': s.stamina=min(100,s.stamina+12)
     elif choice=='invest':
-        gain=random.randint(500,2500); s.money+=gain; s.asset_value+=gain; s.family=max(0,s.family-2)
+        gain=random.randint(500,2500); s.money+=gain; s.asset_value+=gain; s.assets.append(f'{s.year} 투자 자산'); s.family=max(0,s.family-2)
     elif choice=='car' and s.money>=8000:
         s.money-=8000; s.spending+=8000; s.assets.append(f'{s.year} 차량'); s.asset_value+=8000; s.fame=min(100,s.fame+2)
     elif choice=='home' and s.money>=30000:
