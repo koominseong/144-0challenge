@@ -487,15 +487,6 @@ def season():
     if not (s.training_done and s.life_done and s.office_done): return redirect(url_for('kbo.dashboard'))
     return render_template('kbo_season.html',state=s)
 
-@kbo_bp.get('/season')
-def season():
-    g=_guard()
-    if g:return g
-    s=_load()
-    if not s:return _redirect_home()
-    if not (s.training_done and s.life_done and s.office_done): return redirect(url_for('kbo.dashboard'))
-    return render_template('kbo_season.html',state=s)
-
 @kbo_bp.post('/season')
 def season_play():
     g=_guard()
